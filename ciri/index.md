@@ -51,6 +51,6 @@ CIRI feeds into **CIBS** (Community Integrity Budget System), which takes that r
 turns it into **tracked reinvestment pools**: housing stability, mental health access,
 legal defense & review, re-entry support, etc.
 
-➜ Go to [CIBS Budget System](/cibs/)
+➜ Go to [CIBS Budget System](../cibs/)
 
 ➜ See the full integration map: [/integration/](../integration/)
