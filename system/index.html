@@ -1,100 +1,134 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <title>A.B.E. System Map</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>A.B.E. System Map — Structural Overview</title>
+
   <style>
     body {
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        Roboto, "Helvetica Neue", Arial, sans-serif;
       background: #0f1115;
       color: #e8e8e8;
-      line-height: 1.6;
       margin: 0;
       padding: 2rem;
+      line-height: 1.55;
     }
-    main {
-      max-width: 800px;
-      margin: 0 auto;
+
+    header {
+      text-align: center;
+      margin-bottom: 2rem;
     }
+
     h1 {
-      color: #5dd6ff;
-      font-size: 1.6rem;
-      margin-bottom: 0.5rem;
+      color: #5ddfff;
+      font-size: 1.8rem;
+      margin-bottom: 0.25rem;
     }
+
     h2 {
-      color: #ff7f50;
-      font-size: 1.1rem;
+      color: #ffa559;
       margin-top: 2rem;
+      font-size: 1.2rem;
     }
-    code, pre {
-      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-      background: #1a1d24;
-      color: #ace6ff;
-      padding: 0.5rem 0.75rem;
-      border-radius: 6px;
-      display: block;
-      overflow-x: auto;
+
+    p {
+      max-width: 800px;
+      margin: 0.75rem auto;
+      font-size: 0.95rem;
+      color: #d0d0d0;
+    }
+
+    .link-list {
+      max-width: 800px;
+      margin: 2rem auto;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 10px;
+      padding: 1.5rem;
+      line-height: 1.7;
+    }
+
+    a {
+      color: #5ddfff;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    code {
+      background: rgba(255,255,255,0.07);
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+      color: #f1fa8c;
       font-size: 0.9rem;
-      line-height: 1.4;
     }
-    a { color: #5dd6ff; text-decoration: none; }
-    a:hover { text-decoration: underline; }
-    .back a { color: #ff7f50; }
+
     footer {
       margin-top: 3rem;
+      text-align: center;
       font-size: 0.8rem;
       color: #888;
+      line-height: 1.5;
+    }
+
+    footer a {
+      color: #5ddfff;
+      text-decoration: none;
     }
   </style>
 </head>
 <body>
-<main>
-  <div class="back">
-    <a href="../index.html">← Back to A.B.E. Home</a>
-  </div>
+  <header>
+    <h1>🗺 A.B.E. System Map</h1>
+    <p>
+      The <strong>System Map</strong> connects all operational layers of the American Butterfly Effect (A.B.E.).
+      It shows how legal integrity becomes measurable recovery, and how that recovery is re-invested transparently back into the people.
+    </p>
+  </header>
 
-  <h1>A.B.E. System Map</h1>
-  <p>
-    This is the high-level wiring of the American Butterfly Effect engine.
-    It shows how CIRI (impact math), CIBS (reinvestment allocation), and Integration
-    all connect into a verifiable, auditable recovery pipeline.
-  </p>
+  <section class="link-list">
+    <h2>📂 System Files</h2>
+    <p>
+      • <a href="map.json">🗺 View raw <code>map.json</code></a> — machine-readable map defining all module links and data flow.<br>
+      • <a href="../integration/index.html">🔗 Integration Layer</a> — links CIRI + CIBS into one verifiable chain of accountability.<br>
+      • <a href="../ciri/index.html">⚙ CIRI Engine</a> — calculates economic value of restored constitutional compliance.<br>
+      • <a href="../cibs/index.html">📊 CIBS Budget System</a> — applies reinvestment logic to distribute recovery funds.<br>
+      • <a href="../index.html">🏠 Return to A.B.E. Home</a>
+    </p>
+  </section>
 
-  <h2>Core Components</h2>
-  <ul>
-    <li><strong>CIRI</strong> — Constitutional Integrity ROI Engine<br>
-      <em>Path:</em> <code>/ciri/</code><br>
-      Calculates recoverable value by preventing or repairing unconstitutional harm.</li>
+  <section>
+    <h2>🔍 How It Works</h2>
+    <p>
+      Every A.B.E. component references this map to define where its data flows next.
+      When any value changes — e.g., new recovery totals from <strong>CIRI</strong> or updated allocations in <strong>CIBS</strong> —
+      that change propagates here in <code>map.json</code> for verification.
+    </p>
+    <p>
+      This design ensures that no dataset or funding path exists without a cryptographic and public record.
+      Auditors and analysts can diff this file against live data to detect manipulation or suppression.
+    </p>
+  </section>
 
-    <li><strong>CIBS</strong> — Community Integrity Budget System<br>
-      <em>Path:</em> <code>/cibs/</code><br>
-      Turns that recovered value into transparent, scheduled spending for housing,
-      stability, re-entry, youth, etc.</li>
-
-    <li><strong>Integration Layer</strong><br>
-      <em>Path:</em> <code>/integration/README.md</code><br>
-      Defines how the money moves and how each dollar is justified.</li>
-  </ul>
-
-  <h2>Raw Map JSON</h2>
-  <p>
-    For auditors / investigators / devs: the structured machine-readable map is here:
-  </p>
-  <pre>system/map.json</pre>
-
-  <p>
-    That JSON declares version, module names, file paths, and purpose. It’s your public
-    contract: “this is what we’re doing, this is where it lives, this is not for sale.”
-  </p>
+  <section>
+    <h2>⚖️ Purpose</h2>
+    <p>
+      The System Map isn't about control — it’s about <strong>accountability</strong>.  
+      Every number and file inside this ecosystem is traceable to its lawful origin and public intent.
+      By keeping this index open and versioned, it ensures that constitutional integrity and fiscal honesty remain inseparable.
+    </p>
+  </section>
 
   <footer>
-    <p>
-      A.B.E. — The American Butterfly Effect<br>
-      Author: Terra Shouse • CC BY 4.0 • No money requested, no publicity requested.<br>
-      Public integrity beacon for lawful recovery and reinvestment.
-    </p>
+    <div>
+      Authored by <strong>Terra Shouse</strong> · <em>American Butterfly Effect</em><br>
+      Licensed under <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>
+    </div>
   </footer>
-</main>
 </body>
 </html>
