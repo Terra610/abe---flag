@@ -1,0 +1,67 @@
+{
+  "version": "0.1",
+  "project": "A.B.E. — American Butterfly Effect",
+  "modules": {
+    "ciri": {
+      "name": "CIRI",
+      "long_name": "Constitutional Integrity ROI Engine",
+      "purpose": "Quantifies economic, legal, and social recovery impact by ending unlawful enforcement and coercive incentive structures.",
+      "inputs_file": "ciri/inputs.csv",
+      "logic_spec": "ciri/calc.md",
+      "core_outputs": [
+        "Direct Savings",
+        "Productivity Gain",
+        "Restitution Avoided",
+        "Secondary GDP Uplift",
+        "Transition Costs",
+        "Total Impact"
+      ],
+      "primary_output_field": "Total Impact",
+      "status": "mvp"
+    },
+    "cibs": {
+      "name": "CIBS",
+      "long_name": "Community Integrity Budget System",
+      "purpose": "Takes recovered value from CIRI and assigns it to community repair categories with transparency and auditability.",
+      "template_file": "cibs/budget_template.csv",
+      "logic_spec": "cibs/model.md",
+      "allocation_categories": [
+        "Community Housing Support",
+        "Youth / Education / Aftercare",
+        "Veterans & Emergency Relief",
+        "Local Small Business / Job Recovery",
+        "Digital Access / Connectivity",
+        "Legal Defense / Rights Enforcement",
+        "Data Transparency / Public Dashboard",
+        "Administration & Compliance"
+      ],
+      "status": "mvp"
+    },
+    "integration": {
+      "name": "integration",
+      "long_name": "CIRI ↔ CIBS Link Layer",
+      "purpose": "Defines how monetary recovery calculated by CIRI is scheduled and distributed via CIBS.",
+      "spec_file": "integration/README.md",
+      "data_flow": [
+        "CIRI.Total Impact -> becomes available_pool",
+        "available_pool * category_percent -> category_amount",
+        "category_amount -> quarterly schedule -> public ledger"
+      ],
+      "status": "mvp"
+    }
+  },
+  "public_contract": {
+    "principles": [
+      "No money disappears off-ledger",
+      "Line-item transparency is mandatory, not optional",
+      "People harmed get first claim on recovery (life, housing, due process)",
+      "This system must remain forkable and inspectable by the public"
+    ],
+    "licensing": "CC BY 4.0"
+  },
+  "contact": {
+    "owner": "Terra Shouse",
+    "project": "A.B.E.",
+    "beacon": "flag.html"
+  }
+}
