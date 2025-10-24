@@ -1,214 +1,109 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CIRI — Constitutional Integrity ROI Engine</title>
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CIRI – Constitutional Integrity ROI Engine | A.B.E.</title>
   <style>
     body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-        Roboto, "Helvetica Neue", Arial, sans-serif;
-      background: #0f1115;
-      color: #e8e8e8;
+      background-color: #0b0d12;
+      color: #e0e0e0;
+      font-family: system-ui, sans-serif;
+      line-height: 1.6;
       margin: 0;
-      padding: 2rem;
-      line-height: 1.55;
+      padding: 0;
     }
-
     header {
+      background: linear-gradient(90deg, #11151c, #1b1e25);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      padding: 1rem 2rem;
       text-align: center;
-      margin-bottom: 2rem;
     }
-
     h1 {
-      color: #5ddfff;
-      font-size: 1.8rem;
-      margin-bottom: 0.25rem;
+      color: #ffa559;
+      margin-bottom: 0.5rem;
     }
-
     h2 {
       color: #ffa559;
-      margin-top: 2rem;
-      font-size: 1.2rem;
     }
-
-    p {
-      max-width: 800px;
-      margin: 0.75rem auto;
-      font-size: 0.95rem;
-      color: #d0d0d0;
-    }
-
-    a {
-      color: #5ddfff;
-      text-decoration: none;
-      font-weight: 600;
-    }
-
-    a:hover {
-      text-decoration: underline;
-    }
-
-    .data-block {
-      max-width: 800px;
+    main {
+      max-width: 900px;
       margin: 2rem auto;
+      padding: 0 1rem 4rem;
+    }
+    a { color: #80bfff; }
+    pre, code {
+      background: rgba(255,255,255,0.05);
+      padding: 0.25rem 0.4rem;
+      border-radius: 5px;
+      color: #e3e3e3;
+    }
+    section {
+      margin-top: 2rem;
+      padding: 1rem 1.5rem;
       background: rgba(255,255,255,0.03);
       border: 1px solid rgba(255,255,255,0.07);
       border-radius: 10px;
-      padding: 1.5rem;
-      line-height: 1.7;
-      font-size: 0.95rem;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 1rem;
-      background: #16181d;
-      border: 1px solid rgba(255,255,255,0.07);
-    }
-
-    th, td {
-      border: 1px solid rgba(255,255,255,0.07);
-      padding: 0.6rem 0.75rem;
-      font-size: 0.9rem;
-      text-align: right;
-      color: #e8e8e8;
-    }
-
-    th {
-      background: #1f2229;
-      color: #ffa559;
-      text-align: left;
-    }
-
-    code {
-      background: rgba(255,255,255,0.07);
-      padding: 0.2rem 0.4rem;
-      border-radius: 4px;
-      color: #f1fa8c;
-      font-size: 0.85rem;
-    }
-
-    footer {
-      margin-top: 3rem;
-      text-align: center;
-      font-size: 0.8rem;
-      color: #888;
-      line-height: 1.5;
-    }
-
-    footer a {
-      color: #5ddfff;
-      text-decoration: none;
     }
   </style>
 </head>
 <body>
-
 <header>
-  <h1>⚙ CIRI — Constitutional Integrity ROI Engine</h1>
-  <p>
-    CIRI calculates the real, auditable dollar value of stopping unconstitutional harm.
-    It turns “this shouldn’t be happening to people” into “this is the financial impact and who owes what.”
-  </p>
+  <h1>CIRI (Constitutional Integrity ROI Engine)</h1>
+  <p>The A.B.E. model for quantifying the financial impact of constitutional compliance.</p>
 </header>
 
-<section class="data-block">
-  <h2>1. What CIRI Measures</h2>
-  <p>
-    CIRI takes real-world local data (cases dropped, jail days prevented, wages restored, payouts avoided, etc.)
-    and computes a <strong>Total Impact</strong> number — the “recovery pool.”
-    That pool is later sent to <a href="../cibs/index.html">CIBS</a> for reinvestment.
-  </p>
+<main>
 
-  <p>Inputs come from: <a href="inputs.csv"><code>ciri/inputs.csv</code></a></p>
+  <section>
+    <h2>🧮 Run the CIRI Calculator</h2>
+    <p>
+      The <strong>CIRI (Constitutional Integrity ROI Engine)</strong> is now automated.
+      Anyone can download or clone this repository and run the calculator to measure the
+      <em>economic impact of constitutional compliance</em> for their own city or county.
+    </p>
 
-  <p>Math is documented in: <a href="calc.md"><code>ciri/calc.md</code></a></p>
-</section>
+    <ol>
+      <li>Open <a href="inputs.csv">ciri/inputs.csv</a> and replace the example numbers with your local data.</li>
+      <li>Run the calculator from your command line:
+        <pre><code>python3 ciri/calculate.py</code></pre>
+      </li>
+      <li>View your economic impact report directly in the console.</li>
+      <li>Find your generated reinvestment file in <code>cibs/auto_budget.csv</code> —
+          that’s your community’s <strong>Recovery Pool</strong> ready for allocation.</li>
+    </ol>
 
-<section class="data-block">
-  <h2>2. Example Output (Example County, 2025)</h2>
+    <p>
+      This script operates locally — no internet or server required.
+      It produces evidence-based, auditable results for use in court filings,
+      city budgets, or investigative reports.
+    </p>
+  </section>
 
-  <table>
-    <tr>
-      <th>Category</th>
-      <th>Value (USD)</th>
-    </tr>
-    <tr>
-      <td>Direct Savings</td>
-      <td>$1,932,400</td>
-    </tr>
-    <tr>
-      <td>Productivity Gain</td>
-      <td>$1,501,950</td>
-    </tr>
-    <tr>
-      <td>Restitution Avoided</td>
-      <td>$450,000</td>
-    </tr>
-    <tr>
-      <td>Secondary GDP Uplift</td>
-      <td>$1,717,175</td>
-    </tr>
-    <tr>
-      <td>Transition Costs</td>
-      <td>- $400,000</td>
-    </tr>
-    <tr>
-      <th>Total Impact</th>
-      <th>$5,201,525</th>
-    </tr>
-  </table>
+  <section>
+    <h2>About CIRI</h2>
+    <p>
+      The CIRI engine translates lawful governance into measurable economic outcomes.
+      Each prevented constitutional violation reduces measurable fiscal waste.
+      When properly implemented, it demonstrates how upholding rights strengthens GDP,
+      restores public trust, and lowers state dependency.
+    </p>
+    <ul>
+      <li><a href="calc.md">View calculation documentation</a></li>
+      <li><a href="inputs.csv">Download example input sheet</a></li>
+    </ul>
+  </section>
 
-  <p>
-    That <strong>$5,201,525</strong> total is not “extra money.”
-    It’s the value of harm prevented + repair owed.
-  </p>
+  <section>
+    <h2>Integration with CIBS</h2>
+    <p>
+      After running the calculator, CIRI will automatically seed a draft allocation file
+      into <a href="../cibs/auto_budget.csv">CIBS</a>. That file defines how the
+      <strong>Recovery Pool</strong> should be reinvested into community programs like housing,
+      youth development, and legal defense.
+    </p>
+  </section>
 
-  <p>
-    This is the number CIBS treats as a public obligation, not a slush fund.
-  </p>
-</section>
-
-<section class="data-block">
-  <h2>3. Pipeline</h2>
-  <p>
-    The flow is intentional:
-  </p>
-
-  <p>
-    <code>
-      CIRI (calculate recovery value) →<br />
-      CIBS (allocate that value to housing, youth, re-entry, etc.) →<br />
-      System Map (log and expose that allocation publicly) →<br />
-      Integration Layer (watch for tampering, hiding, retaliation)
-    </code>
-  </p>
-
-  <p>
-    If someone tries to make money “disappear” instead of repairing the damage:
-    we can prove it.
-  </p>
-</section>
-
-<section class="data-block">
-  <h2>4. Jump Links</h2>
-  <p>
-    • <a href="../cibs/index.html">📊 CIBS Budget System</a><br/>
-    • <a href="../system/index.html">🗺 A.B.E. System Map</a><br/>
-    • <a href="../integration/index.html">🔗 Integration Layer</a><br/>
-    • <a href="../index.html">🏠 Return to A.B.E. Home</a>
-  </p>
-</section>
-
-<footer>
-  <div>
-    Authored by <strong>Terra Shouse</strong> · American Butterfly Effect<br>
-    Licensed under <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a><br>
-    No money requested. No publicity requested. Audit is welcome. Retaliation is not.
-  </div>
-</footer>
+</main>
 </body>
 </html>
