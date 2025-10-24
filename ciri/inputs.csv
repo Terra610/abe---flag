@@ -1,3 +1,2 @@
-# DO NOT PUT NAMES OR PERSONAL IDENTIFIERS HERE. USE TOTALS ONLY.
 cases_avoided,avg_cost_per_case,jail_days_avoided,cost_per_jail_day,fees_canceled_total,licenses_restored,avg_monthly_wage,employment_probability,months_effective,expected_lawsuits,avg_payout,multiplier,transition_costs_one_time
 1200,950,3800,98,420000,850,3800,0.62,9,6,75000,0.50,400000
