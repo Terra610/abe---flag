@@ -1,146 +1,223 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>A.B.E. — The American Butterfly Effect</title>
-  
-  <!--
-    A.B.E. Signal Beacon
-    Origin: Terra Shouse
-    Project: A.B.E. (American Butterfly Effect)
-    Purpose: lawful prevention of abuse, restoration of lives, transparent reinvestment
-    Commitment: no payment requested, no publicity requested
-    Ask: assistance validating and protecting the integrity pipeline (CIRI → CIBS → public ledger)
-    Note: this site is intentionally public and intended to be observed by high-skill defenders
-  -->
-  <meta name="abe-signal" content="Constitutional recovery engine by Terra Shouse. Seeking ethical allies for verification and protection. No money or fame, only lives and legal truth.">
-  <meta name="abe-integrity-hash" content="map.json:CIRI→CIBS→LEDGER">
-  <meta name="contact-window" content="Initial review only; private channel on request">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>A.B.E. — American Butterfly Effect</title>
   <style>
     body {
+      background-color: #0b0d12;
+      color: #e0e0e0;
       font-family: system-ui, sans-serif;
-      background: #0f1115;
-      color: #e8e8e8;
-      margin: 0;
-      padding: 2rem;
       line-height: 1.6;
+      margin: 0;
+      padding: 0;
     }
     header {
+      background: linear-gradient(90deg, #11151c, #1b1e25);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      padding: 2rem 1rem;
       text-align: center;
-      margin-bottom: 2rem;
     }
     h1 {
-      color: #5dd6ff;
-      font-size: 2rem;
+      color: #5ddfff;
+      margin: 0 0 0.5rem 0;
+      font-size: 1.8rem;
+      font-weight: 600;
     }
-    p {
+    .tagline {
+      color: #c8c8c8;
+      font-size: 0.95rem;
       max-width: 700px;
-      margin: auto;
+      margin: 0.5rem auto 0 auto;
+      line-height: 1.5;
     }
-    a {
-      color: #ff7f50;
-      text-decoration: none;
+    main {
+      max-width: 1000px;
+      margin: 2rem auto 4rem auto;
+      padding: 0 1rem;
     }
-    a:hover {
-      text-decoration: underline;
+    section.card-grid {
+      max-width:900px;
+      margin:2rem auto;
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+      gap:1rem;
+      text-align:left;
     }
-    .links {
-      margin-top: 2rem;
-      text-align: center;
+    .card {
+      display:block;
+      background:#16181d;
+      border:1px solid rgba(255,255,255,0.12);
+      border-radius:10px;
+      padding:1rem;
+      text-decoration:none;
+      color:#e8e8e8;
+      line-height:1.4;
+      font-size:0.9rem;
     }
-    .links a {
-      display: inline-block;
-      margin: 0.5rem 1rem;
-      padding: 0.5rem 1rem;
-      border: 1px solid #5dd6ff;
-      border-radius: 8px;
-      transition: background 0.3s;
+    .card-title {
+      font-weight:600;
+      font-size:1rem;
+      margin-bottom:0.4rem;
+      color:#5ddfff;
     }
-    .links a:hover {
-      background: #5dd6ff22;
+    .card-desc {
+      color:#c8c8c8;
+      font-size:0.9rem;
+      line-height:1.4;
+    }
+    h2 {
+      color:#ffa559;
+      font-size:1.2rem;
+      margin-top:2.5rem;
+      margin-bottom:0.75rem;
+      font-weight:600;
+      text-align:center;
+    }
+    p.blocktext {
+      max-width:800px;
+      margin:0.75rem auto;
+      font-size:0.95rem;
+      color:#d0d0d0;
+      line-height:1.55;
+    }
+    ol {
+      max-width:800px;
+      margin:1rem auto;
+      padding-left:1.25rem;
+      line-height:1.6;
+      font-size:0.95rem;
+      color:#d0d0d0;
+    }
+    code {
+      background: rgba(255,255,255,0.07);
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+      color: #f1fa8c;
+      font-size: 0.85rem;
     }
     footer {
       margin-top: 3rem;
-      font-size: 0.9rem;
       text-align: center;
+      font-size: 0.8rem;
       color: #888;
+      line-height: 1.5;
+      padding-bottom:3rem;
+    }
+    footer a {
+      color: #5ddfff;
+      text-decoration: none;
     }
   </style>
 </head>
 <body>
-  <header>
-    <h1>🦋 A.B.E. — The American Butterfly Effect</h1>
-    <p>
-      A constitutional, economic, and social restoration framework built to expose, correct, 
-      and heal the systemic misuse of power. Every dollar, every case, every act of justice 
-      is tracked transparently. This is <strong>human repair through lawful design</strong>.
-    </p>
-  </header>
 
-  <section class="links" style="max-width:900px;margin:2rem auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;text-align:left;">
-  <a href="ciri/index.html" style="display:block;background:#16181d;border:1px solid #444;border-radius:10px;padding:1rem;text-decoration:none;color:#e8e8e8;line-height:1.4;">
-    <div style="color:#5ddfff;font-weight:600;font-size:1rem;margin-bottom:0.4rem;">⚙ CIRI Engine</div>
-    <div style="font-size:0.9rem;color:#c8c8c8;">Calculates the dollar value of prevented harm, restored wages, avoided wrongful detention, and avoided payouts. Produces the Recovery Pool.</div>
-  </a>
+<header>
+  <h1>A.B.E. — The American Butterfly Effect</h1>
+  <p class="tagline">
+    A.B.E. is a public, inspectable enforcement model.
+    It calculates the dollar value of preventing unconstitutional harm,
+    assigns that value as an obligation to repair,
+    and makes the money trail public so it can’t be quietly buried.
+  </p>
+</header>
 
-  <a href="cibs/index.html" style="display:block;background:#16181d;border:1px solid #444;border-radius:10px;padding:1rem;text-decoration:none;color:#e8e8e8;line-height:1.4;">
-    <div style="color:#ffa559;font-weight:600;font-size:1rem;margin-bottom:0.4rem;">📊 CIBS Budget System</div>
-    <div style="font-size:0.9rem;color:#c8c8c8;">Takes that Recovery Pool and allocates it into housing stability, youth access, veterans relief, re-entry support, etc., on a disclosed schedule.</div>
-  </a>
+<main>
 
-  <a href="system/index.html" style="display:block;background:#16181d;border:1px solid #444;border-radius:10px;padding:1rem;text-decoration:none;color:#e8e8e8;line-height:1.4;">
-    <div style="color:#5ddfff;font-weight:600;font-size:1rem;margin-bottom:0.4rem;">🗺 System Map</div>
-    <div style="font-size:0.9rem;color:#c8c8c8;">Public machine-readable map (<code>map.json</code>) of how data and dollars are supposed to move. Lets auditors spot tampering.</div>
-  </a>
+  <section class="card-grid">
 
-  <a href="integration/index.html" style="display:block;background:#16181d;border:1px solid #444;border-radius:10px;padding:1rem;text-decoration:none;color:#e8e8e8;line-height:1.4;">
-    <div style="color:#ffa559;font-weight:600;font-size:1rem;margin-bottom:0.4rem;">🔗 Integration Layer</div>
-    <div style="font-size:0.9rem;color:#c8c8c8;">Chain-of-custody. Proves the money goes where it’s supposed to go. Raises a flag if anyone tries to bury, redirect, or retaliate.</div>
-  </a>
-</section>
+    <a class="card" href="ciri/index.html">
+      <div class="card-title">⚙ CIRI Engine</div>
+      <div class="card-desc">
+        Run <code>ciri/calculate.py</code> on your data. Get the dollar value of harm prevented, wages restored, and lawsuits avoided. This becomes the Recovery Pool.
+      </div>
+    </a>
 
-  <section style="max-width:800px;margin:3rem auto;padding:1.5rem;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:10px;">
-  <h2 style="color:#ffa559;text-align:center;margin-top:0;">How to Use the A.B.E. Models</h2>
+    <a class="card" href="cibs/index.html">
+      <div class="card-title">📊 CIBS Budget System</div>
+      <div class="card-desc">
+        Takes the Recovery Pool and splits it into housing, youth access, mental health, legal defense, etc. Generates <code>cibs/auto_budget.csv</code> for public budget demand.
+      </div>
+    </a>
 
-  <p>
-    The <strong>American Butterfly Effect (A.B.E.)</strong> site isn’t just information — it’s a working
-    toolkit for ethical finance and constitutional accountability.
+    <a class="card" href="system/index.html">
+      <div class="card-title">🗺 System Map</div>
+      <div class="card-desc">
+        Public ledger of how value is supposed to flow. Includes <code>system/map.json</code> so anyone can diff promises vs reality and detect theft or suppression.
+      </div>
+    </a>
+
+    <a class="card" href="integration/index.html">
+      <div class="card-title">🔗 Integration Layer</div>
+      <div class="card-desc">
+        Tamper / suppression / retaliation monitor. If money gets diverted or people get targeted, that triggers escalation for ethical oversight.
+      </div>
+    </a>
+
+    <a class="card" href="doctrine/index.html">
+      <div class="card-title">📜 Doctrine / Legal Basis</div>
+      <div class="card-desc">
+        A.B.E., CRRA, Constitutional Fidelity, and Void ab initio. The legal spine: why the money is owed, why it must be reinvested, and why hiding it is unlawful.
+      </div>
+    </a>
+
+  </section>
+
+  <h2>How to Use the A.B.E. Models</h2>
+
+  <p class="blocktext">
+    The A.B.E. site is not just theory. You can run it. You can take it into court, budget hearings,
+    negotiations, or press. Here's how it works in practice:
   </p>
 
-  <ol style="line-height:1.6;font-size:0.95rem;color:#d0d0d0;">
-    <li><strong>Run CIRI (ROI Engine)</strong><br>
-        Open <a href="ciri/inputs.csv">inputs.csv</a> and enter your own local data —
-        dismissed cases, jail-days avoided, wages restored, settlements prevented, etc.
-        Then apply the formulas in <a href="ciri/calc.md">calc.md</a>.
-        CIRI outputs the <em>Total Impact Value</em> — the dollar amount of harm prevented or repair owed.</li>
+  <ol>
+    <li>
+      <strong>Run CIRI (ROI Engine)</strong><br/>
+      Open <code>ciri/inputs.csv</code> and enter your local data:
+      dismissed cases, jail-days avoided, fees canceled, licenses restored, etc.
+      Then run:
+      <br/><code>python3 ciri/calculate.py</code><br/>
+      This prints a full impact report and produces a Recovery Pool dollar amount.
+    </li>
 
-    <li><strong>Apply CIBS (Budget System)</strong><br>
-        Take CIRI’s Total Impact Value and plug it into
-        <a href="cibs/budget_template.csv">budget_template.csv</a>.
-        The model divides that pool into categories such as housing, youth, veterans, and legal defense
-        using the rules in <a href="cibs/model.md">model.md</a>.
-        Those allocations become a transparent community reinvestment plan.</li>
+    <li>
+      <strong>Apply CIBS (Budget System)</strong><br/>
+      The script also writes <code>cibs/auto_budget.csv</code>.
+      That file shows how the Recovery Pool must be reinvested:
+      housing stability, youth, veterans, legal defense, mental health, audit compliance.
+      This is the public demand document.
+    </li>
 
-    <li><strong>Verify on the System Map</strong><br>
-        Check that each allocation appears correctly in
-        <a href="system/map.json">system/map.json</a>.
-        This file acts as a public ledger — any mismatch between claims and numbers is instantly visible.</li>
+    <li>
+      <strong>Verify on the System Map</strong><br/>
+      Go to <code>system/map.json</code>. That file is the declared flow of money and accountability.
+      If what leaders claim doesn’t match that map, you can prove it.
+    </li>
 
-    <li><strong>Confirm through the Integration Layer</strong><br>
-        Visit the <a href="integration/index.html">Integration Layer</a> page to see how
-        all modules link and how tamper or retaliation events are detected and logged.</li>
+    <li>
+      <strong>Use the Integration Layer for escalation</strong><br/>
+      If money disappears, reporting stops, retaliation starts, or cases get buried,
+      the <a href="integration/index.html">Integration Layer</a> exists to escalate that pattern
+      to ethical security/audit networks instead of letting it die quietly.
+    </li>
   </ol>
 
-  <p style="margin-top:1.2rem;">
-    Together these steps let anyone — auditor, attorney, journalist, or citizen —
-    <strong>calculate the damage, prove the debt, and trace the repair</strong>.
+  <p class="blocktext">
+    This is designed so that a public defender, a civil rights lawyer,
+    a city council budget hawk, or a survivor can all use the same language and numbers.
   </p>
-</section>
 
-  <footer>
-    Created by <strong>Terra Shouse</strong> under <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a> license.<br>
-    Read more at <a href="https://abemovement.org">abemovement.org</a>
-  </footer>
+</main>
+
+<footer>
+  <div>
+    Authored by <strong>Terra Shouse</strong> · American Butterfly Effect (A.B.E.)<br/>
+    Beacon file published for ethical oversight and replication.<br/>
+    Licensed under <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a><br/>
+    No money requested. No publicity requested. Integrity only.
+  </div>
+</footer>
+
 </body>
 </html>
