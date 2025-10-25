@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>A.B.E. Macroeconomic Cascade ROI Model</title>
+  <style>
+    body {
+      background-color: #0b0d12;
+      color: #e0e0e0;
+      font-family: system-ui, sans-serif;
+      line-height: 1.6;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background: linear-gradient(90deg, #11151c, #1b1e25);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      padding: 1rem 2rem;
+      text-align: center;
+    }
+    h1 { color: #5ddfff; margin-bottom: 0.5rem; font-size: 1.5rem; }
+    h2 { color: #ffa559; margin-top: 1.5rem; font-size: 1.1rem; }
+    main { max-width: 950px; margin: 2rem auto 4rem auto; padding: 0 1rem; }
+    section {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 10px;
+      padding: 1rem 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .metric-block {
+      background:#16181d;
+      border:1px solid rgba(255,255,255,0.12);
+      border-radius:10px;
+      padding:1rem 1rem 0.75rem 1rem;
+      margin-top:1rem;
+      margin-bottom:1rem;
+    }
+    .metric-title {
+      color:#5ddfff;
+      font-weight:600;
+      font-size:1rem;
+      margin-bottom:0.25rem;
+    }
+    .metric-desc { color:#c8c8c8; font-size:0.9rem; line-height:1.4; }
+    footer {
+      margin-top: 3rem;
+      text-align: center;
+      font-size: 0.8rem;
+      color: #888;
+      line-height: 1.5;
+      padding-bottom:3rem;
+    }
+    a { color:#80bfff; text-decoration:none; }
+    a:hover { text-decoration:underline; }
+    .nav-grid {
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+      gap:1rem;
+      margin-top:1.5rem;
+    }
+    .cardlink {
+      display:block;
+      background:#16181d;
+      border:1px solid rgba(255,255,255,0.12);
+      border-radius:10px;
+      padding:1rem;
+      line-height:1.4;
+      text-decoration:none;
+      color:#e8e8e8;
+      font-size:0.9rem;
+    }
+    .cardlink-title {
+      font-weight:600;
+      margin-bottom:0.4rem;
+      color:#5ddfff;
+      font-size:1rem;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>A.B.E. Macroeconomic Cascade ROI Model</h1>
+  <p>Live overview of cascading economic recovery through Restoration Economics.</p>
+</header>
+
+<main>
+
+  <section>
+    <h2>Model Summary</h2>
+    <p>This model computes how constitutional restoration scales economically across communities.</p>
+    <div id="summary"></div>
+  </section>
+
+  <section>
+    <h2>Macroeconomic Metrics</h2>
+    <div id="metrics"></div>
+  </section>
+
+  <section>
+    <h2>Navigation</h2>
+    <div class="nav-grid">
+      <a class="cardlink" href="../ciri/index.html">
+        <div class="cardlink-title">⚙ CIRI (ROI Engine)</div>
+        <div>Calculate localized recovery value.</div>
+      </a>
+      <a class="cardlink" href="../cibs/index.html">
+        <div class="cardlink-title">📊 CIBS Budget System</div>
+        <div>Allocate recovered value to community investments.</div>
+      </a>
+      <a class="cardlink" href="../system/index.html">
+        <div class="cardlink-title">🗺 System Map</div>
+        <div>Visual chain of custody and flow.</div>
+      </a>
+      <a class="cardlink" href="../doctrine/index.html">
+        <div class="cardlink-title">📜 Doctrine</div>
+        <div>A.B.E., CRRA, Constitutional Fidelity, Void ab initio.</div>
+      </a>
+      <a class="cardlink" href="../index.html">
+        <div class="cardlink-title">🏠 Home</div>
+        <div>Return to overview.</div>
+      </a>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div>
+    Authored by <strong>Terra Shouse</strong> · American Butterfly Effect (A.B.E.)<br/>
+    Licensed under <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>
+  </div>
+</footer>
+
+<script>
+  async function loadModel() {
+    try {
+      const response = await fetch('../ABE_MacroCascadeModel.json');
+      const data = await response.json();
+
+      // Display top-level summary info
+      const summaryDiv = document.getElementById('summary');
+      summaryDiv.innerHTML = `
+        <p><strong>Version:</strong> ${data.version || '1.0'}<br>
+        <strong>Developer:</strong> ${data.developer || 'Terra Shouse'}<br>
+        <strong>Framework:</strong> ${data.framework || 'American Butterfly Effect (A.B.E.)'}<br>
+        <strong>Description:</strong> ${data.description || ''}</p>
+      `;
+
+      // Display each ROI category
+      const metricsDiv = document.getElementById('metrics');
+      if (data.cascades) {
+        data.cascades.forEach(cascade => {
+          const block = document.createElement('div');
+          block.classList.add('metric-block');
+          block.innerHTML = `
+            <div class="metric-title">${cascade.category}</div>
+            <div class="metric-desc">
+              <strong>Impact:</strong> ${cascade.impact_value}<br>
+              <strong>Multiplier:</strong> ${cascade.multiplier}<br>
+              <strong>Details:</strong> ${cascade.details}
+            </div>
+          `;
+          metricsDiv.appendChild(block);
+        });
+      } else {
+        metricsDiv.innerHTML = "<p>No cascade data found in model.</p>";
+      }
+
+    } catch (err) {
+      document.getElementById('summary').innerHTML = `<p style='color:#ff7b7b;'>Error loading model data.</p>`;
+      console.error(err);
+    }
+  }
+  loadModel();
+</script>
+
+</body>
+</html>
