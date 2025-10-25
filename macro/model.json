@@ -1,0 +1,68 @@
+{
+  "initiative": "American Butterfly Effect (A.B.E.)",
+  "summary": {
+    "goal": "Restore constitutional integrity, economic fertility, and national unity through lawful correction of overreach and suppressed mobility.",
+    "mechanism": "Civil Rights Restoration & Alignment (CRRA) + Restoration Economics. Capture the value that was being extracted illegally, then reinvest it in the harmed community.",
+    "implementation_window": "2 years (2026–2027)"
+  },
+  "base_unit": "One Restored Community",
+  "community_model": {
+    "investment_per_site_usd": "10000000 - 25000000",
+    "citizens_served": "3500 - 5600",
+    "jobs_created": {
+      "count": 550,
+      "average_wage_usd": 42000
+    },
+    "annual_cost_savings": {
+      "criminal_justice_usd": 6000000,
+      "healthcare_usd": 4200000
+    }
+  },
+  "economic_multipliers": {
+    "gdp_multiplier": 2.4,
+    "wage_multiplier": 1.8,
+    "local_spending_multiplier": 2.0
+  },
+  "roi": {
+    "annual_return_multiple": "1.5x - 3.0x",
+    "compounding": true,
+    "recurring_frequency": "annually"
+  },
+  "macro_scale": {
+    "us_gdp_uplift_usd": "3300000000000 - 3900000000000",
+    "global_uplift_usd": "7000000000000 - 10000000000000",
+    "federal_exposure_usd": {
+      "civil": "95000000000 - 175000000000",
+      "false_claims_treble": "285000000000 - 525000000000"
+    }
+  },
+  "legal_foundation": {
+    "constitutional": [
+      "Supremacy Clause",
+      "Commerce Clause",
+      "Void ab initio doctrine"
+    ],
+    "federal_statutes": [
+      "49 CFR § 390.3",
+      "49 CFR § 390.11",
+      "49 U.S.C. § 13102",
+      "49 U.S.C. § 14501",
+      "49 U.S.C. § 31136"
+    ],
+    "case_law": [
+      "Marbury v. Madison (1803)",
+      "Cooper v. Aaron (1958)"
+    ],
+    "human_rights": [
+      "Universal Declaration of Human Rights (1948)",
+      "UN Sustainable Development Goals"
+    ]
+  },
+  "intended_outcomes": [
+    "Constitutionally lawful transportation and identification access",
+    "Market restoration through consumer reintegration",
+    "Surge in local investment and small business activity",
+    "State and federal budget resilience",
+    "Faith restoration in justice and governance"
+  ]
+}
