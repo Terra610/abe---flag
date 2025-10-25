@@ -3,221 +3,141 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>A.B.E. — American Butterfly Effect</title>
+  <title>American Butterfly Effect (A.B.E.)</title>
   <style>
     body {
-      background-color: #0b0d12;
-      color: #e0e0e0;
-      font-family: system-ui, sans-serif;
-      line-height: 1.6;
-      margin: 0;
-      padding: 0;
+      background:#0b0d12;
+      color:#e0e0e0;
+      font-family:system-ui,sans-serif;
+      margin:0;
+      line-height:1.6;
     }
     header {
-      background: linear-gradient(90deg, #11151c, #1b1e25);
-      border-bottom: 1px solid rgba(255,255,255,0.05);
-      padding: 2rem 1rem;
-      text-align: center;
-    }
-    h1 {
-      color: #5ddfff;
-      margin: 0 0 0.5rem 0;
-      font-size: 1.8rem;
-      font-weight: 600;
-    }
-    .tagline {
-      color: #c8c8c8;
-      font-size: 0.95rem;
-      max-width: 700px;
-      margin: 0.5rem auto 0 auto;
-      line-height: 1.5;
-    }
-    main {
-      max-width: 1000px;
-      margin: 2rem auto 4rem auto;
-      padding: 0 1rem;
-    }
-    section.card-grid {
-      max-width:900px;
-      margin:2rem auto;
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-      gap:1rem;
-      text-align:left;
-    }
-    .card {
-      display:block;
-      background:#16181d;
-      border:1px solid rgba(255,255,255,0.12);
-      border-radius:10px;
-      padding:1rem;
-      text-decoration:none;
-      color:#e8e8e8;
-      line-height:1.4;
-      font-size:0.9rem;
-    }
-    .card-title {
-      font-weight:600;
-      font-size:1rem;
-      margin-bottom:0.4rem;
-      color:#5ddfff;
-    }
-    .card-desc {
-      color:#c8c8c8;
-      font-size:0.9rem;
-      line-height:1.4;
-    }
-    h2 {
-      color:#ffa559;
-      font-size:1.2rem;
-      margin-top:2.5rem;
-      margin-bottom:0.75rem;
-      font-weight:600;
+      background:linear-gradient(90deg,#11151c,#1b1e25);
+      padding:2rem 1rem;
       text-align:center;
+      border-bottom:1px solid rgba(255,255,255,0.05);
     }
-    p.blocktext {
-      max-width:800px;
-      margin:0.75rem auto;
-      font-size:0.95rem;
-      color:#d0d0d0;
-      line-height:1.55;
+    h1{color:#5ddfff;font-size:1.8rem;margin-bottom:.5rem;font-weight:600;}
+    p{color:#bfbfbf;max-width:900px;margin:.5rem auto 1rem auto;}
+    main{max-width:1050px;margin:2rem auto;padding:0 1rem;}
+    section{
+      background:rgba(255,255,255,0.03);
+      border:1px solid rgba(255,255,255,0.07);
+      border-radius:10px;
+      padding:1.25rem 1.5rem;
+      margin-bottom:2rem;
     }
-    ol {
-      max-width:800px;
-      margin:1rem auto;
-      padding-left:1.25rem;
-      line-height:1.6;
-      font-size:0.95rem;
-      color:#d0d0d0;
+    .card-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+      gap:1.5rem;
+      margin-top:2rem;
     }
-    code {
-      background: rgba(255,255,255,0.07);
-      padding: 0.2rem 0.4rem;
-      border-radius: 4px;
-      color: #f1fa8c;
-      font-size: 0.85rem;
+    .card{
+      display:block;
+      background:rgba(255,255,255,0.03);
+      border:1px solid rgba(255,255,255,0.07);
+      border-radius:10px;
+      padding:1.25rem;
+      color:#e8e8e8;
+      text-decoration:none;
+      transition:transform .2s,border-color .2s;
     }
-    footer {
-      margin-top: 3rem;
-      text-align: center;
-      font-size: 0.8rem;
-      color: #888;
-      line-height: 1.5;
-      padding-bottom:3rem;
-    }
-    footer a {
-      color: #5ddfff;
-      text-decoration: none;
-    }
+    .card:hover{transform:translateY(-4px);border-color:#5ddfff;}
+    .card-title{font-size:1.1rem;font-weight:600;color:#5ddfff;margin-bottom:.4rem;}
+    .card-desc{color:#c8c8c8;font-size:.9rem;line-height:1.4;}
+    ul{padding-left:1.25rem;}
+    footer{text-align:center;color:#777;font-size:.85rem;margin-top:3rem;padding-bottom:2rem;}
+    footer a{color:#5ddfff;text-decoration:none;}
   </style>
 </head>
 <body>
-
 <header>
-  <h1>A.B.E. — The American Butterfly Effect</h1>
-  <p class="tagline">
-    A.B.E. is a public, inspectable enforcement model.
-    It calculates the dollar value of preventing unconstitutional harm,
-    assigns that value as an obligation to repair,
-    and makes the money trail public so it can’t be quietly buried.
+  <h1>American Butterfly Effect (A.B.E.)</h1>
+  <p>
+    A constitutional-economic restoration blueprint by <strong>Terra Shouse</strong>.
+    Each model quantifies how restoring lawful governance and mobility rebuilds the economy.
   </p>
 </header>
 
 <main>
-
-  <section class="card-grid">
-
-    <a class="card" href="ciri/index.html">
-      <div class="card-title">⚙ CIRI Engine</div>
-      <div class="card-desc">
-        Run <code>ciri/calculate.py</code> on your data. Get the dollar value of harm prevented, wages restored, and lawsuits avoided. This becomes the Recovery Pool.
-      </div>
-    </a>
-
-    <a class="card" href="cibs/index.html">
-      <div class="card-title">📊 CIBS Budget System</div>
-      <div class="card-desc">
-        Takes the Recovery Pool and splits it into housing, youth access, mental health, legal defense, etc. Generates <code>cibs/auto_budget.csv</code> for public budget demand.
-      </div>
-    </a>
-
-    <a class="card" href="system/index.html">
-      <div class="card-title">🗺 System Map</div>
-      <div class="card-desc">
-        Public ledger of how value is supposed to flow. Includes <code>system/map.json</code> so anyone can diff promises vs reality and detect theft or suppression.
-      </div>
-    </a>
-
-    <a class="card" href="integration/index.html">
-      <div class="card-title">🔗 Integration Layer</div>
-      <div class="card-desc">
-        Tamper / suppression / retaliation monitor. If money gets diverted or people get targeted, that triggers escalation for ethical oversight.
-      </div>
-    </a>
-
-    <a class="card" href="doctrine/index.html">
-      <div class="card-title">📜 Doctrine / Legal Basis</div>
-      <div class="card-desc">
-        A.B.E., CRRA, Constitutional Fidelity, and Void ab initio. The legal spine: why the money is owed, why it must be reinvested, and why hiding it is unlawful.
-      </div>
-    </a>
-
+  <section>
+    <h2>Mission Summary</h2>
+    <p>
+      <strong>Goal:</strong> Restore constitutional integrity, economic fertility, and national unity through lawful correction of transportation overreach and suppressed mobility.
+    </p>
+    <p>
+      <strong>Mechanism:</strong> CRRA – Civil Rights Restoration & Alignment Act – paired with A.B.E. Restoration Economics to measure and return lost value to communities.
+    </p>
+    <p><strong>Implementation Window:</strong> 2 years (2026–2027)</p>
   </section>
 
-  <h2>How to Use the A.B.E. Models</h2>
+  <section>
+    <h2>Macroeconomic Highlights</h2>
+    <ul>
+      <li>Community Investment per Site: $10M – $25M</li>
+      <li>Citizens Served: 3,500 – 5,600 per site</li>
+      <li>Jobs Created: ≈ 550 at $42 000 avg salary</li>
+      <li>Multipliers: 2.4× GDP · 1.8× Wages · 2.0× Local Spending</li>
+      <li>Annual ROI: 1.5× – 3.0× (compounding)</li>
+      <li>Justice Savings: $6 M / yr · Healthcare Savings: $4.2 M / yr</li>
+      <li>US GDP Uplift: $3.3 T – $3.9 T · Global Uplift: $7 T – $10 T</li>
+      <li>Federal FCA Exposure: $95 B – $175 B ( treble $285 B – $525 B )</li>
+    </ul>
+  </section>
 
-  <p class="blocktext">
-    The A.B.E. site is not just theory. You can run it. You can take it into court, budget hearings,
-    negotiations, or press. Here's how it works in practice:
-  </p>
+  <section>
+    <h2>Core Compliance Foundations</h2>
+    <ul>
+      <li>49 CFR § 390.3 & § 390.11</li>
+      <li>49 U.S.C. § 13102, § 14501, § 31136</li>
+      <li>Commerce Clause · Supremacy Clause</li>
+      <li><em>Marbury v. Madison</em> (1803)</li>
+      <li><em>Cooper v. Aaron</em> (1958)</li>
+      <li>Void ab Initio Doctrine</li>
+      <li>Universal Declaration of Human Rights (1948)</li>
+      <li>UN Sustainable Development Goals (SDGs)</li>
+    </ul>
+  </section>
 
-  <ol>
-    <li>
-      <strong>Run CIRI (ROI Engine)</strong><br/>
-      Open <code>ciri/inputs.csv</code> and enter your local data:
-      dismissed cases, jail-days avoided, fees canceled, licenses restored, etc.
-      Then run:
-      <br/><code>python3 ciri/calculate.py</code><br/>
-      This prints a full impact report and produces a Recovery Pool dollar amount.
-    </li>
-
-    <li>
-      <strong>Apply CIBS (Budget System)</strong><br/>
-      The script also writes <code>cibs/auto_budget.csv</code>.
-      That file shows how the Recovery Pool must be reinvested:
-      housing stability, youth, veterans, legal defense, mental health, audit compliance.
-      This is the public demand document.
-    </li>
-
-    <li>
-      <strong>Verify on the System Map</strong><br/>
-      Go to <code>system/map.json</code>. That file is the declared flow of money and accountability.
-      If what leaders claim doesn’t match that map, you can prove it.
-    </li>
-
-    <li>
-      <strong>Use the Integration Layer for escalation</strong><br/>
-      If money disappears, reporting stops, retaliation starts, or cases get buried,
-      the <a href="integration/index.html">Integration Layer</a> exists to escalate that pattern
-      to ethical security/audit networks instead of letting it die quietly.
-    </li>
-  </ol>
-
-  <p class="blocktext">
-    This is designed so that a public defender, a civil rights lawyer,
-    a city council budget hawk, or a survivor can all use the same language and numbers.
-  </p>
-
+  <section>
+    <h2>Explore the A.B.E. Systems</h2>
+    <div class="card-grid">
+      <a class="card" href="ciri/index.html">
+        <div class="card-title">⚙ CIRI (ROI Engine)</div>
+        <div class="card-desc">Calculates recoverable value from constitutional deviation per community.</div>
+      </a>
+      <a class="card" href="cibs/index.html">
+        <div class="card-title">📊 CIBS (Budget System)</div>
+        <div class="card-desc">Allocates recovered funds to housing, workforce and stabilization initiatives.</div>
+      </a>
+      <a class="card" href="macro/index.html">
+        <div class="card-title">📈 Macroeconomic Cascade Model</div>
+        <div class="card-desc">Links local recovery to national and global economic growth metrics.</div>
+      </a>
+      <a class="card" href="system/index.html">
+        <div class="card-title">🗺 System Map</div>
+        <div class="card-desc">Tracks flow of money and legal obligations across A.B.E. framework.</div>
+      </a>
+      <a class="card" href="integration/index.html">
+        <div class="card-title">🔗 Integration Layer</div>
+        <div class="card-desc">Synchronizes datasets and transparency tools for auditable governance.</div>
+      </a>
+      <a class="card" href="doctrine/index.html">
+        <div class="card-title">📜 Core Doctrines</div>
+        <div class="card-desc">A.B.E., CRRA, Constitutional Fidelity, Void ab Initio — Restoration Economics foundation.</div>
+      </a>
+    </div>
+  </section>
 </main>
 
 <footer>
-  <div>
-    Authored by <strong>Terra Shouse</strong> · American Butterfly Effect (A.B.E.)<br/>
-    Beacon file published for ethical oversight and replication.<br/>
-    Licensed under <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a><br/>
-    No money requested. No publicity requested. Integrity only.
-  </div>
+  <p>
+    © 2025 Terra Shouse · American Butterfly Effect (A.B.E.) · Licensed under 
+    <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a><br/>
+    “No money requested. No publicity required. Only restoration.”
+  </p>
 </footer>
-
 </body>
 </html>
