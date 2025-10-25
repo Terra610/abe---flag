@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>A.B.E. Macroeconomic Cascade ROI Model</title>
+  <title>A.B.E. Macroeconomic Cascade Model</title>
   <style>
     body {
       background-color: #0b0d12;
@@ -19,15 +19,32 @@
       padding: 1rem 2rem;
       text-align: center;
     }
-    h1 { color: #5ddfff; margin-bottom: 0.5rem; font-size: 1.5rem; }
-    h2 { color: #ffa559; margin-top: 1.5rem; font-size: 1.1rem; }
-    main { max-width: 950px; margin: 2rem auto 4rem auto; padding: 0 1rem; }
+    h1 {
+      color: #5ddfff;
+      margin-bottom: 0.5rem;
+      font-size: 1.4rem;
+      font-weight: 600;
+    }
+    h2 {
+      color: #ffa559;
+      margin-top: 1.5rem;
+      margin-bottom: 0.5rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+    main {
+      max-width: 900px;
+      margin: 2rem auto 4rem auto;
+      padding: 0 1rem;
+    }
     section {
       background: rgba(255,255,255,0.03);
       border: 1px solid rgba(255,255,255,0.07);
       border-radius: 10px;
       padding: 1rem 1.5rem;
       margin-bottom: 2rem;
+      font-size: 0.95rem;
+      color: #d0d0d0;
     }
     .metric-block {
       background:#16181d;
@@ -43,7 +60,33 @@
       font-size:1rem;
       margin-bottom:0.25rem;
     }
-    .metric-desc { color:#c8c8c8; font-size:0.9rem; line-height:1.4; }
+    .metric-desc {
+      color:#c8c8c8;
+      font-size:0.9rem;
+      line-height:1.4;
+    }
+    code {
+      background: rgba(255,255,255,0.07);
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+      color: #f1fa8c;
+      font-size: 0.85rem;
+    }
+    ul {
+      margin-top: 0.5rem;
+      margin-bottom: 0.75rem;
+      padding-left: 1.25rem;
+      color: #d0d0d0;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+    a {
+      color:#80bfff;
+      text-decoration:none;
+    }
+    a:hover {
+      text-decoration:underline;
+    }
     footer {
       margin-top: 3rem;
       text-align: center;
@@ -52,8 +95,10 @@
       line-height: 1.5;
       padding-bottom:3rem;
     }
-    a { color:#80bfff; text-decoration:none; }
-    a:hover { text-decoration:underline; }
+    footer a {
+      color:#5ddfff;
+      text-decoration:none;
+    }
     .nav-grid {
       display:grid;
       grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
@@ -77,105 +122,120 @@
       color:#5ddfff;
       font-size:1rem;
     }
+    .cardlink-desc {
+      color:#c8c8c8;
+      font-size:0.9rem;
+      line-height:1.4;
+    }
   </style>
 </head>
 <body>
 
 <header>
-  <h1>A.B.E. Macroeconomic Cascade ROI Model</h1>
-  <p>Live overview of cascading economic recovery through Restoration Economics.</p>
+  <h1>A.B.E. Macroeconomic Cascade Model</h1>
+  <p>The cascading ROI layer of A.B.E. — from one restored community to global stability.</p>
 </header>
 
 <main>
-
   <section>
-    <h2>Model Summary</h2>
-    <p>This model computes how constitutional restoration scales economically across communities.</p>
-    <div id="summary"></div>
+    <h2>Overview</h2>
+    <p>
+      This model quantifies the ripple effects of restoring constitutional integrity and lawful mobility.
+      It measures how repairing one community’s legal and economic foundation produces measurable returns
+      in jobs, GDP, and public savings.
+    </p>
   </section>
 
   <section>
-    <h2>Macroeconomic Metrics</h2>
-    <div id="metrics"></div>
-  </section>
-
-  <section>
-    <h2>Navigation</h2>
-    <div class="nav-grid">
-      <a class="cardlink" href="../ciri/index.html">
-        <div class="cardlink-title">⚙ CIRI (ROI Engine)</div>
-        <div>Calculate localized recovery value.</div>
-      </a>
-      <a class="cardlink" href="../cibs/index.html">
-        <div class="cardlink-title">📊 CIBS Budget System</div>
-        <div>Allocate recovered value to community investments.</div>
-      </a>
-      <a class="cardlink" href="../system/index.html">
-        <div class="cardlink-title">🗺 System Map</div>
-        <div>Visual chain of custody and flow.</div>
-      </a>
-      <a class="cardlink" href="../doctrine/index.html">
-        <div class="cardlink-title">📜 Doctrine</div>
-        <div>A.B.E., CRRA, Constitutional Fidelity, Void ab initio.</div>
-      </a>
-      <a class="cardlink" href="../index.html">
-        <div class="cardlink-title">🏠 Home</div>
-        <div>Return to overview.</div>
-      </a>
+    <h2>Community Investment</h2>
+    <div class="metric-block">
+      <div class="metric-title">Initial Investment</div>
+      <div class="metric-desc">
+        $10M–$25M per community for housing, legal access, mobility restoration, and local infrastructure.
+      </div>
+    </div>
+    <div class="metric-block">
+      <div class="metric-title">Citizens Served</div>
+      <div class="metric-desc">
+        3,500–5,600 people directly impacted per site.
+      </div>
     </div>
   </section>
 
+  <section>
+    <h2>Economic Performance</h2>
+    <div class="metric-block">
+      <div class="metric-title">Jobs Created</div>
+      <div class="metric-desc">~550 jobs at $42,000 average annual wage.</div>
+    </div>
+    <div class="metric-block">
+      <div class="metric-title">Economic Multipliers</div>
+      <div class="metric-desc">
+        Every $1 reinvested yields:
+        <ul>
+          <li>2.4× GDP impact</li>
+          <li>1.8× wage lift</li>
+          <li>2.0× local spending increase</li>
+        </ul>
+      </div>
+    </div>
+    <div class="metric-block">
+      <div class="metric-title">Annual ROI</div>
+      <div class="metric-desc">1.5×–3.0×, compounding annually.</div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Public Cost Savings</h2>
+    <ul>
+      <li>$6M saved annually in justice costs (arrest, jail, court, supervision).</li>
+      <li>$4.2M saved annually in emergency healthcare.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>National Impact</h2>
+    <ul>
+      <li>U.S. GDP gain: $3.3T–$3.9T annually.</li>
+      <li>Global uplift: $7T–$10T.</li>
+      <li>Federal exposure (False Claims): $95B–$175B + treble penalties = $285B–$525B.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Navigate A.B.E.</h2>
+    <div class="nav-grid">
+      <a class="cardlink" href="../ciri/index.html">
+        <div class="cardlink-title">⚙ CIRI (ROI Engine)</div>
+        <div class="cardlink-desc">Quantifies financial recovery at the local level.</div>
+      </a>
+      <a class="cardlink" href="../cibs/index.html">
+        <div class="cardlink-title">📊 CIBS Budget System</div>
+        <div class="cardlink-desc">Allocates recovered funds to rebuild communities.</div>
+      </a>
+      <a class="cardlink" href="../system/index.html">
+        <div class="cardlink-title">🗺 System Map</div>
+        <div class="cardlink-desc">Traces flow of money and accountability.</div>
+      </a>
+      <a class="cardlink" href="../integration/index.html">
+        <div class="cardlink-title">🔗 Integration Layer</div>
+        <div class="cardlink-desc">Ensures transparency and sync across systems.</div>
+      </a>
+      <a class="cardlink" href="../doctrine/index.html">
+        <div class="cardlink-title">📜 Doctrines</div>
+        <div class="cardlink-desc">A.B.E., CRRA, Constitutional Fidelity, and Void ab Initio.</div>
+      </a>
+      <a class="cardlink" href="../index.html">
+        <div class="cardlink-title">🏠 Home</div>
+        <div class="cardlink-desc">Return to A.B.E. overview.</div>
+      </a>
+    </div>
+  </section>
 </main>
 
 <footer>
-  <div>
-    Authored by <strong>Terra Shouse</strong> · American Butterfly Effect (A.B.E.)<br/>
-    Licensed under <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>
-  </div>
+  <p>© 2025 Terra Shouse · American Butterfly Effect (A.B.E.) · Licensed under CC BY 4.0</p>
 </footer>
-
-<script>
-  async function loadModel() {
-    try {
-      const response = await fetch('../ABE_MacroCascadeModel.json');
-      const data = await response.json();
-
-      // Display top-level summary info
-      const summaryDiv = document.getElementById('summary');
-      summaryDiv.innerHTML = `
-        <p><strong>Version:</strong> ${data.version || '1.0'}<br>
-        <strong>Developer:</strong> ${data.developer || 'Terra Shouse'}<br>
-        <strong>Framework:</strong> ${data.framework || 'American Butterfly Effect (A.B.E.)'}<br>
-        <strong>Description:</strong> ${data.description || ''}</p>
-      `;
-
-      // Display each ROI category
-      const metricsDiv = document.getElementById('metrics');
-      if (data.cascades) {
-        data.cascades.forEach(cascade => {
-          const block = document.createElement('div');
-          block.classList.add('metric-block');
-          block.innerHTML = `
-            <div class="metric-title">${cascade.category}</div>
-            <div class="metric-desc">
-              <strong>Impact:</strong> ${cascade.impact_value}<br>
-              <strong>Multiplier:</strong> ${cascade.multiplier}<br>
-              <strong>Details:</strong> ${cascade.details}
-            </div>
-          `;
-          metricsDiv.appendChild(block);
-        });
-      } else {
-        metricsDiv.innerHTML = "<p>No cascade data found in model.</p>";
-      }
-
-    } catch (err) {
-      document.getElementById('summary').innerHTML = `<p style='color:#ff7b7b;'>Error loading model data.</p>`;
-      console.error(err);
-    }
-  }
-  loadModel();
-</script>
 
 </body>
 </html>
