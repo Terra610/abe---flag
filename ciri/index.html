@@ -272,7 +272,36 @@
   }
 
   document.getElementById('recalc').addEventListener('click', recalc);
-  recalc();
+  recalc();// --- CSV Download button ---
+  const btn = document.createElement('button');
+  btn.textContent = 'Download Report (CSV)';
+  btn.style.cssText = 'margin-top:10px;padding:6px 10px;border:1px solid #2a3344;border-radius:6px;background:#0d0f12;color:#eaeef7';
+  brk.insertAdjacentElement('afterend', btn);
+
+  btn.addEventListener('click', () => {
+    const A = { jailDays:Number(daysEl.value||0), K:Number(kEl.value||1) };
+    const R = compute(X, A);
+    const lines = [
+      ['Metric','Value'],
+      ['Total Recovery (USD)', R.total],
+      ['CIRI (Risk Index)', R.ciri],
+      ['CII (Integrity Index)', R.cii],
+      ['Direct Case Savings', R.parts.direct_case],
+      ['Detention Savings', R.parts.detention],
+      ['Licensing Correction', R.parts.licensing],
+      ['Employment Restoration', R.parts.employment],
+      ['Assumed Jail Days', A.jailDays],
+      ['Risk Scaling K', A.K]
+    ];
+    const csv = lines.map(r=>r.join(',')).join('\n');
+    const blob = new Blob([csv], {type:'text/csv'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'CIRI_report.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+  });
 })();
 </script>
 <!-- ===== /CIRI calculator script ===== -->
