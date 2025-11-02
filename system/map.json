@@ -1,6 +1,13 @@
 {
   "version": "0.1",
+  "updated": "2025-11-02T00:00:00Z",
   "project": "A.B.E. — American Butterfly Effect",
+  "author": {
+    "name": "Terra Shouse",
+    "contact": "terra610",
+    "license": "CC BY 4.0"
+  },
+
   "modules": {
     "ciri": {
       "name": "CIRI",
@@ -9,20 +16,21 @@
       "inputs_file": "ciri/inputs.csv",
       "logic_spec": "ciri/calc.md",
       "core_outputs": [
-        "Direct Savings",
-        "Productivity Gain",
-        "Restitution Avoided",
-        "Secondary GDP Uplift",
-        "Transition Costs",
+        "Direct Case Savings",
+        "Detention Savings",
+        "Licensing/Regulatory Correction",
+        "Employment Restoration",
         "Total Impact"
       ],
       "primary_output_field": "Total Impact",
-      "status": "mvp"
+      "status": "mvp",
+      "ui": "ciri/index.html"
     },
+
     "cibs": {
       "name": "CIBS",
-      "long_name": "Community Integrity Budget System",
-      "purpose": "Takes recovered value from CIRI and assigns it to community repair categories with transparency and auditability.",
+      "long_name": "Civic Investment Budgeting System",
+      "purpose": "Takes CIRI’s recovered value and assigns it to community repair categories with transparency and auditability.",
       "template_file": "cibs/budget_template.csv",
       "logic_spec": "cibs/model.md",
       "allocation_categories": [
@@ -35,33 +43,77 @@
         "Data Transparency / Public Dashboard",
         "Administration & Compliance"
       ],
-      "status": "mvp"
+      "auto_budget_file": "cibs/auto_budget.csv",
+      "status": "mvp",
+      "ui": "cibs/index.html"
     },
+
     "integration": {
-      "name": "integration",
-      "long_name": "CIRI ↔ CIBS Link Layer",
-      "purpose": "Defines how monetary recovery calculated by CIRI is scheduled and distributed via CIBS.",
-      "spec_file": "integration/README.md",
-      "data_flow": [
-        "CIRI.Total Impact -> becomes available_pool",
-        "available_pool * category_percent -> category_amount",
-        "category_amount -> quarterly schedule -> public ledger"
+      "name": "Integration Layer",
+      "purpose": "Verifies that Recovery Pool funds landed correctly, recipients match, retaliation/suppression flags are clear, and audits are signed.",
+      "checks": [
+        "receipt_verification",
+        "recipient_match",
+        "retaliation_zero",
+        "public_audit_attestation"
       ],
+      "ui": "integration/index.html",
+      "status": "alpha"
+    },
+
+    "system": {
+      "name": "System Map",
+      "purpose": "Canonical chain-of-custody and public evidence ledger.",
+      "map_file": "system/map.json",
+      "ui": "system/index.html",
       "status": "mvp"
     }
   },
-  "public_contract": {
-    "principles": [
-      "No money disappears off-ledger",
-      "Line-item transparency is mandatory, not optional",
-      "People harmed get first claim on recovery (life, housing, due process)",
-      "This system must remain forkable and inspectable by the public"
-    ],
-    "licensing": "CC BY 4.0"
-  },
-  "contact": {
-    "owner": "Terra Shouse",
-    "project": "A.B.E.",
-    "beacon": "flag.html"
-  }
+
+  "flows": [
+    {
+      "from": "Public data ingestion",
+      "to": "ciri/inputs.csv",
+      "control": "dataset_signed_or_linked",
+      "evidence": [
+        "https://terra610.github.io/abe---flag/ciri/inputs.csv"
+      ]
+    },
+    {
+      "from": "ciri/inputs.csv",
+      "to": "CIRI: Total Impact",
+      "control": "reproducible_calculation",
+      "evidence": [
+        "ciri/index.html",
+        "ciri/calc.md"
+      ]
+    },
+    {
+      "from": "CIRI: Total Impact",
+      "to": "cibs/auto_budget.csv",
+      "control": "allocation_rules_applied",
+      "evidence": [
+        "cibs/index.html",
+        "cibs/budget_template.csv"
+      ]
+    },
+    {
+      "from": "cibs/auto_budget.csv",
+      "to": "Integration checks",
+      "control": "receipt_verification, recipient_match, retaliation_zero",
+      "evidence": [
+        "integration/index.html"
+      ]
+    },
+    {
+      "from": "Integration checks",
+      "to": "Public dashboard / publication",
+      "control": "public_audit_attestation",
+      "evidence": [
+        "system/index.html",
+        "CC BY 4.0",
+        "SHA256:to_be_added_for_released_artifacts"
+      ]
+    }
+  ]
 }
