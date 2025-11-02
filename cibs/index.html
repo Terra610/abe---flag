@@ -1,97 +1,66 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CIBS – Community Integrity Budget System | A.B.E.</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CIBS — Civic Investment Budgeting System | A.B.E.</title>
+  <link rel="stylesheet" href="/abe---flag/abe-patch/assets/abe-patch.css">
   <style>
-    body {
-      background-color: #0b0d12;
-      color: #e0e0e0;
-      font-family: system-ui, sans-serif;
-      line-height: 1.6;
-      margin: 0;
-      padding: 0;
-    }
-    header {
-      background: linear-gradient(90deg, #11151c, #1b1e25);
-      border-bottom: 1px solid rgba(255,255,255,0.05);
-      padding: 1rem 2rem;
-      text-align: center;
-    }
-    h1 { color: #ffa559; margin-bottom: 0.5rem; }
-    h2 { color: #ffa559; }
-    main { max-width: 900px; margin: 2rem auto; padding: 0 1rem 4rem; }
-    a { color: #80bfff; }
-    pre, code {
-      background: rgba(255,255,255,0.05);
-      padding: 0.25rem 0.4rem;
-      border-radius: 5px;
-      color: #e3e3e3;
-    }
-    section {
-      margin-top: 2rem;
-      padding: 1rem 1.5rem;
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,255,255,0.07);
-      border-radius: 10px;
-    }
+    body{background:#0b0d12;color:#e0e0e0;font-family:system-ui,sans-serif;line-height:1.6;margin:0}
+    header{background:linear-gradient(90deg,#11151c,#1b1e25);border-bottom:1px solid rgba(255,255,255,.05);padding:1rem 2rem;text-align:center}
+    h1{color:#ffa559;margin:.2rem 0 .5rem} h2{color:#ffa559}
+    main{max-width:980px;margin:2rem auto;padding:0 1rem 4rem}
+    section{margin-top:2rem;padding:1rem 1.5rem;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:10px}
+    a{color:#80bfff}
+    table{width:100%;border-collapse:collapse}
+    th,td{padding:6px;border-bottom:1px solid rgba(255,255,255,.08);text-align:left}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+    .card{background:#16181d;border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:12px}
+    .lbl{color:#9fb0c9;font-size:12px}.val{font:700 20px system-ui;margin-top:4px}
+    .small{font-size:12px;color:#a7b4c8}
   </style>
 </head>
 <body>
 <header>
-  <h1>CIBS (Community Integrity Budget System)</h1>
-  <p>The A.B.E. framework for transparent, ethical reinvestment of recovered funds.</p>
+  <h1>📊 CIBS — Civic Investment Budgeting System</h1>
+  <p>Turns CIRI’s Total Impact into a public, auditable <em>Recovery Pool</em> allocation.</p>
 </header>
 
 <main>
-
   <section>
-    <h2>💰 Using CIRI Outputs</h2>
-    <p>
-      When you run the <a href="../ciri/index.html">CIRI calculator</a>, it automatically
-      generates a file called <code>cibs/auto_budget.csv</code>.  
-      This file represents your community’s <strong>Recovery Pool</strong> —
-      the total financial value gained by restoring constitutional compliance.
-    </p>
-    <p>
-      CIBS divides that Recovery Pool into targeted investment categories such as:
-    </p>
-    <ul>
-      <li>🏠 Housing Stabilization / Emergency Housing</li>
-      <li>🎓 Youth Support / Re-entry / Aftercare</li>
-      <li>🪖 Veterans & Emergency Relief</li>
-      <li>⚖️ Legal Defense / Rights Protection</li>
-      <li>🧠 Mental Health / Stability Access</li>
-      <li>📋 Civic Compliance & Administration (Audit / Reporting)</li>
-    </ul>
-    <p>
-      The auto-budget file assigns a percentage and dollar value to each category.
-      Users can open or edit it in any spreadsheet program for presentation to
-      councils, courts, or the press.
-    </p>
+    <h2>Status</h2>
+    <div class="grid">
+      <div class="card"><div class="lbl">Spec/Docs</div><div><a href="model.md">cibs/model.md</a></div></div>
+      <div class="card"><div class="lbl">Template</div><div><a href="budget_template.csv">cibs/budget_template.csv</a></div></div>
+      <div class="card"><div class="lbl">Auto Budget</div><div id="ab-link" class="val">—</div></div>
+    </div>
+    <p class="small">When CIRI runs, it writes <code>cibs/auto_budget.csv</code>. It appears below when present.</p>
   </section>
 
   <section>
-    <h2>📊 Manual Budgeting Option</h2>
-    <p>
-      If you prefer to work manually, open
-      <a href="budget_template.csv">budget_template.csv</a> and enter your own totals
-      from CIRI or any verified audit.  
-      Use <a href="model.md">model.md</a> to view or modify the
-      percentage allocation rules.
-    </p>
+    <h2>Auto Budget Preview</h2>
+    <div id="csv-box" class="small">Loading…</div>
   </section>
-
-  <section>
-    <h2>🌍 Purpose</h2>
-    <p>
-      CIBS ensures every recovered dollar is publicly traceable from source to outcome.
-      It replaces opaque “settlements” with transparent reinvestment — building
-      trust, stability, and real economic recovery in the communities that were harmed.
-    </p>
-  </section>
-
 </main>
+
+<script src="/abe---flag/abe-patch/assets/abe-nav.js"></script>
+<script src="/abe---flag/abe-patch/assets/abe-definitions.js"></script>
+<script>
+(async function(){
+  const linkEl = document.getElementById('ab-link');
+  const box = document.getElementById('csv-box');
+  async function fetchCSV(u){
+    try{ const r=await fetch(u,{cache:'no-store'}); if(!r.ok) throw 0; return await r.text(); }catch(e){ return null; }
+  }
+  const txt = await (async()=> await fetchCSV('auto_budget.csv') || await fetchCSV('/abe---flag/cibs/auto_budget.csv'))();
+  if(!txt){ linkEl.textContent='Not generated'; box.innerHTML='<div class="small">No <code>auto_budget.csv</code> yet.</div>'; return; }
+  linkEl.innerHTML = '<a href="auto_budget.csv">cibs/auto_budget.csv</a>';
+  const rows = txt.trim().split(/\r?\n/).map(x=>x.split(','));
+  const head = rows.shift();
+  const table = '<table><thead><tr>'+head.map(h=>`<th>${h}</th>`).join('')+'</tr></thead><tbody>'+
+    rows.map(r=>'<tr>'+r.map(c=>`<td>${c}</td>`).join('')+'</tr>').join('')+'</tbody></table>';
+  box.innerHTML = table;
+})();
+</script>
 </body>
 </html>
