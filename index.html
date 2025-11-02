@@ -4,6 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>The American Butterfly Effect (A.B.E.)</title>
+
+  <!-- OPTIONAL: ABE site-patch (adds sticky Return-to-Home + acronym tooltips)
+       Only works after you upload /abe-patch/ to your repo root.
+       Safe to leave here; if not present it won’t break the page. -->
+  <link rel="stylesheet" href="/abe---flag/abe-patch/assets/abe-patch.css">
+
   <style>
     body {
       background-color: #0b0d12;
@@ -98,6 +104,10 @@
       color: #5ddfff;
       text-decoration: none;
     }
+    /* Optional: small glossary list style */
+    .glossary { font-size: 0.95rem; color: #c8c8c8; }
+    .glossary dt { font-weight: 700; color: #eaeef7; margin-top: .5rem; }
+    .glossary dd { margin: 0 0 .5rem 0; }
   </style>
 </head>
 
@@ -146,19 +156,21 @@
     <section>
       <h2>The Core Models</h2>
       <div class="nav-grid">
+        <!-- CIRI: corrected to “Constitutional Integrity Risk Index” -->
         <a class="cardlink" href="ciri/index.html">
-          <div class="cardlink-title">⚙ CIRI (Constitutional Integrity ROI Engine)</div>
-          <div class="cardlink-desc">Measures the economic cost of deviation from the Constitution.</div>
+          <div class="cardlink-title">⚙ CIRI (Constitutional Integrity Risk Index)</div>
+          <div class="cardlink-desc">Measures risk and GDP suppression from constitutional divergence.</div>
         </a>
 
+        <!-- CIBS: corrected to “Constitutional Integrity Baseline Schema” -->
         <a class="cardlink" href="cibs/index.html">
-          <div class="cardlink-title">📊 CIBS (Civic Investment Budgeting System)</div>
-          <div class="cardlink-desc">Translates recovered value into reinvestment plans for communities.</div>
+          <div class="cardlink-title">📊 CIBS (Constitutional Integrity Baseline Schema)</div>
+          <div class="cardlink-desc">Canonical map of clauses/rights used for diagnostics and scoring.</div>
         </a>
 
         <a class="cardlink" href="macro/index.html">
           <div class="cardlink-title">📈 Macroeconomic Cascade Model</div>
-          <div class="cardlink-desc">Connects local recovery to national and global economic uplift.</div>
+          <div class="cardlink-desc">Connects local correction to national and global economic uplift.</div>
         </a>
 
         <a class="cardlink" href="system/index.html">
@@ -168,14 +180,30 @@
 
         <a class="cardlink" href="doctrine/index.html">
           <div class="cardlink-title">📜 Foundational Doctrine</div>
-          <div class="cardlink-desc">A.B.E., CRRA, Constitutional Fidelity, and Void ab Initio frameworks.</div>
+          <div class="cardlink-desc">
+            A.B.E., CRRA (Citizens Rights Restoration Act), Constitutional Fidelity, and <em>void ab initio</em>.
+          </div>
         </a>
 
         <a class="cardlink" href="integration/index.html">
           <div class="cardlink-title">🔗 Integration Layer</div>
-          <div class="cardlink-desc">Ensures transparency and automated verification of public data.</div>
+          <div class="cardlink-desc">Transparency, verification, and public data pipelines.</div>
         </a>
       </div>
+    </section>
+
+    <!-- Optional: tiny glossary so readers see the corrected expansions immediately.
+         (Tooltips will also appear if you installed the abe-patch.) -->
+    <section>
+      <h2>Glossary (Acronyms)</h2>
+      <dl class="glossary">
+        <dt>ABE</dt><dd>American Butterfly Effect</dd>
+        <dt>CRRA</dt><dd>Citizens Rights Restoration Act</dd>
+        <dt>CIBS</dt><dd>Constitutional Integrity Baseline Schema</dd>
+        <dt>CIRI</dt><dd>Constitutional Integrity Risk Index</dd>
+        <dt>CII</dt><dd>Constitutional Integrity Index</dd>
+        <dt>CDI</dt><dd>Constitutional Divergence Index</dd>
+      </dl>
     </section>
 
     <section>
@@ -199,5 +227,10 @@
       No money requested. No publicity requested. Integrity only.
     </div>
   </footer>
+
+  <!-- OPTIONAL: ABE site-patch scripts (adds sticky Home link + acronym tooltips)
+       Safe to leave here even if the files aren’t uploaded yet. -->
+  <script src="/abe---flag/abe-patch/assets/abe-nav.js"></script>
+  <script src="/abe---flag/abe-patch/assets/abe-definitions.js"></script>
 </body>
 </html>
