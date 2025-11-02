@@ -4,6 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CIRI – Constitutional Integrity ROI Engine | A.B.E.</title>
+
+  <!-- ABE site-patch (works from /ciri/ because we use absolute paths) -->
+  <link rel="stylesheet" href="/abe---flag/abe-patch/assets/abe-patch.css">
+
   <style>
     body {
       background-color: #0b0d12;
@@ -19,18 +23,9 @@
       padding: 1rem 2rem;
       text-align: center;
     }
-    h1 {
-      color: #ffa559;
-      margin-bottom: 0.5rem;
-    }
-    h2 {
-      color: #ffa559;
-    }
-    main {
-      max-width: 900px;
-      margin: 2rem auto;
-      padding: 0 1rem 4rem;
-    }
+    h1 { color: #ffa559; margin-bottom: 0.5rem; }
+    h2 { color: #ffa559; }
+    main { max-width: 900px; margin: 2rem auto; padding: 0 1rem 4rem; }
     a { color: #80bfff; }
     pre, code {
       background: rgba(255,255,255,0.05);
@@ -45,6 +40,21 @@
       border: 1px solid rgba(255,255,255,0.07);
       border-radius: 10px;
     }
+
+    /* ===== CIRI live calculator styles ===== */
+    .ciri-box{background:#111;border:1px solid #222;border-radius:10px;padding:16px;margin:20px 0}
+    .ciri-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:12px 0}
+    .ciri-kpi{background:#151922;border:1px solid #232a36;border-radius:10px;padding:12px}
+    .ciri-kpi .lbl{color:#9fb0c9;font-size:12px}
+    .ciri-kpi .val{font:700 22px/1 system-ui;margin-top:4px}
+    .ciri-small{font-size:12px;color:#9fb0c9}
+    .ciri-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .ciri-grid>div{background:#151922;border:1px solid #232a36;border-radius:10px;padding:12px}
+    .ciri-table{width:100%;border-collapse:collapse}
+    .ciri-table th,.ciri-table td{padding:6px;border-bottom:1px solid #232a36;text-align:left}
+    .ciri-err{color:#f99}
+    .ciri-inline input{width:110px;background:#0d0f12;border:1px solid #2a3344;border-radius:6px;color:#eaeef7;padding:4px 6px}
+    @media (max-width:800px){.ciri-grid{grid-template-columns:1fr}}
   </style>
 </head>
 <body>
@@ -80,6 +90,45 @@
     </p>
   </section>
 
+  <!-- ===== LIVE BROWSER CALCULATOR (reads ciri/inputs.csv) ===== -->
+  <section>
+    <h2>⚡ Live CIRI Calculator (no download needed)</h2>
+    <div id="ciri-app" class="ciri-box">
+      <div><strong>Client-side computation</strong> — reads <code>ciri/inputs.csv</code>, computes recovery, CIRI, and CII in your browser.</div>
+
+      <div class="ciri-kpis">
+        <div class="ciri-kpi"><div class="lbl">Total Recovery (USD)</div><div id="kpi-total" class="val">—</div></div>
+        <div class="ciri-kpi"><div class="lbl">CIRI • Constitutional Integrity Risk Index</div><div id="kpi-ciri" class="val">—</div></div>
+        <div class="ciri-kpi"><div class="lbl">CII • Constitutional Integrity Index</div><div id="kpi-cii" class="val">—</div></div>
+      </div>
+
+      <div class="ciri-grid">
+        <div>
+          <div style="font-weight:700;margin-bottom:8px">Inputs</div>
+          <table id="ciri-inputs" class="ciri-table"></table>
+          <div id="ciri-status" class="ciri-small" style="margin-top:8px">Loading inputs…</div>
+        </div>
+        <div>
+          <div style="font-weight:700;margin-bottom:8px">Assumptions (editable)</div>
+          <div class="ciri-inline ciri-small" style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+            <label>Avg jail days avoided per case:
+              <input id="assump-days" type="number" step="0.1" min="0" value="5">
+            </label>
+            <label>Risk scaling (K, USD):
+              <input id="assump-k" type="number" step="1000000" min="1" value="1000000000">
+            </label>
+            <button id="recalc" style="padding:6px 10px;border:1px solid #2a3344;border-radius:6px;background:#0d0f12;color:#eaeef7">Recalculate</button>
+          </div>
+          <div class="ciri-small" style="margin-top:8px">
+            <strong>CIRI</strong> = ( 1 − e<sup>−Total/K</sup> ) &nbsp; • &nbsp; <strong>CII</strong> = 1 − CIRI
+          </div>
+          <div id="ciri-breakdown" class="ciri-small" style="margin-top:10px"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- ===== /LIVE BROWSER CALCULATOR ===== -->
+
   <section>
     <h2>About CIRI</h2>
     <p>
@@ -105,5 +154,127 @@
   </section>
 
 </main>
+
+<!-- ABE site-patch scripts (absolute paths so they work under /ciri/) -->
+<script src="/abe---flag/abe-patch/assets/abe-nav.js"></script>
+<script src="/abe---flag/abe-patch/assets/abe-definitions.js"></script>
+
+<!-- ===== CIRI calculator script ===== -->
+<script>
+(async function(){
+  // 1) Load ciri/inputs.csv (try relative first, then absolute fallback)
+  const CANDIDATES = ['inputs.csv','/abe---flag/ciri/inputs.csv'];
+  let csvText=null, src=null;
+  for (const u of CANDIDATES){
+    try { const r = await fetch(u,{cache:'no-store'}); if(r.ok){ csvText=await r.text(); src=u; break; } } catch(_){}
+  }
+  const status = document.getElementById('ciri-status');
+  if(!csvText){ status.innerHTML='<span class="ciri-err">Could not load inputs.csv</span>'; return; }
+  status.textContent = `Loaded inputs from ${src}`;
+
+  // 2) Parse a one-row CSV into object
+  function parseCSV(txt){
+    const lines = txt.trim().split(/\r?\n/);
+    const head = lines.shift().split(',').map(s=>s.trim());
+    const row  = (lines[0]||'').split(',').map(s=>s.trim());
+    const obj={}; head.forEach((h,i)=>obj[h]=row[i]); return {head,row,obj};
+  }
+  const parsed = parseCSV(csvText);
+
+  // show inputs table
+  const t = document.getElementById('ciri-inputs');
+  t.innerHTML = '<thead><tr><th>Field</th><th>Value</th></tr></thead><tbody>' +
+    parsed.head.map((h,i)=>`<tr><td>${h}</td><td>${parsed.row[i]??''}</td></tr>`).join('') +
+    '</tbody>';
+
+  // 3) Normalize column names (handles abbreviations from your CSV)
+  const normMap = {
+    cases_avoided:['cases_avoided','cases','cases_a'],
+    avg_cost:['avg_cost','avg cos','avg_cost_per_case'],
+    jail_day_cost:['jail_day_cost','jail_day','jail_day_c','jail_cost_per_day'],
+    fees_calc:['fees_calc','fees','fees_cal','fees_cai','fees_cai'],
+    licenses:['licenses','license_rev','licensing'],
+    avg_monthly_income:['avg_monthly_income','avg_monthly','avg_mo','avg_income_mo'],
+    employment_rate:['employment_rate','employ','employment','empl_rate'],
+    months_employed:['months_employed','months','months_emp'],
+    expected_wage:['expected_wage','expected','avg_pay','expected_income'],
+    pay_multiplier:['pay_multiplier','multiplier','multipli','pay_mult'],
+    transport_weight:['transport_weight','transport','tran','weight']
+  };
+  function normalize(obj){
+    const lower={};
+    Object.keys(obj).forEach(k=>{
+      lower[k.toLowerCase().replace(/[^a-z0-9_]+/g,'')] = obj[k];
+    });
+    const out={};
+    for(const key in normMap){
+      const options = normMap[key];
+      let found = null;
+      for(const opt of options){
+        const norm = opt.toLowerCase().replace(/[^a-z0-9_]+/g,'');
+        if(norm in lower){ found = lower[norm]; break; }
+      }
+      out[key] = Number(found ?? 0);
+    }
+    return out;
+  }
+  const X = normalize(parsed.obj);
+
+  // 4) Core calculator
+  function compute(V, A){
+    const {cases_avoided, avg_cost, fees_calc, jail_day_cost, licenses,
+           avg_monthly_income, employment_rate, months_employed,
+           expected_wage, pay_multiplier, transport_weight} = V;
+
+    // components
+    const direct_case = cases_avoided * (avg_cost + fees_calc);
+    const detention   = cases_avoided * jail_day_cost * A.jailDays;
+    const licensing   = licenses * transport_weight;
+
+    const per_worker  = expected_wage * (months_employed/12) * employment_rate * pay_multiplier;
+    const employment  = per_worker * cases_avoided;
+
+    const total = direct_case + detention + licensing + employment;
+
+    const ciri = 1 - Math.exp(- total / Math.max(1,A.K));
+    const cii  = 1 - ciri;
+
+    return { total, ciri, cii, parts:{direct_case, detention, licensing, employment} };
+  }
+
+  // 5) Wire UI
+  const daysEl = document.getElementById('assump-days');
+  const kEl    = document.getElementById('assump-k');
+  const kpiT   = document.getElementById('kpi-total');
+  const kpiRI  = document.getElementById('kpi-ciri');
+  const kpiFI  = document.getElementById('kpi-cii');
+  const brk    = document.getElementById('ciri-breakdown');
+
+  function fmtUSD(n){ return n.toLocaleString(undefined,{style:'currency',currency:'USD',maximumFractionDigits:0}); }
+  function pct(x){ return (x*100).toFixed(1)+'%'; }
+
+  function recalc(){
+    const A = { jailDays:Number(daysEl.value||0), K:Number(kEl.value||1) };
+    const R = compute(X, A);
+    kpiT.textContent  = fmtUSD(R.total);
+    kpiRI.textContent = pct(R.ciri);
+    kpiFI.textContent = pct(R.cii);
+    brk.innerHTML = `
+      <div><strong>Breakdown</strong></div>
+      <ul>
+        <li>Direct case savings: <strong>${fmtUSD(R.parts.direct_case)}</strong></li>
+        <li>Detention savings (avg ${A.jailDays} days @ ${fmtUSD(X.jail_day_cost)}/day): <strong>${fmtUSD(R.parts.detention)}</strong></li>
+        <li>Licensing/regulatory correction (${fmtUSD(X.licenses)} × ${X.transport_weight}): <strong>${fmtUSD(R.parts.licensing)}</strong></li>
+        <li>Employment & income restoration: <strong>${fmtUSD(R.parts.employment)}</strong></li>
+      </ul>
+      <div class="ciri-small">Risk scaling K = ${fmtUSD(A.K)} • CIRI = 1 − exp(−Total/K)</div>
+    `;
+  }
+
+  document.getElementById('recalc').addEventListener('click', recalc);
+  recalc();
+})();
+</script>
+<!-- ===== /CIRI calculator script ===== -->
 </body>
-</html>
+                </html>
