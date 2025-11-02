@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CIRI – Constitutional Integrity ROI Engine | A.B.E.</title>
 
-  <!-- ABE site-patch (works from /ciri/ because we use absolute paths) -->
+  <!-- ABE site-patch (works from /ciri/ via absolute paths) -->
   <link rel="stylesheet" href="/abe---flag/abe-patch/assets/abe-patch.css">
 
   <style>
@@ -54,6 +54,10 @@
     .ciri-table th,.ciri-table td{padding:6px;border-bottom:1px solid #232a36;text-align:left}
     .ciri-err{color:#f99}
     .ciri-inline input{width:110px;background:#0d0f12;border:1px solid #2a3344;border-radius:6px;color:#eaeef7;padding:4px 6px}
+    .ciri-controls{display:flex;gap:16px;flex-wrap:wrap;align-items:center}
+    .ciri-slider{display:flex;gap:10px;align-items:center}
+    .ciri-slider input[type="range"]{width:220px}
+    canvas{max-width:100%}
     @media (max-width:800px){.ciri-grid{grid-template-columns:1fr}}
   </style>
 </head>
@@ -100,6 +104,7 @@
         <div class="ciri-kpi"><div class="lbl">Total Recovery (USD)</div><div id="kpi-total" class="val">—</div></div>
         <div class="ciri-kpi"><div class="lbl">CIRI • Constitutional Integrity Risk Index</div><div id="kpi-ciri" class="val">—</div></div>
         <div class="ciri-kpi"><div class="lbl">CII • Constitutional Integrity Index</div><div id="kpi-cii" class="val">—</div></div>
+        <div class="ciri-kpi"><div class="lbl">ROI per Case Avoided</div><div id="kpi-roi" class="val">—</div></div>
       </div>
 
       <div class="ciri-grid">
@@ -109,20 +114,32 @@
           <div id="ciri-status" class="ciri-small" style="margin-top:8px">Loading inputs…</div>
         </div>
         <div>
-          <div style="font-weight:700;margin-bottom:8px">Assumptions (editable)</div>
-          <div class="ciri-inline ciri-small" style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+          <div style="font-weight:700;margin-bottom:8px">Assumptions & Scenario Explorer</div>
+          <div class="ciri-controls ciri-small">
             <label>Avg jail days avoided per case:
               <input id="assump-days" type="number" step="0.1" min="0" value="5">
             </label>
             <label>Risk scaling (K, USD):
               <input id="assump-k" type="number" step="1000000" min="1" value="1000000000">
             </label>
+            <div class="ciri-slider">
+              <label>Cases avoided</label>
+              <input id="slider-cases" type="range" min="0" max="5000" step="50">
+              <span id="lbl-cases">—</span>
+            </div>
+            <div class="ciri-slider">
+              <label>Transport weight</label>
+              <input id="slider-trans" type="range" min="0" max="1000" step="10">
+              <span id="lbl-trans">—</span>
+            </div>
+            <button id="btn-reset" style="padding:6px 10px;border:1px solid #2a3344;border-radius:6px;background:#0d0f12;color:#eaeef7">Reset to CSV</button>
             <button id="recalc" style="padding:6px 10px;border:1px solid #2a3344;border-radius:6px;background:#0d0f12;color:#eaeef7">Recalculate</button>
           </div>
           <div class="ciri-small" style="margin-top:8px">
             <strong>CIRI</strong> = ( 1 − e<sup>−Total/K</sup> ) &nbsp; • &nbsp; <strong>CII</strong> = 1 − CIRI
           </div>
           <div id="ciri-breakdown" class="ciri-small" style="margin-top:10px"></div>
+          <canvas id="ciri-chart" height="120" aria-label="Scenario chart"></canvas>
         </div>
       </div>
     </div>
@@ -192,7 +209,7 @@
     cases_avoided:['cases_avoided','cases','cases_a'],
     avg_cost:['avg_cost','avg cos','avg_cost_per_case'],
     jail_day_cost:['jail_day_cost','jail_day','jail_day_c','jail_cost_per_day'],
-    fees_calc:['fees_calc','fees','fees_cal','fees_cai','fees_cai'],
+    fees_calc:['fees_calc','fees','fees_cal','fees_cai'],
     licenses:['licenses','license_rev','licensing'],
     avg_monthly_income:['avg_monthly_income','avg_monthly','avg_mo','avg_income_mo'],
     employment_rate:['employment_rate','employ','employment','empl_rate'],
@@ -218,12 +235,13 @@
     }
     return out;
   }
-  const X = normalize(parsed.obj);
+  const CSV = normalize(parsed.obj);       // original values (for reset)
+  let X = {...CSV};                        // mutable working copy
 
   // 4) Core calculator
   function compute(V, A){
     const {cases_avoided, avg_cost, fees_calc, jail_day_cost, licenses,
-           avg_monthly_income, employment_rate, months_employed,
+           employment_rate, months_employed,
            expected_wage, pay_multiplier, transport_weight} = V;
 
     // components
@@ -239,7 +257,9 @@
     const ciri = 1 - Math.exp(- total / Math.max(1,A.K));
     const cii  = 1 - ciri;
 
-    return { total, ciri, cii, parts:{direct_case, detention, licensing, employment} };
+    const roiPerCase = cases_avoided > 0 ? total / cases_avoided : 0;
+
+    return { total, ciri, cii, roiPerCase, parts:{direct_case, detention, licensing, employment} };
   }
 
   // 5) Wire UI
@@ -248,10 +268,38 @@
   const kpiT   = document.getElementById('kpi-total');
   const kpiRI  = document.getElementById('kpi-ciri');
   const kpiFI  = document.getElementById('kpi-cii');
+  const kpiROI = document.getElementById('kpi-roi');
   const brk    = document.getElementById('ciri-breakdown');
+
+  const sCases = document.getElementById('slider-cases');
+  const sTrans = document.getElementById('slider-trans');
+  const lCases = document.getElementById('lbl-cases');
+  const lTrans = document.getElementById('lbl-trans');
+  const btnReset = document.getElementById('btn-reset');
+
+  // init sliders from CSV
+  sCases.value = X.cases_avoided || 0;  lCases.textContent = Number(sCases.value).toLocaleString();
+  sTrans.value = X.transport_weight || 0; lTrans.textContent = Number(sTrans.value).toLocaleString();
 
   function fmtUSD(n){ return n.toLocaleString(undefined,{style:'currency',currency:'USD',maximumFractionDigits:0}); }
   function pct(x){ return (x*100).toFixed(1)+'%'; }
+
+  const chart = document.getElementById('ciri-chart').getContext('2d');
+  function drawChart(value){
+    // simple sparkline: draw three bars (direct, detention, licensing+employment)
+    const W = chart.canvas.width, H = chart.canvas.height;
+    chart.clearRect(0,0,W,H);
+    const bars = value.parts;
+    const vals = [bars.direct_case, bars.detention, bars.licensing + bars.employment];
+    const max  = Math.max(...vals, 1);
+    const bw = Math.floor(W/6), gap=bw;
+    const base = H-10;
+    for(let i=0;i<3;i++){
+      const h = Math.round((vals[i]/max)*(H-20));
+      chart.fillStyle = '#e0e0e0';
+      chart.fillRect(10 + i*(bw+gap), base-h, bw, h);
+    }
+  }
 
   function recalc(){
     const A = { jailDays:Number(daysEl.value||0), K:Number(kEl.value||1) };
@@ -259,6 +307,7 @@
     kpiT.textContent  = fmtUSD(R.total);
     kpiRI.textContent = pct(R.ciri);
     kpiFI.textContent = pct(R.cii);
+    kpiROI.textContent = fmtUSD(R.roiPerCase);
     brk.innerHTML = `
       <div><strong>Breakdown</strong></div>
       <ul>
@@ -269,10 +318,25 @@
       </ul>
       <div class="ciri-small">Risk scaling K = ${fmtUSD(A.K)} • CIRI = 1 − exp(−Total/K)</div>
     `;
+    drawChart(R);
   }
 
   document.getElementById('recalc').addEventListener('click', recalc);
-  recalc();// --- CSV Download button ---
+
+  // Scenario sliders
+  sCases.addEventListener('input', () => { X.cases_avoided = Number(sCases.value); lCases.textContent = Number(sCases.value).toLocaleString(); recalc(); });
+  sTrans.addEventListener('input', () => { X.transport_weight = Number(sTrans.value); lTrans.textContent = Number(sTrans.value).toLocaleString(); recalc(); });
+  btnReset.addEventListener('click', () => {
+    X = {...CSV};
+    sCases.value = X.cases_avoided||0; lCases.textContent = Number(sCases.value).toLocaleString();
+    sTrans.value = X.transport_weight||0; lTrans.textContent = Number(sTrans.value).toLocaleString();
+    daysEl.value = 5; kEl.value = 1000000000;
+    recalc();
+  });
+
+  recalc();
+
+  // --- CSV Download button ---
   const btn = document.createElement('button');
   btn.textContent = 'Download Report (CSV)';
   btn.style.cssText = 'margin-top:10px;padding:6px 10px;border:1px solid #2a3344;border-radius:6px;background:#0d0f12;color:#eaeef7';
@@ -281,19 +345,31 @@
   btn.addEventListener('click', () => {
     const A = { jailDays:Number(daysEl.value||0), K:Number(kEl.value||1) };
     const R = compute(X, A);
+
+    // 🕓 Add timestamp and input trace to report
+    const now = new Date().toISOString();
     const lines = [
+      ['Generated', now],
+      ['Source CSV', src],
+      [],
       ['Metric','Value'],
       ['Total Recovery (USD)', R.total],
       ['CIRI (Risk Index)', R.ciri],
       ['CII (Integrity Index)', R.cii],
+      ['ROI per Case Avoided', R.roiPerCase],
       ['Direct Case Savings', R.parts.direct_case],
       ['Detention Savings', R.parts.detention],
       ['Licensing Correction', R.parts.licensing],
       ['Employment Restoration', R.parts.employment],
       ['Assumed Jail Days', A.jailDays],
-      ['Risk Scaling K', A.K]
-    ];
-    const csv = lines.map(r=>r.join(',')).join('\n');
+      ['Risk Scaling K', A.K],
+      [],
+      ['Input Field','CSV Value']
+    ].concat(
+      Object.entries(parsed.obj).map(([k,v]) => [k, v])
+    );
+
+    const csv = lines.map(r => r.join(',')).join('\n');
     const blob = new Blob([csv], {type:'text/csv'});
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -306,4 +382,4 @@
 </script>
 <!-- ===== /CIRI calculator script ===== -->
 </body>
-                </html>
+  </html>
