@@ -1,70 +1,90 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>CIRI – Constitutional Integrity ROI Engine | A.B.E.</title>
 
-  <!-- ABE site-patch (works from /ciri/ via absolute paths) -->
-  <link rel="stylesheet" href="/abe---flag/abe-patch/assets/abe-patch.css">
+  <!-- Optional site patch; safe if missing -->
+  <link rel="stylesheet" href="/abe---flag/abe-patch/assets/abe-patch.css"/>
 
   <style>
-    body {
-      background-color: #0b0d12;
-      color: #e0e0e0;
-      font-family: system-ui, sans-serif;
-      line-height: 1.6;
-      margin: 0;
-      padding: 0;
+    :root{
+      --bg:#0b0d12; --panel:#13161b; --ink:#e0e0e0; --muted:#9aa3ad;
+      --edge:rgba(255,255,255,.08); --edge2:rgba(255,255,255,.12);
+      --accent:#5ddfff; --accent2:#ffa559;
     }
-    header {
-      background: linear-gradient(90deg, #11151c, #1b1e25);
-      border-bottom: 1px solid rgba(255,255,255,0.05);
-      padding: 1rem 2rem;
-      text-align: center;
+    *{box-sizing:border-box}
+    body{background:var(--bg);color:var(--ink);font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;line-height:1.65;margin:0}
+
+    header{
+      background:linear-gradient(90deg,#11151c,#1b1e25);
+      border-bottom:1px solid var(--edge);
+      padding:2rem 1rem;
+      text-align:center;
+      position:relative
     }
-    h1 { color: #ffa559; margin-bottom: 0.5rem; }
-    h2 { color: #ffa559; }
-    main { max-width: 900px; margin: 2rem auto; padding: 0 1rem 4rem; }
-    a { color: #80bfff; }
-    pre, code {
-      background: rgba(255,255,255,0.05);
-      padding: 0.25rem 0.4rem;
-      border-radius: 5px;
-      color: #e3e3e3;
+    .home-btn{
+      position:absolute;left:1rem;top:1.2rem;
+      background:var(--accent);color:#0b0d12;
+      padding:.45rem .9rem;border-radius:8px;font-weight:700;text-decoration:none;font-size:.9rem;
+      transition:all .2s ease-in-out;border:1px solid transparent
     }
-    section {
-      margin-top: 2rem;
-      padding: 1rem 1.5rem;
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,255,255,0.07);
-      border-radius: 10px;
+    .home-btn:hover{background:#82eaff;box-shadow:0 0 8px rgba(93,223,255,.7);transform:translateY(-2px)}
+    h1{color:var(--accent2);font-size:1.8rem;margin:.1rem 0 .4rem;font-weight:800}
+    header p{margin:.25rem 0 0;color:var(--muted)}
+    .top-actions{display:flex;gap:.6rem;flex-wrap:wrap;justify-content:center;margin:.9rem 0 0}
+    .btn,.badge{display:inline-block;text-decoration:none;font-weight:700;border-radius:8px;transition:all .18s ease-in-out}
+    .btn{background:var(--accent);color:#0b0d12;padding:.55rem 1rem;border:1px solid transparent}
+    .btn:hover{background:#82eaff;transform:translateY(-2px);box-shadow:0 0 10px rgba(93,223,255,.6)}
+    .badge{color:var(--accent);border:1px solid var(--accent);padding:.45rem .7rem;font-size:.9rem}
+    .badge:hover{background:rgba(93,223,255,.08);transform:translateY(-2px)}
+
+    main{max-width:1000px;margin:2rem auto 3.5rem;padding:0 1rem}
+    section{
+      background:rgba(255,255,255,.03);border:1px solid var(--edge);
+      border-radius:12px;padding:1.2rem 1.4rem;margin-bottom:1.4rem;
+      box-shadow:0 0 12px rgba(93,223,255,.05)
     }
+    section:hover{box-shadow:0 0 16px rgba(93,223,255,.12)}
+    h2{color:var(--accent2);font-size:1.2rem;margin:.2rem 0 .7rem}
+    a{color:#80bfff} a:hover{text-decoration:underline}
+    pre,code{background:rgba(255,255,255,.07);padding:.25rem .4rem;border-radius:6px;color:#e3e3e3}
 
     /* ===== CIRI live calculator styles ===== */
     .ciri-box{background:#111;border:1px solid #222;border-radius:10px;padding:16px;margin:20px 0}
     .ciri-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:12px 0}
     .ciri-kpi{background:#151922;border:1px solid #232a36;border-radius:10px;padding:12px}
     .ciri-kpi .lbl{color:#9fb0c9;font-size:12px}
-    .ciri-kpi .val{font:700 22px/1 system-ui;margin-top:4px}
+    .ciri-kpi .val{font:800 22px/1 system-ui;margin-top:4px}
     .ciri-small{font-size:12px;color:#9fb0c9}
     .ciri-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
     .ciri-grid>div{background:#151922;border:1px solid #232a36;border-radius:10px;padding:12px}
     .ciri-table{width:100%;border-collapse:collapse}
     .ciri-table th,.ciri-table td{padding:6px;border-bottom:1px solid #232a36;text-align:left}
     .ciri-err{color:#f99}
-    .ciri-inline input{width:110px;background:#0d0f12;border:1px solid #2a3344;border-radius:6px;color:#eaeef7;padding:4px 6px}
     .ciri-controls{display:flex;gap:16px;flex-wrap:wrap;align-items:center}
+    .ciri-inline input{width:110px;background:#0d0f12;border:1px solid #2a3344;border-radius:6px;color:#eaeef7;padding:4px 6px}
     .ciri-slider{display:flex;gap:10px;align-items:center}
     .ciri-slider input[type="range"]{width:220px}
     canvas{max-width:100%}
+    .btn-ghost{padding:6px 10px;border:1px solid #2a3344;border-radius:6px;background:#0d0f12;color:#eaeef7;cursor:pointer}
+    .btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
     @media (max-width:800px){.ciri-grid{grid-template-columns:1fr}}
   </style>
 </head>
 <body>
+
 <header>
+  <a href="/abe---flag/index.html" class="home-btn">← Return to Home</a>
   <h1>CIRI (Constitutional Integrity ROI Engine)</h1>
   <p>The A.B.E. model for quantifying the financial impact of constitutional compliance.</p>
+  <div class="top-actions">
+    <a class="btn" href="/abe---flag/doctrine/index.html">📜 Doctrine Library</a>
+    <a class="badge" href="/abe---flag/cibs/index.html">📊 CIBS</a>
+    <a class="badge" href="/abe---flag/system/index.html">🗺 System Map</a>
+    <a class="badge" href="/abe---flag/integration/index.html">🔗 Integration</a>
+  </div>
 </header>
 
 <main>
@@ -72,33 +92,29 @@
   <section>
     <h2>🧮 Run the CIRI Calculator</h2>
     <p>
-      The <strong>CIRI (Constitutional Integrity ROI Engine)</strong> is now automated.
-      Anyone can download or clone this repository and run the calculator to measure the
-      <em>economic impact of constitutional compliance</em> for their own city or county.
+      The <strong>CIRI</strong> engine lets anyone measure the <em>economic impact of constitutional compliance</em>
+      for their own city or county.
     </p>
 
     <ol>
-      <li>Open <a href="inputs.csv">ciri/inputs.csv</a> and replace the example numbers with your local data.</li>
+      <li>Open <a href="inputs.csv">ciri/inputs.csv</a> (this file is actually <code>/ciri/inputs.csv</code>) and replace the example numbers with your local data.</li>
       <li>Run the calculator from your command line:
         <pre><code>python3 ciri/calculate.py</code></pre>
       </li>
       <li>View your economic impact report directly in the console.</li>
-      <li>Find your generated reinvestment file in <code>cibs/auto_budget.csv</code> —
-          that’s your community’s <strong>Recovery Pool</strong> ready for allocation.</li>
+      <li>Your reinvestment file is written to <code>/cibs/auto_budget.csv</code> — that’s your community’s <strong>Recovery Pool</strong> ready for allocation.</li>
     </ol>
 
-    <p>
-      This script operates locally — no internet or server required.
-      It produces evidence-based, auditable results for use in court filings,
-      city budgets, or investigative reports.
+    <p class="ciri-small">
+      The script operates locally — no server or internet required. Outputs are evidence-ready for filings, budgets, and audits.
     </p>
   </section>
 
-  <!-- ===== LIVE BROWSER CALCULATOR (reads ciri/inputs.csv) ===== -->
+  <!-- ===== LIVE BROWSER CALCULATOR (reads /ciri/inputs.csv) ===== -->
   <section>
     <h2>⚡ Live CIRI Calculator (no download needed)</h2>
     <div id="ciri-app" class="ciri-box">
-      <div><strong>Client-side computation</strong> — reads <code>ciri/inputs.csv</code>, computes recovery, CIRI, and CII in your browser.</div>
+      <div><strong>Client-side computation</strong> — reads <code>/ciri/inputs.csv</code>, computes Recovery, CIRI, and CII in your browser.</div>
 
       <div class="ciri-kpis">
         <div class="ciri-kpi"><div class="lbl">Total Recovery (USD)</div><div id="kpi-total" class="val">—</div></div>
@@ -110,17 +126,17 @@
       <div class="ciri-grid">
         <div>
           <div style="font-weight:700;margin-bottom:8px">Inputs</div>
-          <table id="ciri-inputs" class="ciri-table"></table>
+          <table id="ciri-inputs" class="ciri-table" aria-label="CIRI inputs table"></table>
           <div id="ciri-status" class="ciri-small" style="margin-top:8px">Loading inputs…</div>
         </div>
         <div>
           <div style="font-weight:700;margin-bottom:8px">Assumptions & Scenario Explorer</div>
           <div class="ciri-controls ciri-small">
             <label>Avg jail days avoided per case:
-              <input id="assump-days" type="number" step="0.1" min="0" value="5">
+              <input id="assump-days" class="ciri-inline" type="number" step="0.1" min="0" value="5">
             </label>
             <label>Risk scaling (K, USD):
-              <input id="assump-k" type="number" step="1000000" min="1" value="1000000000">
+              <input id="assump-k" class="ciri-inline" type="number" step="1000000" min="1" value="1000000000">
             </label>
             <div class="ciri-slider">
               <label>Cases avoided</label>
@@ -132,8 +148,8 @@
               <input id="slider-trans" type="range" min="0" max="1000" step="10">
               <span id="lbl-trans">—</span>
             </div>
-            <button id="btn-reset" style="padding:6px 10px;border:1px solid #2a3344;border-radius:6px;background:#0d0f12;color:#eaeef7">Reset to CSV</button>
-            <button id="recalc" style="padding:6px 10px;border:1px solid #2a3344;border-radius:6px;background:#0d0f12;color:#eaeef7">Recalculate</button>
+            <button id="btn-reset" class="btn-ghost">Reset to CSV</button>
+            <button id="recalc" class="btn-ghost">Recalculate</button>
           </div>
           <div class="ciri-small" style="margin-top:8px">
             <strong>CIRI</strong> = ( 1 − e<sup>−Total/K</sup> ) &nbsp; • &nbsp; <strong>CII</strong> = 1 − CIRI
@@ -149,9 +165,8 @@
   <section>
     <h2>About CIRI</h2>
     <p>
-      The CIRI engine translates lawful governance into measurable economic outcomes.
-      Each prevented constitutional violation reduces measurable fiscal waste.
-      When properly implemented, it demonstrates how upholding rights strengthens GDP,
+      The CIRI engine translates lawful governance into measurable economic outcomes. Each prevented
+      constitutional violation reduces measurable fiscal waste. Proper implementation strengthens GDP,
       restores public trust, and lowers state dependency.
     </p>
     <ul>
@@ -164,7 +179,7 @@
     <h2>Integration with CIBS</h2>
     <p>
       After running the calculator, CIRI will automatically seed a draft allocation file
-      into <a href="../cibs/auto_budget.csv">CIBS</a>. That file defines how the
+      into <a href="/abe---flag/cibs/auto_budget.csv">CIBS</a>. That file defines how the
       <strong>Recovery Pool</strong> should be reinvested into community programs like housing,
       youth development, and legal defense.
     </p>
@@ -172,7 +187,7 @@
 
 </main>
 
-<!-- ABE site-patch scripts (absolute paths so they work under /ciri/) -->
+<!-- Optional patch scripts -->
 <script src="/abe---flag/abe-patch/assets/abe-nav.js"></script>
 <script src="/abe---flag/abe-patch/assets/abe-definitions.js"></script>
 
@@ -212,10 +227,10 @@
     fees_calc:['fees_calc','fees','fees_cal','fees_cai'],
     licenses:['licenses','license_rev','licensing'],
     avg_monthly_income:['avg_monthly_income','avg_monthly','avg_mo','avg_income_mo'],
-    employment_rate:['employment_rate','employ','employment','empl_rate'],
+    employment_rate:['employment_rate','employment','empl_rate'],
     months_employed:['months_employed','months','months_emp'],
     expected_wage:['expected_wage','expected','avg_pay','expected_income'],
-    pay_multiplier:['pay_multiplier','multiplier','multipli','pay_mult'],
+    pay_multiplier:['pay_multiplier','multiplier','pay_mult'],
     transport_weight:['transport_weight','transport','tran','weight']
   };
   function normalize(obj){
@@ -244,7 +259,6 @@
            employment_rate, months_employed,
            expected_wage, pay_multiplier, transport_weight} = V;
 
-    // components
     const direct_case = cases_avoided * (avg_cost + fees_calc);
     const detention   = cases_avoided * jail_day_cost * A.jailDays;
     const licensing   = licenses * transport_weight;
@@ -284,29 +298,27 @@
   function fmtUSD(n){ return n.toLocaleString(undefined,{style:'currency',currency:'USD',maximumFractionDigits:0}); }
   function pct(x){ return (x*100).toFixed(1)+'%'; }
 
-  const chart = document.getElementById('ciri-chart').getContext('2d');
+  const ctx = document.getElementById('ciri-chart').getContext('2d');
   function drawChart(value){
-    // simple sparkline: draw three bars (direct, detention, licensing+employment)
-    const W = chart.canvas.width, H = chart.canvas.height;
-    chart.clearRect(0,0,W,H);
-    const bars = value.parts;
-    const vals = [bars.direct_case, bars.detention, bars.licensing + bars.employment];
+    const W = ctx.canvas.width, H = ctx.canvas.height;
+    ctx.clearRect(0,0,W,H);
+    const {direct_case, detention, licensing, employment} = value.parts;
+    const vals = [direct_case, detention, licensing + employment];
     const max  = Math.max(...vals, 1);
-    const bw = Math.floor(W/6), gap=bw;
-    const base = H-10;
+    const bw = Math.floor(W/6), gap=bw; const base = H-10;
     for(let i=0;i<3;i++){
       const h = Math.round((vals[i]/max)*(H-20));
-      chart.fillStyle = '#e0e0e0';
-      chart.fillRect(10 + i*(bw+gap), base-h, bw, h);
+      ctx.fillStyle = '#e0e0e0';
+      ctx.fillRect(10 + i*(bw+gap), base-h, bw, h);
     }
   }
 
   function recalc(){
     const A = { jailDays:Number(daysEl.value||0), K:Number(kEl.value||1) };
     const R = compute(X, A);
-    kpiT.textContent  = fmtUSD(R.total);
-    kpiRI.textContent = pct(R.ciri);
-    kpiFI.textContent = pct(R.cii);
+    kpiT.textContent   = fmtUSD(R.total);
+    kpiRI.textContent  = pct(R.ciri);
+    kpiFI.textContent  = pct(R.cii);
     kpiROI.textContent = fmtUSD(R.roiPerCase);
     brk.innerHTML = `
       <div><strong>Breakdown</strong></div>
@@ -330,23 +342,25 @@
     X = {...CSV};
     sCases.value = X.cases_avoided||0; lCases.textContent = Number(sCases.value).toLocaleString();
     sTrans.value = X.transport_weight||0; lTrans.textContent = Number(sTrans.value).toLocaleString();
-    daysEl.value = 5; kEl.value = 1000000000;
+    document.getElementById('assump-days').value = 5;
+    document.getElementById('assump-k').value = 1000000000;
     recalc();
   });
 
   recalc();
 
-  // --- CSV Download button ---
+  // --- CSV Download button (report) ---
   const btn = document.createElement('button');
   btn.textContent = 'Download Report (CSV)';
-  btn.style.cssText = 'margin-top:10px;padding:6px 10px;border:1px solid #2a3344;border-radius:6px;background:#0d0f12;color:#eaeef7';
-  brk.insertAdjacentElement('afterend', btn);
+  btn.className = 'btn-ghost';
+  btn.style.marginTop = '10px';
+  document.getElementById('ciri-breakdown').insertAdjacentElement('afterend', btn);
 
   btn.addEventListener('click', () => {
-    const A = { jailDays:Number(daysEl.value||0), K:Number(kEl.value||1) };
+    const A = { jailDays:Number(document.getElementById('assump-days').value||0),
+                K:Number(document.getElementById('assump-k').value||1) };
     const R = compute(X, A);
 
-    // 🕓 Add timestamp and input trace to report
     const now = new Date().toISOString();
     const lines = [
       ['Generated', now],
@@ -364,22 +378,19 @@
       ['Assumed Jail Days', A.jailDays],
       ['Risk Scaling K', A.K],
       [],
-      ['Input Field','CSV Value']
-    ].concat(
-      Object.entries(parsed.obj).map(([k,v]) => [k, v])
-    );
+      ['Input Field','CSV Value'],
+      ...Object.entries(parsed.obj).map(([k,v]) => [k, v])
+    ];
 
     const csv = lines.map(r => r.join(',')).join('\n');
     const blob = new Blob([csv], {type:'text/csv'});
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    a.href = url;
-    a.download = 'CIRI_report.csv';
-    a.click();
+    a.href = url; a.download = 'CIRI_report.csv'; a.click();
     URL.revokeObjectURL(url);
   });
 })();
 </script>
 <!-- ===== /CIRI calculator script ===== -->
 </body>
-  </html>
+</html>
