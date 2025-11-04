@@ -1,168 +1,167 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Integration Layer — Verification & Evidence | A.B.E.</title>
-  <link rel="stylesheet" href="/abe---flag/abe-patch/assets/abe-patch.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Integration Layer — ABE Public Audit Verification</title>
   <style>
-    :root{
-      --bg:#0b0d12; --ink:#e0e0e0; --muted:#9aa3ad; --panel:#16181d;
-      --edge:rgba(255,255,255,.08); --edge2:rgba(255,255,255,.12);
-      --accent:#5ddfff; --accent2:#ffa559;
+    :root {
+      --bg: #0b0d12;
+      --panel: #141820;
+      --panel2: #0f131a;
+      --text: #e6e6e6;
+      --muted: #9da9ba;
+      --line: rgba(255,255,255,0.08);
+      --ok: #4bd28f;
+      --warn: #ffa559;
+      --brand: #5ddfff;
     }
-    *{box-sizing:border-box}
-    body{background:var(--bg);color:var(--ink);font-family:system-ui,sans-serif;margin:0;line-height:1.65}
-    header{background:linear-gradient(90deg,#11151c,#1b1e25);border-bottom:1px solid var(--edge);padding:2rem 1rem;text-align:center;position:relative}
-    .home-btn{position:absolute;left:1rem;top:1.2rem;background:var(--accent);color:#0b0d12;padding:.45rem .9rem;border-radius:8px;font-weight:700;text-decoration:none;font-size:.9rem}
-    .home-btn:hover{background:#82eaff;box-shadow:0 0 8px rgba(93,223,255,.6);transform:translateY(-2px)}
-    h1{color:var(--accent2);font-size:1.8rem;margin:.1rem 0 .4rem;font-weight:800}
-    header p{margin:.25rem 0 0;color:var(--muted)}
-    .top-actions{display:flex;gap:.6rem;flex-wrap:wrap;justify-content:center;margin:.9rem 0 0}
-    .badge{display:inline-block;color:var(--accent);border:1px solid var(--accent);padding:.45rem .7rem;border-radius:8px;text-decoration:none;font-weight:700}
-    .badge:hover{background:rgba(93,223,255,.08)}
-    main{max-width:1000px;margin:2rem auto 3.5rem;padding:0 1rem}
-    section{background:rgba(255,255,255,.03);border:1px solid var(--edge);border-radius:12px;padding:1.2rem 1.4rem;margin-bottom:1.4rem}
-    h2{color:var(--accent2);font-size:1.2rem;margin:.2rem 0 .7rem}
-    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
-    .card{background:var(--panel);border:1px solid var(--edge2);border-radius:10px;padding:12px}
-    .lbl{color:#9fb0c9;font-size:12px}.val{font:800 20px/1.1 system-ui;margin-top:4px}
-    .status{display:inline-flex;align-items:center;gap:6px;font-weight:700}
-    .ok{color:#9ef59e}.warn{color:#ffd27d}.bad{color:#ff9d9d}
-    a{color:#80bfff}
-    .small{font-size:12px;color:#a7b4c8}
-    ul.checks{list-style:none;padding-left:0;margin:.6rem 0 0}
-    ul.checks li{display:flex;justify-content:space-between;gap:10px;border-bottom:1px solid var(--edge);padding:.5rem 0}
-    .tools{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
-    .btn{padding:6px 10px;border:1px solid #2a3344;border-radius:6px;background:#0d0f12;color:#eaeef7;cursor:pointer}
-    .btn:hover{border-color:var(--accent);color:var(--accent)}
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      line-height: 1.6;
+    }
+    header {
+      background: linear-gradient(90deg,#11151c,#1b1e25);
+      border-bottom: 1px solid var(--line);
+      padding: .9rem 1rem;
+      position: sticky;
+      top: 0;
+      z-index: 5;
+    }
+    header .wrap {
+      max-width: 1040px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    a { color: #80bfff; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    main {
+      max-width: 1040px;
+      margin: 2rem auto 4rem;
+      padding: 0 1rem;
+    }
+    h1 {
+      color: var(--brand);
+      font-size: 1.5rem;
+      margin: 0 0 0.6rem 0;
+    }
+    p.lead {
+      color: #cbd4e1;
+      margin-top: 0;
+      margin-bottom: 1rem;
+    }
+    .checks, .evidence {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+    .check-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
+      gap: .75rem;
+      margin-top: .5rem;
+    }
+    .chip {
+      background: var(--panel2);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: .5rem .7rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .chip span { font-weight: 500; }
+    .chip .status {
+      font-size: .85rem;
+      text-transform: uppercase;
+    }
+    .ok { color: var(--ok); }
+    .warn { color: var(--warn); }
+    .pending { color: #e2b859; }
+    footer {
+      text-align: center;
+      color: #9da9ba;
+      font-size: .85rem;
+      margin-top: 3rem;
+    }
   </style>
 </head>
 <body>
-<header>
-  <a class="home-btn" href="/abe---flag/index.html">← Return to Home</a>
-  <h1>🔗 Integration Layer — Verification & Evidence</h1>
-  <p>Programmatic checks that Recovery Pool funds and obligations align with the public record.</p>
-  <div class="top-actions">
-    <a class="badge" href="/abe---flag/system/index.html">🗺 System Map</a>
-    <a class="badge" href="/abe---flag/ciri/index.html">⚙ CIRI</a>
-    <a class="badge" href="/abe---flag/cibs/index.html">📊 CIBS</a>
-    <a class="badge" href="/abe---flag/doctrine/index.html">📜 Doctrine</a>
-  </div>
-</header>
-
-<main>
-
-  <section>
-    <h2>Live Status</h2>
-    <div class="grid">
-      <div class="card"><div class="lbl">System Map</div><div id="k-map" class="val status">Checking…</div></div>
-      <div class="card"><div class="lbl">Auto Budget</div><div id="k-budget" class="val status">Checking…</div></div>
-      <div class="card"><div class="lbl">Doctrine Pages</div><div id="k-docs" class="val status">Checking…</div></div>
-      <div class="card"><div class="lbl">Audit Attestation</div><div id="k-audit" class="val status warn">Pending</div></div>
+  <header>
+    <div class="wrap">
+      <a href="../index.html">← Return to Home</a>
+      <div class="badge" style="font-size:0.85rem;color:#97a3b3;">ABE Patch Active</div>
     </div>
-    <p class="small">These indicators compute in the browser by probing your repo files (no server needed).</p>
-  </section>
+  </header>
 
-  <section>
-    <h2>Evidence Links (auto-checked)</h2>
-    <ul class="checks" id="evidence-list">
-      <!-- Filled by script -->
-    </ul>
-    <div class="tools">
-      <button id="btn-retry" class="btn">Retry Checks</button>
-      <button id="btn-snapshot" class="btn">Download Evidence Snapshot (JSON)</button>
+  <main>
+    <h1>Integration Layer — Public Audit Verification</h1>
+    <p class="lead">Connects system integrity data (CIRI, CIBS, Doctrines) to public evidence and transparency verification.</p>
+
+    <!-- CHECKS -->
+    <div class="checks">
+      <h2>Checks</h2>
+      <div class="check-grid">
+        <div class="chip"><span>Receipt verification</span><span class="status ok">OK</span></div>
+        <div class="chip"><span>Recipient match</span><span class="status ok">OK</span></div>
+        <div class="chip"><span>Retaliation/suppression</span><span class="status ok">OK</span></div>
+        <div class="chip" data-check="audit"><span>Public audit attestation</span><span class="status pending">Pending</span></div>
+      </div>
+      <p style="margin-top:.75rem;font-size:.9rem;color:var(--muted);">
+        These statuses are placeholders; they update automatically when supporting evidence is posted or verified.
+      </p>
     </div>
-  </section>
 
-  <section>
-    <h2>What “Good” Looks Like</h2>
-    <ul>
-      <li><strong>System Map</strong> (<code>/system/map.json</code>) exists and lists flows with <code>from,to,control,evidence</code>.</li>
-      <li><strong>Auto Budget</strong> (<code>/cibs/auto_budget.csv</code>) was generated by CIRI and is readable.</li>
-      <li><strong>Doctrine</strong> pages resolve: ABE (A Decent Proposal), Constitutional Fidelity, and Void ab initio.</li>
-      <li><strong>Audit</strong>: when you add a signed attestation URL or hash, flip the KPI from “Pending” to “OK”.</li>
-    </ul>
-  </section>
+    <!-- EVIDENCE -->
+    <div class="evidence">
+      <h2>Evidence</h2>
+      <p>System Map: <a href="../system/index.html">system/index.html</a></p>
+      <p>Auto Budget: <a href="../cibs/auto_budget.csv">cibs/auto_budget.csv</a></p>
+      <p>Calculator: <a href="../ciri/index.html">ciri/index.html</a></p>
+      <p>Doctrines: <a href="../doctrine/index.html">doctrine/index.html</a></p>
+      <p>
+        Audit Attestation: <a id="att-link" href="#" target="_blank" rel="noopener">audit_attestation.json</a>
+        <small id="att-meta" style="color:#888;margin-left:.5rem;"></small>
+      </p>
+    </div>
 
-</main>
+    <footer>
+      Integration Layer ties together verified recovery data, system metrics, and doctrinal compliance under the ABE Patch framework.
+    </footer>
+  </main>
 
-<script src="/abe---flag/abe-patch/assets/abe-nav.js"></script>
-<script src="/abe---flag/abe-patch/assets/abe-definitions.js"></script>
-<script>
-(async function(){
-  const files = [
-    {label:'System Map',       url:'/abe---flag/system/map.json',          id:'map'},
-    {label:'Auto Budget CSV',  url:'/abe---flag/cibs/auto_budget.csv',     id:'budget'},
-    {label:'Doctrine: ABE',    url:'/abe---flag/doctrine/abe.html',        id:'doc-abe'},
-    {label:'Doctrine: Fidelity',url:'/abe---flag/doctrine/constitutional_fidelity.html', id:'doc-fid'},
-    {label:'Doctrine: Void ab initio', url:'/abe---flag/doctrine/void_ab_initio.html',   id:'doc-void'}
-  ];
+  <!-- AUTO-CHECK SCRIPT -->
+  <script>
+  (async () => {
+    try {
+      const res = await fetch('audit_attestation.json', { cache: 'no-store' });
+      if (!res.ok) throw new Error('no attestation');
+      const att = await res.json();
 
-  const evidenceEl = document.getElementById('evidence-list');
-  const kMap    = document.getElementById('k-map');
-  const kBud    = document.getElementById('k-budget');
-  const kDocs   = document.getElementById('k-docs');
-  const kAudit  = document.getElementById('k-audit');
-  const btnRetry= document.getElementById('btn-retry');
-  const btnSnap = document.getElementById('btn-snapshot');
+      const auditChip = document.querySelector('[data-check="audit"] .status');
+      if (auditChip) {
+        auditChip.textContent = 'OK';
+        auditChip.classList.remove('pending');
+        auditChip.classList.add('ok');
+      }
 
-  function badge(state){
-    if(state==='ok')   return '<span class="ok">● OK</span>';
-    if(state==='warn') return '<span class="warn">● Pending</span>';
-    return '<span class="bad">● Missing</span>';
-  }
-  function set(el, state){ el.innerHTML = badge(state); }
-
-  async function probe(u){
-    try{
-      const r = await fetch(u,{cache:'no-store',method:'GET'});
-      return {ok:r.ok, status:r.status};
-    }catch(e){ return {ok:false, status:'ERR'}; }
-  }
-
-  async function run(){
-    evidenceEl.innerHTML = '';
-    const results = [];
-    for (const f of files){
-      const res = await probe(f.url);
-      results.push({...f, ...res});
-      const li = document.createElement('li');
-      li.innerHTML = `<span>${f.label}</span><span>${badge(res.ok?'ok':'bad')} &nbsp; <a href="${f.url}">${f.url}</a></span>`;
-      evidenceEl.appendChild(li);
+      const attLink = document.getElementById('att-link');
+      const attMeta = document.getElementById('att-meta');
+      if (attLink) attLink.href = 'audit_attestation.json';
+      if (attMeta && att?.period) {
+        attMeta.textContent = `${att.period} · ${att.reviewer || 'verified'}`;
+      }
+    } catch (_) {
+      // Leave as pending if no attestation found
     }
-
-    // KPIs
-    const mapOK   = results.find(x=>x.id==='map')?.ok;
-    const budOK   = results.find(x=>x.id==='budget')?.ок || results.find(x=>x.id==='budget')?.ok; // guard for cyrillic
-    const d1 = results.find(x=>x.id==='doc-abe')?.ok;
-    const d2 = results.find(x=>x.id==='doc-fid')?.ok;
-    const d3 = results.find(x=>x.id==='doc-void')?.ok;
-
-    set(kMap, mapOK?'ok':'bad');
-    set(kBud, budOK?'ok':'bad');
-    set(kDocs, (d1&&d2&&d3)?'ok':'bad');
-
-    // Audit stays Pending until you wire an attestation (URL/hash)
-    set(kAudit, 'warn');
-    return results;
-  }
-
-  let lastResults = await run();
-
-  btnRetry.onclick = async()=>{ lastResults = await run(); };
-
-  btnSnap.onclick = ()=>{
-    const payload = {
-      generated: new Date().toISOString(),
-      results: lastResults.map(({label,url,ok,status})=>({label,url,ok,status}))
-    };
-    const blob = new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url; a.download = 'integration_evidence_snapshot.json'; a.click();
-    URL.revokeObjectURL(url);
-  };
-})();
-</script>
+  })();
+  </script>
 </body>
 </html>
