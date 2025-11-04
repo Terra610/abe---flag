@@ -1,190 +1,139 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>CIBS — Community Integrity Budget System</title>
-  <meta name="description" content="CIBS turns CIRI Total Impact into a public, auditable Recovery Pool allocation." />
-  <style>
-    :root{
-      --bg:#0b0d12; --panel:#131721; --panel-2:#0f131b;
-      --text:#e0e0e0; --muted:#9aa3ad; --brand:#5ddfff; --accent:#ffa559;
-      --ok:#2ecc71; --warn:#f1c40f; --bad:#e74c3c; --border:rgba(255,255,255,.07)
-    }
-    *{box-sizing:border-box}
-    body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
-    a{color:#80bfff;text-decoration:none}
-    a:hover{text-decoration:underline}
-    header{position:sticky;top:0;z-index:10;background:linear-gradient(90deg,#11151c,#1b1e25);border-bottom:1px solid var(--border)}
-    .wrap{max-width:1000px;margin:0 auto;padding:14px 16px}
-    .title{display:flex;align-items:center;gap:.6rem}
-    .title h1{margin:0;color:var(--brand);font-size:1.25rem}
-    .badge{margin-left:auto;font-size:.8rem;color:#9ddcff;border:1px solid var(--border);padding:.25rem .5rem;border-radius:999px;background:rgba(93,223,255,.08)}
-    main{max-width:1000px;margin:22px auto 64px;padding:0 16px}
-    .panel{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:14px 16px}
-    .grid{display:grid;gap:14px}
-    .grid.cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}
-    .grid.cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}
-    @media (max-width:820px){.grid.cols-3,.grid.cols-2{grid-template-columns:1fr}}
-    .card{background:var(--panel-2);border:1px solid var(--border);border-radius:10px;padding:14px}
-    .k{font-size:.8rem;color:var(--muted);letter-spacing:.02em}
-    .v{margin-top:4px;font-weight:650}
-    .ok{color:var(--ok)} .warn{color:var(--warn)} .bad{color:var(--bad)}
-    h2{margin:0 0 10px;color:var(--accent);font-size:1.05rem}
-    .nav{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0 18px}
-    .btn{display:inline-flex;align-items:center;gap:.45rem;padding:.55rem .8rem;border-radius:8px;border:1px solid var(--border);background:rgba(255,255,255,.03);font-weight:600}
-    .btn:hover{background:rgba(255,255,255,.06)}
-    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
-    table{width:100%;border-collapse:collapse;font-size:.92rem}
-    th,td{border-bottom:1px solid var(--border);padding:8px 10px;vertical-align:top}
-    th{text-align:left;color:#cfe8ff;background:#101520;position:sticky;top:0}
-    .muted{color:var(--muted)}
-    .hint{font-size:.85rem;color:var(--muted);margin-top:8px}
-    footer{margin:28px 0 0;text-align:center;font-size:.85rem;color:var(--muted)}
-    .pill{display:inline-block;padding:.15rem .5rem;border-radius:999px;border:1px solid var(--border);background:rgba(255,255,255,.04);font-size:.75rem}
-  </style>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>CIBS — Community Integrity Budget System</title>
+<style>
+  body{background:#0b0d12;color:#e0e0e0;font-family:system-ui,Segoe UI,Roboto,sans-serif;margin:0}
+  main{max-width:980px;margin:2rem auto;padding:0 1rem 3rem}
+  h1{color:#5ddfff;margin:.25rem 0 1rem}
+  .card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:12px;padding:1rem 1.25rem;margin:1rem 0}
+  table{width:100%;border-collapse:collapse;margin-top:.75rem}
+  th,td{padding:.6rem .55rem;border-bottom:1px solid rgba(255,255,255,.08)}
+  th{font-weight:600;color:#9fd7ff;text-align:left}
+  td.num{text-align:right;font-variant-numeric:tabular-nums}
+  .muted{color:#9aa4b2;font-size:.9rem}
+  .ok{color:#6fe3b5}.warn{color:#ffda6b}.err{color:#ff7a7a}
+  a{color:#80bfff;text-decoration:none} a:hover{text-decoration:underline}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem} @media(max-width:760px){.grid{grid-template-columns:1fr}}
+  .kpi{display:flex;justify-content:space-between;align-items:baseline;padding:.65rem .8rem;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px}
+  .kpi .label{color:#b9c6d5;font-size:.9rem}
+  .kpi .value{font-size:1.1rem;font-weight:700}
+  .errbox{background:rgba(255,0,0,.08);border:1px solid rgba(255,0,0,.25);padding:.75rem;border-radius:10px}
+</style>
 </head>
 <body>
-
-<header>
-  <div class="wrap title">
-    <a href="../index.html" class="btn" aria-label="Back to A.B.E. Home">← Home</a>
-    <h1>Community Integrity Budget System (CIBS)</h1>
-    <div class="badge">ABE Patch Active</div>
-  </div>
-</header>
-
 <main>
-  <div class="panel">
-    <p style="margin:0 0 8px">
-      CIBS turns <strong>CIRI’s Total Impact</strong> into a public, auditable <em>Recovery Pool</em> allocation.
-      Data flows: <span class="pill">/ciri/inputs.csv → CIRI</span> ➜ <span class="pill">/cibs/auto_budget.csv</span>.
-    </p>
-
-    <div class="nav">
-      <a class="btn" href="../ciri/index.html">⚙️ Open CIRI</a>
-      <a class="btn" href="../integration/index.html">🔗 Integration Layer</a>
-      <a class="btn" href="./budget_template.csv" download>📄 Download Budget Template</a>
-      <a class="btn" id="dlAuto" href="./auto_budget.csv" download hidden>⬇️ Download Auto Budget</a>
+  <p class="muted"><a href="../index.html">← Return to Home</a></p>
+  <h1>CIBS — Community Integrity Budget System</h1>
+  <div class="card">
+    <div class="grid">
+      <div class="kpi"><span class="label">SpecDocs</span><span class="value"><a href="model.md">cibs/model.md</a></span></div>
+      <div class="kpi"><span class="label">Template</span><span class="value"><a href="budget_template.csv">cibs/budget_template.csv</a></span></div>
     </div>
-
-    <div class="grid cols-3" style="margin-top:6px">
-      <div class="card">
-        <div class="k">SpecDocs</div>
-        <div class="v"><a href="./model.md">cibs/model.md</a></div>
-      </div>
-      <div class="card">
-        <div class="k">Template</div>
-        <div class="v"><a href="./budget_template.csv">cibs/budget_template.csv</a></div>
-      </div>
-      <div class="card">
-        <div class="k">Auto Budget</div>
-        <div class="v" id="autoStatus"><span class="warn">Checking…</span></div>
-      </div>
-    </div>
+    <p class="muted" style="margin-top:.6rem">When CIRI runs, it writes to <code>/cibs/auto_budget.csv</code>. This page reads that file and renders the allocation.</p>
   </div>
 
-  <section style="margin-top:18px">
-    <h2>📊 Auto Budget Preview</h2>
-    <div class="card" id="tableWrap">
-      <div class="muted">Looking for <span class="mono">/cibs/auto_budget.csv</span>…</div>
-    </div>
-    <div class="hint">
-      If this file isn’t here yet, run CIRI from your browser (or CLI). The Integration Layer will
-      verify receipts and evidence once funds move.
-    </div>
-  </section>
+  <div id="status" class="card">
+    <strong>Status:</strong>
+    <span id="statusText" class="warn">Looking for <code>auto_budget.csv</code>…</span>
+  </div>
 
-  <footer>
-    CIBS · Part of the American Butterfly Effect (A.B.E.) · Licensed CC BY 4.0
-  </footer>
+  <div class="card" id="tableCard" style="display:none">
+    <h3 style="margin:.25rem 0 0;">Auto Budget Preview</h3>
+    <table id="tbl">
+      <thead><tr><th>Category</th><th class="num">Value (USD)</th><th class="num">Share</th></tr></thead>
+      <tbody></tbody>
+      <tfoot><tr><th>Total</th><th class="num" id="sumCell">—</th><th class="num" id="pctCell">100%</th></tr></tfoot>
+    </table>
+    <p class="muted" id="note"></p>
+  </div>
+
+  <div id="errCard" class="card" style="display:none">
+    <div class="errbox">
+      <strong class="err">Couldn’t load <code>auto_budget.csv</code>.</strong>
+      <div id="errMsg" class="muted" style="margin-top:.35rem"></div>
+      <p class="muted" style="margin:.5rem 0 0">Check that the file exists at <code>/cibs/auto_budget.csv</code> and that the header is <code>category,value</code> with numbers like <code>342000</code> (no $ or commas).</p>
+    </div>
+  </div>
 </main>
 
 <script>
-/* Tiny CSV parser (handles quotes, commas, and newlines) */
-function parseCSV(text){
-  const rows=[]; let cur='', row=[], q=false;
-  for (let i=0;i<text.length;i++){
-    const c=text[i], n=text[i+1];
-    if (q){
-      if (c==='"' && n=== '"'){ cur+='"'; i++; }
-      else if (c === '"'){ q=false; }
-      else { cur+=c; }
-    }else{
-      if (c === '"'){ q=true; }
-      else if (c === ','){ row.push(cur); cur=''; }
-      else if (c === '\n'){ row.push(cur); rows.push(row); row=[]; cur=''; }
-      else if (c === '\r'){ /* ignore */ }
-      else { cur+=c; }
-    }
+(async () => {
+  const statusEl = document.getElementById('statusText');
+  const tableCard = document.getElementById('tableCard');
+  const errCard = document.getElementById('errCard');
+  const errMsg = document.getElementById('errMsg');
+
+  const paths = ['./auto_budget.csv','/cibs/auto_budget.csv'];
+  let text=null, usedPath='';
+  for (const p of paths) {
+    try {
+      const r = await fetch(p,{cache:'no-store'});
+      if (r.ok) { text = await r.text(); usedPath = p; break; }
+    } catch(e){ /* try next */ }
   }
-  if (cur.length || row.length) { row.push(cur); rows.push(row); }
-  // Trim possible trailing empty row
-  while (rows.length && rows[rows.length-1].every(v => v==='')) rows.pop();
-  return rows;
-}
 
-const autoStatus = document.getElementById('autoStatus');
-const tableWrap  = document.getElementById('tableWrap');
-const dlAuto     = document.getElementById('dlAuto');
-
-async function loadAutoBudget(){
-  try{
-    const res = await fetch('./auto_budget.csv', {cache:'no-store'});
-    if (!res.ok) throw new Error('not found');
-    const text = await res.text();
-
-    // Status & download
-    autoStatus.innerHTML = '<span class="ok">Generated</span>';
-    dlAuto.hidden = false;
-
-    // Parse and render
-    const rows = parseCSV(text);
-    if (!rows.length) throw new Error('empty');
-
-    const thead = rows[0];
-    const body  = rows.slice(1);
-
-    const table = document.createElement('table');
-    const tHead = document.createElement('thead');
-    const trh   = document.createElement('tr');
-    thead.forEach(h=>{
-      const th=document.createElement('th');
-      th.textContent=h;
-      trh.appendChild(th);
-    });
-    tHead.appendChild(trh);
-    table.appendChild(tHead);
-
-    const tBody = document.createElement('tbody');
-    body.forEach(r=>{
-      const tr=document.createElement('tr');
-      r.forEach((cell,i)=>{
-        const td=document.createElement('td');
-        td.textContent = cell;
-        if (i===0) td.style.whiteSpace='nowrap';
-        tr.appendChild(td);
-      });
-      tBody.appendChild(tr);
-    });
-    table.appendChild(tBody);
-
-    tableWrap.innerHTML='';
-    tableWrap.appendChild(table);
-
-  }catch(e){
-    autoStatus.innerHTML = '<span class="bad">Not generated</span>';
-    tableWrap.innerHTML = `
-      <div class="muted">
-        No <span class="mono">auto_budget.csv</span> found yet.
-        Open <a href="../ciri/index.html">CIRI</a> and run the calculator;
-        it will write the file here when complete.
-      </div>`;
+  if (!text) {
+    statusEl.textContent = 'Not generated';
+    statusEl.className = 'err';
+    errCard.style.display = 'block';
+    errMsg.textContent = 'Fetch failed at ./auto_budget.csv and /cibs/auto_budget.csv.';
+    return;
   }
-}
 
-loadAutoBudget();
+  statusEl.textContent = `Loaded from ${usedPath}`;
+  statusEl.className = 'ok';
+
+  // CSV → rows
+  const lines = text.trim().split(/\r?\n/);
+  if (!lines.length) return;
+
+  const head = lines[0].split(',').map(s=>s.trim().toLowerCase());
+  const ci = head.indexOf('category');
+  const vi = head.indexOf('value');
+  if (ci === -1 || vi === -1) {
+    errCard.style.display = 'block';
+    errMsg.textContent = 'Header must include "category,value".';
+    return;
+  }
+
+  const rows = [];
+  for (let i=1;i<lines.length;i++){
+    if (!lines[i].trim()) continue;
+    const cols = lines[i].split(','); // simple CSV (no quoted commas expected)
+    const cat = (cols[ci]||'').trim();
+    const raw = (cols[vi]||'').trim().replace(/\$/g,'').replace(/,/g,'');
+    const val = Number(raw);
+    rows.push({cat, val: Number.isFinite(val)?val:0});
+  }
+
+  const sum = rows.reduce((a,r)=>a+(r.val||0),0);
+  const tbody = document.querySelector('#tbl tbody');
+  tbody.innerHTML = '';
+
+  rows.forEach(r=>{
+    const tr = document.createElement('tr');
+    const tdC = document.createElement('td'); tdC.textContent = r.cat || '—';
+    const tdV = document.createElement('td'); tdV.className='num'; tdV.textContent = fmtUSD(r.val);
+    const tdP = document.createElement('td'); tdP.className='num';
+    const pct = sum>0 ? (r.val/sum*100) : 0;
+    tdP.textContent = pct.toFixed(1)+'%';
+    tr.append(tdC,tdV,tdP);
+    tbody.appendChild(tr);
+  });
+
+  document.getElementById('sumCell').textContent = fmtUSD(sum);
+  document.getElementById('pctCell').textContent = '100%';
+  tableCard.style.display = 'block';
+  document.getElementById('note').textContent = 'Header used: category,value · Extra columns are ignored. Numbers are sanitized (no $ / commas).';
+})();
+
+function fmtUSD(n){
+  try{ return new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',maximumFractionDigits:0}).format(n||0); }
+  catch(e){ return '$'+(n||0).toLocaleString('en-US'); }
+}
 </script>
-
 </body>
 </html>
