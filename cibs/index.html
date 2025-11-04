@@ -1,248 +1,189 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>CIBS — Civic Investment Budgeting System | A.B.E.</title>
-
-  <!-- Optional site patch; safe if missing -->
-  <link rel="stylesheet" href="/abe---flag/abe-patch/assets/abe-patch.css"/>
-
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CIBS — Community Integrity Budget System</title>
+  <meta name="description" content="CIBS turns CIRI Total Impact into a public, auditable Recovery Pool allocation." />
   <style>
     :root{
-      --bg:#0b0d12; --panel:#13161b; --ink:#e0e0e0; --muted:#9aa3ad;
-      --edge:rgba(255,255,255,.08); --edge2:rgba(255,255,255,.12);
-      --accent:#5ddfff; --accent2:#ffa559;
+      --bg:#0b0d12; --panel:#131721; --panel-2:#0f131b;
+      --text:#e0e0e0; --muted:#9aa3ad; --brand:#5ddfff; --accent:#ffa559;
+      --ok:#2ecc71; --warn:#f1c40f; --bad:#e74c3c; --border:rgba(255,255,255,.07)
     }
     *{box-sizing:border-box}
-    body{background:var(--bg);color:var(--ink);font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;line-height:1.65;margin:0}
-
-    header{
-      background:linear-gradient(90deg,#11151c,#1b1e25);
-      border-bottom:1px solid var(--edge);
-      padding:2rem 1rem;
-      text-align:center;
-      position:relative
-    }
-    .home-btn{
-      position:absolute;left:1rem;top:1.2rem;
-      background:var(--accent);color:#0b0d12;
-      padding:.45rem .9rem;border-radius:8px;font-weight:700;text-decoration:none;font-size:.9rem;
-      transition:all .2s ease-in-out;border:1px solid transparent
-    }
-    .home-btn:hover{background:#82eaff;box-shadow:0 0 8px rgba(93,223,255,.7);transform:translateY(-2px)}
-    h1{color:var(--accent2);font-size:1.8rem;margin:.1rem 0 .4rem;font-weight:800}
-    header p{margin:.25rem 0 0;color:var(--muted)}
-    .top-actions{display:flex;gap:.6rem;flex-wrap:wrap;justify-content:center;margin:.9rem 0 0}
-    .btn,.badge{display:inline-block;text-decoration:none;font-weight:700;border-radius:8px;transition:all .18s ease-in-out}
-    .btn{background:var(--accent);color:#0b0d12;padding:.55rem 1rem;border:1px solid transparent}
-    .btn:hover{background:#82eaff;transform:translateY(-2px);box-shadow:0 0 10px rgba(93,223,255,.6)}
-    .badge{color:var(--accent);border:1px solid var(--accent);padding:.45rem .7rem;font-size:.9rem}
-    .badge:hover{background:rgba(93,223,255,.08);transform:translateY(-2px)}
-
-    main{max-width:1000px;margin:2rem auto 3.5rem;padding:0 1rem}
-    section{
-      background:rgba(255,255,255,.03);border:1px solid var(--edge);
-      border-radius:12px;padding:1.2rem 1.4rem;margin-bottom:1.4rem;
-      box-shadow:0 0 12px rgba(93,223,255,.05)
-    }
-    section:hover{box-shadow:0 0 16px rgba(93,223,255,.12)}
-    h2{color:var(--accent2);font-size:1.2rem;margin:.2rem 0 .7rem}
-    a{color:#80bfff} a:hover{text-decoration:underline}
-
-    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
-    .card{background:#16181d;border:1px solid var(--edge2);border-radius:10px;padding:12px}
-    .lbl{color:#9fb0c9;font-size:12px}.val{font:800 20px/1.1 system-ui;margin-top:4px}
-    .small{font-size:12px;color:#a7b4c8}
-
-    table{width:100%;border-collapse:collapse}
-    th,td{padding:8px;border-bottom:1px solid rgba(255,255,255,.08);text-align:left;vertical-align:top}
-    th{font-weight:800;color:#dfe8f3}
-    .tools{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
-    .btn-ghost{padding:6px 10px;border:1px solid #2a3344;border-radius:6px;background:#0d0f12;color:#eaeef7;cursor:pointer}
-    .btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
+    body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
+    a{color:#80bfff;text-decoration:none}
+    a:hover{text-decoration:underline}
+    header{position:sticky;top:0;z-index:10;background:linear-gradient(90deg,#11151c,#1b1e25);border-bottom:1px solid var(--border)}
+    .wrap{max-width:1000px;margin:0 auto;padding:14px 16px}
+    .title{display:flex;align-items:center;gap:.6rem}
+    .title h1{margin:0;color:var(--brand);font-size:1.25rem}
+    .badge{margin-left:auto;font-size:.8rem;color:#9ddcff;border:1px solid var(--border);padding:.25rem .5rem;border-radius:999px;background:rgba(93,223,255,.08)}
+    main{max-width:1000px;margin:22px auto 64px;padding:0 16px}
+    .panel{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:14px 16px}
+    .grid{display:grid;gap:14px}
+    .grid.cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+    .grid.cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+    @media (max-width:820px){.grid.cols-3,.grid.cols-2{grid-template-columns:1fr}}
+    .card{background:var(--panel-2);border:1px solid var(--border);border-radius:10px;padding:14px}
+    .k{font-size:.8rem;color:var(--muted);letter-spacing:.02em}
+    .v{margin-top:4px;font-weight:650}
+    .ok{color:var(--ok)} .warn{color:var(--warn)} .bad{color:var(--bad)}
+    h2{margin:0 0 10px;color:var(--accent);font-size:1.05rem}
+    .nav{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0 18px}
+    .btn{display:inline-flex;align-items:center;gap:.45rem;padding:.55rem .8rem;border-radius:8px;border:1px solid var(--border);background:rgba(255,255,255,.03);font-weight:600}
+    .btn:hover{background:rgba(255,255,255,.06)}
+    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+    table{width:100%;border-collapse:collapse;font-size:.92rem}
+    th,td{border-bottom:1px solid var(--border);padding:8px 10px;vertical-align:top}
+    th{text-align:left;color:#cfe8ff;background:#101520;position:sticky;top:0}
     .muted{color:var(--muted)}
+    .hint{font-size:.85rem;color:var(--muted);margin-top:8px}
+    footer{margin:28px 0 0;text-align:center;font-size:.85rem;color:var(--muted)}
+    .pill{display:inline-block;padding:.15rem .5rem;border-radius:999px;border:1px solid var(--border);background:rgba(255,255,255,.04);font-size:.75rem}
   </style>
 </head>
 <body>
 
 <header>
-  <a href="/abe---flag/index.html" class="home-btn">← Return to Home</a>
-  <h1>📊 CIBS — Civic Investment Budgeting System</h1>
-  <p>Turns CIRI’s Total Impact into a public, auditable <em>Recovery Pool</em> allocation.</p>
-  <div class="top-actions">
-    <a class="btn"   href="/abe---flag/ciri/index.html">⚙ CIRI</a>
-    <a class="badge" href="/abe---flag/system/index.html">🗺 System Map</a>
-    <a class="badge" href="/abe---flag/integration/index.html">🔗 Integration</a>
-    <a class="badge" href="/abe---flag/doctrine/index.html">📜 Doctrine</a>
+  <div class="wrap title">
+    <a href="../index.html" class="btn" aria-label="Back to A.B.E. Home">← Home</a>
+    <h1>Community Integrity Budget System (CIBS)</h1>
+    <div class="badge">ABE Patch Active</div>
   </div>
 </header>
 
 <main>
-
-  <section aria-labelledby="status-h">
-    <h2 id="status-h">Status</h2>
-    <div class="grid">
-      <div class="card"><div class="lbl">Spec / Docs</div><div><a href="model.md">cibs/model.md</a></div></div>
-      <div class="card"><div class="lbl">Template</div><div><a href="budget_template.csv">cibs/budget_template.csv</a></div></div>
-      <div class="card"><div class="lbl">Auto Budget</div><div id="ab-link" class="val">Checking…</div></div>
-      <div class="card"><div class="lbl">Rows Detected</div><div id="kpi-rows" class="val">—</div></div>
-      <div class="card"><div class="lbl">Total (numeric columns)</div><div id="kpi-total" class="val">—</div></div>
-    </div>
-    <p class="small">
-      When CIRI runs, it writes <code>cibs/auto_budget.csv</code>. This page will preview it automatically.
+  <div class="panel">
+    <p style="margin:0 0 8px">
+      CIBS turns <strong>CIRI’s Total Impact</strong> into a public, auditable <em>Recovery Pool</em> allocation.
+      Data flows: <span class="pill">/ciri/inputs.csv → CIRI</span> ➜ <span class="pill">/cibs/auto_budget.csv</span>.
     </p>
+
+    <div class="nav">
+      <a class="btn" href="../ciri/index.html">⚙️ Open CIRI</a>
+      <a class="btn" href="../integration/index.html">🔗 Integration Layer</a>
+      <a class="btn" href="./budget_template.csv" download>📄 Download Budget Template</a>
+      <a class="btn" id="dlAuto" href="./auto_budget.csv" download hidden>⬇️ Download Auto Budget</a>
+    </div>
+
+    <div class="grid cols-3" style="margin-top:6px">
+      <div class="card">
+        <div class="k">SpecDocs</div>
+        <div class="v"><a href="./model.md">cibs/model.md</a></div>
+      </div>
+      <div class="card">
+        <div class="k">Template</div>
+        <div class="v"><a href="./budget_template.csv">cibs/budget_template.csv</a></div>
+      </div>
+      <div class="card">
+        <div class="k">Auto Budget</div>
+        <div class="v" id="autoStatus"><span class="warn">Checking…</span></div>
+      </div>
+    </div>
+  </div>
+
+  <section style="margin-top:18px">
+    <h2>📊 Auto Budget Preview</h2>
+    <div class="card" id="tableWrap">
+      <div class="muted">Looking for <span class="mono">/cibs/auto_budget.csv</span>…</div>
+    </div>
+    <div class="hint">
+      If this file isn’t here yet, run CIRI from your browser (or CLI). The Integration Layer will
+      verify receipts and evidence once funds move.
+    </div>
   </section>
 
-  <section aria-labelledby="preview-h">
-    <h2 id="preview-h">Auto Budget Preview</h2>
-    <div id="csv-box" class="muted">Loading…</div>
-    <div class="tools" id="tools" style="display:none;">
-      <button id="btn-dl" class="btn-ghost">Download Snapshot (CSV)</button>
-      <button id="btn-reload" class="btn-ghost">Reload</button>
-    </div>
-    <p class="small" style="margin-top:10px">
-      Tip: Numeric totals add up every column that looks numeric (e.g., <em>Amount, USD, Allocation</em>). If your header names differ,
-      it still sums by detecting numeric cells.
-    </p>
-  </section>
-
+  <footer>
+    CIBS · Part of the American Butterfly Effect (A.B.E.) · Licensed CC BY 4.0
+  </footer>
 </main>
 
-<!-- Optional site patch scripts -->
-<script src="/abe---flag/abe-patch/assets/abe-nav.js"></script>
-<script src="/abe---flag/abe-patch/assets/abe-definitions.js"></script>
-
 <script>
-(async function(){
-  const linkEl = document.getElementById('ab-link');
-  const box    = document.getElementById('csv-box');
-  const kRows  = document.getElementById('kpi-rows');
-  const kTot   = document.getElementById('kpi-total');
-  const tools  = document.getElementById('tools');
-  const btnDl  = document.getElementById('btn-dl');
-  const btnRel = document.getElementById('btn-reload');
-
-  // Try relative first, then absolute fallback
-  const CANDIDATES = ['auto_budget.csv','/abe---flag/cibs/auto_budget.csv'];
-
-  function parseCSV(text){
-    // Quote-aware CSV parser (handles commas in quotes, double quotes escaping)
-    const rows = [];
-    let row = [], field = '', inQuotes = false;
-    for (let i=0;i<text.length;i++){
-      const c = text[i], n = text[i+1];
-      if (inQuotes){
-        if (c === '"' && n === '"'){ field += '"'; i++; continue; }
-        if (c === '"'){ inQuotes = false; continue; }
-        field += c;
-      } else {
-        if (c === '"'){ inQuotes = true; continue; }
-        if (c === ','){ row.push(field); field=''; continue; }
-        if (c === '\r'){ continue; }
-        if (c === '\n'){ row.push(field); rows.push(row); row=[]; field=''; continue; }
-        field += c;
-      }
+/* Tiny CSV parser (handles quotes, commas, and newlines) */
+function parseCSV(text){
+  const rows=[]; let cur='', row=[], q=false;
+  for (let i=0;i<text.length;i++){
+    const c=text[i], n=text[i+1];
+    if (q){
+      if (c==='"' && n=== '"'){ cur+='"'; i++; }
+      else if (c === '"'){ q=false; }
+      else { cur+=c; }
+    }else{
+      if (c === '"'){ q=true; }
+      else if (c === ','){ row.push(cur); cur=''; }
+      else if (c === '\n'){ row.push(cur); rows.push(row); row=[]; cur=''; }
+      else if (c === '\r'){ /* ignore */ }
+      else { cur+=c; }
     }
-    if (field.length || row.length){ row.push(field); rows.push(row); }
-    // trim trailing empty rows
-    while (rows.length && rows[rows.length-1].every(x=>x==='' )) rows.pop();
-    return rows;
   }
+  if (cur.length || row.length) { row.push(cur); rows.push(row); }
+  // Trim possible trailing empty row
+  while (rows.length && rows[rows.length-1].every(v => v==='')) rows.pop();
+  return rows;
+}
 
-  function fmtUSD(n){ return n.toLocaleString(undefined,{style:'currency',currency:'USD',maximumFractionDigits:0}); }
+const autoStatus = document.getElementById('autoStatus');
+const tableWrap  = document.getElementById('tableWrap');
+const dlAuto     = document.getElementById('dlAuto');
 
-  async function loadCSV(){
-    for (const u of CANDIDATES){
-      try{
-        const r = await fetch(u,{cache:'no-store'});
-        if (r.ok){
-          const t = await r.text();
-          return {text:t, src:u};
-        }
-      }catch(_){}
-    }
-    return null;
-  }
+async function loadAutoBudget(){
+  try{
+    const res = await fetch('./auto_budget.csv', {cache:'no-store'});
+    if (!res.ok) throw new Error('not found');
+    const text = await res.text();
 
-  function buildTable(rows){
-    if (!rows || !rows.length) return '<div class="muted">Empty file.</div>';
-    const head = rows[0];
-    const body = rows.slice(1);
+    // Status & download
+    autoStatus.innerHTML = '<span class="ok">Generated</span>';
+    dlAuto.hidden = false;
 
-    // Detect numeric columns by sampling rows
-    const numericCols = new Set();
-    for (let c=0;c<head.length;c++){
-      let numericCount = 0, sample = 0;
-      for (let r=0;r<body.length && sample<20;r++,sample++){
-        const v = (body[r][c]||'').replace(/[,$\s]/g,'');
-        if (v !== '' && !isNaN(Number(v))) numericCount++;
-      }
-      if (numericCount>0) numericCols.add(c);
-    }
-
-    // Compute totals for numeric columns
-    const totals = new Array(head.length).fill(null);
-    numericCols.forEach(c=>{
-      let sum = 0;
-      for (let r=0;r<body.length;r++){
-        const v = (body[r][c]||'').replace(/[,$\s]/g,'');
-        if (v !== '' && !isNaN(Number(v))) sum += Number(v);
-      }
-      totals[c] = sum;
-    });
-
-    // KPI updates
-    kRows.textContent = String(body.length);
-    const grand = totals.reduce((a,b)=> a + (typeof b==='number'? b : 0), 0);
-    kTot.textContent = grand > 0 ? fmtUSD(grand) : '—';
-
-    // Render table
-    const thead = '<thead><tr>' + head.map(h=>`<th>${h||''}</th>`).join('') + '</tr></thead>';
-    const tbody = '<tbody>' +
-      body.map(r=>'<tr>'+ r.map(c=>`<td>${(c??'').replace(/</g,'&lt;')}</td>`).join('') + '</tr>').join('') +
-      (numericCols.size ? ('<tr>' + head.map((_,i)=> totals[i]!=null ? `<td><strong>${fmtUSD(totals[i])}</strong></td>` : '<td></td>').join('') + '</tr>') : '') +
-      '</tbody>';
-
-    return '<table aria-label="Auto budget preview">' + thead + tbody + '</table>';
-  }
-
-  async function init(){
-    linkEl.textContent = 'Checking…';
-    box.textContent = 'Loading…';
-    tools.style.display = 'none';
-
-    const found = await loadCSV();
-    if (!found){
-      linkEl.textContent = 'Not generated';
-      box.innerHTML = '<div class="small">No <code>auto_budget.csv</code> yet. Run CIRI to generate it.</div>';
-      kRows.textContent = '—'; kTot.textContent = '—';
-      return;
-    }
-
-    const {text, src} = found;
-    linkEl.innerHTML = src.includes('/abe---flag/')
-      ? '<a href="/abe---flag/cibs/auto_budget.csv">cibs/auto_budget.csv</a>'
-      : '<a href="auto_budget.csv">cibs/auto_budget.csv</a>';
-
+    // Parse and render
     const rows = parseCSV(text);
-    box.innerHTML = buildTable(rows);
+    if (!rows.length) throw new Error('empty');
 
-    // Wire tools
-    tools.style.display = 'flex';
-    btnDl.onclick = () => {
-      const now = new Date().toISOString().replace(/[:.]/g,'-');
-      const blob = new Blob([text], {type:'text/csv'});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url; a.download = `auto_budget_snapshot_${now}.csv`; a.click();
-      URL.revokeObjectURL(url);
-    };
-    btnRel.onclick = init;
+    const thead = rows[0];
+    const body  = rows.slice(1);
+
+    const table = document.createElement('table');
+    const tHead = document.createElement('thead');
+    const trh   = document.createElement('tr');
+    thead.forEach(h=>{
+      const th=document.createElement('th');
+      th.textContent=h;
+      trh.appendChild(th);
+    });
+    tHead.appendChild(trh);
+    table.appendChild(tHead);
+
+    const tBody = document.createElement('tbody');
+    body.forEach(r=>{
+      const tr=document.createElement('tr');
+      r.forEach((cell,i)=>{
+        const td=document.createElement('td');
+        td.textContent = cell;
+        if (i===0) td.style.whiteSpace='nowrap';
+        tr.appendChild(td);
+      });
+      tBody.appendChild(tr);
+    });
+    table.appendChild(tBody);
+
+    tableWrap.innerHTML='';
+    tableWrap.appendChild(table);
+
+  }catch(e){
+    autoStatus.innerHTML = '<span class="bad">Not generated</span>';
+    tableWrap.innerHTML = `
+      <div class="muted">
+        No <span class="mono">auto_budget.csv</span> found yet.
+        Open <a href="../ciri/index.html">CIRI</a> and run the calculator;
+        it will write the file here when complete.
+      </div>`;
   }
+}
 
-  await init();
-})();
+loadAutoBudget();
 </script>
 
 </body>
