@@ -13,44 +13,79 @@
       margin: 0;
       padding: 0;
     }
+
     header {
       background: #1b1e25;
       border-bottom: 1px solid rgba(255, 255, 255, 0.07);
-      padding: 1.5rem;
+      padding: 2rem 1rem;
       text-align: center;
+      position: relative;
     }
+
+    .home-btn {
+      position: absolute;
+      left: 1rem;
+      top: 1.2rem;
+      background: #5ddfff;
+      color: #0b0d12;
+      padding: 0.4rem 0.9rem;
+      border-radius: 6px;
+      font-weight: 600;
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: all 0.2s ease-in-out;
+    }
+    .home-btn:hover {
+      background: #82eaff;
+      box-shadow: 0 0 6px #5ddfff;
+      transform: translateY(-2px);
+    }
+
     h1 {
       color: #5ddfff;
-      font-size: 1.6rem;
+      font-size: 1.8rem;
       margin: 0;
     }
+
     p.subtitle {
       color: #a0a0a0;
       margin-top: 0.5rem;
       font-size: 0.95rem;
     }
+
     main {
       max-width: 900px;
       margin: 2rem auto;
       padding: 0 1rem;
     }
+
     .doctrine-card {
       background: rgba(255, 255, 255, 0.03);
       border: 1px solid rgba(255, 255, 255, 0.07);
       border-radius: 10px;
       padding: 1.5rem;
-      margin-bottom: 1.5rem;
+      margin-bottom: 1.8rem;
+      box-shadow: 0 0 12px rgba(93, 223, 255, 0.05);
+      transition: box-shadow 0.3s ease-in-out;
     }
+
+    .doctrine-card:hover {
+      box-shadow: 0 0 16px rgba(93, 223, 255, 0.15);
+    }
+
     .doctrine-card h2 {
       color: #5ddfff;
       margin-top: 0;
       margin-bottom: 0.5rem;
+      font-size: 1.3rem;
     }
+
     .doctrine-card p {
       margin-bottom: 1rem;
       color: #ccc;
       font-size: 0.95rem;
     }
+
     .btn {
       display: inline-block;
       background: #5ddfff;
@@ -64,7 +99,9 @@
     .btn:hover {
       background: #82eaff;
       transform: translateY(-2px);
+      box-shadow: 0 0 8px #5ddfff;
     }
+
     footer {
       text-align: center;
       font-size: 0.8rem;
@@ -78,11 +115,15 @@
       color: #5ddfff;
       text-decoration: none;
     }
+    footer a:hover {
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body>
 
 <header>
+  <a href="/abe---flag/index.html" class="home-btn">← Return to Home</a>
   <h1>Doctrine Library</h1>
   <p class="subtitle">American Butterfly Effect · Restoration Doctrine Archive</p>
 </header>
