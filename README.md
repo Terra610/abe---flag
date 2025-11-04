@@ -18,32 +18,39 @@ The project provides:
 
 ## 🧱 Repository Structure
 
----
-
-## ⚙️ How It Works
-
-1. **CIRI** → Calculates *constitutional economic loss and recovery value*.
-2. **CIBS** → Allocates that recovery into public investments (housing, education, infrastructure, etc.).
-3. **System Map** → Tracks the lawful flow of value and evidence.
-4. **Integration Layer** → Verifies integrity and confirms audit readiness.
-5. **Doctrines** → Provide the legal and moral framework that defines the entire model.
-
-Together, these components form a **closed-loop constitutional economy**.
+The repository is organized into modular components that work together as a transparent, verifiable constitutional economy. Each folder represents a live subsystem within the American Butterfly Effect (A.B.E.) framework.
 
 ---
 
-## 🔍 Key Acronyms
+## 🧭 How It Works
 
-| Acronym | Full Name | Purpose |
-|----------|------------|----------|
-| **A.B.E.** | American Butterfly Effect | Core doctrine and recovery model |
-| **CRRA** | Citizens Rights Restoration Act | Legislative remedy foundation |
-| **CIRI** | Constitutional Integrity ROI Engine | Calculates economic recovery from compliance |
-| **CIBS** | Civic Investment Budgeting System | Allocates the recovery pool to community programs |
-| **CII** | Constitutional Integrity Index | Measures overall fidelity and health of the system |
-| **CDI** | Constitutional Divergence Index | Detects variance between enforcement and law |
+1. **CIRI** – Calculates *constitutional economic loss and recovery value* based on misallocation, overreach, or deviation from constitutional mandates.  
+2. **CIBS** – Allocates that recovery into public investments (housing, education, infrastructure, justice, etc.) using verified data models.  
+3. **System Map** – Tracks the lawful flow of value and evidence across subsystems for audit readiness.  
+4. **Integration Layer** – Verifies integrity, connects receipts and public attestations, and confirms all transactions remain lawful.  
+5. **CII (Citizen Impact Index)** – Quantifies real-world outcomes from ABE/CRRA realignment, producing measurable improvements in citizen prosperity.  
+6. **Doctrines** – Provide the legal and moral framework that defines the entire model, ensuring fidelity to constitutional principles.
+
+Together, these components form a **closed-loop constitutional economy** that measures, audits, and restores prosperity lawfully — ensuring all reforms operate under *suprema lex terrae*, the supreme law of the land.
 
 ---
+
+## 🧩 Key Acronyms
+
+| Term | Meaning |
+|------|----------|
+| **ABE** | American Butterfly Effect — Transformative framework restoring lawful economic balance |
+| **CRRA** | Civil Rights Restoration Act — Legislative reform model within ABE |
+| **CIRI** | Constitutional Integrity and Recovery Index — Calculates national loss and reallocation values |
+| **CIBS** | Constitutional Investment and Budget System — Distributes verified recovery into public infrastructure |
+| **CII** | Citizen Impact Index — Measures the tangible citizen-level impact of ABE and CRRA reforms |
+| **Suprema Lex Terrae** | “The supreme law of the land” — the U.S. Constitution as binding economic and legal authority |
+
+---
+
+🕊️ *Integrity only. All data, evidence, and outputs are licensed under Creative Commons Attribution 4.0 (CC BY 4.0).*
+
+
 
 ## 🧩 License
 This project and its contents are shared under the  
