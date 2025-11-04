@@ -97,7 +97,7 @@
     </p>
 
     <ol>
-      <li>Open <a href="inputs.csv">ciri/inputs.csv</a> (this file is actually <code>/ciri/inputs.csv</code>) and replace the example numbers with your local data.</li>
+      <li>Open <a href="./inputs.csv">inputs.csv</a> and replace the example numbers with your local data.</li>
       <li>Run the calculator from your command line:
         <pre><code>python3 ciri/calculate.py</code></pre>
       </li>
@@ -110,11 +110,11 @@
     </p>
   </section>
 
-  <!-- ===== LIVE BROWSER CALCULATOR (reads /ciri/inputs.csv) ===== -->
+  <!-- ===== LIVE BROWSER CALCULATOR (reads ./inputs.csv) ===== -->
   <section>
     <h2>⚡ Live CIRI Calculator (no download needed)</h2>
     <div id="ciri-app" class="ciri-box">
-      <div><strong>Client-side computation</strong> — reads <code>/ciri/inputs.csv</code>, computes Recovery, CIRI, and CII in your browser.</div>
+      <div><strong>Client-side computation</strong> — reads <code>./inputs.csv</code>, computes Recovery, CIRI, and CII in your browser.</div>
 
       <div class="ciri-kpis">
         <div class="ciri-kpi"><div class="lbl">Total Recovery (USD)</div><div id="kpi-total" class="val">—</div></div>
@@ -170,8 +170,8 @@
       restores public trust, and lowers state dependency.
     </p>
     <ul>
-      <li><a href="calc.md">View calculation documentation</a></li>
-      <li><a href="inputs.csv">Download example input sheet</a></li>
+      <li><a href="./calc.md">View calculation documentation</a></li>
+      <li><a href="./inputs.csv">Download example input sheet</a></li>
     </ul>
   </section>
 
@@ -194,8 +194,8 @@
 <!-- ===== CIRI calculator script ===== -->
 <script>
 (async function(){
-  // 1) Load ciri/inputs.csv (try relative first, then absolute fallback)
-  const CANDIDATES = ['inputs.csv','/abe---flag/ciri/inputs.csv'];
+  // 1) Load ./inputs.csv (try relative first, then absolute fallback just in case)
+  const CANDIDATES = ['./inputs.csv','/abe---flag/ciri/inputs.csv'];
   let csvText=null, src=null;
   for (const u of CANDIDATES){
     try { const r = await fetch(u,{cache:'no-store'}); if(r.ok){ csvText=await r.text(); src=u; break; } } catch(_){}
@@ -226,7 +226,6 @@
     jail_day_cost:['jail_day_cost','jail_day','jail_day_c','jail_cost_per_day'],
     fees_calc:['fees_calc','fees','fees_cal','fees_cai'],
     licenses:['licenses','license_rev','licensing'],
-    avg_monthly_income:['avg_monthly_income','avg_monthly','avg_mo','avg_income_mo'],
     employment_rate:['employment_rate','employment','empl_rate'],
     months_employed:['months_employed','months','months_emp'],
     expected_wage:['expected_wage','expected','avg_pay','expected_income'],
