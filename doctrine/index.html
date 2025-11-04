@@ -1,168 +1,79 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Doctrine Library | American Butterfly Effect (A.B.E.)</title>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Foundational Doctrine | A.B.E.</title>
+  <link rel="stylesheet" href="/abe---flag/abe-patch/assets/abe-patch.css"/>
   <style>
-    body {
-      background-color: #0b0d12;
-      color: #e0e0e0;
-      font-family: system-ui, sans-serif;
-      line-height: 1.6;
-      margin: 0;
-      padding: 0;
-    }
-
-    header {
-      background: #1b1e25;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.07);
-      padding: 2rem 1rem;
-      text-align: center;
-      position: relative;
-    }
-
-    .home-btn {
-      position: absolute;
-      left: 1rem;
-      top: 1.2rem;
-      background: #5ddfff;
-      color: #0b0d12;
-      padding: 0.4rem 0.9rem;
-      border-radius: 6px;
-      font-weight: 600;
-      text-decoration: none;
-      font-size: 0.9rem;
-      transition: all 0.2s ease-in-out;
-    }
-    .home-btn:hover {
-      background: #82eaff;
-      box-shadow: 0 0 6px #5ddfff;
-      transform: translateY(-2px);
-    }
-
-    h1 {
-      color: #5ddfff;
-      font-size: 1.8rem;
-      margin: 0;
-    }
-
-    p.subtitle {
-      color: #a0a0a0;
-      margin-top: 0.5rem;
-      font-size: 0.95rem;
-    }
-
-    main {
-      max-width: 900px;
-      margin: 2rem auto;
-      padding: 0 1rem;
-    }
-
-    .doctrine-card {
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(255, 255, 255, 0.07);
-      border-radius: 10px;
-      padding: 1.5rem;
-      margin-bottom: 1.8rem;
-      box-shadow: 0 0 12px rgba(93, 223, 255, 0.05);
-      transition: box-shadow 0.3s ease-in-out;
-    }
-
-    .doctrine-card:hover {
-      box-shadow: 0 0 16px rgba(93, 223, 255, 0.15);
-    }
-
-    .doctrine-card h2 {
-      color: #5ddfff;
-      margin-top: 0;
-      margin-bottom: 0.5rem;
-      font-size: 1.3rem;
-    }
-
-    .doctrine-card p {
-      margin-bottom: 1rem;
-      color: #ccc;
-      font-size: 0.95rem;
-    }
-
-    .btn {
-      display: inline-block;
-      background: #5ddfff;
-      color: #0b0d12;
-      font-weight: 600;
-      padding: 0.6rem 1.1rem;
-      border-radius: 6px;
-      text-decoration: none;
-      transition: 0.2s ease-in-out;
-    }
-    .btn:hover {
-      background: #82eaff;
-      transform: translateY(-2px);
-      box-shadow: 0 0 8px #5ddfff;
-    }
-
-    footer {
-      text-align: center;
-      font-size: 0.8rem;
-      color: #888;
-      margin-top: 3rem;
-      padding-bottom: 2rem;
-      border-top: 1px solid rgba(255,255,255,0.07);
-      padding-top: 1rem;
-    }
-    footer a {
-      color: #5ddfff;
-      text-decoration: none;
-    }
-    footer a:hover {
-      text-decoration: underline;
-    }
+    :root{--bg:#0b0d12;--panel:#16181d;--ink:#e0e0e0;--muted:#9aa3ad;--edge:rgba(255,255,255,.08);--edge2:rgba(255,255,255,.12);--accent:#5ddfff;--accent2:#ffa559}
+    *{box-sizing:border-box}
+    body{background:var(--bg);color:var(--ink);font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;line-height:1.65;margin:0}
+    header{background:linear-gradient(90deg,#11151c,#1b1e25);border-bottom:1px solid var(--edge);padding:2rem 1rem;text-align:center;position:relative}
+    .home-btn{position:absolute;left:1rem;top:1.2rem;background:var(--accent);color:#0b0d12;padding:.45rem .9rem;border-radius:8px;font-weight:700;text-decoration:none;font-size:.9rem}
+    .home-btn:hover{background:#82eaff;box-shadow:0 0 8px rgba(93,223,255,.6);transform:translateY(-2px)}
+    h1{color:var(--accent2);font-size:1.8rem;margin:.1rem 0 .4rem;font-weight:800}
+    header p{margin:.25rem 0 0;color:var(--muted)}
+    main{max-width:1000px;margin:2rem auto 3.5rem;padding:0 1rem}
+    section{background:rgba(255,255,255,.03);border:1px solid var(--edge);border-radius:12px;padding:1.2rem 1.4rem;margin-bottom:1.4rem}
+    h2{color:var(--accent2);font-size:1.2rem;margin:.2rem 0 .7rem}
+    a{color:#80bfff}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+    .card{display:block;background:var(--panel);border:1px solid var(--edge2);border-radius:12px;padding:14px;text-decoration:none;color:var(--ink);transition:transform .15s ease, box-shadow .15s ease}
+    .card:hover{transform:translateY(-4px);box-shadow:0 0 16px rgba(93,223,255,.12)}
+    .card h3{margin:.2rem 0 .4rem;color:var(--accent);font-size:1.05rem}
+    .card p{margin:.2rem 0;color:#cfd9e6;font-size:.95rem}
+    .small{font-size:12px;color:#a7b4c8}
+    .note{padding:.65rem .8rem;border:1px dashed var(--edge2);border-radius:8px;background:rgba(255,255,255,.02)}
   </style>
 </head>
 <body>
-
 <header>
-  <a href="/abe---flag/index.html" class="home-btn">← Return to Home</a>
-  <h1>Doctrine Library</h1>
-  <p class="subtitle">American Butterfly Effect · Restoration Doctrine Archive</p>
+  <a class="home-btn" href="/abe---flag/index.html">← Return to Home</a>
+  <h1>📜 Foundational Doctrine</h1>
+  <p>Primary texts that define A.B.E., its legal basis, and its remedy architecture.</p>
 </header>
 
 <main>
 
-  <section class="doctrine-card">
-    <h2>ABE: A Decent Proposal (The American Butterfly Effect)</h2>
-    <p>
-      A constitutional and economic restoration plan addressing systemic overreach and FMCSR misapplication.
-      The cornerstone of the ABE movement — debt-neutral, lawful, and sustainable recovery for “We the People.”
+  <section>
+    <h2>Main Doctrine Set</h2>
+    <div class="grid">
+      <a class="card" href="/abe---flag/doctrine/abe.html">
+        <h3>A.B.E. — “A Decent Proposal”</h3>
+        <p>Unified doctrine: ABE strategy + CRRA enforcement + Rebuild Together plan.</p>
+        <p class="small">Full text (HTML). Includes Executive Summary, legal basis, allocations, and implementation.</p>
+      </a>
+
+      <a class="card" href="/abe---flag/doctrine/constitutional_fidelity.html">
+        <h3>Constitutional Fidelity</h3>
+        <p>Why fidelity is economic security: commerce, coinage, bankruptcy, supremacy, and limits on police power.</p>
+        <p class="small">Full text (HTML). With Bluebook-style notes.</p>
+      </a>
+
+      <a class="card" href="/abe---flag/doctrine/void_ab_initio.html">
+        <h3>Void ab initio</h3>
+        <p>When acts are null from the start: QI critique, fraus legis, and the constitutional remedy path.</p>
+        <p class="small">Full text (HTML).</p>
+      </a>
+    </div>
+
+    <p class="note small" style="margin-top:12px">
+      Note: Prior stand-alone pages for <em>CRRA</em> and <em>ABE: A Movement</em> now redirect into the unified ABE doctrine.
+      Keep those tiny redirect files for compatibility; new readers should use the three cards above.
     </p>
-    <a class="btn" href="/abe---flag/doctrine/abe.html">Read Full Doctrine</a>
   </section>
 
-  <section class="doctrine-card">
-    <h2>Constitutional Fidelity</h2>
-    <p>
-      Examines the Constitution as both a legal and economic charter, showing that deviations from fidelity 
-      constitute economic sabotage. Advocates ABE/CRRA as lawful frameworks for national renewal.
-    </p>
-    <a class="btn" href="/abe---flag/doctrine/constitutional-fidelity.html">Read Full Doctrine</a>
-  </section>
-
-  <section class="doctrine-card">
-    <h2>Void ab Initio</h2>
-    <p>
-      A legal analysis demonstrating that unconstitutional doctrines—especially Qualified Immunity—are invalid from inception.
-      Clarifies the supremacy of the People’s rights and the restoration of lawful accountability.
-    </p>
-    <a class="btn" href="/abe---flag/doctrine/void-ab-initio.html">Read Full Doctrine</a>
+  <section>
+    <h2>Cross-Links</h2>
+    <ul>
+      <li>Engines: <a href="/abe---flag/ciri/index.html">CIRI</a> · <a href="/abe---flag/cibs/index.html">CIBS</a> · <a href="/abe---flag/system/index.html">System Map</a> · <a href="/abe---flag/integration/index.html">Integration</a></li>
+      <li>License: <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a> (reproduction encouraged with attribution)</li>
+    </ul>
   </section>
 
 </main>
 
-<footer>
-  Authored by <strong>Terra Shouse</strong> · American Butterfly Effect (A.B.E.)<br />
-  Licensed under <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a> · Public Record
-</footer>
-
+<script src="/abe---flag/abe-patch/assets/abe-nav.js"></script>
+<script src="/abe---flag/abe-patch/assets/abe-definitions.js"></script>
 </body>
 </html>
