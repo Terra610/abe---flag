@@ -2,78 +2,87 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>A.B.E. System Map — Chain of Custody</title>
 
-  <!-- ABE site-patch (absolute paths so it works under /system/) -->
+  <!-- Optional site patch; safe if missing -->
   <link rel="stylesheet" href="/abe---flag/abe-patch/assets/abe-patch.css">
 
   <style>
-    body {
-      background-color: #0b0d12;
-      color: #e0e0e0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
-      line-height: 1.6;
-      margin: 0;
-      padding: 0;
+    :root{
+      --bg:#0b0d12; --panel:#13161b; --ink:#e0e0e0; --muted:#9aa3ad;
+      --edge:rgba(255,255,255,.08); --edge2:rgba(255,255,255,.12);
+      --accent:#5ddfff; --accent2:#ffa559;
     }
-    header {
-      background: linear-gradient(90deg, #11151c, #1b1e25);
-      border-bottom: 1px solid rgba(255,255,255,0.05);
-      padding: 1rem 2rem;
-      text-align: center;
-    }
-    h1 { color: #5ddfff; margin-bottom: 0.5rem; }
-    h2 { color: #ffa559; }
-    main { max-width: 980px; margin: 2rem auto; padding: 0 1rem 4rem; }
-    section {
-      margin-top: 2rem;
-      padding: 1rem 1.5rem;
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,255,255,0.07);
-      border-radius: 10px;
-    }
-    a { color: #80bfff; text-decoration: none; }
-    a:hover { text-decoration: underline; }
-    code {
-      background: rgba(255,255,255,0.07);
-      padding: 0.2rem 0.4rem;
-      border-radius: 4px;
-      color: #f1fa8c;
-      font-size: 0.9rem;
-    }
-    .flow-box {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.15);
-      border-radius: 10px;
-      padding: 1rem 1.5rem;
-      font-size: 0.95rem;
-      line-height: 1.5;
-      color: #d0d0d0;
-    }
-    .flow-step { margin-bottom: 1rem; padding-left: 0.5rem; border-left: 3px solid #5ddfff; }
-    .flow-step-title { font-weight: 700; color: #5ddfff; margin-bottom: 0.25rem; }
+    *{box-sizing:border-box}
+    body{background:var(--bg);color:var(--ink);font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;line-height:1.65;margin:0}
 
-    /* live map viewer */
+    header{
+      background:linear-gradient(90deg,#11151c,#1b1e25);
+      border-bottom:1px solid var(--edge);
+      padding:2rem 1rem;
+      text-align:center;
+      position:relative
+    }
+    .home-btn{
+      position:absolute;left:1rem;top:1.2rem;
+      background:var(--accent);color:#0b0d12;
+      padding:.45rem .9rem;border-radius:8px;font-weight:700;text-decoration:none;font-size:.9rem;
+      transition:all .2s ease-in-out;border:1px solid transparent
+    }
+    .home-btn:hover{background:#82eaff;box-shadow:0 0 8px rgba(93,223,255,.7);transform:translateY(-2px)}
+    h1{color:var(--accent);font-size:1.8rem;margin:.1rem 0 .4rem;font-weight:800}
+    header p{margin:.25rem 0 0;color:var(--muted)}
+    .top-actions{display:flex;gap:.6rem;flex-wrap:wrap;justify-content:center;margin:.9rem 0 0}
+    .btn, .badge{
+      display:inline-block;text-decoration:none;font-weight:700;border-radius:8px;transition:all .18s ease-in-out
+    }
+    .btn{background:var(--accent);color:#0b0d12;padding:.55rem 1rem;border:1px solid transparent}
+    .btn:hover{background:#82eaff;transform:translateY(-2px);box-shadow:0 0 10px rgba(93,223,255,.6)}
+    .badge{color:var(--accent);border:1px solid var(--accent);padding:.45rem .7rem;font-size:.9rem}
+    .badge:hover{background:rgba(93,223,255,.08);transform:translateY(-2px)}
+
+    main{max-width:1000px;margin:2rem auto 3.5rem;padding:0 1rem}
+    section{
+      background:rgba(255,255,255,.03);border:1px solid var(--edge);
+      border-radius:12px;padding:1.2rem 1.4rem;margin-bottom:1.4rem;
+      box-shadow:0 0 12px rgba(93,223,255,.05)
+    }
+    section:hover{box-shadow:0 0 16px rgba(93,223,255,.12)}
+    h2{color:var(--accent2);font-size:1.2rem;margin:.2rem 0 .7rem}
+    a{color:#80bfff} a:hover{text-decoration:underline}
+    code{background:rgba(255,255,255,.07);padding:.2rem .4rem;border-radius:4px;color:#f1fa8c;font-size:.9rem}
+
+    .flow-box{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.15);
+      border-radius:10px;padding:1rem 1.2rem;font-size:.95rem;color:#d0d0d0}
+    .flow-step{margin-bottom:1rem;padding-left:.6rem;border-left:3px solid var(--accent)}
+    .flow-step-title{font-weight:800;color:var(--accent);margin-bottom:.25rem}
+
+    /* KPIs + map table */
     .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:12px 0}
-    .kpi{background:#16181d;border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:12px}
+    .kpi{background:#16181d;border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:12px}
     .kpi .lbl{color:#9fb0c9;font-size:12px}
-    .kpi .val{font:700 20px/1 system-ui;margin-top:4px}
+    .kpi .val{font:800 20px/1 system-ui;margin-top:4px}
     table.map{width:100%;border-collapse:collapse;margin-top:8px}
-    table.map th, table.map td{padding:8px;border-bottom:1px solid rgba(255,255,255,0.08);text-align:left;vertical-align:top}
+    table.map th, table.map td{padding:8px;border-bottom:1px solid rgba(255,255,255,.08);text-align:left;vertical-align:top}
     .small{font-size:12px;color:#a7b4c8}
-    .btn {padding:6px 10px;border:1px solid #2a3344;border-radius:6px;background:#0d0f12;color:#eaeef7;cursor:pointer}
-    .btn+ .btn{margin-left:8px}
+    .btn-ghost{padding:6px 10px;border:1px solid #2a3344;border-radius:6px;background:#0d0f12;color:#eaeef7;cursor:pointer}
+    .btn-ghost+ .btn-ghost{margin-left:8px}
+    .btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
   </style>
 </head>
 <body>
 
 <header>
+  <a href="/abe---flag/index.html" class="home-btn">← Return to Home</a>
   <h1>🗺 A.B.E. System Map</h1>
-  <p>
-    Canonical chain-of-custody for the American Butterfly Effect (A.B.E.): how constitutional harm is
-    detected, measured, converted to dollars, and reinvested locally with audit-ready evidence.
-  </p>
+  <p>Canonical chain-of-custody for A.B.E.: how harm is detected, measured, converted to dollars, and reinvested with audit-ready evidence.</p>
+  <div class="top-actions">
+    <a class="btn" href="/abe---flag/doctrine/index.html">📜 Doctrine Library</a>
+    <a class="badge" href="/abe---flag/ciri/index.html">⚙ CIRI</a>
+    <a class="badge" href="/abe---flag/cibs/index.html">📊 CIBS</a>
+    <a class="badge" href="/abe---flag/integration/index.html">🔗 Integration</a>
+  </div>
 </header>
 
 <main>
@@ -81,10 +90,10 @@
   <section>
     <h2>📂 Core Components</h2>
     <p>
-      • <a href="../ciri/index.html" class="abe-tooltip" title="Constitutional Integrity ROI Engine">⚙ CIRI</a> — quantifies prevented harm and restored rights.<br>
-      • <a href="../cibs/index.html" class="abe-tooltip" title="Civic Investment Budgeting System">📊 CIBS</a> — turns recovery into budget lines (housing, youth, defense, etc.).<br>
-      • <a href="../integration/index.html">🔗 Integration Layer</a> — detects tampering, diversion, retaliation, or suppression.<br>
-      • <a href="map.json">🗄 <code>system/map.json</code></a> — machine-readable definition of the entire pipeline with authorship and timestamps.
+      • <a href="/abe---flag/ciri/index.html" class="abe-tooltip" title="Constitutional Integrity ROI Engine">⚙ CIRI</a> — quantifies prevented harm and restored rights.<br>
+      • <a href="/abe---flag/cibs/index.html" class="abe-tooltip" title="Civic Investment Budgeting System">📊 CIBS</a> — turns recovery into budget lines (housing, youth, defense, etc.).<br>
+      • <a href="/abe---flag/integration/index.html">🔗 Integration Layer</a> — detects tampering, diversion, retaliation, or suppression.<br>
+      • <a href="/abe---flag/system/map.json">🗄 <code>system/map.json</code></a> — machine-readable definition of the pipeline (authorship + timestamps).
     </p>
   </section>
 
@@ -95,10 +104,9 @@
       <div class="flow-step">
         <div class="flow-step-title">1) CIRI — Constitutional Integrity ROI Engine</div>
         <div>
-          Local data enters <code>ciri/inputs.csv</code>. <code>ciri/calculate.py</code> computes
-          Direct Case Savings, Detention Savings, Licensing Correction, and Employment Restoration.
-          <br><br>
-          Output: a <strong>Total Impact</strong> dollar figure the jurisdiction must reconcile.
+          Local data enters <code>ciri/inputs.csv</code>. <code>ciri/calculate.py</code> computes Direct Case Savings,
+          Detention Savings, Licensing Correction, and Employment Restoration.
+          <br><br>Output: a <strong>Total Impact</strong> dollar figure the jurisdiction must reconcile.
         </div>
       </div>
 
@@ -113,8 +121,8 @@
       <div class="flow-step">
         <div class="flow-step-title">3) System Map (this page)</div>
         <div>
-          The expected movement of dollars, attestations, and controls is defined in
-          <a href="map.json"><code>system/map.json</code></a>. It’s public and versioned; anyone can diff it
+          Expected movement of dollars, attestations, and controls is defined in
+          <a href="/abe---flag/system/map.json"><code>system/map.json</code></a>. It’s public and versioned; anyone can diff it
           against reality. Any mismatch → someone’s <strong>out of bounds</strong>.
         </div>
       </div>
@@ -140,15 +148,15 @@
     </div>
 
     <div class="small">
-      This viewer loads <code>system/map.json</code> (or <code>/abe---flag/system/map.json</code> fallback), and renders its
-      <em>flows</em> array as a verifiable chain-of-custody: <strong>from → to → control → evidence</strong>.
+      This viewer loads <code>system/map.json</code> (or <code>/abe---flag/system/map.json</code> fallback) and renders its
+      <em>flows</em> array as verifiable chain-of-custody: <strong>from → to → control → evidence</strong>.
     </div>
 
-    <table id="map-table" class="map"></table>
+    <table id="map-table" class="map" aria-label="System flows table"></table>
 
     <div style="margin-top:10px">
-      <button id="btn-download" class="btn">Download Snapshot (JSON)</button>
-      <button id="btn-reload" class="btn">Reload Map</button>
+      <button id="btn-download" class="btn-ghost">Download Snapshot (JSON)</button>
+      <button id="btn-reload" class="btn-ghost">Reload Map</button>
     </div>
   </section>
 
@@ -156,19 +164,17 @@
     <h2>🔒 Integrity Checklist</h2>
     <ul>
       <li>All map entries include <code>from</code>, <code>to</code>, <code>control</code>, and <code>evidence</code> fields.</li>
-      <li>Evidence URLs resolve (HTTP 200) or are embedded hashes/IDs (IPFS, SHA-256, or notarized docs).</li>
+      <li>Evidence URLs resolve (HTTP 200) or are embedded hashes/IDs (IPFS, SHA-256, notarized docs).</li>
       <li>Budget entries in <code>cibs/auto_budget.csv</code> match the <code>to</code> recipients defined in the map.</li>
       <li>Any redaction is additive (never destructive); original records remain addressable.</li>
       <li>Every edit to <code>map.json</code> is attributed in Git history (authorship, time, diff).</li>
     </ul>
-    <p class="small">
-      Result: a tamper-evident public record of value flow that communities can audit without gatekeepers.
-    </p>
+    <p class="small">Result: a tamper-evident public record of value flow that communities can audit without gatekeepers.</p>
   </section>
 
 </main>
 
-<!-- ABE patch scripts -->
+<!-- Optional patch scripts -->
 <script src="/abe---flag/abe-patch/assets/abe-nav.js"></script>
 <script src="/abe---flag/abe-patch/assets/abe-definitions.js"></script>
 
@@ -197,8 +203,7 @@
     updatedEl.textContent = '—';
     table.innerHTML =
       '<thead><tr><th>From</th><th>To</th><th>Control</th><th>Evidence</th></tr></thead>' +
-      '<tbody><tr><td colspan="4" class="small">No <code>system/map.json</code> present yet. ' +
-      'Create one to define expected flows.</td></tr></tbody>';
+      '<tbody><tr><td colspan="4" class="small">No <code>system/map.json</code> present yet. Create one to define expected flows.</td></tr></tbody>';
   }
 
   function render(map){
@@ -208,7 +213,6 @@
     const when = map.updated || map.last_updated || map.timestamp || '';
     updatedEl.textContent = when || 'unspecified';
 
-    // Table
     const head = '<thead><tr><th>From</th><th>To</th><th>Control</th><th>Evidence</th></tr></thead>';
     const rows = flows.map(f => {
       const ev = Array.isArray(f.evidence) ? f.evidence : (f.evidence ? [f.evidence] : []);
@@ -233,9 +237,7 @@
 
     table.innerHTML = head + '<tbody>' + (rows || '<tr><td colspan="4" class="small">No flows yet.</td></tr>') + '</tbody>';
 
-    // Wire buttons
-    const btnDl = document.getElementById('btn-download');
-    btnDl.onclick = () => {
+    document.getElementById('btn-download').onclick = () => {
       const snapshot = {
         generated: new Date().toISOString(),
         source: map.__src || 'map.json',
@@ -249,8 +251,7 @@
       URL.revokeObjectURL(url);
     };
 
-    const btnReload = document.getElementById('btn-reload');
-    btnReload.onclick = () => { init(); };
+    document.getElementById('btn-reload').onclick = () => { init(); };
   }
 
   async function init(){
@@ -258,7 +259,6 @@
     flowsEl.textContent = '—';
     updatedEl.textContent = '—';
     table.innerHTML = '';
-
     const map = await loadMap();
     if (!map) renderEmpty(); else render(map);
   }
