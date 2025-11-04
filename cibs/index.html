@@ -11,7 +11,7 @@
   .card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:12px;padding:1rem 1.25rem;margin:1rem 0}
   table{width:100%;border-collapse:collapse;margin-top:.75rem}
   th,td{padding:.6rem .55rem;border-bottom:1px solid rgba(255,255,255,.08)}
-  th{font-weight:600;color:#9fd7ff;text-align:left}
+  th{font-weight:600;color:#9fd7ff;text-align:left;background:#101520;position:sticky;top:0}
   td.num{text-align:right;font-variant-numeric:tabular-nums}
   .muted{color:#9aa4b2;font-size:.9rem}
   .ok{color:#6fe3b5}.warn{color:#ffda6b}.err{color:#ff7a7a}
@@ -19,14 +19,16 @@
   .grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem} @media(max-width:760px){.grid{grid-template-columns:1fr}}
   .kpi{display:flex;justify-content:space-between;align-items:baseline;padding:.65rem .8rem;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px}
   .kpi .label{color:#b9c6d5;font-size:.9rem}
-  .kpi .value{font-size:1.1rem;font-weight:700}
-  .errbox{background:rgba(255,0,0,.08);border:1px solid rgba(255,0,0,.25);padding:.75rem;border-radius:10px}
+  .kpi .value{font-size:1.05rem;font-weight:700}
+  .pill{display:inline-block;padding:.15rem .5rem;border-radius:999px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);font-size:.75rem}
+  .dbg{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.85rem;background:#0f141b;border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:.6rem;white-space:pre-wrap}
 </style>
 </head>
 <body>
 <main>
   <p class="muted"><a href="../index.html">← Return to Home</a></p>
   <h1>CIBS — Community Integrity Budget System</h1>
+
   <div class="card">
     <div class="grid">
       <div class="kpi"><span class="label">SpecDocs</span><span class="value"><a href="model.md">cibs/model.md</a></span></div>
@@ -40,6 +42,11 @@
     <span id="statusText" class="warn">Looking for <code>auto_budget.csv</code>…</span>
   </div>
 
+  <div id="debug" class="card" style="display:none">
+    <h3 style="margin:.25rem 0;">Debug</h3>
+    <div class="dbg" id="dbgBox">Loading…</div>
+  </div>
+
   <div class="card" id="tableCard" style="display:none">
     <h3 style="margin:.25rem 0 0;">Auto Budget Preview</h3>
     <table id="tbl">
@@ -49,71 +56,104 @@
     </table>
     <p class="muted" id="note"></p>
   </div>
-
-  <div id="errCard" class="card" style="display:none">
-    <div class="errbox">
-      <strong class="err">Couldn’t load <code>auto_budget.csv</code>.</strong>
-      <div id="errMsg" class="muted" style="margin-top:.35rem"></div>
-      <p class="muted" style="margin:.5rem 0 0">Check that the file exists at <code>/cibs/auto_budget.csv</code> and that the header is <code>category,value</code> with numbers like <code>342000</code> (no $ or commas).</p>
-    </div>
-  </div>
 </main>
 
 <script>
+function fmtUSD(n){
+  try{ return new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',maximumFractionDigits:0}).format(n||0); }
+  catch(e){ return '$'+(n||0).toLocaleString('en-US'); }
+}
+// RFC4180-capable CSV parser (handles quotes, commas, CRLF)
+function parseCSV(text){
+  const out=[]; let row=[], cur='', inQ=false;
+  // strip BOM if present
+  if (text.charCodeAt(0)===0xFEFF) text = text.slice(1);
+  for (let i=0;i<text.length;i++){
+    const c=text[i], n=text[i+1];
+    if (inQ){
+      if (c === '"' && n === '"'){ cur+='"'; i++; }
+      else if (c === '"'){ inQ=false; }
+      else { cur+=c; }
+    } else {
+      if (c === '"'){ inQ=true; }
+      else if (c === ','){ row.push(cur); cur=''; }
+      else if (c === '\n'){ row.push(cur); out.push(row); row=[]; cur=''; }
+      else if (c === '\r'){ /* ignore CR */ }
+      else { cur+=c; }
+    }
+  }
+  if (cur.length || row.length){ row.push(cur); out.push(row); }
+  // trim trailing blank
+  while (out.length && out[out.length-1].every(v=>v==='')) out.pop();
+  return out;
+}
+
 (async () => {
   const statusEl = document.getElementById('statusText');
   const tableCard = document.getElementById('tableCard');
-  const errCard = document.getElementById('errCard');
-  const errMsg = document.getElementById('errMsg');
+  const dbg = document.getElementById('debug');
+  const dbgBox = document.getElementById('dbgBox');
 
-  const paths = ['./auto_budget.csv','/cibs/auto_budget.csv'];
+  const paths = ['./auto_budget.csv','/cibs/auto_budget.csv','auto_budget.csv'];
   let text=null, usedPath='';
   for (const p of paths) {
     try {
-      const r = await fetch(p,{cache:'no-store'});
+      const r = await fetch(p+'?v='+(Date.now()), {cache:'no-store'});
       if (r.ok) { text = await r.text(); usedPath = p; break; }
     } catch(e){ /* try next */ }
   }
 
+  dbg.style.display='block';
   if (!text) {
     statusEl.textContent = 'Not generated';
     statusEl.className = 'err';
-    errCard.style.display = 'block';
-    errMsg.textContent = 'Fetch failed at ./auto_budget.csv and /cibs/auto_budget.csv.';
+    dbgBox.textContent = 'Fetch failed at ./auto_budget.csv, /cibs/auto_budget.csv, auto_budget.csv.\n' +
+                         'Ensure the file exists at /cibs/auto_budget.csv (exact name, lowercase).';
     return;
   }
+
+  const rawLen = text.length;
+  const rows = parseCSV(text.trim());
+  const hdr = (rows[0]||[]).map(h=>h.trim().toLowerCase());
+  const ci = hdr.indexOf('category');
+  const vi = hdr.indexOf('value');
+
+  // Debug info
+  dbgBox.textContent =
+    'Loaded from: ' + usedPath + '\n' +
+    'Bytes read: ' + rawLen + '\n' +
+    'Header: [' + hdr.join(', ') + ']\n' +
+    'Row count (incl. header): ' + rows.length + '\n';
+
+  if (ci === -1 || vi === -1) {
+    statusEl.textContent = 'Header error';
+    statusEl.className = 'err';
+    dbgBox.textContent += 'ERROR: Header must include "category" and "value".';
+    return;
+  }
+
+  const data = rows.slice(1).filter(r => r && r.length);
+  let sum = 0;
+  const parsed = data.map((r, idx) => {
+    const cat = (r[ci]||'').trim();
+    const raw = (r[vi]||'').trim().replace(/\$/g,'').replace(/,/g,'').replace(/\s+/g,'');
+    const val = Number(raw);
+    if (Number.isFinite(val)) sum += val;
+    return {cat, val: Number.isFinite(val) ? val : 0, raw};
+  });
+
+  // Append more debug details
+  dbgBox.textContent += 'Parsed rows: ' + parsed.length + '\n' +
+                        'First 3 values: ' + parsed.slice(0,3).map(x=>x.val).join(', ') + '\n' +
+                        'Computed SUM: ' + sum + '\n';
 
   statusEl.textContent = `Loaded from ${usedPath}`;
   statusEl.className = 'ok';
 
-  // CSV → rows
-  const lines = text.trim().split(/\r?\n/);
-  if (!lines.length) return;
-
-  const head = lines[0].split(',').map(s=>s.trim().toLowerCase());
-  const ci = head.indexOf('category');
-  const vi = head.indexOf('value');
-  if (ci === -1 || vi === -1) {
-    errCard.style.display = 'block';
-    errMsg.textContent = 'Header must include "category,value".';
-    return;
-  }
-
-  const rows = [];
-  for (let i=1;i<lines.length;i++){
-    if (!lines[i].trim()) continue;
-    const cols = lines[i].split(','); // simple CSV (no quoted commas expected)
-    const cat = (cols[ci]||'').trim();
-    const raw = (cols[vi]||'').trim().replace(/\$/g,'').replace(/,/g,'');
-    const val = Number(raw);
-    rows.push({cat, val: Number.isFinite(val)?val:0});
-  }
-
-  const sum = rows.reduce((a,r)=>a+(r.val||0),0);
+  // Render table
   const tbody = document.querySelector('#tbl tbody');
   tbody.innerHTML = '';
-
-  rows.forEach(r=>{
+  parsed.forEach(r=>{
     const tr = document.createElement('tr');
     const tdC = document.createElement('td'); tdC.textContent = r.cat || '—';
     const tdV = document.createElement('td'); tdV.className='num'; tdV.textContent = fmtUSD(r.val);
@@ -126,14 +166,9 @@
 
   document.getElementById('sumCell').textContent = fmtUSD(sum);
   document.getElementById('pctCell').textContent = '100%';
+  document.getElementById('note').textContent = 'Header used: category,value · Extra columns ignored · $ and commas stripped.';
   tableCard.style.display = 'block';
-  document.getElementById('note').textContent = 'Header used: category,value · Extra columns are ignored. Numbers are sanitized (no $ / commas).';
 })();
-
-function fmtUSD(n){
-  try{ return new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',maximumFractionDigits:0}).format(n||0); }
-  catch(e){ return '$'+(n||0).toLocaleString('en-US'); }
-}
 </script>
 </body>
 </html>
