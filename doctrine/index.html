@@ -8,14 +8,15 @@
   <style>
     body{background:#0b0d12;color:#e0e0e0;font-family:system-ui,sans-serif;line-height:1.6;margin:0}
     header{background:linear-gradient(90deg,#11151c,#1b1e25);border-bottom:1px solid rgba(255,255,255,.05);padding:1.5rem 2rem;text-align:center}
-    h1{color:#5ddfff;font-size:1.8rem;margin-bottom:.5rem;font-weight:700}
-    h2{color:#ffa559;font-size:1.2rem;margin-top:1.5rem;margin-bottom:.5rem;font-weight:600}
+    h1{color:#5ddfff;font-size:1.8rem;margin:.2rem 0 .5rem;font-weight:700}
+    h2{color:#ffa559;font-size:1.2rem;margin:1.5rem 0 .5rem;font-weight:600}
     main{max-width:900px;margin:2rem auto 4rem;padding:0 1rem}
-    .nav-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1.5rem;margin-top:1.25rem}
-    .cardlink{display:block;background:#16181d;border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:1.2rem 1.5rem;line-height:1.5;text-decoration:none;color:#e8e8e8;transition:transform .15s ease,border-color .15s ease}
-    .cardlink:hover{transform:translateY(-4px);border-color:#5ddfff}
-    .cardlink-title{font-weight:600;color:#5ddfff;font-size:1.05rem;margin-bottom:.3rem}
-    .cardlink-desc{color:#c8c8c8;font-size:.9rem;margin-bottom:.6rem}
+    .nav-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1.5rem;margin-top:1rem}
+    .card{background:#16181d;border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:1.1rem 1.3rem}
+    .title{color:#5ddfff;font-weight:600;margin-bottom:.35rem}
+    .desc{color:#c8c8c8;font-size:.92rem;margin-bottom:.6rem}
+    .links a{display:inline-block;margin-right:.6rem;margin-top:.25rem;color:#80bfff;text-decoration:none;border-bottom:1px dotted #80bfff}
+    .links a:hover{border-bottom-color:transparent}
     footer{margin-top:3rem;text-align:center;font-size:.85rem;color:#888;line-height:1.5;padding-bottom:3rem}
     footer a{color:#5ddfff;text-decoration:none}
   </style>
@@ -23,10 +24,9 @@
 <body>
   <header>
     <h1>📜 Foundational Doctrines</h1>
-    <p>The A.B.E. framework is grounded in three primary doctrines: lawful reconstruction (A.B.E./CRRA), constitutional fidelity, and void ab initio correction.</p>
+    <p>The four core doctrines that anchor A.B.E.: ABE Movement, CRRA, Constitutional Fidelity, and Void ab Initio.</p>
   </header>
 
-  <!-- Modules ribbon (optional but helpful) -->
   <nav style="max-width:980px;margin:10px auto 0;padding:0 1rem">
     <div style="display:flex;flex-wrap:wrap;gap:8px">
       <a href="/abe---flag/index.html" class="abe-badge">Home</a>
@@ -35,7 +35,6 @@
       <a href="/abe---flag/cibs/index.html" class="abe-badge">CIBS</a>
       <a href="/abe---flag/system/index.html" class="abe-badge">System Map</a>
       <a href="/abe---flag/integration/index.html" class="abe-badge">Integration</a>
-      <a href="/abe---flag/macro/index.html" class="abe-badge">Macro</a>
       <a href="/abe---flag/doctrine/index.html" class="abe-badge">Doctrine</a>
     </div>
   </nav>
@@ -44,33 +43,44 @@
     <section>
       <h2>Core Restoration Doctrines</h2>
       <div class="nav-grid">
-        <a class="cardlink" href="./abe-crra-rebuild.pdf" target="_blank">
-          <div class="cardlink-title">🇺🇸 A.B.E. / CRRA / Rebuild Together Plan</div>
-          <div class="cardlink-desc">Master restoration blueprint aligning A.B.E. with the Citizens Rights Restoration Act (CRRA). Lawful reinvestment & economic repair strategy.</div>
-          <strong>📄 View Doctrine (PDF)</strong>
-        </a>
 
-        <a class="cardlink" href="./constitutional-fidelity.pdf" target="_blank">
-          <div class="cardlink-title">⚖ Constitutional Fidelity</div>
-          <div class="cardlink-desc">Fidelity to the Constitution as legal & economic security. Shows how deviation creates systemic decay and measurable loss.</div>
-          <strong>📄 View Doctrine (PDF)</strong>
-        </a>
+        <div class="card">
+          <div class="title">🇺🇸 ABE — A Movement</div>
+          <div class="desc">The narrative and full framework statement that launches the lawful restoration program and economic model.</div>
+          <div class="links">
+            <a href="./abe-a-movement.html">View HTML</a>
+            <a href="./abe-a-movement.pdf" target="_blank">Download PDF</a>
+          </div>
+        </div>
 
-        <a class="cardlink" href="./void-ab-initio.pdf" target="_blank">
-          <div class="cardlink-title">⛓ Void ab Initio</div>
-          <div class="cardlink-desc">Unconstitutional acts are void from inception. Mechanism to nullify ultra vires doctrines and restore legitimate authority.</div>
-          <strong>📄 View Doctrine (PDF)</strong>
-        </a>
+        <div class="card">
+          <div class="title">🛡 CRRA — Citizens Rights Restoration Act</div>
+          <div class="desc">The legislative remedy that restores constitutional boundaries and bans unlawful enforcement practices.</div>
+          <div class="links">
+            <a href="./crra-citizens-rights-restoration-act.html">View HTML</a>
+            <a href="./crra-citizens-rights-restoration-act.pdf" target="_blank">Download PDF</a>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="title">⚖ Constitutional Fidelity</div>
+          <div class="desc">Defines fidelity to the Constitution as the engine of economic stability and national security.</div>
+          <div class="links">
+            <a href="./constitutional-fidelity.html">View HTML</a>
+            <a href="./constitutional-fidelity.pdf" target="_blank">Download PDF</a>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="title">⛓ Void ab Initio</div>
+          <div class="desc">Explains why unconstitutional acts are null from inception and how to unwind illegitimate doctrines.</div>
+          <div class="links">
+            <a href="./void-ab-initio.html">View HTML</a>
+            <a href="./void-ab-initio.pdf" target="_blank">Download PDF</a>
+          </div>
+        </div>
+
       </div>
-    </section>
-
-    <section>
-      <h2>Interconnected Framework</h2>
-      <p>These doctrines plug directly into the engines—<a href="../ciri/index.html">CIRI</a>, <a href="../cibs/index.html">CIBS</a>, and <a href="../cii/index.html">CII</a>—to measure harm and automate recovery.</p>
-      <pre style="background:rgba(255,255,255,.05);padding:1rem;border-radius:8px;">
-[A.B.E./CRRA] → [Constitutional Fidelity] → [Void ab Initio]
-                        ↘ feeds into [ CIRI → CIBS → CII → System Map ]
-      </pre>
     </section>
   </main>
 
