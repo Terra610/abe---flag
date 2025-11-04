@@ -1,174 +1,167 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>CIBS — Community Integrity Budget System</title>
-<style>
-  body{background:#0b0d12;color:#e0e0e0;font-family:system-ui,Segoe UI,Roboto,sans-serif;margin:0}
-  main{max-width:980px;margin:2rem auto;padding:0 1rem 3rem}
-  h1{color:#5ddfff;margin:.25rem 0 1rem}
-  .card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:12px;padding:1rem 1.25rem;margin:1rem 0}
-  table{width:100%;border-collapse:collapse;margin-top:.75rem}
-  th,td{padding:.6rem .55rem;border-bottom:1px solid rgba(255,255,255,.08)}
-  th{font-weight:600;color:#9fd7ff;text-align:left;background:#101520;position:sticky;top:0}
-  td.num{text-align:right;font-variant-numeric:tabular-nums}
-  .muted{color:#9aa4b2;font-size:.9rem}
-  .ok{color:#6fe3b5}.warn{color:#ffda6b}.err{color:#ff7a7a}
-  a{color:#80bfff;text-decoration:none} a:hover{text-decoration:underline}
-  .grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem} @media(max-width:760px){.grid{grid-template-columns:1fr}}
-  .kpi{display:flex;justify-content:space-between;align-items:baseline;padding:.65rem .8rem;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px}
-  .kpi .label{color:#b9c6d5;font-size:.9rem}
-  .kpi .value{font-size:1.05rem;font-weight:700}
-  .pill{display:inline-block;padding:.15rem .5rem;border-radius:999px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);font-size:.75rem}
-  .dbg{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.85rem;background:#0f141b;border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:.6rem;white-space:pre-wrap}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CIBS — Community Integrity Budget System</title>
+  <style>
+    :root{
+      --bg:#0b0d12; --panel:#141820; --panel-2:#0f131a;
+      --text:#e6e6e6; --muted:#97a3b3; --line:rgba(255,255,255,.08);
+      --brand:#5ddfff; --accent:#fff750; --ok:#4bd28f; --warn:#ffa559;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+    header{position:sticky;top:0;z-index:2;background:linear-gradient(90deg,#11151c,#1b1e25);border-bottom:1px solid var(--line);padding:.85rem 1rem}
+    header .wrap{max-width:1040px;margin:0 auto;display:flex;align-items:center;gap:1rem}
+    a{color:#80bfff;text-decoration:none}
+    a:hover{text-decoration:underline}
+    .badge{margin-left:auto;font-size:.8rem;color:#9fb3c8}
+    .back{font-size:.9rem}
+    main{max-width:1040px;margin:1.25rem auto 4rem;padding:0 1rem}
+    h1{color:var(--brand);margin:.2rem 0 .4rem;font-size:1.6rem}
+    p.lead{color:#c8d2df;margin:.25rem 0 .75rem}
+    .cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:16px 0 22px}
+    .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px}
+    .card h3{margin:0 0 .35rem;font-size:.95rem;color:#dfe9f6}
+    .kv{display:flex;gap:8px;align-items:baseline}
+    .kv .label{color:var(--muted);font-size:.85rem}
+    .kv .value{font-weight:600}
+    .ok{color:var(--ok)} .warn{color:var(--warn)}
+    section{background:var(--panel-2);border:1px solid var(--line);border-radius:12px;padding:16px;margin-top:18px}
+    section h2{margin:0 0 .75rem;color:#dfe9f6;font-size:1.05rem}
+    .actions{display:flex;flex-wrap:wrap;gap:.6rem;margin:.35rem 0 0}
+    .btn{display:inline-block;background:#1b2230;border:1px solid var(--line);padding:.5rem .7rem;border-radius:9px;font-size:.9rem}
+    .btn:hover{background:#20283a}
+    table{width:100%;border-collapse:collapse;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+    thead th{background:#18202b;color:#cfe6ff;font-weight:600;text-align:left;padding:10px;border-bottom:1px solid var(--line)}
+    tbody td{padding:10px;border-bottom:1px solid var(--line)}
+    tbody tr:last-child td{border-bottom:none}
+    .num{text-align:right;font-variant-numeric:tabular-nums}
+    .total{display:flex;justify-content:flex-end;margin:.75rem 0 0;color:#eaf3ff}
+    .total strong{margin-left:.5rem;color:#fff}
+    .hint{color:#9fb3c8;font-size:.9rem;margin-top:.5rem}
+    footer{margin:32px 0 24px;text-align:center;color:#8fa1b6;font-size:.85rem}
+    @media (max-width:760px){.cards{grid-template-columns:1fr}}
+  </style>
 </head>
 <body>
-<main>
-  <p class="muted"><a href="../index.html">← Return to Home</a></p>
-  <h1>CIBS — Community Integrity Budget System</h1>
-
-  <div class="card">
-    <div class="grid">
-      <div class="kpi"><span class="label">SpecDocs</span><span class="value"><a href="model.md">cibs/model.md</a></span></div>
-      <div class="kpi"><span class="label">Template</span><span class="value"><a href="budget_template.csv">cibs/budget_template.csv</a></span></div>
+  <header>
+    <div class="wrap">
+      <a class="back" href="../index.html">← Return to Home</a>
+      <div class="badge">ABE Patch Active</div>
     </div>
-    <p class="muted" style="margin-top:.6rem">When CIRI runs, it writes to <code>/cibs/auto_budget.csv</code>. This page reads that file and renders the allocation.</p>
-  </div>
+  </header>
 
-  <div id="status" class="card">
-    <strong>Status:</strong>
-    <span id="statusText" class="warn">Looking for <code>auto_budget.csv</code>…</span>
-  </div>
+  <main>
+    <h1>💰 CIBS — Community Integrity Budget System</h1>
+    <p class="lead">Turns CIRI’s <em>Total Impact</em> into a transparent, auditable <strong>Recovery Pool</strong> allocation.</p>
 
-  <div id="debug" class="card" style="display:none">
-    <h3 style="margin:.25rem 0;">Debug</h3>
-    <div class="dbg" id="dbgBox">Loading…</div>
-  </div>
+    <!-- Status cards -->
+    <div class="cards" id="status-cards">
+      <div class="card">
+        <h3>SpecDocs</h3>
+        <div class="kv"><span class="label">Model</span><span class="value"><a href="model.md">cibs/model.md</a></span></div>
+      </div>
+      <div class="card">
+        <h3>Template</h3>
+        <div class="kv"><span class="label">CSV</span><span class="value"><a href="budget_template.csv">budget_template.csv</a></span></div>
+      </div>
+      <div class="card">
+        <h3>Auto Budget</h3>
+        <div class="kv"><span class="label">Status</span><span class="value" id="ab-status" class="warn">Checking…</span></div>
+      </div>
+    </div>
 
-  <div class="card" id="tableCard" style="display:none">
-    <h3 style="margin:.25rem 0 0;">Auto Budget Preview</h3>
-    <table id="tbl">
-      <thead><tr><th>Category</th><th class="num">Value (USD)</th><th class="num">Share</th></tr></thead>
-      <tbody></tbody>
-      <tfoot><tr><th>Total</th><th class="num" id="sumCell">—</th><th class="num" id="pctCell">100%</th></tr></tfoot>
-    </table>
-    <p class="muted" id="note"></p>
-  </div>
-</main>
+    <!-- CSV preview -->
+    <section>
+      <h2>📄 Auto Budget Preview (<code>auto_budget.csv</code>)</h2>
+      <div class="actions">
+        <a class="btn" href="auto_budget.csv">Open CSV</a>
+        <a class="btn" href="../ciri/index.html">Go to CIRI</a>
+        <a class="btn" href="../integration/index.html">Integration Layer</a>
+        <a class="btn" href="../system/index.html">System Map</a>
+      </div>
 
-<script>
-function fmtUSD(n){
-  try{ return new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',maximumFractionDigits:0}).format(n||0); }
-  catch(e){ return '$'+(n||0).toLocaleString('en-US'); }
-}
-// RFC4180-capable CSV parser (handles quotes, commas, CRLF)
-function parseCSV(text){
-  const out=[]; let row=[], cur='', inQ=false;
-  // strip BOM if present
-  if (text.charCodeAt(0)===0xFEFF) text = text.slice(1);
-  for (let i=0;i<text.length;i++){
-    const c=text[i], n=text[i+1];
-    if (inQ){
-      if (c === '"' && n === '"'){ cur+='"'; i++; }
-      else if (c === '"'){ inQ=false; }
-      else { cur+=c; }
-    } else {
-      if (c === '"'){ inQ=true; }
-      else if (c === ','){ row.push(cur); cur=''; }
-      else if (c === '\n'){ row.push(cur); out.push(row); row=[]; cur=''; }
-      else if (c === '\r'){ /* ignore CR */ }
-      else { cur+=c; }
+      <div id="table-wrap" style="margin-top:.85rem"></div>
+      <div class="total" id="total-row" hidden>
+        Total Allocation: <strong id="total-val">$0</strong>
+      </div>
+      <p class="hint" id="hint"></p>
+    </section>
+
+    <footer>
+      CIBS reads <code>auto_budget.csv</code> written by CIRI and displays it here for public verification.
+      All numbers are preliminary until notarized in the Integration Layer.
+    </footer>
+  </main>
+
+  <script>
+    // small CSV parser (handles plain commas; trims spaces)
+    function parseCSV(text){
+      const lines = text.trim().split(/\r?\n/).filter(Boolean);
+      return lines.map(l => l.split(',').map(x => x.trim()));
     }
-  }
-  if (cur.length || row.length){ row.push(cur); out.push(row); }
-  // trim trailing blank
-  while (out.length && out[out.length-1].every(v=>v==='')) out.pop();
-  return out;
-}
+    function fmtUSD(n){
+      try { return new Intl.NumberFormat(undefined,{style:'currency',currency:'USD',maximumFractionDigits:0}).format(n); }
+      catch { return '$' + (Math.round(n)||0).toLocaleString(); }
+    }
 
-(async () => {
-  const statusEl = document.getElementById('statusText');
-  const tableCard = document.getElementById('tableCard');
-  const dbg = document.getElementById('debug');
-  const dbgBox = document.getElementById('dbgBox');
+    async function loadAutoBudget(){
+      const statusEl = document.getElementById('ab-status');
+      const tableWrap = document.getElementById('table-wrap');
+      const totalWrap = document.getElementById('total-row');
+      const totalVal  = document.getElementById('total-val');
+      const hintEl    = document.getElementById('hint');
 
-  const paths = ['./auto_budget.csv','/cibs/auto_budget.csv','auto_budget.csv'];
-  let text=null, usedPath='';
-  for (const p of paths) {
-    try {
-      const r = await fetch(p+'?v='+(Date.now()), {cache:'no-store'});
-      if (r.ok) { text = await r.text(); usedPath = p; break; }
-    } catch(e){ /* try next */ }
-  }
+      try{
+        const res = await fetch('auto_budget.csv', {cache:'no-store'});
+        if(!res.ok){ throw new Error('not-found'); }
+        const text = await res.text();
+        if(!text.trim()){ throw new Error('empty'); }
 
-  dbg.style.display='block';
-  if (!text) {
-    statusEl.textContent = 'Not generated';
-    statusEl.className = 'err';
-    dbgBox.textContent = 'Fetch failed at ./auto_budget.csv, /cibs/auto_budget.csv, auto_budget.csv.\n' +
-                         'Ensure the file exists at /cibs/auto_budget.csv (exact name, lowercase).';
-    return;
-  }
+        // parse & render
+        const rows = parseCSV(text);
+        const headers = rows[0] || [];
+        const data = rows.slice(1);
 
-  const rawLen = text.length;
-  const rows = parseCSV(text.trim());
-  const hdr = (rows[0]||[]).map(h=>h.trim().toLowerCase());
-  const ci = hdr.indexOf('category');
-  const vi = hdr.indexOf('value');
+        // status → OK
+        statusEl.textContent = 'Present';
+        statusEl.classList.add('ok');
 
-  // Debug info
-  dbgBox.textContent =
-    'Loaded from: ' + usedPath + '\n' +
-    'Bytes read: ' + rawLen + '\n' +
-    'Header: [' + hdr.join(', ') + ']\n' +
-    'Row count (incl. header): ' + rows.length + '\n';
+        // build table
+        let html = '<table><thead><tr>';
+        headers.forEach(h => html += `<th>${h}</th>`);
+        html += '</tr></thead><tbody>';
 
-  if (ci === -1 || vi === -1) {
-    statusEl.textContent = 'Header error';
-    statusEl.className = 'err';
-    dbgBox.textContent += 'ERROR: Header must include "category" and "value".';
-    return;
-  }
+        let total = 0;
+        data.forEach(r => {
+          const category = r[0] ?? '';
+          const rawVal = (r[1] ?? '').replace(/[^0-9.\-]/g,'');
+          const val = Number(rawVal || 0);
+          total += isFinite(val) ? val : 0;
+          html += `<tr><td>${category}</td><td class="num">${fmtUSD(val)}</td></tr>`;
+        });
 
-  const data = rows.slice(1).filter(r => r && r.length);
-  let sum = 0;
-  const parsed = data.map((r, idx) => {
-    const cat = (r[ci]||'').trim();
-    const raw = (r[vi]||'').trim().replace(/\$/g,'').replace(/,/g,'').replace(/\s+/g,'');
-    const val = Number(raw);
-    if (Number.isFinite(val)) sum += val;
-    return {cat, val: Number.isFinite(val) ? val : 0, raw};
-  });
+        html += '</tbody></table>';
+        tableWrap.innerHTML = html;
+        totalVal.textContent = fmtUSD(total);
+        totalWrap.hidden = false;
 
-  // Append more debug details
-  dbgBox.textContent += 'Parsed rows: ' + parsed.length + '\n' +
-                        'First 3 values: ' + parsed.slice(0,3).map(x=>x.val).join(', ') + '\n' +
-                        'Computed SUM: ' + sum + '\n';
+        hintEl.textContent = 'Numbers reflect the latest file in /cibs/auto_budget.csv. Update that CSV to change this view.';
+      }catch(err){
+        statusEl.textContent = 'Not generated';
+        statusEl.classList.add('warn');
+        tableWrap.innerHTML = `
+          <div style="padding:12px;border:1px dashed var(--line);border-radius:10px;background:#0f141b;">
+            No <code>auto_budget.csv</code> found yet. Run CIRI to generate it, or create one from
+            <a href="budget_template.csv">budget_template.csv</a>.
+          </div>`;
+        hintEl.textContent = 'Once CIRI writes auto_budget.csv, refresh this page to see the allocation table.';
+      }
+    }
 
-  statusEl.textContent = `Loaded from ${usedPath}`;
-  statusEl.className = 'ok';
-
-  // Render table
-  const tbody = document.querySelector('#tbl tbody');
-  tbody.innerHTML = '';
-  parsed.forEach(r=>{
-    const tr = document.createElement('tr');
-    const tdC = document.createElement('td'); tdC.textContent = r.cat || '—';
-    const tdV = document.createElement('td'); tdV.className='num'; tdV.textContent = fmtUSD(r.val);
-    const tdP = document.createElement('td'); tdP.className='num';
-    const pct = sum>0 ? (r.val/sum*100) : 0;
-    tdP.textContent = pct.toFixed(1)+'%';
-    tr.append(tdC,tdV,tdP);
-    tbody.appendChild(tr);
-  });
-
-  document.getElementById('sumCell').textContent = fmtUSD(sum);
-  document.getElementById('pctCell').textContent = '100%';
-  document.getElementById('note').textContent = 'Header used: category,value · Extra columns ignored · $ and commas stripped.';
-  tableCard.style.display = 'block';
-})();
-</script>
+    loadAutoBudget();
+  </script>
 </body>
 </html>
