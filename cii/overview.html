@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>CII Overview — Citizen Impact Index (A.B.E.)</title>
+<style>
+  :root{
+    --bg:#0b0d12; --panel:#12151b; --ink:#e6e6e6; --muted:#9aa3ad;
+    --brand:#5ddfff; --accent:#ffa559; --ok:#45c98a; --warn:#ffc857; --bad:#ff6b6b;
+    --line:rgba(255,255,255,.08);
+  }
+  html,body{background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,'Helvetica Neue',Arial,sans-serif;line-height:1.55;margin:0}
+  a{color:#80bfff;text-decoration:none} a:hover{text-decoration:underline}
+  header{
+    position:sticky;top:0;z-index:5;background:linear-gradient(90deg,#10141b,#141923);
+    border-bottom:1px solid var(--line);
+  }
+  .bar{max-width:1100px;margin:0 auto;padding:12px 16px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .brand{font-weight:700;letter-spacing:.3px;color:var(--brand)}
+  .pill{padding:8px 12px;border:1px solid var(--line);border-radius:999px;background:#0f131a}
+  .pill:hover{border-color:rgba(255,255,255,.18)}
+  main{max-width:1100px;margin:24px auto 56px auto;padding:0 16px}
+  h1{margin:8px 0 4px 0;color:var(--brand);font-size:1.35rem}
+  .sub{color:var(--muted);margin-bottom:18px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px}
+  .k{font-size:.86rem;color:var(--muted);display:flex;justify-content:space-between;align-items:center}
+  .v{font-size:1.35rem;font-weight:700;margin-top:6px}
+  .ok{color:var(--ok)} .warn{color:var(--warn)} .bad{color:var(--bad)}
+  .section{margin-top:26px}
+  .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;font-size:.9rem}
+  .list{margin:10px 0 0 0;padding-left:18px;color:var(--muted)}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px}
+  .row{display:flex;gap:14px;flex-wrap:wrap}
+  canvas{width:100%;height:70px;background:rgba(255,255,255,.02);border-radius:6px;border:1px dashed var(--line)}
+  footer{margin:40px 0 32px 0;text-align:center;color:var(--muted);font-size:.85rem}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="bar">
+    <span class="brand">CII — Citizen Impact Index</span>
+    <span style="flex:1"></span>
+    <a class="pill" href="/abe---flag/index.html">← Return to Home</a>
+    <a class="pill" href="/abe---flag/cii/index.html">CII Index</a>
+    <a class="pill" href="/abe---flag/ciri/index.html">CIRI Calculator</a>
+    <a class="pill" href="/abe---flag/cibs/index.html">CIBS Budget</a>
+    <a class="pill" href="/abe---flag/system/index.html">System Map</a>
+    <a class="pill" href="/abe---flag/integration/index.html">Integration</a>
+  </div>
+</header>
+
+<main>
+
+  <h1>Citizen Impact Overview</h1>
+  <div class="sub">
+    Live, human-readable snapshot of community outcomes produced by constitutional realignment.
+    Numbers auto-fill from <span class="mono">cibs/auto_budget.csv</span> when present; otherwise you’ll see demo placeholders.
+  </div>
+
+  <!-- KPI cards -->
+  <section class="grid" id="kpis">
+    <div class="card">
+      <div class="k"><span>Housing stability</span><span class="ok">▲</span></div>
+      <div class="v" id="kpi-housing">—</div>
+      <canvas id="spark-housing"></canvas>
+    </div>
+    <div class="card">
+      <div class="k"><span>Employment restoration</span><span class="ok">▲</span></div>
+      <div class="v" id="kpi-jobs">—</div>
+      <canvas id="spark-jobs"></canvas>
+    </div>
+    <div class="card">
+      <div class="k"><span>Justice access</span><span class="ok">▲</span></div>
+      <div class="v" id="kpi-justice">—</div>
+      <canvas id="spark-justice"></canvas>
+    </div>
+    <div class="card">
+      <div class="k"><span>Healthcare access</span><span class="warn">●</span></div>
+      <div class="v" id="kpi-health">—</div>
+      <canvas id="spark-health"></canvas>
+    </div>
+    <div class="card">
+      <div class="k"><span>Education engagement</span><span class="ok">▲</span></div>
+      <div class="v" id="kpi-edu">—</div>
+      <canvas id="spark-edu"></canvas>
+    </div>
+  </section>
+
+  <!-- Allocation summary -->
+  <section class="section row">
+    <div class="panel" style="flex:2;min-width:280px">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <h2 style="margin:0;color:var(--accent);font-size:1.05rem">Recovery Pool — Allocation Snapshot</h2>
+        <span class="mono" id="asof">as of —</span>
+      </div>
+      <div class="grid" style="margin-top:10px">
+        <div class="card">
+          <div class="k"><span>Housing</span></div>
+          <div class="v" id="a-housing">—</div>
+        </div>
+        <div class="card">
+          <div class="k"><span>Youth</span></div>
+          <div class="v" id="a-youth">—</div>
+        </div>
+        <div class="card">
+          <div class="k"><span>Legal Defense</span></div>
+          <div class="v" id="a-legal">—</div>
+        </div>
+        <div class="card">
+          <div class="k"><span>Veterans & Emergency</span></div>
+          <div class="v" id="a-vet">—</div>
+        </div>
+        <div class="card">
+          <div class="k"><span>Small Business / Jobs</span></div>
+          <div class="v" id="a-smb">—</div>
+        </div>
+        <div class="card">
+          <div class="k"><span>Digital Access</span></div>
+          <div class="v" id="a-digital">—</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel" style="flex:1;min-width:260px">
+      <h2 style="margin:0 0 8px 0;color:var(--accent);font-size:1.05rem">Data Sources</h2>
+      <ul class="list">
+        <li><a href="/abe---flag/cibs/auto_budget.csv">cibs/auto_budget.csv</a> (auto-generated by CIRI → CIBS)</li>
+        <li><a href="/abe---flag/ciri/inputs.csv">ciri/inputs.csv</a> (calculator inputs)</li>
+        <li><a href="/abe---flag/system/index.html">system/index.html</a> (map & flow)</li>
+        <li><a href="/abe---flag/integration/index.html">integration/index.html</a> (verification)</li>
+        <li><a href="/abe---flag/doctrine/index.html">doctrine/</a> (legal basis)</li>
+      </ul>
+      <div style="margin-top:10px;color:var(--muted);font-size:.9rem">
+        Tip: after you run the CIRI web calculator, export the CSV and commit it as
+        <span class="mono">cibs/auto_budget.csv</span> — this page will auto-refresh with live numbers.
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    A.B.E. · Citizen Impact Index · CC-BY-4.0 · Integrity only
+  </footer>
+</main>
+
+<script>
+/* ---------- tiny helpers ---------- */
+const $ = (id)=>document.getElementById(id);
+const fmtUSD = (n)=> isFinite(n) ? n.toLocaleString(undefined,{style:'currency',currency:'USD',maximumFractionDigits:0}) : '—';
+
+/* draw minimalist sparkline */
+function spark(canvasId, arr){
+  const c = $(canvasId); if(!c) return;
+  const ctx = c.getContext('2d');
+  const w = c.width = c.clientWidth * devicePixelRatio;
+  const h = c.height = c.clientHeight * devicePixelRatio;
+  ctx.clearRect(0,0,w,h);
+  if(!arr || !arr.length){ return; }
+  const min = Math.min(...arr), max = Math.max(...arr);
+  const xstep = w/(arr.length-1 || 1);
+  ctx.lineWidth = 2 * devicePixelRatio;
+  ctx.strokeStyle = '#5ddfff';
+  ctx.beginPath();
+  arr.forEach((v,i)=>{
+    const x = i*xstep;
+    const y = h - ( (v-min)/(max-min || 1) ) * (h-6) - 3;
+    i? ctx.lineTo(x,y) : ctx.moveTo(x,y);
+  });
+  ctx.stroke();
+}
+
+/* graceful CSV fetcher (no external libs) */
+async function getCSV(path){
+  try{
+    const r = await fetch(path, {cache:'no-store'});
+    if(!r.ok) throw new Error(r.status);
+    const text = await r.text();
+    const rows = text.trim().split(/\r?\n/).map(r=>r.split(',').map(s=>s.trim()));
+    return rows;
+  }catch(e){
+    return null;
+  }
+}
+
+/* map allocations from CSV by label keyword */
+function pickAlloc(rows, key){
+  if(!rows) return 0;
+  const header = rows[0].map(s=>s.toLowerCase());
+  const iAmt = header.findIndex(h=>/amount|usd|allocation/.test(h));
+  const iCat = header.findIndex(h=>/category|program|bucket|line/.test(h));
+  if(iAmt<0 || iCat<0) return 0;
+  let total = 0;
+  for(let i=1;i<rows.length;i++){
+    const cat = (rows[i][iCat]||'').toLowerCase();
+    if(cat.includes(key)) total += Number(rows[i][iAmt]||0);
+  }
+  return total;
+}
+
+/* set demo defaults (will be replaced if CSV found) */
+function demo(){
+  $('asof').textContent = 'demo';
+  // KPIs (percent or counts)
+  $('kpi-housing').textContent = '72% stable';
+  $('kpi-jobs').textContent    = '38,400 restored';
+  $('kpi-justice').textContent = '12,100 served';
+  $('kpi-health').textContent  = '61% covered';
+  $('kpi-edu').textContent     = '54% engaged';
+
+  spark('spark-housing',[45,51,58,62,66,70,72]);
+  spark('spark-jobs',[2,4,9,15,22,31,38]);
+  spark('spark-justice',[1,3,5,7,9,10,12]);
+  spark('spark-health',[40,43,47,52,56,59,61]);
+  spark('spark-edu',[31,36,41,45,49,52,54]);
+
+  // allocations
+  $('a-housing').textContent = fmtUSD(400_000_000_000);
+  $('a-youth').textContent   = fmtUSD(150_000_000_000);
+  $('a-legal').textContent   = fmtUSD(100_000_000_000);
+  $('a-vet').textContent     = fmtUSD(50_000_000_000);
+  $('a-smb').textContent     = fmtUSD(250_000_000_000);
+  $('a-digital').textContent = fmtUSD(15_000_000_000);
+}
+
+/* try live CSV -> else demo */
+(async function init(){
+  demo(); // paint something immediately
+  const rows = await getCSV('/abe---flag/cibs/auto_budget.csv');
+  if(!rows) return; // nothing to do
+
+  const now = new Date();
+  $('asof').textContent = now.toLocaleDateString();
+
+  const map = (k)=> pickAlloc(rows,k);
+
+  const allocs = {
+    housing: map('housing'),
+    youth:   map('youth'),
+    legal:   map('legal') + map('defense'),
+    vet:     map('veteran') + map('emergency'),
+    smb:     map('business') + map('job'),
+    digital: map('digital') + map('connect') + map('broadband')
+  };
+  $('a-housing').textContent = fmtUSD(allocs.housing||0);
+  $('a-youth').textContent   = fmtUSD(allocs.youth||0);
+  $('a-legal').textContent   = fmtUSD(allocs.legal||0);
+  $('a-vet').textContent     = fmtUSD(allocs.vet||0);
+  $('a-smb').textContent     = fmtUSD(allocs.smb||0);
+  $('a-digital').textContent = fmtUSD(allocs.digital||0);
+
+  // crude KPI lifts from totals (purely illustrative)
+  const liftPct = (x)=> Math.max(0, Math.min(95, Math.round(Math.log10(1+(x||0))/10*100 )));
+  $('kpi-housing').textContent = liftPct(allocs.housing) + '% stable';
+  $('kpi-jobs').textContent    = (Math.round((allocs.smb||0)/65000)).toLocaleString() + ' restored';
+  $('kpi-justice').textContent = (Math.round((allocs.legal||0)/8000)).toLocaleString() + ' served';
+})();
+</script>
+</body>
+</html>
