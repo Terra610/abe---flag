@@ -5,23 +5,35 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Void ab initio (Full Text)</title>
   <style>
-    body { background-color:#0b0d12; color:#e0e0e0; font-family:system-ui,sans-serif; line-height:1.6; margin:0; padding:0; }
-    header { background:#1b1e25; border-bottom:1px solid rgba(255,255,255,0.07); padding:1rem 2rem; text-align:center; }
-    h1 { color:#5ddfff; margin:0 0 .5rem 0; font-size:1.4rem; }
-    main { max-width:900px; margin:2rem auto 4rem auto; padding:0 1rem; }
-    article {
-      background:rgba(255,255,255,0.03);
-      border:1px solid rgba(255,255,255,0.07);
-      border-radius:10px;
-      padding:1rem 1.5rem;
-      font-size:.95rem;
-      color:#d0d0d0;
-      white-space:pre-wrap;
+    :root{
+      --bg:#0b0d12; --panel:#1b1e25; --ink:#e0e0e0; --muted:#9aa3ad;
+      --edge:rgba(255,255,255,.07); --edge2:rgba(255,255,255,.12);
+      --accent:#5ddfff; --warn:#ffa559;
     }
+    *{box-sizing:border-box}
+    body { background-color:var(--bg); color:var(--ink); font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif; line-height:1.6; margin:0; }
+    header { background:linear-gradient(90deg,#11151c,#1b1e25); border-bottom:1px solid var(--edge); padding:1rem 2rem; text-align:center; }
+    h1 { color:var(--accent); margin:0 0 .25rem 0; font-size:1.6rem; }
+    header p{margin:.25rem 0 0;color:var(--muted)}
+    main { max-width:900px; margin:2rem auto 4rem; padding:0 1rem; }
+    .card { background:rgba(255,255,255,.03); border:1px solid var(--edge); border-radius:10px; padding:1rem 1.25rem; }
+    article.card{ white-space:pre-wrap; font-size:.95rem; color:#d0d0d0; }
     a { color:#80bfff; text-decoration:none; }
     a:hover { text-decoration:underline; }
-    footer { margin-top:3rem; text-align:center; font-size:0.8rem; color:#888; line-height:1.5; padding-bottom:3rem; }
-    footer a { color:#5ddfff; text-decoration:none; }
+    .cta { display:flex; flex-wrap:wrap; gap:.5rem; margin:1rem 0 0; }
+    .btn { display:inline-block; border:1px solid var(--edge2); background:transparent; color:var(--ink);
+           padding:.55rem .9rem; border-radius:8px; text-decoration:none; cursor:pointer; }
+    .btn:hover{ border-color:var(--accent); }
+    .back { margin:1rem 0 0; text-align:center; color:var(--muted); }
+    footer { margin:3rem auto 3.5rem; text-align:center; font-size:.85rem; color:#888; padding:0 1rem; }
+    /* Print stylesheet so the PDF looks clean */
+    @media print{
+      header, .cta, .back, footer { display:none !important; }
+      main { max-width:100%; margin:0; padding:0; }
+      .card { border:none; border-radius:0; }
+      body { background:#fff; color:#000; }
+      article.card { color:#000; white-space:pre-wrap; }
+    }
   </style>
 </head>
 <body>
@@ -33,13 +45,16 @@
 
 <main>
 
-  <article>
+  <div class="cta">
+    <button class="btn" onclick="window.print()">📄 Save/Print as PDF</button>
+    <a class="btn" href="/abe---flag/doctrine/index.html">← Back to Doctrines</a>
+  </div>
+
+  <article class="card">
 Void ab Initio 
 
 Date: August 4, 2025
 Author:Terra Shouse 
-
-
 
 Qualified Immunity (QI), a judicially created doctrine, is void ab initio and void for vagueness, lacking any foundation in prior case law precedent or constitutional text, violating the Legislative Vesting Clause (Art. I, § 1), as courts cannot enact laws (Federalist No. 78, Hamilton; Marbury v. Madison, 1803, 5 U.S. 137). 
 
@@ -59,19 +74,11 @@ QI enables FMCSR misuse (49 CFR § 390.5), disrupting USPS post roads—economic
 
 Criminal charges under 18 U.S.C. §§ 241/242, supported by $1M+ damages (Watson v. City of Miami Beach, 1999, 177 F.3d 932), bypass QI, ensuring accountability (The American Butterfly Effect, p. 4).
 
-
 This work by Terra Shouse/@Terra2544646351
  is licensed under a Creative Commons Attribution 4.0 International License. http://creativecommons.org/licenses/by/4.0/
-
-
-
-
-
   </article>
 
-  <p style="margin-top:1rem;font-size:0.85rem;color:#888;text-align:center;">
-    ← <a href="index.html">Back to Doctrine Overview</a>
-  </p>
+  <p class="back">← <a href="/abe---flag/doctrine/index.html">Back to Doctrine Overview</a></p>
 
 </main>
 
