@@ -154,12 +154,22 @@
 
       const attLink = document.getElementById('att-link');
       const attMeta = document.getElementById('att-meta');
+
       if (attLink) attLink.href = 'audit_attestation.json';
-      if (attMeta && att?.period) {
-        attMeta.textContent = `${att.period} · ${att.reviewer || 'verified'}`;
+
+      // Format timestamp like "Verified Oct 2, 2025"
+      let formattedTime = '';
+      if (att?.timestamp_utc) {
+        const date = new Date(att.timestamp_utc);
+        const opts = { year: 'numeric', month: 'short', day: 'numeric' };
+        formattedTime = `Verified ${date.toLocaleDateString('en-US', opts)}`;
+      }
+
+      if (attMeta) {
+        attMeta.textContent = `${att.period || ''} · ${att.reviewer || 'verified'}${formattedTime ? ' · ' + formattedTime : ''}`;
       }
     } catch (_) {
-      // Leave as pending if no attestation found
+      // leave as pending
     }
   })();
   </script>
