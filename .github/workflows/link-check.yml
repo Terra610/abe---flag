@@ -1,0 +1,35 @@
+name: Link Check (repo + live site)
+
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: "17 4 * * *"   # daily at 04:17 UTC
+
+jobs:
+  lychee:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run lychee on repo
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: >
+            --verbose
+            --no-progress
+            --exclude-mail
+            --accept 200,204,429
+            --max-redirects 5
+            .
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Check live GitHub Pages site
+        run: |
+          curl -sS https://terra610.github.io/abe---flag/ -o /dev/null
+          npx -y lychee \
+            --verbose --no-progress --exclude-mail --accept 200,204,429 \
+            --max-redirects 5 \
+            https://terra610.github.io/abe---flag/
