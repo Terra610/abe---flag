@@ -13,23 +13,35 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # Scan links inside the repo (HTML + Markdown)
       - name: Run lychee on repo
         uses: lycheeverse/lychee-action@v2
         with:
           args: >
-            --verbose
             --no-progress
-            --exclude-mail
-            --accept 200,204,429
+            --verbose
+            --include-fragments
+            --timeout 30
+            --retry-count 3
             --max-redirects 5
+            --base https://terra610.github.io/abe---flag/
+            --exclude 'https://fonts.googleapis.com/*'
+            --exclude 'https://fonts.gstatic.com/*'
+            --exclude 'https://creativecommons.org/*'
+            --accept 200,206,301,302,303,307,308
             .
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      # Also scan the live Pages site
       - name: Check live GitHub Pages site
         run: |
-          curl -sS https://terra610.github.io/abe---flag/ -o /dev/null
           npx -y lychee \
-            --verbose --no-progress --exclude-mail --accept 200,204,429 \
-            --max-redirects 5 \
+            --no-progress --verbose \
+            --include-fragments \
+            --timeout 30 --retry-count 3 --max-redirects 5 \
+            --exclude 'https://fonts.googleapis.com/*' \
+            --exclude 'https://fonts.gstatic.com/*' \
+            --exclude 'https://creativecommons.org/*' \
+            --accept 200,206,301,302,303,307,308 \
             https://terra610.github.io/abe---flag/
