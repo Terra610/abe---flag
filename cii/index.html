@@ -54,27 +54,34 @@
   <main>
     <h1>🏗️ CII — Community Investment Interface</h1>
     <p class="lead">
-      CII is the “last-mile” interface that turns verified recovery value into **live, trackable projects**:
-      housing, clinics, food systems, broadband, transit, and workforce pipelines. It consumes <em>CIRI</em>
-      results, aligns with <em>CIBS</em> budgets, and publishes an auditable portfolio.
+      CII is the “last-mile” interface that turns verified recovery value into
+      <strong>live, trackable projects</strong>: housing, clinics, food systems, broadband,
+      transit, and workforce pipelines. It consumes <em>CIRI</em> results, aligns with
+      <em>CIBS</em> budgets, and publishes an auditable portfolio.
     </p>
 
     <!-- Status cards -->
     <div class="cards" id="status">
       <div class="card">
         <h3>Model</h3>
-        <div class="kv"><span class="label">/cii/model.json</span>
-          <span class="value" id="model-status" class="warn">Checking…</span></div>
+        <div class="kv">
+          <span class="label"><a href="model.json">/cii/model.json</a></span>
+          <span class="value" id="model-status">Checking…</span>
+        </div>
       </div>
       <div class="card">
         <h3>Portfolio</h3>
-        <div class="kv"><span class="label">/cii/portfolio.csv</span>
-          <span class="value" id="port-status" class="warn">Checking…</span></div>
+        <div class="kv">
+          <span class="label"><a href="portfolio.csv">/cii/portfolio.csv</a></span>
+          <span class="value" id="port-status">Checking…</span>
+        </div>
       </div>
       <div class="card">
         <h3>Integration</h3>
-        <div class="kv"><span class="label">Ready to publish to</span>
-          <span class="value"><a href="../integration/index.html">Integration Layer</a></span></div>
+        <div class="kv">
+          <span class="label">Ready to publish to</span>
+          <span class="value"><a href="../integration/index.html">Integration Layer</a></span>
+        </div>
       </div>
     </div>
 
@@ -90,8 +97,8 @@
         <a class="btn" href="portfolio.csv">Open portfolio.csv</a>
       </div>
       <p class="hint">
-        Don’t have files yet? Create a <code>model.json</code> describing project types and multipliers,
-        and a <code>portfolio.csv</code> listing projects (name, category, cost, households served, status).
+        Don’t have files yet? Create a <code>model.json</code> describing project categories and multipliers,
+        and a <code>portfolio.csv</code> listing projects (<code>name,category,cost_usd,households,status</code>).
       </p>
     </section>
 
@@ -106,20 +113,20 @@
     <section>
       <h2>🧬 How CII Fits</h2>
       <ul>
-        <li><strong>Inputs:</strong> CIRI’s <em>Total Recovery</em> and risk signals; community needs; ABE doctrine guardrails.</li>
+        <li><strong>Inputs:</strong> CIRI’s <em>Total Recovery</em> and risk signals; community needs; A.B.E. doctrine guardrails.</li>
         <li><strong>Process:</strong> Score candidate projects → allocate via CIBS → publish portfolio and status.</li>
         <li><strong>Outputs:</strong> Live investments, KPIs (households served, jobs, ROI per project), and audit-ready trails.</li>
       </ul>
     </section>
 
     <footer>
-      CII is part of A.B.E.’s open, auditable toolchain.<br/>
+      CII is part of A.B.E.’s open, auditable toolchain.<br>
       License: <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC BY-NC 4.0</a> — non-commercial use with attribution.
     </footer>
   </main>
 
   <script>
-    // tiny CSV -> table
+    // --- helpers ---
     function parseCSV(text){
       const lines = text.split(/\r?\n/).filter(Boolean);
       return lines.map(l => l.split(',').map(x => x.trim()));
@@ -129,7 +136,6 @@
       try{ return new Intl.NumberFormat(undefined,{style:'currency',currency:'USD',maximumFractionDigits:0}).format(v); }
       catch{ return '$'+(Math.round(v)||0).toLocaleString(); }
     }
-
     async function checkFile(path, okId){
       const el = document.getElementById(okId);
       try{
@@ -137,22 +143,19 @@
         if(!res.ok) throw 0;
         const text = await res.text();
         if(!text.trim()) throw 0;
-        el.textContent = 'Present';
-        el.classList.add('ok');
+        el.textContent = 'Present'; el.classList.add('ok');
         return text;
       }catch(e){
-        el.textContent = 'Missing';
-        el.classList.add('warn');
+        el.textContent = 'Missing'; el.classList.add('warn');
         return null;
       }
     }
 
+    // --- boot ---
     async function boot(){
-      // existence checks
       const modelText = await checkFile('model.json','model-status');
       const portfolioText = await checkFile('portfolio.csv','port-status');
 
-      // render table if CSV exists
       const wrap = document.getElementById('portfolio-table');
       const hint = document.getElementById('portfolio-hint');
 
@@ -183,6 +186,16 @@
             <code>name,category,cost_usd,households,status</code>.
           </div>`;
         hint.textContent = 'Once portfolio.csv is added, refresh to see the table.';
+      }
+
+      // (Optional light check) warn if model.json exists but looks empty
+      if(modelText){
+        try{
+          const j = JSON.parse(modelText);
+          if(!j.categories || !Array.isArray(j.categories) || j.categories.length === 0){
+            console.warn('model.json has no categories.');
+          }
+        }catch(e){ console.warn('model.json not valid JSON'); }
       }
     }
     boot();
