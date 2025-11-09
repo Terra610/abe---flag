@@ -1,0 +1,10 @@
+{
+  "version": "1.0",
+  "categories": [
+    {"key":"housing","name":"Housing","multiplier":1.6},
+    {"key":"health","name":"Community Health","multiplier":1.4},
+    {"key":"food","name":"Food Systems","multiplier":1.3},
+    {"key":"education","name":"Education & Skills","multiplier":1.5},
+    {"key":"transport","name":"Mobility","multiplier":1.2}
+  ]
+}
