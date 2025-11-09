@@ -22,7 +22,6 @@ jobs:
             --verbose
             --include-fragments
             --timeout 30
-            --retry-count 3
             --max-redirects 5
             --base https://terra610.github.io/abe---flag/
             --exclude 'https://fonts.googleapis.com/*'
@@ -33,13 +32,13 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # Also scan the live Pages site
+      # Also scan the live GitHub Pages site
       - name: Check live GitHub Pages site
         run: |
           npx -y lychee \
             --no-progress --verbose \
             --include-fragments \
-            --timeout 30 --retry-count 3 --max-redirects 5 \
+            --timeout 30 --max-redirects 5 \
             --exclude 'https://fonts.googleapis.com/*' \
             --exclude 'https://fonts.gstatic.com/*' \
             --exclude 'https://creativecommons.org/*' \
