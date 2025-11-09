@@ -1,41 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>A.B.E. Doctrine · A Decent Proposal + CRRA + Rebuild Plan</title>
   <style>
-    body { background:#0b0d12; color:#e0e0e0; font-family:system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; line-height:1.6; margin:0; }
-    header { background:linear-gradient(90deg,#11151c,#1b1e25); border-bottom:1px solid rgba(255,255,255,0.07); padding:1rem 2rem; text-align:center; }
-    h1 { color:#5ddfff; margin:0 0 .25rem; font-size:1.6rem; }
-    p.lead { color:#cfd8e3; margin:.25rem 0 0; }
-    main { max-width:1000px; margin:2rem auto 4rem; padding:0 1rem; }
-    section.card {
-      background:rgba(255,255,255,0.03);
-      border:1px solid rgba(255,255,255,0.08);
-      border-radius:12px;
-      padding:1rem 1.25rem;
-      margin-bottom:1.25rem;
-    }
-    h2 { color:#ffa559; margin:.25rem 0 .5rem; font-size:1.2rem; }
-    h3 { color:#9ad5ff; margin:.5rem 0 .35rem; font-size:1.05rem; }
-    a { color:#80bfff; text-decoration:none; }
-    a:hover { text-decoration:underline; }
-    .btnrow { display:flex; flex-wrap:wrap; gap:.75rem; margin-top:.5rem; }
-    .btn {
-      display:inline-block; padding:.55rem .9rem; border-radius:8px;
-      border:1px solid rgba(255,255,255,0.12); background:#16181d; color:#eaecef;
-      font-size:.95rem; text-decoration:none;
-    }
-    .btn:hover { transform:translateY(-2px); }
-    .toc { display:grid; grid-template-columns: repeat(auto-fit, minmax(240px,1fr)); gap:.75rem; margin-top:.5rem; }
-    .toc a { display:block; background:#12141a; border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:.75rem .9rem; }
-    .note { font-size:.9rem; color:#b9c4d0; }
-    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; font-size:.9rem; color:#cfe6ff; }
-    .viewer { aspect-ratio: 11/13; width:100%; border:1px solid rgba(255,255,255,0.08); border-radius:12px; overflow:hidden; background:#0e1116; }
-    iframe { width:100%; height:100%; border:0; }
-    article { white-space:pre-wrap; color:#d4dbe7; }
-    footer { margin-top:2rem; text-align:center; color:#93a0ad; font-size:.85rem; padding-bottom:3rem; }
+    body{background:#0b0d12;color:#e0e0e0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;line-height:1.6;margin:0}
+    header{background:linear-gradient(90deg,#11151c,#1b1e25);border-bottom:1px solid rgba(255,255,255,.07);padding:1rem 2rem;text-align:center}
+    h1{color:#5ddfff;margin:0 0 .25rem;font-size:1.6rem}
+    p.lead{color:#cfd8e3;margin:.25rem 0 0}
+    main{max-width:1000px;margin:2rem auto 4rem;padding:0 1rem}
+    section.card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:1rem 1.25rem;margin-bottom:1.25rem}
+    h2{color:#ffa559;margin:.25rem 0 .5rem;font-size:1.2rem}
+    a{color:#80bfff;text-decoration:none} a:hover{text-decoration:underline}
+    .btnrow{display:flex;flex-wrap:wrap;gap:.75rem;margin-top:.5rem}
+    .btn{display:inline-block;padding:.55rem .9rem;border-radius:8px;border:1px solid rgba(255,255,255,.12);background:#16181d;color:#eaecef;text-decoration:none}
+    .viewer{aspect-ratio:11/13;width:100%;border:1px solid rgba(255,255,255,.08);border-radius:12px;overflow:hidden;background:#0e1116}
+    iframe{width:100%;height:100%;border:0}
+    footer{margin-top:2rem;text-align:center;color:#93a0ad;font-size:.85rem;padding-bottom:3rem}
   </style>
 </head>
 <body>
@@ -44,113 +26,62 @@
   <p class="lead">A Decent Proposal · CRRA (Enforcement) · Rebuild Together Plan</p>
 </header>
 
-<!-- Optional top link for quick navigation -->
-<div style="text-align:center;margin-top:1rem;">
-  <a href="index.html" style="color:#5ddfff;">← Back to Doctrine Overview</a>
-</div>
-
 <main>
-
-  <!-- Quick TOC -->
   <section class="card">
     <h2>On this page</h2>
-    <div class="toc">
-      <a href="#abe">A Decent Proposal (A.B.E.) — Overview</a>
-      <a href="#crra">Citizen Rights Restoration Act (CRRA) — Enforcement</a>
-      <a href="#rebuild">Rebuild Together Plan — Allocations & Outcomes</a>
-      <a href="#full-pdf">Embedded Full PDF + Download</a>
+    <div class="btnrow">
+      <a class="btn" href="#abe">A.B.E. overview</a>
+      <a class="btn" href="#crra">CRRA enforcement</a>
+      <a class="btn" href="#rebuild">Rebuild Together</a>
+      <a class="btn" href="#full-pdf">Jump to Full PDF</a>
+      <a class="btn" href="./ABE_CRRA_Rebuild.pdf" download>Download PDF</a>
     </div>
-    <div class="btnrow" style="margin-top:.75rem">
-      <a class="btn" href="#full-pdf">Jump to Full PDF Viewer</a>
-      <a class="btn" href="./ABE_CRRA_Rebuild.pdf" download>Download Consolidated PDF</a>
-    </div>
-    <p class="note" style="margin-top:.5rem">
-      If the download above 404s, make sure this file exists (case-sensitive): <span class="mono">doctrine/ABE_CRRA_Rebuild.pdf</span>
-    </p>
   </section>
 
-  <!-- ABE -->
   <section id="abe" class="card">
     <h2>A Decent Proposal (A.B.E.)</h2>
-    <p>
-      <strong>What it is:</strong> A constitutional–economic repair engine that converts unlawful systemic drift into measurable recovery,
-      without new taxes or outside capital. A.B.E. comprises three linked modules:
-    </p>
-    <ul>
-      <li><strong>CIRI</strong> — measures constitutional deviation and quantifies recoverable value.</li>
-      <li><strong>CIBS</strong> — allocates verified recovery into workforce, housing, youth, veterans, legal aid, etc.</li>
-      <li><strong>CII</strong> — verifies benefits for employees, consumers, and communities.</li>
-    </ul>
-    <p>
-      <strong>Why it matters:</strong> It turns compliance loss into recurring savings and growth. In the automotive sector,
-      full lawful alignment (zero drift) projects multi-billion savings and unlocks consumer access at scale.
-    </p>
+    <p>Overview of the unified strategy. See full details in the consolidated PDF.</p>
     <div class="btnrow">
       <a class="btn" href="#full-pdf">Read full text below</a>
       <a class="btn" href="./ABE_CRRA_Rebuild.pdf#page=1">Open PDF at A.B.E.</a>
     </div>
   </section>
 
-  <!-- CRRA -->
   <section id="crra" class="card">
-    <h2>CRRA — Citizen Rights Restoration Act (Enforcement)</h2>
-    <p>
-      <strong>What it does:</strong> Ends misapplication of federal commercial regimes to non-commercial citizens; restores lawful boundaries;
-      and creates a recurring, debt-neutral recovery stream by redirecting misused funds to citizen outcomes.
-    </p>
-    <ul>
-      <li>Affirms constitutional supremacy; eliminates reliance on extra-textual doctrines that block redress.</li>
-      <li>Establishes audit/attestation and transparent pipelines from recovery → reinvestment.</li>
-      <li>Pairs legal alignment with measurable economic uplift (jobs, GDP, credit restoration).</li>
-    </ul>
+    <h2>CRRA — Citizen Rights Restoration Act</h2>
+    <p>Enforcement architecture and legal guardrails.</p>
     <div class="btnrow">
-      <a class="btn" href="#full-pdf">Read full CRRA section in the PDF</a>
+      <a class="btn" href="#full-pdf">Read CRRA in the PDF</a>
       <a class="btn" href="./ABE_CRRA_Rebuild.pdf#page=2">Open PDF at CRRA</a>
     </div>
   </section>
 
-  <!-- Rebuild Together -->
   <section id="rebuild" class="card">
-    <h2>Rebuild Together Plan — Allocations & Outcomes</h2>
-    <p>
-      <strong>What’s funded:</strong> $2.5–$3.0T two-year redeployment (no new taxes), with recurring annual streams from recovered misuse.
-      Priority lines include mobility grants, vehicles, small-business capital, housing rehab, legal defense, veterans support, youth programs,
-      digital access, and community safety infrastructure.
-    </p>
-    <ul>
-      <li><strong>Jobs:</strong> 15–18M; <strong>GDP:</strong> $1.46–$1.58T uplift; <strong>Revenue:</strong> +$150B state/local.</li>
-      <li><strong>Households:</strong> 1.18M housed; <strong>Mobility:</strong> 60M regain legal access to economy.</li>
-      <li><strong>Justice:</strong> major reductions in incarceration and rights-denial costs.</li>
-    </ul>
+    <h2>Rebuild Together — Allocations & Outcomes</h2>
+    <p>Funding lines, jobs, GDP uplift, households served.</p>
     <div class="btnrow">
-      <a class="btn" href="#full-pdf">Read full Rebuild section in the PDF</a>
+      <a class="btn" href="#full-pdf">Read Rebuild section</a>
       <a class="btn" href="./ABE_CRRA_Rebuild.pdf#page=3">Open PDF at Rebuild</a>
     </div>
   </section>
 
-  <!-- Full PDF viewer -->
   <section id="full-pdf" class="card">
     <h2>Full Consolidated Doctrine — Embedded Viewer</h2>
-    <p class="note">
-      This embedded viewer loads the single consolidated document: <em>A Decent Proposal + CRRA + Rebuild Together.</em>
-      If you see a blank panel, the PDF file is missing or mis-named. Ensure it’s at:
-      <span class="mono">doctrine/ABE_CRRA_Rebuild.pdf</span>.
-    </p>
     <div class="viewer">
       <iframe src="./ABE_CRRA_Rebuild.pdf"></iframe>
     </div>
     <div class="btnrow" style="margin-top:.75rem">
-      <a class="btn" href="./ABE_CRRA_Rebuild.pdf" download>Download Consolidated PDF</a>
-      <a class="btn" href="index.html">Back to Doctrine Overview</a>
+      <a class="btn" href="./ABE_CRRA_Rebuild.pdf" download>Download PDF</a>
+      <a class="btn" href="./index.html">Back to Doctrine Overview</a>
     </div>
   </section>
 </main>
 
 <footer>
-  © 2025 Terra Dawn Shouse · 
+  © 2025 Terra Dawn Shouse ·
   <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener" style="color:#5ddfff">
     CC BY-NC 4.0 International License
-  </a> · Non-commercial use only · Integrity required
+  </a> · Non-commercial use only.
 </footer>
 </body>
-  </html>
+</html>
