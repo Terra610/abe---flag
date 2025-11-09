@@ -2,322 +2,190 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>CII — Citizen Impact Index</title>
-  <!-- Chart.js for charts -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>CII — Community Investment Interface</title>
   <style>
     :root{
-      --bg:#0b0d12; --panel:#12161d; --panel2:#171c24;
-      --border:rgba(255,255,255,.08);
-      --text:#e0e0e0; --muted:#9aa4b2;
-      --brand:#5ddfff; --accent:#ffa559;
-      --good:#33d17a; --warn:#ffd166; --bad:#f25f5c;
-      --shadow:0 8px 30px rgba(0,0,0,.35);
-      --radius:12px;
+      --bg:#0b0d12; --panel:#141820; --panel2:#0f131a;
+      --ink:#e6e6e6; --muted:#9fb3c8; --line:rgba(255,255,255,.08);
+      --brand:#5ddfff; --accent:#fff750; --ok:#4bd28f; --warn:#ffa559;
     }
     *{box-sizing:border-box}
-    body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;line-height:1.55}
-    header{position:sticky;top:0;background:linear-gradient(90deg,#0e131b,#141a22);border-bottom:1px solid var(--border);padding:16px 22px;z-index:2}
-    header h1{margin:0 0 4px 0;font-size:1.35rem;color:var(--brand)}
-    header p{margin:0;color:var(--muted);font-size:.95rem}
-    main{max-width:1100px;margin:24px auto 72px auto;padding:0 16px}
-    .crumbs{margin:6px 0 0 0;font-size:.85rem}
-    .crumbs a{color:#80bfff;text-decoration:none}
-    .crumbs a:hover{text-decoration:underline}
-    .grid{display:grid;gap:16px}
-    .kpis{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
-    .cards{grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
-    .card{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow)}
-    .card.hi{background:var(--panel2)}
-    .card .inner{padding:16px 18px}
-    h2{margin:0 0 8px 0;font-size:1.15rem;color:#bfe9ff}
-    .muted{color:var(--muted)}
-    .kpi {display:flex;flex-direction:column;gap:6px}
-    .kpi .label{font-size:.9rem;color:var(--muted)}
-    .kpi .value{font-weight:700;font-size:1.35rem}
-    .value.bad{color:var(--bad)} .value.good{color:var(--good)}
-    .value.mid{color:var(--accent)}
-    .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
-    .btn{display:inline-flex;align-items:center;gap:8px;background:#0f141c;border:1px solid var(--border);color:#cfe9ff;padding:8px 12px;border-radius:10px;text-decoration:none}
-    .btn:hover{border-color:#2b3a4d}
-    code, .chip{background:#0d131a;border:1px solid var(--border);border-radius:8px;padding:2px 6px;font-size:.85rem;color:#cde7ff}
-    canvas {width:100% !important; height:320px !important}
-    .list a{color:#80bfff;text-decoration:none}
-    .list a:hover{text-decoration:underline}
-    footer{margin:48px 0 32px 0;text-align:center;color:var(--muted);font-size:.9rem}
-    .note{font-size:.85rem;color:var(--muted)}
+    body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+    header{position:sticky;top:0;z-index:2;background:linear-gradient(90deg,#11151c,#1b1e25);border-bottom:1px solid var(--line);padding:.85rem 1rem}
+    header .wrap{max-width:1040px;margin:0 auto;display:flex;align-items:center;gap:1rem}
+    a{color:#80bfff;text-decoration:none}
+    a:hover{text-decoration:underline}
+    .badge{margin-left:auto;font-size:.8rem;color:#9fb3c8}
+    .back{font-size:.9rem}
+    main{max-width:1040px;margin:1.25rem auto 4rem;padding:0 1rem}
+    h1{color:var(--brand);margin:.2rem 0 .4rem;font-size:1.6rem}
+    p.lead{color:#c8d2df;margin:.25rem 0 1rem}
+    .cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:16px 0 22px}
+    .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px}
+    .card h3{margin:0 0 .35rem;font-size:.98rem;color:#dfe9f6}
+    .kv{display:flex;gap:8px;align-items:baseline}
+    .kv .label{color:var(--muted);font-size:.85rem}
+    .kv .value{font-weight:600}
+    .ok{color:var(--ok)} .warn{color:var(--warn)}
+    section{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:16px;margin-top:18px}
+    section h2{margin:0 0 .6rem;color:#dfe9f6;font-size:1.05rem}
+    .actions{display:flex;flex-wrap:wrap;gap:.6rem;margin:.35rem 0 .25rem}
+    .btn{display:inline-block;background:#1b2230;border:1px solid var(--line);padding:.5rem .7rem;border-radius:9px;font-size:.9rem}
+    .btn:hover{background:#20283a}
+    table{width:100%;border-collapse:collapse;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+    thead th{background:#18202b;color:#cfe6ff;font-weight:600;text-align:left;padding:10px;border-bottom:1px solid var(--line)}
+    tbody td{padding:10px;border-bottom:1px solid var(--line)}
+    tbody tr:last-child td{border-bottom:none}
+    .num{text-align:right;font-variant-numeric:tabular-nums}
+    .hint{color:#9fb3c8;font-size:.9rem;margin-top:.5rem}
+    footer{margin:32px 0 24px;text-align:center;color:#8fa1b6;font-size:.85rem}
+    @media (max-width:760px){.cards{grid-template-columns:1fr}}
   </style>
 </head>
 <body>
+  <header>
+    <div class="wrap">
+      <a class="back" href="../index.html">← Return to Home</a>
+      <div class="badge">ABE Patch Active</div>
+    </div>
+  </header>
 
-<header>
-  <div class="crumbs">← <a href="../index.html">Return to Home</a></div>
-  <h1>🔎 CII — Citizen Impact Index</h1>
-  <p>Quantifies integrity of funding and the real-world benefits of lawful alignment. Computes savings, GDP uplift,
-     and verifies evidence linking CIRI → CIBS.</p>
-</header>
+  <main>
+    <h1>🏗️ CII — Community Investment Interface</h1>
+    <p class="lead">
+      CII is the “last-mile” interface that turns verified recovery value into **live, trackable projects**:
+      housing, clinics, food systems, broadband, transit, and workforce pipelines. It consumes <em>CIRI</em>
+      results, aligns with <em>CIBS</em> budgets, and publishes an auditable portfolio.
+    </p>
 
-<main>
-
-  <!-- STATUS / LINKS -->
-  <section class="grid cards" aria-label="Status">
-    <div class="card hi">
-      <div class="inner">
-        <h2>Status</h2>
-        <div class="row">
-          <span class="chip">Spec: <a href="#" class="list">/cii/model.md</a> (TBD)</span>
-          <span class="chip">Data: <code>/cii/data/</code></span>
-          <span class="chip">Theme: ABE Patch Active</span>
-        </div>
-        <p class="note" style="margin-top:10px">If CSV files are present in <code>/cii/data/</code>, this page will auto-load them.
-          Otherwise it falls back to safe sample data so the board can still see the story live.</p>
+    <!-- Status cards -->
+    <div class="cards" id="status">
+      <div class="card">
+        <h3>Model</h3>
+        <div class="kv"><span class="label">/cii/model.json</span>
+          <span class="value" id="model-status" class="warn">Checking…</span></div>
+      </div>
+      <div class="card">
+        <h3>Portfolio</h3>
+        <div class="kv"><span class="label">/cii/portfolio.csv</span>
+          <span class="value" id="port-status" class="warn">Checking…</span></div>
+      </div>
+      <div class="card">
+        <h3>Integration</h3>
+        <div class="kv"><span class="label">Ready to publish to</span>
+          <span class="value"><a href="../integration/index.html">Integration Layer</a></span></div>
       </div>
     </div>
 
-    <div class="card">
-      <div class="inner">
-        <h2>Jump to</h2>
-        <div class="row">
-          <a class="btn" href="../ciri/index.html">CIRI (calc)</a>
-          <a class="btn" href="../cibs/index.html">CIBS (budget)</a>
-          <a class="btn" href="../system/index.html">System Map</a>
-          <a class="btn" href="../integration/index.html">Integration Layer</a>
-          <a class="btn" href="../doctrine/index.html">Doctrines</a>
-        </div>
+    <!-- Quick links -->
+    <section>
+      <h2>🔗 Links</h2>
+      <div class="actions">
+        <a class="btn" href="../ciri/index.html">CIRI — Risk & Recovery</a>
+        <a class="btn" href="../cibs/index.html">CIBS — Budget System</a>
+        <a class="btn" href="../macro/index.html">Macro Cascade</a>
+        <a class="btn" href="../doctrine/index.html">Doctrines</a>
+        <a class="btn" href="model.json">Open model.json</a>
+        <a class="btn" href="portfolio.csv">Open portfolio.csv</a>
       </div>
-    </div>
-  </section>
-
-  <!-- KPIs -->
-  <section class="grid kpis" aria-label="KPIs">
-    <div class="card">
-      <div class="inner kpi">
-        <span class="label">Estimated Misused Grants (annual)</span>
-        <span id="kpi-misused" class="value bad">—</span>
-        <span class="note">From funding-fraud summary (Title 23/49 categories).</span>
-      </div>
-    </div>
-    <div class="card">
-      <div class="inner kpi">
-        <span class="label">Direct Savings (annual)</span>
-        <span id="kpi-savings" class="value good">—</span>
-        <span class="note">Conservative savings when misuse is corrected.</span>
-      </div>
-    </div>
-    <div class="card">
-      <div class="inner kpi">
-        <span class="label">Projected GDP Uplift</span>
-        <span id="kpi-gdp" class="value mid">—</span>
-        <span class="note">Uses 1.5× multiplier on reallocated funds (ABE macro model).</span>
-      </div>
-    </div>
-  </section>
-
-  <!-- CHARTS -->
-  <section class="grid cards" aria-label="Charts">
-    <div class="card">
-      <div class="inner">
-        <h2>Funding Misuse by Program</h2>
-        <canvas id="chartMisuse"></canvas>
-        <p class="note">Data source: <code>FMCSR_Funding_Fraud_Summary.csv</code> (program,misused_usd).</p>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="inner">
-        <h2>Enforcement vs Community Investment (ROI)</h2>
-        <canvas id="chartROI"></canvas>
-        <p class="note">Compares “enforcement spend” vs “community repair” outcomes (crime, jobs, GDP contribution).</p>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="inner">
-        <h2>Historical Trend — Integrity of Funding (1962 → Today)</h2>
-        <canvas id="chartHistory"></canvas>
-        <p class="note">Optional source: <code>historical_funding.csv</code> (year,enforcement,community).</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- EVIDENCE -->
-  <section class="card" style="margin-top:18px">
-    <div class="inner">
-      <h2>Evidence & References</h2>
-      <ul class="list">
-        <!-- Adjust these links to wherever you commit the PDFs/HTML -->
-        <li><a href="../doctrine/abe.html">A Decent Proposal: A.B.E. (full)</a></li>
-        <li><a href="../doctrine/constitutional-fidelity.html">Constitutional Fidelity (full)</a></li>
-        <li><a href="../doctrine/void-ab-initio.html">Void ab Initio (full)</a></li>
-        <li><a href="../evidence/FHWA-FMCSA_Memorandum_Title_23_and_Title_49.pdf">FHWA–FMCSA Memorandum (Title 23/49)</a></li>
-        <li><a href="../evidence/46M_Stops_NonCDL.pdf">46M Stops — Non-CDL Impact</a></li>
-        <li><a href="../evidence/ABE_Table2_Funding_Misuse_Adjusted.pdf">ABE Table 2 — Funding Misuse (Adjusted)</a></li>
-        <li><a href="../evidence/Comparative_Analysis_Public_vs_Community_Safety.pdf">Comparative Analysis: Public vs Community Safety</a></li>
-        <li><a href="../evidence/US_Traffic_Stops_Commerce_Disruption.html">Traffic Stops & Commerce Disruption (interactive)</a></li>
-      </ul>
-      <p class="note" style="margin-top:10px">
-        Put your PDFs/HTML in <code>/evidence/</code> (or update the links). If a file isn’t present yet, the link will 404 until you commit it.
+      <p class="hint">
+        Don’t have files yet? Create a <code>model.json</code> describing project types and multipliers,
+        and a <code>portfolio.csv</code> listing projects (name, category, cost, households served, status).
       </p>
-    </div>
-  </section>
+    </section>
 
-  <footer>
-    A.B.E. · Citizen Impact Index (CII) · CC BY 4.0 · Integrity only.
-  </footer>
-</main>
+    <!-- Portfolio preview (if present) -->
+    <section>
+      <h2>📄 Portfolio Preview</h2>
+      <div id="portfolio-table" style="margin-top:.5rem"></div>
+      <p class="hint" id="portfolio-hint"></p>
+    </section>
 
-<!-- ========= Fallback embedded data (keeps the page working until your CSVs are committed) ========= -->
-<script id="fraudCsv" type="text/plain">
-program,misused_usd
-Title 23 Safety Grants,42000000000
-Title 49 FMCSA (CMV-focused),33000000000
-Traffic Enforcement Overtime,9000000000
-DUI Checkpoint Programs,4500000000
-Backdoor Equipment Mandates,2800000000
-Other Transfers / Admin,1900000000
-</script>
+    <!-- How it fits -->
+    <section>
+      <h2>🧬 How CII Fits</h2>
+      <ul>
+        <li><strong>Inputs:</strong> CIRI’s <em>Total Recovery</em> and risk signals; community needs; ABE doctrine guardrails.</li>
+        <li><strong>Process:</strong> Score candidate projects → allocate via CIBS → publish portfolio and status.</li>
+        <li><strong>Outputs:</strong> Live investments, KPIs (households served, jobs, ROI per project), and audit-ready trails.</li>
+      </ul>
+    </section>
 
-<script id="roiJson" type="application/json">
-{
-  "labels":["Status Quo Enforcement","Community Investment"],
-  "crime_reduction":[2, 22],
-  "jobs_created":[0.2, 3.0],
-  "gdp_contribution_usd":[12, 95]
-}
-</script>
+    <footer>
+      CII is part of A.B.E.’s open, auditable toolchain.<br/>
+      License: <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC BY-NC 4.0</a> — non-commercial use with attribution.
+    </footer>
+  </main>
 
-<script id="historyCsv" type="text/plain">
-year,enforcement,community
-1965,12,24
-1980,26,21
-1995,44,18
-2008,58,16
-2016,62,14
-2020,70,13
-2024,73,13
-2025,74,15
-</script>
-
-<!-- ========= Loader & Charts ========= -->
-<script>
-/* ---------- CONFIG: where to look for real data if present ----------
-
-1) If you later commit CSVs to your repo, drop them here and the page will use them:
-
-   /cii/data/FMCSR_Funding_Fraud_Summary.csv
-   /cii/data/historical_funding.csv
-   /cii/data/roi.json
-
-2) Otherwise the embedded fallbacks above are used so nothing breaks in demos.
---------------------------------------------------------------------- */
-
-const PATHS = {
-  fraudCsv:  './data/FMCSR_Funding_Fraud_Summary.csv',
-  historyCsv:'./data/historical_funding.csv',
-  roiJson:   './data/roi.json'
-};
-
-// Simple CSV parser (no deps)
-function parseCSV(text){
-  const rows = text.trim().split(/\r?\n/).map(r=>r.split(','));
-  const [hdr, ...body] = rows;
-  return body.map(r => Object.fromEntries(r.map((v,i)=>[hdr[i], v])));
-}
-
-async function fetchOrFallback(url, fallbackId, type='csv'){
-  try{
-    const res = await fetch(url, {cache:'no-store'});
-    if(!res.ok) throw new Error('not found');
-    if(type==='csv')  return parseCSV(await res.text());
-    if(type==='json') return await res.json();
-    return await res.text();
-  }catch(e){
-    if(type==='csv')  return parseCSV(document.getElementById(fallbackId).textContent);
-    if(type==='json') return JSON.parse(document.getElementById(fallbackId).textContent);
-    return document.getElementById(fallbackId).textContent;
-  }
-}
-
-function usd(n){ return Number(n).toLocaleString(undefined,{style:'currency',currency:'USD',maximumFractionDigits:0}); }
-
-// Build charts + KPIs
-(async function(){
-  const fraud = await fetchOrFallback(PATHS.fraudCsv, 'fraudCsv','csv');
-  const roi   = await fetchOrFallback(PATHS.roiJson, 'roiJson','json');
-  const hist  = await fetchOrFallback(PATHS.historyCsv,'historyCsv','csv');
-
-  // KPIs
-  const totalMisused = fraud.reduce((s,r)=>s + Number(r.misused_usd||0), 0);
-  const directSavings = totalMisused * 0.38; // conservative 38% immediate savings
-  const gdpUplift     = (totalMisused * 0.5) * 1.5; // half reallocated × 1.5× multiplier
-
-  document.getElementById('kpi-misused').textContent = usd(totalMisused);
-  document.getElementById('kpi-savings').textContent = usd(directSavings);
-  document.getElementById('kpi-gdp').textContent     = usd(gdpUplift);
-
-  // Chart 1: Funding Misuse by Program
-  new Chart(document.getElementById('chartMisuse'), {
-    type:'bar',
-    data:{
-      labels: fraud.map(r=>r.program),
-      datasets:[{label:'Misused (USD)', data: fraud.map(r=>Number(r.misused_usd||0))}]
-    },
-    options:{
-      responsive:true,
-      plugins:{legend:{display:false}, tooltip:{callbacks:{
-        label:(ctx)=> usd(ctx.parsed.y)
-      }}},
-      scales:{y:{ticks:{callback:(v)=>usd(v)}}}
+  <script>
+    // tiny CSV -> table
+    function parseCSV(text){
+      const lines = text.split(/\r?\n/).filter(Boolean);
+      return lines.map(l => l.split(',').map(x => x.trim()));
     }
-  });
+    function fmtUSD(n){
+      const v = Number(String(n).replace(/[^0-9.\-]/g,'')||0);
+      try{ return new Intl.NumberFormat(undefined,{style:'currency',currency:'USD',maximumFractionDigits:0}).format(v); }
+      catch{ return '$'+(Math.round(v)||0).toLocaleString(); }
+    }
 
-  // Chart 2: ROI comparison
-  new Chart(document.getElementById('chartROI'),{
-    type:'radar',
-    data:{
-      labels:['Crime reduction (%)','Jobs created (per $B)','GDP contribution ($B)'],
-      datasets:[
-        {
-          label: roi.labels[0],
-          data:[roi.crime_reduction[0], roi.jobs_created[0], roi.gdp_contribution_usd[0]]
-        },
-        {
-          label: roi.labels[1],
-          data:[roi.crime_reduction[1], roi.jobs_created[1], roi.gdp_contribution_usd[1]]
+    async function checkFile(path, okId){
+      const el = document.getElementById(okId);
+      try{
+        const res = await fetch(path, {cache:'no-store'});
+        if(!res.ok) throw 0;
+        const text = await res.text();
+        if(!text.trim()) throw 0;
+        el.textContent = 'Present';
+        el.classList.add('ok');
+        return text;
+      }catch(e){
+        el.textContent = 'Missing';
+        el.classList.add('warn');
+        return null;
+      }
+    }
+
+    async function boot(){
+      // existence checks
+      const modelText = await checkFile('model.json','model-status');
+      const portfolioText = await checkFile('portfolio.csv','port-status');
+
+      // render table if CSV exists
+      const wrap = document.getElementById('portfolio-table');
+      const hint = document.getElementById('portfolio-hint');
+
+      if(portfolioText){
+        const rows = parseCSV(portfolioText);
+        if(rows.length){
+          const thead = rows[0];
+          const body = rows.slice(1);
+          let html = '<table><thead><tr>';
+          thead.forEach(h => html += `<th>${h}</th>`);
+          html += '</tr></thead><tbody>';
+          body.forEach(r=>{
+            html += '<tr>';
+            r.forEach((c,i)=>{
+              const isMoney = /cost|budget|amount|usd/i.test(thead[i]||'');
+              html += `<td class="${isMoney?'num':''}">${isMoney?fmtUSD(c):c}</td>`;
+            });
+            html += '</tr>';
+          });
+          html += '</tbody></table>';
+          wrap.innerHTML = html;
+          hint.textContent = 'Previewing /cii/portfolio.csv. Update that file to change this view.';
         }
-      ]
-    },
-    options:{
-      responsive:true,
-      plugins:{legend:{position:'top'}}
+      }else{
+        wrap.innerHTML = `
+          <div style="padding:12px;border:1px dashed var(--line);border-radius:10px;background:#0f141b;">
+            No <code>portfolio.csv</code> yet. Add one with columns like:
+            <code>name,category,cost_usd,households,status</code>.
+          </div>`;
+        hint.textContent = 'Once portfolio.csv is added, refresh to see the table.';
+      }
     }
-  });
-
-  // Chart 3: Historical integrity trend
-  new Chart(document.getElementById('chartHistory'),{
-    type:'line',
-    data:{
-      labels: hist.map(r=>r.year),
-      datasets:[
-        {label:'Enforcement-centric (%)', data: hist.map(r=>Number(r.enforcement))},
-        {label:'Community-centric (%)',  data: hist.map(r=>Number(r.community))}
-      ]
-    },
-    options:{
-      responsive:true,
-      scales:{y:{min:0,max:100,ticks:{callback:(v)=>v+'%'}}}
-    }
-  });
-})();
-</script>
-<footer style="margin:32px 0 24px;text-align:center;color:#8fa1b6;font-size:.85rem">
-    © 2025 Terra Dawn Shouse — American Butterfly Effect (A.B.E.)<br>
-    Licensed under 
-    <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener" style="color:#5ddfff">
-      Creative Commons Attribution–NonCommercial 4.0 International (CC BY-NC 4.0)
-    </a><br>
-    <em>Integrity only — never for sale.</em>
-</footer>
+    boot();
+  </script>
 </body>
-</html>
+  </html>
