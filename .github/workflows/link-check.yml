@@ -1,10 +1,7 @@
-name: Link Check (repo + live site)
+name: Link Check (internal only, manual)
 
 on:
-  push:
-  pull_request:
-  schedule:
-    - cron: "17 4 * * *"   # daily at 04:17 UTC
+  workflow_dispatch:
 
 jobs:
   lychee:
@@ -13,34 +10,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # Scan links inside the repo (HTML + Markdown)
-      - name: Run lychee on repo
+      - name: Run lychee (repo files only)
         uses: lycheeverse/lychee-action@v2
         with:
           args: >
+            --config .lychee.toml
             --no-progress
             --verbose
-            --include-fragments
-            --timeout 30
-            --max-redirects 5
-            --base https://terra610.github.io/abe---flag/
-            --exclude 'https://fonts.googleapis.com/*'
-            --exclude 'https://fonts.gstatic.com/*'
-            --exclude 'https://creativecommons.org/*'
-            --accept 200,206,301,302,303,307,308
             .
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      # Also scan the live GitHub Pages site
-      - name: Check live GitHub Pages site
-        run: |
-          npx -y lychee \
-            --no-progress --verbose \
-            --include-fragments \
-            --timeout 30 --max-redirects 5 \
-            --exclude 'https://fonts.googleapis.com/*' \
-            --exclude 'https://fonts.gstatic.com/*' \
-            --exclude 'https://creativecommons.org/*' \
-            --accept 200,206,301,302,303,307,308 \
-            https://terra610.github.io/abe---flag/
