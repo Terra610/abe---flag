@@ -194,7 +194,7 @@
 <!-- ===== CIRI calculator script ===== -->
 <script>
 (async function(){
-  // 1) Load ./inputs.csv (try relative first, then absolute fallback just in case)
+  // Try relative first, then absolute fallback
   const CANDIDATES = ['./inputs.csv','/abe---flag/ciri/inputs.csv'];
   let csvText=null, src=null;
   for (const u of CANDIDATES){
@@ -204,78 +204,77 @@
   if(!csvText){ status.innerHTML='<span class="ciri-err">Could not load inputs.csv</span>'; return; }
   status.textContent = `Loaded inputs from ${src}`;
 
-  // 2) Parse a one-row CSV into object
+  // Parse one-row CSV
   function parseCSV(txt){
     const lines = txt.trim().split(/\r?\n/);
     const head = lines.shift().split(',').map(s=>s.trim());
     const row  = (lines[0]||'').split(',').map(s=>s.trim());
-    const obj={}; head.forEach((h,i)=>obj[h]=row[i]); return {head,row,obj};
+    const obj={}; head.forEach((h,i)=>obj[h]=row[i]);
+    return {head,row,obj};
   }
   const parsed = parseCSV(csvText);
 
-  // show inputs table
+  // Show the raw inputs as a table (transparency)
   const t = document.getElementById('ciri-inputs');
   t.innerHTML = '<thead><tr><th>Field</th><th>Value</th></tr></thead><tbody>' +
     parsed.head.map((h,i)=>`<tr><td>${h}</td><td>${parsed.row[i]??''}</td></tr>`).join('') +
     '</tbody>';
 
-  // 3) Normalize column names (handles abbreviations from your CSV)
-  const normMap = {
-    cases_avoided:['cases_avoided','cases','cases_a'],
-    avg_cost:['avg_cost','avg cos','avg_cost_per_case'],
-    jail_day_cost:['jail_day_cost','jail_day','jail_day_c','jail_cost_per_day'],
-    fees_calc:['fees_calc','fees','fees_cal','fees_cai'],
-    licenses:['licenses','license_rev','licensing'],
-    employment_rate:['employment_rate','employment','empl_rate'],
-    months_employed:['months_employed','months','months_emp'],
-    expected_wage:['expected_wage','expected','avg_pay','expected_income'],
-    pay_multiplier:['pay_multiplier','multiplier','pay_mult'],
-    transport_weight:['transport_weight','transport','tran','weight']
-  };
-  function normalize(obj){
-    const lower={};
-    Object.keys(obj).forEach(k=>{
-      lower[k.toLowerCase().replace(/[^a-z0-9_]+/g,'')] = obj[k];
-    });
-    const out={};
-    for(const key in normMap){
-      const options = normMap[key];
-      let found = null;
-      for(const opt of options){
-        const norm = opt.toLowerCase().replace(/[^a-z0-9_]+/g,'');
-        if(norm in lower){ found = lower[norm]; break; }
-      }
-      out[key] = Number(found ?? 0);
-    }
-    return out;
-  }
-  const CSV = normalize(parsed.obj);       // original values (for reset)
-  let X = {...CSV};                        // mutable working copy
+  // Normalize into expected numeric keys (your exact headers)
+  const mapExact = [
+    'cases_avoided',
+    'avg_cost_per_case',
+    'jail_days_avoided',
+    'cost_per_jail_day',
+    'fees_canceled_total',
+    'licenses_restored',
+    'avg_monthly_wage',
+    'employment_probability',
+    'months_effective',
+    'expected_lawsuits',
+    'avg_payout',
+    'multiplier',
+    'transition_costs_one_time'
+  ];
+  function toNum(x){ const v = Number(String(x||'').replace(/[^0-9.\-]/g,'')); return isFinite(v)?v:0; }
+  const CSV = {};
+  mapExact.forEach(k=> CSV[k] = toNum(parsed.obj[k]));
+  let X = {...CSV}; // working copy
 
-  // 4) Core calculator
+  // Core calculator (aligned to your schema)
   function compute(V, A){
-    const {cases_avoided, avg_cost, fees_calc, jail_day_cost, licenses,
-           employment_rate, months_employed,
-           expected_wage, pay_multiplier, transport_weight} = V;
+    const {
+      cases_avoided,
+      avg_cost_per_case,
+      jail_days_avoided,
+      cost_per_jail_day,
+      fees_canceled_total,
+      avg_monthly_wage,
+      employment_probability,
+      months_effective,
+      expected_lawsuits,
+      avg_payout,
+      multiplier,
+      transition_costs_one_time
+    } = V;
 
-    const direct_case = cases_avoided * (avg_cost + fees_calc);
-    const detention   = cases_avoided * jail_day_cost * A.jailDays;
-    const licensing   = licenses * transport_weight;
+    // Components
+    const direct_case = (cases_avoided * avg_cost_per_case) + fees_canceled_total;
+    const detention   = jail_days_avoided * cost_per_jail_day;
+    const employment  = cases_avoided * avg_monthly_wage * (months_effective/12) * employment_probability * Math.max(1, multiplier);
+    const lawsuits    = expected_lawsuits * avg_payout;
+    const transitions = transition_costs_one_time;
 
-    const per_worker  = expected_wage * (months_employed/12) * employment_rate * pay_multiplier;
-    const employment  = per_worker * cases_avoided;
+    const total = direct_case + detention + employment + lawsuits - transitions;
 
-    const total = direct_case + detention + licensing + employment;
-
-    const ciri = 1 - Math.exp(- total / Math.max(1,A.K));
+    const ciri = 1 - Math.exp(- total / Math.max(1,A.K)); // risk scaling
     const cii  = 1 - ciri;
-
     const roiPerCase = cases_avoided > 0 ? total / cases_avoided : 0;
 
-    return { total, ciri, cii, roiPerCase, parts:{direct_case, detention, licensing, employment} };
+    return { total, ciri, cii, roiPerCase, parts:{direct_case, detention, employment, lawsuits, transitions} };
   }
 
-  // 5) Wire UI
+  // Wire UI
   const daysEl = document.getElementById('assump-days');
   const kEl    = document.getElementById('assump-k');
   const kpiT   = document.getElementById('kpi-total');
@@ -285,35 +284,62 @@
   const brk    = document.getElementById('ciri-breakdown');
 
   const sCases = document.getElementById('slider-cases');
-  const sTrans = document.getElementById('slider-trans');
+  const sTrans = document.getElementById('slider-trans'); // repurposed → lawsuits
   const lCases = document.getElementById('lbl-cases');
   const lTrans = document.getElementById('lbl-trans');
   const btnReset = document.getElementById('btn-reset');
 
-  // init sliders from CSV
-  sCases.value = X.cases_avoided || 0;  lCases.textContent = Number(sCases.value).toLocaleString();
-  sTrans.value = X.transport_weight || 0; lTrans.textContent = Number(sTrans.value).toLocaleString();
+  // Repurpose the second slider label so you don't have to edit HTML
+  const sliderLabels = document.querySelectorAll('.ciri-slider label');
+  if (sliderLabels[0]) sliderLabels[0].textContent = 'Cases avoided';
+  if (sliderLabels[1]) sliderLabels[1].textContent = 'Expected lawsuits';
 
-  function fmtUSD(n){ return n.toLocaleString(undefined,{style:'currency',currency:'USD',maximumFractionDigits:0}); }
+  // Initialize sliders from CSV
+  sCases.min = 0;
+  sCases.max = Math.max(100, Math.ceil((X.cases_avoided||0)*2));
+  sCases.step = 10;
+  sCases.value = X.cases_avoided||0;
+  lCases.textContent = Number(sCases.value).toLocaleString();
+
+  sTrans.min = 0;
+  sTrans.max = Math.max(50, Math.ceil((X.expected_lawsuits||0)*2));
+  sTrans.step = 1;
+  sTrans.value = X.expected_lawsuits||0;
+  lTrans.textContent = Number(sTrans.value).toLocaleString();
+
+  // Formatters
+  function fmtUSD(n){ return Number(n||0).toLocaleString(undefined,{style:'currency',currency:'USD',maximumFractionDigits:0}); }
   function pct(x){ return (x*100).toFixed(1)+'%'; }
 
+  // Tiny bar chart of components
   const ctx = document.getElementById('ciri-chart').getContext('2d');
   function drawChart(value){
     const W = ctx.canvas.width, H = ctx.canvas.height;
     ctx.clearRect(0,0,W,H);
-    const {direct_case, detention, licensing, employment} = value.parts;
-    const vals = [direct_case, detention, licensing + employment];
+    const {direct_case, detention, employment, lawsuits} = value.parts;
+    const vals = [direct_case, detention, employment, lawsuits];
     const max  = Math.max(...vals, 1);
-    const bw = Math.floor(W/6), gap=bw; const base = H-10;
-    for(let i=0;i<3;i++){
-      const h = Math.round((vals[i]/max)*(H-20));
+    const bw = Math.floor(W/10), gap=bw*0.7; const base = H-10;
+    const labels = ['Direct','Detention','Employment','Lawsuits'];
+    for(let i=0;i<vals.length;i++){
+      const h = Math.round((vals[i]/max)*(H-26));
       ctx.fillStyle = '#e0e0e0';
-      ctx.fillRect(10 + i*(bw+gap), base-h, bw, h);
+      const x = 10 + i*(bw+gap);
+      ctx.fillRect(x, base-h, bw, h);
+      ctx.fillText(labels[i], x, H-2);
     }
   }
 
   function recalc(){
-    const A = { jailDays:Number(daysEl.value||0), K:Number(kEl.value||1) };
+    const A = { jailDays: Number(daysEl.value||0), K: Number(kEl.value||1) };
+
+    // Sync assumption "Avg jail days avoided per case" to total jail days if user tweaks it:
+    // Convert per-case days -> total days keeping cases_avoided constant
+    if (X.cases_avoided > 0) {
+      const perCaseDays = A.jailDays;
+      X.jail_days_avoided = perCaseDays * X.cases_avoided;
+    }
+
     const R = compute(X, A);
     kpiT.textContent   = fmtUSD(R.total);
     kpiRI.textContent  = pct(R.ciri);
@@ -322,10 +348,11 @@
     brk.innerHTML = `
       <div><strong>Breakdown</strong></div>
       <ul>
-        <li>Direct case savings: <strong>${fmtUSD(R.parts.direct_case)}</strong></li>
-        <li>Detention savings (avg ${A.jailDays} days @ ${fmtUSD(X.jail_day_cost)}/day): <strong>${fmtUSD(R.parts.detention)}</strong></li>
-        <li>Licensing/regulatory correction (${fmtUSD(X.licenses)} × ${X.transport_weight}): <strong>${fmtUSD(R.parts.licensing)}</strong></li>
-        <li>Employment & income restoration: <strong>${fmtUSD(R.parts.employment)}</strong></li>
+        <li>Direct case + fees: <strong>${fmtUSD(R.parts.direct_case)}</strong></li>
+        <li>Detention (total ${fmtUSD(X.jail_days_avoided)} days @ ${fmtUSD(X.cost_per_jail_day)}/day): <strong>${fmtUSD(R.parts.detention)}</strong></li>
+        <li>Employment restoration: <strong>${fmtUSD(R.parts.employment)}</strong></li>
+        <li>Litigation avoided: <strong>${fmtUSD(R.parts.lawsuits)}</strong></li>
+        <li>Transition costs (one-time): <strong>− ${fmtUSD(X.transition_costs_one_time)}</strong></li>
       </ul>
       <div class="ciri-small">Risk scaling K = ${fmtUSD(A.K)} • CIRI = 1 − exp(−Total/K)</div>
     `;
@@ -335,20 +362,31 @@
   document.getElementById('recalc').addEventListener('click', recalc);
 
   // Scenario sliders
-  sCases.addEventListener('input', () => { X.cases_avoided = Number(sCases.value); lCases.textContent = Number(sCases.value).toLocaleString(); recalc(); });
-  sTrans.addEventListener('input', () => { X.transport_weight = Number(sTrans.value); lTrans.textContent = Number(sTrans.value).toLocaleString(); recalc(); });
+  sCases.addEventListener('input', () => {
+    X.cases_avoided = Number(sCases.value);
+    lCases.textContent = Number(sCases.value).toLocaleString();
+    recalc();
+  });
+  sTrans.addEventListener('input', () => {
+    X.expected_lawsuits = Number(sTrans.value);
+    lTrans.textContent = Number(sTrans.value).toLocaleString();
+    recalc();
+  });
+
+  // Reset to CSV
   btnReset.addEventListener('click', () => {
-    X = {...CSV};
+    Object.assign(X, CSV);
     sCases.value = X.cases_avoided||0; lCases.textContent = Number(sCases.value).toLocaleString();
-    sTrans.value = X.transport_weight||0; lTrans.textContent = Number(sTrans.value).toLocaleString();
+    sTrans.value = X.expected_lawsuits||0; lTrans.textContent = Number(sTrans.value).toLocaleString();
     document.getElementById('assump-days').value = 5;
     document.getElementById('assump-k').value = 1000000000;
     recalc();
   });
 
+  // Initial calc
   recalc();
 
-  // --- CSV Download button (report) ---
+  // --- Download Report (CSV) ---
   const btn = document.createElement('button');
   btn.textContent = 'Download Report (CSV)';
   btn.className = 'btn-ghost';
@@ -358,6 +396,7 @@
   btn.addEventListener('click', () => {
     const A = { jailDays:Number(document.getElementById('assump-days').value||0),
                 K:Number(document.getElementById('assump-k').value||1) };
+    // Recompute latest
     const R = compute(X, A);
 
     const now = new Date().toISOString();
@@ -370,11 +409,12 @@
       ['CIRI (Risk Index)', R.ciri],
       ['CII (Integrity Index)', R.cii],
       ['ROI per Case Avoided', R.roiPerCase],
-      ['Direct Case Savings', R.parts.direct_case],
+      ['Direct Case + Fees', R.parts.direct_case],
       ['Detention Savings', R.parts.detention],
-      ['Licensing Correction', R.parts.licensing],
       ['Employment Restoration', R.parts.employment],
-      ['Assumed Jail Days', A.jailDays],
+      ['Litigation Avoided', R.parts.lawsuits],
+      ['Transition Costs (−)', X.transition_costs_one_time],
+      ['Assumed Jail Days per Case', A.jailDays],
       ['Risk Scaling K', A.K],
       [],
       ['Input Field','CSV Value'],
