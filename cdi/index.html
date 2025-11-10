@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CDI — Constitutional Divergence Index</title>
+  <style>
+    body{background:#0b0d12;color:#e6e6e6;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;margin:0;line-height:1.6}
+    header{background:#12161f;text-align:center;padding:1rem;border-bottom:1px solid rgba(255,255,255,.08)}
+    h1{color:#5ddfff;margin-bottom:.25rem}
+    p.lead{color:#c8d2df;margin-top:0}
+    main{max-width:900px;margin:1.5rem auto;padding:0 1rem}
+    section{background:#141820;border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:1rem 1.25rem;margin-bottom:1rem}
+    code{background:rgba(255,255,255,.08);padding:.1rem .3rem;border-radius:6px}
+    table{width:100%;border-collapse:collapse;margin-top:1rem}
+    th,td{border:1px solid rgba(255,255,255,.08);padding:.5rem;text-align:left}
+    th{background:#1b1f26;color:#5ddfff}
+    footer{text-align:center;font-size:.85rem;color:#9fb3c8;padding:1rem;margin-top:2rem;border-top:1px solid rgba(255,255,255,.08)}
+    a{color:#5ddfff;text-decoration:none} a:hover{text-decoration:underline}
+  </style>
+</head>
+<body>
+<header>
+  <h1>CDI — Constitutional Divergence Index</h1>
+  <p class="lead">Quantifies deviation from constitutional fidelity across domains.</p>
+  <nav>
+    <a href="../index.html">🏠 Home</a> ·
+    <a href="../ciri/index.html">CIRI</a> ·
+    <a href="../cibs/index.html">CIBS</a> ·
+    <a href="../cii/index.html">CII</a> ·
+    <a href="../macro/index.html">Macro</a>
+  </nav>
+</header>
+
+<main>
+  <section>
+    <h2>📊 What is CDI?</h2>
+    <p>
+      The <strong>Constitutional Divergence Index</strong> measures the extent to which laws, budgets, or policies diverge from constitutional limits and obligations.
+      Scores range from <strong>0.00 (fully faithful)</strong> to <strong>1.00 (fully divergent)</strong>.
+    </p>
+    <p>
+      CDI data feeds directly into <a href="../ciri/index.html">CIRI</a>, which translates these deviations into measurable economic recovery values.
+    </p>
+  </section>
+
+  <section>
+    <h2>📈 Divergence by Category</h2>
+    <p>Below is a sample of calculated divergence scores. These values can be refined by jurisdiction or sector.</p>
+    <table id="divTable">
+      <thead>
+        <tr><th>Category</th><th>Divergence (0–1.0)</th><th>Confidence</th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>📁 Source Data</h2>
+    <p>Model file: <code>model.json</code> · Live data: <code>divergence.csv</code></p>
+    <p><a href="./model.json" download>Download model.json</a> · <a href="./divergence.csv" download>Download divergence.csv</a></p>
+  </section>
+</main>
+
+<footer>
+  © 2025 Terra Dawn Shouse ·
+  <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener" style="color:#5ddfff">
+    CC BY-NC 4.0 International License
+  </a>
+</footer>
+
+<script>
+(async()=>{
+  const res = await fetch('./divergence.csv');
+  if(!res.ok) return;
+  const text = await res.text();
+  const rows = text.trim().split(/\r?\n/).map(r=>r.split(','));
+  const tbody = document.querySelector('#divTable tbody');
+  rows.slice(1).forEach(r=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td>`;
+    tbody.appendChild(tr);
+  });
+})();
+</script>
+</body>
+</html>
