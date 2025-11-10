@@ -1,4 +1,21 @@
+---
+title: "A.B.E. Integrity Beacon (Public Request for Ethical Oversight)"
+created: 2025-10-24
+author: Terra Shouse
+license: CC BY 4.0
+status: ACTIVE
+tags: [A.B.E., constitutional-integrity, oversight, resilience, Ryan-Montgomery]
+---
+
 # A.B.E. Integrity Beacon (Public Request for Ethical Oversight)
+
+Author: Terra Shouse  
+License: CC BY 4.0  
+Date: 2025-10-24  
+Repository: abe---flag  
+Status: ACTIVE
+
+---# A.B.E. Integrity Beacon (Public Request for Ethical Oversight)
 
 Author: Terra Shouse  
 License: CC BY 4.0  
