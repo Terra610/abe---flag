@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>A.B.E. Core Model — SIRF · IRE · CEQ · SIY · CDI</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <!-- Make cross-folder links resolve correctly on GitHub Pages -->
+  <base href="/abe---flag/">
+
+  <style>
+    :root{
+      --bg:#0b0d12; --panel:#141820; --ink:#e6e6e6; --muted:#9fb3c8;
+      --brand:#5ddfff; --accent:#fff750; --warn:#ffa559; --ok:#4bd28f; --line:rgba(255,255,255,.08);
+    }
+    html,body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 system-ui,Segoe UI,Roboto,Arial,sans-serif}
+    a{color:#80bfff} a:hover{text-decoration:underline}
+    header{padding:28px 20px;background:linear-gradient(90deg,#11151c,#1b1e25);border-bottom:1px solid var(--line)}
+    header h1{margin:0;font-size:1.35rem}
+    header .sub{color:var(--muted);margin-top:6px}
+    .wrap{max-width:980px;margin:0 auto;padding:28px 20px}
+    .badge{display:inline-block;margin:10px 0 0}
+    h2{margin-top:34px;border-top:1px solid var(--line);padding-top:24px;font-size:1.15rem}
+    h3{margin-top:20px;color:var(--brand);font-size:1.05rem}
+    code,kbd,pre{font-family:ui-monospace,SFMono-Regular,Consolas,Monaco,monospace}
+    .card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:18px;margin:18px 0}
+    .eq{background:#0f131a;border:1px solid var(--line);border-radius:8px;padding:14px;margin:12px 0}
+    .note{color:var(--muted);font-size:.95rem}
+    footer{margin:50px 0 24px;color:var(--muted);text-align:center}
+  </style>
+
+  <!-- MathJax for LaTeX rendering -->
+  <script>
+    window.MathJax = { tex: {inlineMath:[['\\(','\\)']], displayMath:[['$$','$$']]} };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+
+<body>
+  <header>
+    <div class="wrap">
+      <h1>🦋 A.B.E. Core Model — Formal Equations</h1>
+      <div class="sub">SIRF · IRE · CEQ · SIY · CDI — the constitutional-economic operators of the American Butterfly Effect</div>
+      <div class="badge">
+        <a href="https://doi.org/10.5281/zenodo.17586107">
+          <img alt="DOI" src="https://zenodo.org/badge/DOI/10.5281/zenodo.17586107.svg">
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+
+    <div class="card">
+      <p><strong>Reference DOI:</strong> <a href="https://doi.org/10.5281/zenodo.17586107">10.5281/zenodo.17586107</a></p>
+      <p class="note">
+        This page presents the formal math used across the site. It’s public, citable, and versioned.
+      </p>
+    </div>
+
+    <h2>System Identity</h2>
+    <p>Define the <em>constitutional constant</em> as the lawful equilibrium signal:</p>
+    <div class="eq">$$ C_0 \;=\; \frac{F \cdot L \cdot M}{E_e} $$</div>
+    <ul class="note">
+      <li>\(F \in [0,1]\): constitutional fidelity &nbsp;·&nbsp; \(L\): liberty magnitude &nbsp;·&nbsp; \(M\): market integrity</li>
+      <li>\(E_e &gt; 0\): economic entropy (corruption/inefficiency)</li>
+    </ul>
+
+    <h2>CDI — Constitutional Divergence Index (signal)</h2>
+    <p>Normalize observables to \([0,1]\) and combine with weights \(w_i\):</p>
+    <div class="eq">
+      $$ \delta_t \;=\; \sigma\!\left(\beta_0 + \sum_i w_i\,g(z_{t,i})\right), \quad
+         g(x)=2x-1,\ \ \sigma(x)=\frac{1}{1+e^{-x}} $$
+    </div>
+
+    <h2>SIRF — Shouse Integrity Recovery Function (potential)</h2>
+    <p>Convert divergence into recoverable potential \(P_t\) with capacity \(\kappa\), then pull \(F\) toward 1 at rate \(\alpha\):</p>
+    <div class="eq">$$ P_t=\kappa\,\delta_t \qquad\qquad F_{t+}^{(S)} \;=\; F_t + \alpha\,P_t\,(1-F_t) $$</div>
+
+    <h2>IRE — Integrity Restoration Equation (action)</h2>
+    <p>Verified corrective action mass \(A_t\) (from CIRI total recovery) raises \(F\) and reduces \(E_e\) with saturation:</p>
+    <div class="eq">
+      $$ \Delta F_t^{(I)}=\gamma\,\frac{A_t}{A_t+K_F} \qquad
+         E_{e,t+1}=E_{e,t}\left(1-\psi\,\frac{A_t}{A_t+K_E}\right) $$
+    </div>
+    <p>Combine with SIRF and small leakage \(\lambda\):</p>
+    <div class="eq">
+      $$ F_{t+1}=\min\!\bigl\{1,\;F_{t}^{(S)}+\Delta F_t^{(I)}-\lambda(1-F_t)\bigr\} $$
+    </div>
+
+    <h2>CEQ — Civic Efficiency Quotient (efficiency)</h2>
+    <p>Map fidelity and entropy to system efficiency \(\eta_t \in [0,1]\):</p>
+    <div class="eq">
+      $$ \eta_t \;=\; \frac{F_{t+1}^{\,\theta}}{1+\dfrac{E_{e,t+1}}{E_0}} $$
+    </div>
+
+    <h2>SIY — Shouse Integrity Yield (human-scale return)</h2>
+    <p>Translate efficiency into per-capita (or per-household) yield:</p>
+    <div class="eq">
+      $$ Y_t \;=\; \frac{\eta_t\,P_{\max}}{N} $$
+    </div>
+
+    <h2>Constitutional Constant (updated)</h2>
+    <div class="eq">
+      $$ C_{0,t+1}\;=\;\frac{F_{t+1}\cdot L\cdot M}{E_{e,t+1}} $$
+    </div>
+
+    <h2>Parameter Starters</h2>
+    <div class="card note">
+      \(\alpha=0.25,\ \kappa=0.6,\ \gamma=0.3,\ K_F\approx K_E \approx\) 1–3× median \(A_t\);  
+      \(\psi=0.4,\ \lambda=0.02,\ \theta=1.3,\ E_0=\) baseline \(E_e\).
+    </div>
+
+    <h2>Implementation Sketch</h2>
+    <div class="card">
+      <pre><code># Given: F, E_e, L, M, params; inputs: delta_t (CDI), A_t (CIRI total_recovery)
+P_t = kappa * delta_t
+F_S = F + alpha * P_t * (1 - F)
+dF_I = gamma * (A_t / (A_t + K_F))
+F1  = min(1.0, F_S + dF_I - lambda_ * (1 - F))
+E1  = E_e * (1 - psi * (A_t / (A_t + K_E)))
+eta = (F1 ** theta) / (1 + (E1 / E0))
+Y   = (eta * P_max) / N
+C0  = (F1 * L * M) / E1</code></pre>
+      <p class="note">Data sources: <strong>CIRI</strong> → <code>A_t</code>; <strong>CDI</strong> gauge → <code>delta_t</code>. CIBS &amp; CII display allocations &amp; KPIs driven by these outputs.</p>
+    </div>
+
+    <h2>Archival Record</h2>
+    <div class="card">
+      <p><strong>DOI:</strong> <a href="https://doi.org/10.5281/zenodo.17586107">10.5281/zenodo.17586107</a><br>
+      <strong>License:</strong> CC BY-NC 4.0 &nbsp;·&nbsp; <strong>Archive:</strong> CERN (Zenodo)</p>
+      <p class="note">
+        Please cite as: Shouse, T. D. (2025). <em>A.B.E. Core Model — SIRF + IRE + CEQ: Measuring Civic Recovery Through Constitutional Integrity</em> (v1.0.0). Zenodo. https://doi.org/10.5281/zenodo.17586107
+      </p>
+    </div>
+
+    <footer>
+      <div>CC BY-NC 4.0 · Integrity only — never for sale.</div>
+      <div style="margin-top:6px;">🕊️ <em>Integrity is not a slogan — it’s a system.</em></div>
+    </footer>
+  </main>
+</body>
+                                                                                                             </html>
