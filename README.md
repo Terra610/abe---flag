@@ -99,4 +99,16 @@ open index.html
 
 ---
 
+### Archival Record
+This release is permanently archived and citable via Zenodo:
+
+**DOI:** [10.5281/zenodo.17586107](https://doi.org/10.5281/zenodo.17586107)  
+**License:** CC BY-NC 4.0  
+**Archived at:** CERN’s Open Science Repository (Zenodo)
+
+Please cite as:
+> Shouse, T. D. (2025). *A.B.E. Core Model — SIRF + IRE + CEQ: Measuring Civic Recovery Through Constitutional Integrity* (Version 1.0.0). Zenodo. https://doi.org/10.5281/zenodo.17586107
+
+---
+
 🕊️ *Integrity is not a slogan — it’s a system.*
