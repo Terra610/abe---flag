@@ -2,6 +2,8 @@
 **A constitutional and economic restoration framework**  
 _Transforming harm into measurable recovery through truth, math, and lawful governance._
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.17586107.svg)](https://doi.org/10.5281/zenodo.17586107)
+
 ---
 
 ## 🌍 Overview
@@ -9,71 +11,92 @@ _Transforming harm into measurable recovery through truth, math, and lawful gove
 It converts unlawful enforcement and constitutional divergence into measurable, auditable economic correction.
 
 The project provides:
-- **Foundational doctrines** (legal basis and restoration framework)
-- **Economic engines** (CIRI, CIBS)
-- **Transparency systems** (System Map, Integration Layer)
-- **Public accountability tools** for verifiable reform
+- **Foundational doctrines** — legal basis and restoration framework  
+- **Economic engines** — CIRI, CIBS  
+- **Transparency systems** — System Map, Integration Layer  
+- **Public accountability tools** — for verifiable reform  
+
+Together, these create a **lawful economic ecosystem** where recovery, reinvestment, and justice are tracked mathematically, not politically.
 
 ---
 
 ## 🧱 Repository Structure
-
-The repository is organized into modular components that work together as a transparent, verifiable constitutional economy. Each folder represents a live subsystem within the American Butterfly Effect (A.B.E.) framework.
+This repository is organized into modular components that form the **American Butterfly Effect (A.B.E.)** constitutional recovery system.
 
 ---
 
 ## 🧭 How It Works
 
-1. **CIRI** – Calculates *constitutional economic loss and recovery value* based on misallocation, overreach, or deviation from constitutional mandates.  
-2. **CIBS** – Allocates that recovery into public investments (housing, education, infrastructure, justice, etc.) using verified data models.  
-3. **System Map** – Tracks the lawful flow of value and evidence across subsystems for audit readiness.  
-4. **Integration Layer** – Verifies integrity, connects receipts and public attestations, and confirms all transactions remain lawful.  
-5. **CII (Citizen Impact Index)** – Quantifies real-world outcomes from ABE/CRRA realignment, producing measurable improvements in citizen prosperity.  
-6. **Doctrines** – Provide the legal and moral framework that defines the entire model, ensuring fidelity to constitutional principles.
+1. **CIRI** — Calculates *constitutional economic loss and recovery value* (prevented harm, overreach, or misallocation).  
+2. **CIBS** — Converts that recovery into transparent, public reinvestment (housing, education, justice, etc.).  
+3. **System Map** — Defines and monitors lawful data and fund flow; any deviation is traceable.  
+4. **Integration Layer** — Detects tampering, suppression, or retaliation across systems.  
+5. **CII (Citizen Impact Index)** — Quantifies local prosperity and social benefit post-alignment.  
+6. **Doctrines** — Anchor all metrics in constitutional fidelity and civic ethics.
 
-Together, these components form a **closed-loop constitutional economy** that measures, audits, and restores prosperity lawfully — ensuring all reforms operate under *suprema lex terrae*, the supreme law of the land.
+> The result: a **closed-loop constitutional economy** — measurable, auditable, and incorruptible.
 
 ---
 
-## 🧩 Key Acronyms
+## 🧮 Key Formula Models
+
+| Symbol | Formula | Meaning |
+|---------|----------|----------|
+| **SIRF** | ΔI = (ΣL × Cf) / Rt | *Shouse Integrity Recovery Function* — measures total recoverable impact per constitutional fidelity factor |
+| **IRE** | Rv = (Hₐ − Hₙ) × Eₜ | *Integrity Restoration Equation* — economic restoration from harm avoided or corrected |
+| **CEQ** | η = (Eₐ / Eₘ) × 100 | *Civic Efficiency Quotient* — percentage of lawful efficiency regained in governance |
+| **SIY** | Y = (Rv × Cf) / P | *Shouse Integrity Yield* — per capita recovery efficiency |
+| **CDI** | δ = (ΣD / ΣC) × 100 | *Constitutional Divergence Index* — measures deviation from constitutional norms |
+
+---
+
+## 🧩 Acronyms
 
 | Term | Meaning |
 |------|----------|
-| **ABE** | American Butterfly Effect — Transformative framework restoring lawful economic balance |
-| **CRRA** | Civil Rights Restoration Act — Legislative reform model within ABE |
-| **CIRI** | Constitutional Integrity and Recovery Index — Calculates national loss and reallocation values |
-| **CIBS** | Constitutional Investment and Budget System — Distributes verified recovery into public infrastructure |
-| **CII** | Citizen Impact Index — Measures the tangible citizen-level impact of ABE and CRRA reforms |
-| **Suprema Lex Terrae** | “The supreme law of the land” — the U.S. Constitution as binding economic and legal authority |
+| **ABE** | American Butterfly Effect — lawful economic reform model |
+| **CRRA** | Civil Rights Restoration Act — embedded reform driver |
+| **CIRI** | Constitutional Integrity and Recovery Index |
+| **CIBS** | Constitutional Investment and Budget System |
+| **CII** | Citizen Impact Index |
+| **SIY** | Shouse Integrity Yield |
+| **SIRF** | Shouse Integrity Recovery Function |
+| **IRE** | Integrity Restoration Equation |
+| **CEQ** | Civic Efficiency Quotient |
+| **CDI** | Constitutional Divergence Index |
+| **Suprema Lex Terrae** | “The supreme law of the land” — the U.S. Constitution as economic authority |
 
 ---
 
-🕊️ *Integrity only. All data, evidence, and outputs are licensed under Creative Commons Attribution 4.0 (CC BY 4.0).*
-
-
-
-## 🧩 License
-This project and its contents are shared under the  
-**Creative Commons Attribution 4.0 International License (CC BY 4.0)**.
+## ⚖️ License
+This project and all related materials are shared under the  
+**Creative Commons Attribution–NonCommercial 4.0 International License (CC BY-NC 4.0).**
 
 > _“No money requested. No publicity requested. Integrity only.”_
 
 ---
 
 ## 🧠 Maintainer
-**Author:** Terra Shouse  
+**Author:** Terra Dawn Shouse  
 **Project:** The American Butterfly Effect (A.B.E.)  
 **Focus:** Constitutional, economic, and community restoration through truth and transparency.
 
+**Project URL:** [https://terra610.github.io/abe---flag/](https://terra610.github.io/abe---flag/)  
+**DOI:** [10.5281/zenodo.17586107](https://doi.org/10.5281/zenodo.17586107)
+
 ---
 
-## 🧭 Quick Start
+## 🚀 Quick Start
 To explore locally:
 
 ```bash
 # Clone the repo
-git clone https://github.com/YOUR-USERNAME/abe---flag.git
+git clone https://github.com/Terra610/abe---flag.git
 cd abe---flag
 
 # Open the main site in your browser
 open index.html
+
+---
+
+🕊️ *Integrity is not a slogan — it’s a system.*
