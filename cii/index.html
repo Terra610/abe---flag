@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; img-src 'self' https://zenodo.org data:; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'self'; upgrade-insecure-requests">
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>CII — Community Investment Interface</title>
   <style>
@@ -39,7 +41,12 @@
     tbody tr:last-child td{border-bottom:none}
     .num{text-align:right;font-variant-numeric:tabular-nums}
     .hint{color:#9fb3c8;font-size:.9rem;margin-top:.5rem}
+    .meta{color:#9fb3c8;font-size:.85rem;margin-top:.35rem}
     footer{margin:32px 0 24px;text-align:center;color:#8fa1b6;font-size:.85rem}
+    /* accessibility */
+    a:focus-visible, .btn:focus-visible { outline:3px solid #5ddfff; outline-offset:2px; border-radius:6px }
+    #status { color:#cfe6ff; }
+    #status.error { color:#ffa7a7; }
     @media (max-width:760px){.cards{grid-template-columns:1fr}}
   </style>
 </head>
@@ -54,14 +61,19 @@
   <main>
     <h1>🏗️ CII — Community Investment Interface</h1>
     <p class="lead">
-      CII is the “last-mile” interface that turns verified recovery value into
-      <strong>live, trackable projects</strong>: housing, clinics, food systems, broadband,
-      transit, and workforce pipelines. It consumes <em>CIRI</em> results, aligns with
-      <em>CIBS</em> budgets, and publishes an auditable portfolio.
+      Turns verified recovery value into <strong>live, trackable projects</strong> (housing, clinics, food systems, broadband,
+      transit, workforce). Consumes <em>CIRI</em>, aligns with <em>CIBS</em>, and publishes an auditable portfolio.
     </p>
 
+    <!-- Version/DOI banner -->
+    <div class="meta">
+      DOI: <a href="https://doi.org/10.5281/zenodo.17586107">10.5281/zenodo.17586107</a> ·
+      License: <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC BY-NC 4.0</a> ·
+      <span id="last-mod">Portfolio last modified: —</span>
+    </div>
+
     <!-- Status cards -->
-    <div class="cards" id="status">
+    <div class="cards" id="status-cards">
       <div class="card">
         <h3>Model</h3>
         <div class="kv">
@@ -85,6 +97,9 @@
       </div>
     </div>
 
+    <!-- Live status (ARIA) -->
+    <div id="status" class="hint" role="status" aria-live="polite"></div>
+
     <!-- Quick links -->
     <section>
       <h2>🔗 Links</h2>
@@ -97,63 +112,47 @@
         <a class="btn" href="portfolio.csv">Open portfolio.csv</a>
       </div>
       <p class="hint">
-        Don’t have files yet? Create a <code>model.json</code> describing project categories and multipliers,
-        and a <code>portfolio.csv</code> listing projects (<code>name,category,cost_usd,households,status</code>).
+        Don’t have files yet? Create a <code>model.json</code> with category multipliers,
+        and a <code>portfolio.csv</code> with <code>name,category,cost_usd,households,status</code>.
       </p>
     </section>
 
-    <!-- Portfolio preview (if present) -->
+    <!-- Portfolio preview (secure rendering) -->
     <section>
       <h2>📄 Portfolio Preview</h2>
-      <div id="portfolio-table" style="margin-top:.5rem"></div>
+      <div id="portfolio-wrap" style="margin-top:.5rem"></div>
       <p class="hint" id="portfolio-hint"></p>
-      <!-- Enhanced KPIs container -->
-      <div id="portfolio-kpis" style="margin-top:10px;color:#cfe6ff"></div>
+    </section>
+
+    <!-- KPIs -->
+    <section>
+      <h2>📊 KPIs</h2>
+      <div class="cards">
+        <div class="card">
+          <h3>Total Project Cost</h3>
+          <div class="kv"><span class="value" id="k-total">$—</span></div>
+        </div>
+        <div class="card">
+          <h3>Total Households</h3>
+          <div class="kv"><span class="value" id="k-hh">—</span></div>
+        </div>
+        <div class="card">
+          <h3>Avg Cost / Household</h3>
+          <div class="kv"><span class="value" id="k-cph">$—</span></div>
+        </div>
+      </div>
+      <div class="hint" id="budget-note"></div>
     </section>
 
     <!-- How it fits -->
     <section>
       <h2>🧬 How CII Fits</h2>
       <ul>
-        <li><strong>Inputs:</strong> CIRI’s <em>Total Recovery</em> and risk signals; community needs; A.B.E. doctrine guardrails.</li>
-        <li><strong>Process:</strong> Score candidate projects → allocate via CIBS → publish portfolio and status.</li>
-        <li><strong>Outputs:</strong> Live investments, KPIs (households served, jobs, ROI per project), and audit-ready trails.</li>
+        <li><strong>Inputs:</strong> CIRI’s <em>Total Recovery</em>; CIBS allocations; doctrine guardrails; community needs.</li>
+        <li><strong>Process:</strong> Score projects → allocate → publish portfolio + receipts.</li>
+        <li><strong>Outputs:</strong> Live KPIs (households served, ROI per project), public audit trails, DOI-anchored versions.</li>
       </ul>
     </section>
-
-    <!-- ──────────────────────────────── A.B.E. Nav Dock + Live KPIs ──────────────────────────────── -->
-    <section id="abe-navdock" style="background:#141820;border:1px solid var(--line);border-radius:12px;padding:16px;margin-top:18px">
-      <h2 style="margin:0 0 .6rem;color:#dfe9f6;font-size:1.05rem">A.B.E. Navigator · Live Links</h2>
-      <div style="display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))">
-        <div style="background:#0f131a;border:1px solid var(--line);border-radius:10px;padding:14px">
-          <div style="font-weight:600;margin-bottom:8px">Doctrines</div>
-          <ul style="list-style:none;padding:0;margin:0;line-height:1.8">
-            <li><a href="/abe---flag/doctrine/ABE_CRRA_Rebuild.pdf">A.B.E. · CRRA · Rebuild Together (viewer)</a></li>
-            <li><a href="/abe---flag/doctrine/constitutional-fidelity.html">Constitutional Fidelity (full text)</a></li>
-            <li><a href="/abe---flag/doctrine/void-ab-initio.html">Void ab Initio (full text)</a></li>
-          </ul>
-        </div>
-
-        <div style="background:#0f131a;border:1px solid var(--line);border-radius:10px;padding:14px">
-          <div style="font-weight:600;margin-bottom:8px">Calculators & KPIs</div>
-          <ul style="list-style:none;padding:0;margin:0;line-height:1.9">
-            <li><a href="/abe---flag/ciri/">CIRI Calculator</a> — <span id="dock-ciri-total" style="opacity:.85">loading…</span></li>
-            <li><a href="/abe---flag/cibs/">CIBS Budget</a> — <span id="dock-cibs-total" style="opacity:.85">loading…</span></li>
-            <li><a href="/abe---flag/integration/">Integration KPIs</a></li>
-          </ul>
-        </div>
-
-        <div style="background:#0f131a;border:1px solid var(--line);border-radius:10px;padding:14px">
-          <div style="font-weight:600;margin-bottom:8px">Archive & License</div>
-          <div style="line-height:1.7">
-            DOI: <a href="https://doi.org/10.5281/zenodo.17586107">10.5281/zenodo.17586107</a><br/>
-            License: <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC BY-NC 4.0</a><br/>
-            Project: <a href="/abe---flag/">terra610.github.io/abe---flag</a>
-          </div>
-        </div>
-      </div>
-    </section>
-    <!-- ──────────────────────────────── End Nav Dock ──────────────────────────────── -->
 
     <footer>
       CII is part of A.B.E.’s open, auditable toolchain.<br>
@@ -162,144 +161,166 @@
   </main>
 
   <script>
-    // --- helpers ---
-    function parseCSV(text){
-      const lines = text.split(/\r?\n/).filter(Boolean);
-      return lines.map(l => l.split(',').map(x => x.trim()));
-    }
+    // ---------- Utilities ----------
+    const $ = (sel, root=document) => root.querySelector(sel);
+    const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+
+    function setText(el, txt){ if(el){ el.textContent = txt; } }
     function fmtUSD(n){
-      const v = Number(String(n).replace(/[^0-9.\-]/g,'')||0);
+      const v = Number.isFinite(n) ? n : Number(String(n||'').replace(/[^0-9.\-]/g,''));
+      if(!Number.isFinite(v)) return '$—';
       try{ return new Intl.NumberFormat(undefined,{style:'currency',currency:'USD',maximumFractionDigits:0}).format(v); }
-      catch{ return '$'+(Math.round(v)||0).toLocaleString(); }
+      catch{ return '$'+Math.round(v).toLocaleString(); }
     }
-    async function checkFile(path, okId){
-      const el = document.getElementById(okId);
-      try{
-        const res = await fetch(path, {cache:'no-store'});
-        if(!res.ok) throw 0;
-        const text = await res.text();
-        if(!text.trim()) throw 0;
-        el.textContent = 'Present'; el.classList.add('ok');
-        return text;
-      }catch(e){
-        el.textContent = 'Missing'; el.classList.add('warn');
-        return null;
-      }
+    function toNumberLikeUSD(s){
+      if (typeof s === 'number') return s;
+      if (!s) return 0;
+      // Prevent spreadsheet formula injection on export/display (prefix if needed)
+      if (/^[=+\-@]/.test(s)) s = "'"+s;
+      const cleaned = String(s).replace(/[^0-9.\-]/g,'');
+      const n = Number(cleaned);
+      return Number.isFinite(n) ? n : 0;
     }
 
-    // --- boot (CII core) ---
-    async function boot(){
-      const modelText = await checkFile('model.json','model-status');
-      const portfolioText = await checkFile('portfolio.csv','port-status');
-
-      const wrap = document.getElementById('portfolio-table');
-      const hint = document.getElementById('portfolio-hint');
-
-      if(portfolioText){
-        const rows = parseCSV(portfolioText);
-        if(rows.length){
-          const thead = rows[0];
-          const body = rows.slice(1);
-          let html = '<table><thead><tr>';
-          thead.forEach(h => html += `<th>${h}</th>`);
-          html += '</tr></thead><tbody>';
-          body.forEach(r=>{
-            html += '<tr>';
-            r.forEach((c,i)=>{
-              const isMoney = /cost|budget|amount|usd/i.test(thead[i]||'');
-              html += `<td class="${isMoney?'num':''}">${isMoney?fmtUSD(c):c}</td>`;
-            });
-            html += '</tr>';
-          });
-          html += '</tbody></table>';
-          wrap.innerHTML = html;
-          hint.textContent = 'Previewing /cii/portfolio.csv. Update that file to change this view.';
-
-          // --- Enhanced KPIs for portfolio ---
-          (function showPortfolioKPIs(){
-            const idxCost = thead.findIndex(h => /cost|budget|amount|usd/i.test(h||''));
-            const idxHH   = thead.findIndex(h => /household|hh/i.test(h||''));
-            let totalCost = 0, totalHH = 0;
-            body.forEach(r=>{
-              const c = Number((r[idxCost]||'').toString().replace(/[^0-9.\-]/g,''));
-              const h = Number((r[idxHH]  ||'').toString().replace(/[^0-9.\-]/g,''));
-              if (isFinite(c)) totalCost += c;
-              if (isFinite(h)) totalHH   += h;
-            });
-            const avgCPH = (totalHH>0) ? (totalCost/totalHH) : 0;
-            const kpis = document.getElementById('portfolio-kpis');
-            const money = v => { try { return new Intl.NumberFormat(undefined,{style:'currency',currency:'USD',maximumFractionDigits:0}).format(v); } catch { return '$'+Math.round(v).toLocaleString(); } };
-            kpis.innerHTML = `
-              <div style="display:flex;gap:12px;flex-wrap:wrap">
-                <div style="flex:1 1 240px;background:#141820;border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:10px">
-                  <div style="font-size:12px;color:#9fb3c8">Total Investment</div>
-                  <div style="font-weight:800;font-size:20px">${money(totalCost)}</div>
-                </div>
-                <div style="flex:1 1 240px;background:#141820;border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:10px">
-                  <div style="font-size:12px;color:#9fb3c8">Total Households Served</div>
-                  <div style="font-weight:800;font-size:20px">${(Math.round(totalHH)||0).toLocaleString()}</div>
-                </div>
-                <div style="flex:1 1 240px;background:#141820;border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:10px">
-                  <div style="font-size:12px;color:#9fb3c8">Avg. Cost / Household</div>
-                  <div style="font-weight:800;font-size:20px">${money(avgCPH)}</div>
-                </div>
-              </div>
-            `;
-          })();
-
-        }
-      }else{
-        wrap.innerHTML = `
-          <div style="padding:12px;border:1px dashed var(--line);border-radius:10px;background:#0f141b;">
-            No <code>portfolio.csv</code> yet. Add one with columns like:
-            <code>name,category,cost_usd,households,status</code>.
-          </div>`;
-        hint.textContent = 'Once portfolio.csv is added, refresh to see the table.';
-      }
-
-      // (Optional) light check
-      if(modelText){
-        try{
-          const j = JSON.parse(modelText);
-          if(!j.categories || !Array.isArray(j.categories) || j.categories.length === 0){
-            console.warn('model.json has no categories.');
+    // RFC4180-ish CSV parser (handles quotes/commas/newlines)
+    function parseCSV(text){
+      const rows = [];
+      let cur = [], val = '', i = 0, inQ = false;
+      while (i < text.length){
+        const c = text[i];
+        if (inQ){
+          if (c === '"'){
+            if (text[i+1] === '"'){ val += '"'; i += 2; continue; }
+            inQ = false; i++; continue;
           }
-        }catch(e){ console.warn('model.json not valid JSON'); }
+          val += c; i++; continue;
+        } else {
+          if (c === '"'){ inQ = true; i++; continue; }
+          if (c === ','){ cur.push(val); val=''; i++; continue; }
+          if (c === '\n'){ cur.push(val); rows.push(cur); cur=[]; val=''; i++; continue; }
+          if (c === '\r'){ i++; continue; }
+          val += c; i++; continue;
+        }
       }
+      cur.push(val); rows.push(cur);
+      // trim trailing blank rows
+      while (rows.length && rows[rows.length-1].every(c=>c==='')) rows.pop();
+      return rows;
     }
-    boot();
 
-    // --- A.B.E. Nav Dock live KPIs ---
-    (async function(){
-      // CIBS total
+    async function fetchText(url){
+      const res = await fetch(url, {cache:'no-store'});
+      if(!res.ok) throw new Error('HTTP '+res.status);
+      const txt = await res.text();
+      const lm = res.headers.get('Last-Modified');
+      return { text: txt, lastModified: lm };
+    }
+
+    function requireHeaders(headers, required){
+      const missing = required.filter(r => !headers.includes(r));
+      return { ok: missing.length === 0, missing };
+    }
+
+    function renderTable(container, header, rows){
+      const table = document.createElement('table');
+      const thead = document.createElement('thead');
+      const trh = document.createElement('tr');
+      header.forEach(h=>{
+        const th = document.createElement('th');
+        th.textContent = h;
+        trh.appendChild(th);
+      });
+      thead.appendChild(trh);
+      table.appendChild(thead);
+
+      const tbody = document.createElement('tbody');
+      rows.forEach(r=>{
+        const tr = document.createElement('tr');
+        r.forEach((cell, i)=>{
+          const td = document.createElement('td');
+          // right-align money-ish columns
+          const isMoney = /cost|budget|amount|usd/i.test(header[i]||'');
+          td.className = isMoney ? 'num' : '';
+          td.textContent = isMoney ? fmtUSD(toNumberLikeUSD(cell)) : String(cell);
+          tr.appendChild(td);
+        });
+        tbody.appendChild(tr);
+      });
+      table.appendChild(tbody);
+      container.innerHTML = '';
+      container.appendChild(table);
+    }
+
+    // ---------- Page Boot ----------
+    (async function boot(){
+      const statusEl = $('#status');
+
+      // Model check
       try{
-        const r = await fetch('/abe---flag/cibs/auto_budget.csv',{cache:'no-store'});
-        const t = await r.text();
-        const lines = t.trim().split(/\r?\n/);
-        const total = lines.slice(1).reduce((s,line)=>{
-          const v = Number(line.split(',')[1]); return s + (isFinite(v)?v:0);
-        },0);
-        document.getElementById('dock-cibs-total').textContent = fmtUSD(total);
-      }catch{ const el = document.getElementById('dock-cibs-total'); if(el) el.textContent='—'; }
+        const m = await fetchText('model.json');
+        $('#model-status').textContent = m.text.trim() ? 'Present' : 'Empty';
+        $('#model-status').classList.add(m.text.trim() ? 'ok':'warn');
+      }catch{
+        $('#model-status').textContent = 'Missing';
+        $('#model-status').classList.add('warn');
+      }
 
-      // CIRI total (demo-mode)
+      // Portfolio load + validate
+      let portfolioRows = null, headers = null, body = null, lastMod = '—';
       try{
-        const r = await fetch('/abe---flag/ciri/inputs.csv',{cache:'no-store'});
-        const t = await r.text();
-        const [h,d] = t.trim().split(/\r?\n/);
-        const keys = h.split(','); const vals = d.split(',').map(Number);
-        const o = Object.fromEntries(keys.map((k,i)=>[k.trim(),vals[i]]));
+        const {text, lastModified} = await fetchText('portfolio.csv');
+        lastMod = lastModified ? new Date(lastModified).toLocaleString() : '—';
+        const rows = parseCSV(text);
+        if (!rows || rows.length < 2) throw new Error('Empty CSV');
+        headers = rows[0].map(h=>h.trim());
+        body = rows.slice(1).filter(r => r.some(c=>String(c).trim()!==''));
+        const req = requireHeaders(headers, ['name','category','cost_usd','households','status']);
+        if(!req.ok) throw new Error('Missing columns: '+req.missing.join(', '));
+        portfolioRows = rows;
 
-        const c=o.cases_avoided, C=o.avg_cost_per_case, D=o.jail_days_avoided, J=o.cost_per_jail_day,
-              F=o.fees_canceled_total, P=o.policy_corrections, E=o.avg_enforcement_cost_savings,
-              H=o.households_restored, M=o.avg_monthly_market_spend, m=o.months_effective,
-              pe=o.employment_probability, W=o.avg_monthly_wage, L=o.expected_lawsuits,
-              A=o.avg_payout, lam=o.litigation_multiplier, T=o.transition_costs_one_time;
+        $('#port-status').textContent = 'Present';
+        $('#port-status').classList.add('ok');
+        $('#last-mod').textContent = 'Portfolio last modified: '+ lastMod;
+      }catch(e){
+        $('#port-status').textContent = 'Missing';
+        $('#port-status').classList.add('warn');
+        statusEl.classList.add('error');
+        setText(statusEl, 'Could not load portfolio.csv. Ensure headers: name, category, cost_usd, households, status.');
+        return;
+      }
 
-        const totalRecovery = (c*C+F) + (D*J) + (P*E) + (H*M*m) + ((H*pe)*W*m) + (L*A*lam) - T;
-        document.getElementById('dock-ciri-total').textContent = fmtUSD(totalRecovery);
-      }catch{ const el = document.getElementById('dock-ciri-total'); if(el) el.textContent='—'; }
+      // Secure render
+      renderTable($('#portfolio-wrap'), headers, body);
+      $('#portfolio-hint').textContent = 'Previewing /cii/portfolio.csv. Update that file to change this view.';
+
+      // KPIs
+      const idxCost = headers.indexOf('cost_usd');
+      const idxHH   = headers.indexOf('households');
+      let sumCost = 0, sumHH = 0;
+      body.forEach(r=>{
+        sumCost += toNumberLikeUSD(r[idxCost]);
+        sumHH   += toNumberLikeUSD(r[idxHH]);
+      });
+      setText($('#k-total'), fmtUSD(sumCost));
+      setText($('#k-hh'), Number.isFinite(sumHH) ? sumHH.toLocaleString() : '—');
+      setText($('#k-cph'), (sumHH>0) ? fmtUSD(sumCost/sumHH) : '$—');
+
+      // Optional: compare to CIBS pool (budget guardrail)
+      try{
+        const {text} = await fetchText('/abe---flag/cibs/auto_budget.csv');
+        const r = parseCSV(text);
+        const totalCIBS = r.slice(1).reduce((acc,row)=> acc + toNumberLikeUSD(row[1]), 0);
+        const note = $('#budget-note');
+        if (totalCIBS && sumCost > totalCIBS){
+          note.textContent = `⚠ Portfolio total (${fmtUSD(sumCost)}) exceeds CIBS allocation (${fmtUSD(totalCIBS)}). Review category weights or project scope.`;
+        } else if (totalCIBS){
+          note.textContent = `✔ Portfolio total (${fmtUSD(sumCost)}) within CIBS allocation (${fmtUSD(totalCIBS)}).`;
+        }
+      }catch{ /* non-fatal */ }
+
+      // Success status
+      setText(statusEl, 'Loaded model & portfolio successfully.');
     })();
   </script>
 </body>
-  </html>
+        </html>
