@@ -1,74 +1,75 @@
 {
-  "version": "1.0.0",
-  "updated": "2025-11-14T12:00:00Z",
-  "jurisdiction": "United States — Federal",
-  "articles": [
+  "version": "1.0.1",
+  "updated": "2025-11-14T00:00:00Z",
+  "authority": {
+    "name": "A.B.E. — Constitutional Alignment Engine (CAE)",
+    "license": "CC BY-NC 4.0",
+    "doi": "10.5281/zenodo.17586107"
+  },
+  "weights": {
+    "clarity_of_scope": 0.35,
+    "constitutional_nexus": 0.35,
+    "operational_fidelity": 0.30
+  },
+  "clauses": [
     {
-      "id": "ArtI_S8_Cl3",
-      "title": "Article I, Section 8, Clause 3 — Commerce Clause",
-      "clauses": [
-        {
-          "clause_id": "commerce_scope",
-          "reference": "Congress may regulate Commerce with foreign Nations, and among the several States, and with the Indian Tribes.",
-          "derived_statutes": [
-            "15 U.S.C. § 1 (Sherman Act)",
-            "49 U.S.C. Subtitle IV (Transportation)"
-          ],
-          "alignment_score": 0.85,
-          "interpretation": "Current federal posture largely respects interstate scope; risk arises when private, non-commercial conduct is treated as commerce.",
-          "source_hash": "0000000000000000000000000000000000000000000000000000000000000000"
-        },
-        {
-          "clause_id": "noncommercial_limit",
-          "reference": "Limits recognized in Lopez and Morrison; non-economic activity beyond Congress’s reach.",
-          "derived_statutes": [
-            "18 U.S.C. § 922(q) (historical context)",
-            "42 U.S.C. § 13981 (historical context)"
-          ],
-          "alignment_score": 0.40,
-          "interpretation": "Divergence where agencies or states extend ‘commerce’ to private travel or non-economic acts; requires corrective guidance.",
-          "source_hash": "1111111111111111111111111111111111111111111111111111111111111111"
-        }
+      "clause_id": "CommerceClause_FMCSA_Scope",
+      "title": "Federal Motor Carrier Safety — Commercial Nexus (Interstate)",
+      "constitutional_anchor": "U.S. Const. art. I, §8, cl.3 (Commerce Clause)",
+      "statutes": ["49 U.S.C. ch. 311–315"],
+      "regulations": ["49 CFR Parts 350–399"],
+      "intent": "Safety regulation of commercial motor carriers in interstate (and certain intrastate) commerce.",
+      "scope_notes": [
+        "FMCSA authority attaches to commerce (for-hire carriage / business use), not private, non-commercial travel.",
+        "States may diverge for intrastate carriers, but must retain the commercial nexus."
+      ],
+      "alignment_score": 0.86,
+      "confidence": 0.82,
+      "tags": ["FMCSA", "commerce-nexus", "transport"],
+      "source_hash": "sha256:PLACEHOLDER",
+      "evidence_links": [
+        "https://www.ecfr.gov/current/title-49/subtitle-B/chapter-III",
+        "https://uscode.house.gov/view.xhtml?path=/prelim@title49/subtitle6/partB"
       ]
     },
     {
-      "id": "ArtI_S8_Cl7",
-      "title": "Article I, Section 8, Clause 7 — Postal Clause",
-      "clauses": [
-        {
-          "clause_id": "postal_infrastructure",
-          "reference": "To establish Post Offices and post Roads.",
-          "derived_statutes": [
-            "39 U.S.C. § 101",
-            "39 U.S.C. § 401"
-          ],
-          "alignment_score": 0.92,
-          "interpretation": "Core federal authority remains intact; risks appear when state or private rules materially impede postal carriage and routes.",
-          "source_hash": "2222222222222222222222222222222222222222222222222222222222222222"
-        }
+      "clause_id": "CFR40_13h_DOT_Testing_SafetySensitiveOnly",
+      "title": "49 CFR §40.13(h) — DOT Testing Applies Only to Safety-Sensitive Employees",
+      "constitutional_anchor": "U.S. Const. art. I, §8, cl.3; due process & equal protection (5th/14th)",
+      "statutes": ["49 U.S.C. §31306", "49 U.S.C. §45102"],
+      "regulations": ["49 CFR §40.13(h)"],
+      "intent": "Alcohol/drug testing regime is limited to DOT-regulated, safety-sensitive roles — not the general public.",
+      "scope_notes": [
+        "Implied-consent constructs cannot expand DOT testing to non-DOT citizens absent lawful nexus.",
+        "Misapplication increases divergence (jurisdictional overreach)."
+      ],
+      "alignment_score": 0.91,
+      "confidence": 0.78,
+      "tags": ["Part40", "testing-scope", "safety-sensitive"],
+      "source_hash": "sha256:PLACEHOLDER",
+      "evidence_links": [
+        "https://www.ecfr.gov/current/title-49/subtitle-A/part-40#p-40.13(h)"
       ]
     },
     {
-      "id": "Amend_X",
-      "title": "Tenth Amendment — Reservation of Powers",
-      "clauses": [
-        {
-          "clause_id": "reserved_powers_balance",
-          "reference": "The powers not delegated to the United States… are reserved to the States respectively, or to the people.",
-          "derived_statutes": [
-            "State Police Powers (general)",
-            "5 U.S.C. § 3331 (Oath of Office)"
-          ],
-          "alignment_score": 0.70,
-          "interpretation": "Healthy reservation principle exists; divergence where licensing and enforcement frameworks regulate private, non-commercial life as if commerce.",
-          "source_hash": "3333333333333333333333333333333333333333333333333333333333333333"
-        }
+      "clause_id": "FHWA_FMCSA_TruckParking_2025_Memo",
+      "title": "FHWA–FMCSA 2025 Memo — Truck Parking Eligibility (Titles 23 & 49)",
+      "constitutional_anchor": "U.S. Const. art. I, §8, cl.3 (Commerce / freight system)",
+      "statutes": ["23 U.S.C. (Federal-aid highways)", "49 U.S.C. (Motor carriers)"],
+      "regulations": [],
+      "intent": "Clarifies federal funds eligibility for truck parking within freight/logistics (commercial) scope.",
+      "scope_notes": [
+        "State Freight Plans must assess commercial-vehicle parking; scope remains freight-centric.",
+        "Confirms the policy intent is commercial operators, not private motorists."
+      ],
+      "alignment_score": 0.88,
+      "confidence": 0.74,
+      "tags": ["FHWA", "truck-parking", "freight"],
+      "source_hash": "sha256:PLACEHOLDER",
+      "evidence_links": [
+        "https://www.fhwa.dot.gov/",
+        "https://www.fmcsa.dot.gov/"
       ]
     }
-  ],
-  "summary": {
-    "average_alignment": 0.7175,
-    "deviation_count": 2,
-    "notes": "Primary divergences: (1) non-commercial conduct treated as commerce; (2) state licensing regimes functionally burdening private travel. Postal authority largely aligned."
-  }
-}
+  ]
+    }
