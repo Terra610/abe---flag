@@ -1,0 +1,26 @@
+{
+  "version": "1.0",
+  "about": "CAE — Constitutional Alignment Engine model schema",
+  "layers": [
+    {"key":"federal_law","name":"U.S. Code & CFR","weight":0.4},
+    {"key":"state_law","name":"State Statutes","weight":0.3},
+    {"key":"case_law","name":"Judicial Precedents","weight":0.2},
+    {"key":"executive_action","name":"Regulations & Orders","weight":0.1}
+  ],
+  "constitutional_sources": [
+    "U.S. Constitution (Articles & Amendments)",
+    "Federalist Papers (contextual intent)",
+    "Supreme Court majority opinions defining limits of power"
+  ],
+  "analysis_methods": {
+    "text_alignment": "semantic similarity of statute intent vs enumerated powers",
+    "authority_check": "compare claimed power source vs Article I/II/III delegation",
+    "rights_conflict": "match prohibitions in Amendments 1–10, 13–15, etc.",
+    "commerce_nexus_audit": "detect misuse of interstate commerce to regulate intrastate or private behavior"
+  },
+  "outputs": {
+    "divergence_index": "0–1 score per statute",
+    "affected_domain": "commerce, due_process, equal_protection, etc.",
+    "recommendation": "clarify, repeal, amend, or harmonize"
+  }
+}
