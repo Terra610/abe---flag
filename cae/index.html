@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>CAE — Constitutional Alignment Engine</title>
+<base href="/abe---flag/">
+<style>
+:root{
+  --bg:#0b0d12;--panel:#141820;--panel2:#0f131a;--ink:#e6e6e6;--muted:#9fb3c8;
+  --line:rgba(255,255,255,.08);--brand:#5ddfff;--ok:#4bd28f;--warn:#ffa559
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+a{color:#80bfff} a:hover{text-decoration:underline}
+header{padding:24px 20px;background:linear-gradient(90deg,#11151c,#1b1e25);border-bottom:1px solid var(--line)}
+.wrap{max-width:1100px;margin:0 auto;padding:24px 20px}
+h1{margin:0 0 6px}
+.sub{color:var(--muted)}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;margin:18px 0}
+.table{width:100%;border-collapse:collapse}
+.table th,.table td{border:1px solid var(--line);padding:10px 12px;text-align:left}
+.table th{background:var(--panel2)}
+.badge{display:inline-block;padding:2px 8px;border:1px solid var(--line);border-radius:999px;color:var(--muted)}
+.kpi{display:flex;gap:14px;flex-wrap:wrap}
+.kpi .tile{flex:1 1 220px;background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:12px}
+.kpi .num{font-size:1.3rem;font-weight:700}
+small{color:var(--muted)}
+footer{margin:36px 0 20px;color:var(--muted);text-align:center;font-size:.9rem}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <a href="/abe---flag/" class="badge">← Home</a>
+    <h1>CAE — Constitutional Alignment Engine</h1>
+    <div class="sub">Validates CAE model data against schema and surfaces alignment KPIs that feed CDI → CIRI.</div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="card">
+    <div class="kpi">
+      <div class="tile">
+        <div>Schema Validation</div>
+        <div id="k-valid" class="num">Checking…</div>
+        <small>Source: <code>/cae/schema.json</code> vs <code>/cae/model.json</code></small>
+      </div>
+      <div class="tile">
+        <div>Average Alignment</div>
+        <div id="k-avg" class="num">—</div>
+        <small>Mean of clause-level alignment scores</small>
+      </div>
+      <div class="tile">
+        <div>Divergences Flagged</div>
+        <div id="k-dev" class="num">—</div>
+        <small>Count of clauses below 0.80 (tunable)</small>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Articles & Clauses</h3>
+    <table class="table" id="tbl">
+      <thead><tr><th>Article</th><th>Clause ID</th><th>Reference</th><th>Alignment</th></tr></thead>
+      <tbody></tbody>
+    </table>
+    <small id="errs"></small>
+  </div>
+
+  <div class="card">
+    <h3>How CAE Feeds the Pipeline</h3>
+    <ul>
+      <li><strong>CAE → CDI:</strong> normalize alignment_scores into a divergence signal \(\delta_t\) per domain.</li>
+      <li><strong>CDI → CIRI:</strong> \(\delta_t\) and verified actions shape risk & recovery (SIRF · IRE · CEQ).</li>
+      <li><strong>CIRI → CIBS → CII → Integration:</strong> dollars → budgets → projects → receipts.</li>
+    </ul>
+  </div>
+</main>
+
+<footer>
+  CC BY-NC 4.0 · DOI <a href="https://doi.org/10.5281/zenodo.17586107">10.5281/zenodo.17586107</a> · Integrity only — never for sale.
+</footer>
+
+<!-- Ajv (JSON Schema 2020-12) -->
+<script src="https://cdn.jsdelivr.net/npm/ajv@8/dist/ajv.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/ajv-formats@3/dist/ajv-formats.min.js"></script>
+
+<script>
+(async function(){
+  const q = s => document.querySelector(s);
+  const set = (id, val, ok) => {
+    const el = document.getElementById(id);
+    el.textContent = val;
+    if(ok === true){ el.style.color = "var(--ok)"; }
+    if(ok === false){ el.style.color = "var(--warn)"; }
+  };
+
+  // Fetch schema & model
+  let schema, model;
+  try{
+    const s = await fetch('/abe---flag/cae/schema.json',{cache:'no-store'}).then(r=>r.json());
+    const m = await fetch('/abe---flag/cae/model.json',{cache:'no-store'}).then(r=>r.json());
+    schema = s; model = m;
+  }catch(e){
+    set('k-valid','Missing files', false);
+    q('#errs').textContent = 'Could not load cae/schema.json or cae/model.json';
+    return;
+  }
+
+  // Validate with Ajv
+  try{
+    const ajv = new Ajv({strict:false}); // permissive but schema-driven
+    ajvFormats(ajv);
+    const validate = ajv.compile(schema);
+    const ok = validate(model);
+    set('k-valid', ok ? 'Valid' : 'Invalid', ok);
+    if(!ok){
+      q('#errs').textContent = (validate.errors||[]).map(e=>`${e.instancePath} ${e.message}`).join(' · ');
+    }
+  }catch(e){
+    set('k-valid','Validation error', false);
+    q('#errs').textContent = e.message || String(e);
+  }
+
+  // KPIs from model.summary (and fallback compute)
+  const clauses = [];
+  (model.articles||[]).forEach(a => (a.clauses||[]).forEach(c => clauses.push({a:a.title, c:c.clause_id, r:c.reference, s:Number(c.alignment_score)})));
+  const avg = clauses.length ? clauses.reduce((s,x)=>s+x.s,0)/clauses.length : 0;
+  const devCount = clauses.filter(x=>x.s < 0.80).length;
+
+  set('k-avg', avg.toFixed(4), true);
+  set('k-dev', String(devCount), devCount===0);
+
+  // Render table (safe text nodes, no innerHTML injection)
+  const tbody = q('#tbl tbody');
+  clauses.forEach(row=>{
+    const tr = document.createElement('tr');
+    [row.a, row.c, row.r, row.s.toFixed(2)].forEach((cell,i)=>{
+      const td = document.createElement('td');
+      if(i===3) td.style.textAlign = 'right';
+      td.textContent = cell;
+      tr.appendChild(td);
+    });
+    tbody.appendChild(tr);
+  });
+})();
+</script>
+</body>
+                                                                                                                    </html>
