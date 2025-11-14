@@ -1,8 +1,7 @@
 <!doctype html><html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>A.B.E. Model Math — SIRF · IRE · CEQ</title>
+<title>A.B.E. Model Math — SIRF · IRE · CEQ (Live)</title>
 <base href="/abe---flag/">
-<!-- Theme -->
 <style>
 :root{
   --bg:#0b0d12;--panel:#141820;--panel2:#0f131a;--ink:#e6e6e6;--muted:#9fb3c8;
@@ -28,6 +27,11 @@ h3{margin:16px 0 6px}
 .badge{display:inline-block;padding:2px 8px;border:1px solid var(--line);border-radius:999px;color:var(--muted)}
 footer{margin:36px 0 20px;color:var(--muted);text-align:center;font-size:.9rem}
 code{background:var(--panel2);padding:0 4px;border-radius:6px;border:1px solid var(--line)}
+.flow{width:100%;height:auto;background:var(--panel2);border:1px solid var(--line);border-radius:10px}
+.flow text{fill:#e6e6e6;font:12px system-ui}
+.flow .box{fill:#141820;stroke:rgba(255,255,255,.15);stroke-width:1}
+.flow .arrow{stroke:#5ddfff;stroke-width:2;marker-end:url(#arrowhead)}
+.flow .note{fill:#9fb3c8;font-size:11px}
 </style>
 <!-- MathJax (LaTeX renderer) -->
 <script>
@@ -38,13 +42,20 @@ window.MathJax = {tex:{inlineMath:[['$','$'],['\\(','\\)']]}};
 <body>
 <header>
   <div class="wrap">
-    <a href="/abe---flag/" class="badge">← Home</a>
-    <h1>A.B.E. Model Math</h1>
-    <div class="sub">Formal equations for the constitutional integrity engine (SIRF · IRE · CEQ). Computes live from <code>/ciri/inputs.csv</code>.</div>
+    <div class="badge" style="margin-right:8px;"><a href="/abe---flag/">← Home</a></div>
+    <div class="badge"><a href="/abe---flag/integration/">← Integration KPIs</a></div>
+    <h1>A.B.E. Model Math (Live)</h1>
+    <div class="sub">Formal equations for the constitutional integrity engine (SIRF · IRE · CEQ), computed from <code>/ciri/inputs.csv</code>.</div>
+    <div class="badge" style="margin-top:8px">
+      <a href="https://doi.org/10.5281/zenodo.17586107">
+        <img alt="DOI" src="https://zenodo.org/badge/DOI/10.5281/zenodo.17586107.svg">
+      </a>
+    </div>
   </div>
 </header>
 
 <main class="wrap">
+  <!-- Notation -->
   <div class="card">
     <h2>Notation</h2>
     <p>
@@ -52,6 +63,100 @@ window.MathJax = {tex:{inlineMath:[['$','$'],['\\(','\\)']]}};
     </p>
   </div>
 
+  <!-- Quick Key Legend (NEW) -->
+  <div class="card">
+    <h3>Quick Key Legend</h3>
+    <table class="table">
+      <thead><tr><th>Symbol</th><th>Meaning</th><th>Unit / Context</th></tr></thead>
+      <tbody>
+        <tr><td><code>c</code></td><td>Cases avoided</td><td>count</td></tr>
+        <tr><td><code>𝐶̄</code></td><td>Average cost per case</td><td>USD</td></tr>
+        <tr><td><code>D</code></td><td>Jail days avoided</td><td>days</td></tr>
+        <tr><td><code>𝐽̄</code></td><td>Average jail cost per day</td><td>USD/day</td></tr>
+        <tr><td><code>F</code></td><td>Fees canceled or forgiven</td><td>USD</td></tr>
+        <tr><td><code>P</code></td><td>Policy corrections enacted</td><td>count</td></tr>
+        <tr><td><code>𝐸̄</code></td><td>Avg. enforcement cost savings</td><td>USD per correction</td></tr>
+        <tr><td><code>H</code></td><td>Households restored to stability</td><td>count</td></tr>
+        <tr><td><code>𝐌̄</code></td><td>Avg. monthly market participation</td><td>USD/household</td></tr>
+        <tr><td><code>m</code></td><td>Months effective for recovery</td><td>months</td></tr>
+        <tr><td><code>pₑ</code></td><td>Employment probability</td><td>0–1 ratio</td></tr>
+        <tr><td><code>𝐖̄</code></td><td>Avg. monthly wage (re-entry)</td><td>USD/month</td></tr>
+        <tr><td><code>L</code></td><td>Expected lawsuits resolved</td><td>count</td></tr>
+        <tr><td><code>𝐀̄</code></td><td>Average payout per case</td><td>USD</td></tr>
+        <tr><td><code>λ</code></td><td>Litigation multiplier</td><td>scalar</td></tr>
+        <tr><td><code>T</code></td><td>Transition cost (one-time)</td><td>USD</td></tr>
+        <tr><td><code>K</code></td><td>Scaling constant (CIRI sensitivity)</td><td>USD (default = 2 × 10⁹)</td></tr>
+      </tbody>
+    </table>
+    <p class="sub">
+      Variables are normalized across CIRI, CIBS, CII for transparent, lawful parity. Archived under DOI
+      <a href="https://doi.org/10.5281/zenodo.17586107">10.5281/zenodo.17586107</a>.
+    </p>
+  </div>
+
+  <!-- Key Flow Diagram (NEW SVG) -->
+  <div class="card">
+    <h3>Key Flow Diagram</h3>
+    <svg class="flow" viewBox="0 0 1000 360" role="img" aria-label="A.B.E. system flow">
+      <defs>
+        <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+          <polygon points="0 0, 8 3, 0 6" fill="#5ddfff"></polygon>
+        </marker>
+      </defs>
+
+      <!-- Boxes -->
+      <rect class="box" x="40"  y="30"  width="180" height="60" rx="10"></rect>
+      <rect class="box" x="40"  y="150" width="180" height="60" rx="10"></rect>
+
+      <rect class="box" x="260" y="30"  width="200" height="60" rx="10"></rect>
+      <rect class="box" x="500" y="30"  width="180" height="60" rx="10"></rect>
+      <rect class="box" x="720" y="30"  width="180" height="60" rx="10"></rect>
+
+      <rect class="box" x="500" y="150" width="180" height="60" rx="10"></rect>
+      <rect class="box" x="720" y="150" width="180" height="60" rx="10"></rect>
+
+      <!-- Labels -->
+      <text x="130" y="65" text-anchor="middle">CDI — Divergence</text>
+      <text x="130" y="185" text-anchor="middle">CIRI Inputs (CSV)</text>
+
+      <text x="360" y="65" text-anchor="middle">SIRF — Integrity Potential</text>
+      <text x="590" y="65" text-anchor="middle">IRE — Restoration</text>
+      <text x="810" y="65" text-anchor="middle">CIBS — Budget</text>
+
+      <text x="590" y="185" text-anchor="middle">CEQ — Efficiency</text>
+      <text x="810" y="185" text-anchor="middle">CII / SIY — Citizen Impact</text>
+
+      <!-- Arrows top row -->
+      <line class="arrow" x1="220" y1="60" x2="260" y2="60"></line>
+      <line class="arrow" x1="460" y1="60" x2="500" y2="60"></line>
+      <line class="arrow" x1="680" y1="60" x2="720" y2="60"></line>
+
+      <!-- CDI to SIRF -->
+      <text class="note" x="240" y="48">δₜ</text>
+
+      <!-- Inputs to IRE (down then up) -->
+      <line class="arrow" x1="220" y1="180" x2="500" y2="180"></line>
+      <line class="arrow" x1="590" y1="150" x2="590" y2="90"></line>
+
+      <!-- From CIBS to Impact (down) -->
+      <line class="arrow" x1="810" y1="90" x2="810" y2="150"></line>
+
+      <!-- From CEQ to CII/SIY (right) -->
+      <line class="arrow" x1="680" y1="180" x2="720" y2="180"></line>
+
+      <!-- Footnotes -->
+      <text class="note" x="130" y="115" text-anchor="middle">Signals risk & misalignment</text>
+      <text class="note" x="130" y="225" text-anchor="middle">/ciri/inputs.csv → Aₜ</text>
+      <text class="note" x="360" y="100" text-anchor="middle">Pulls F toward 1</text>
+      <text class="note" x="590" y="100" text-anchor="middle">Verified action lowers Eₑ</text>
+      <text class="note" x="810" y="100" text-anchor="middle">Allocates Recovery Pool</text>
+      <text class="note" x="590" y="220" text-anchor="middle">Maps F & Eₑ to η</text>
+      <text class="note" x="810" y="220" text-anchor="middle">Outcomes & households</text>
+    </svg>
+    <p class="sub">Data flows left→right; CDI (signal) and CIRI inputs (data) drive SIRF/IRE; outputs allocate via CIBS; CEQ converts fidelity to efficiency; CII/SIY capture public impact.</p>
+  </div>
+
+  <!-- Core Components (SIRF) -->
   <div class="card">
     <h2>Core Components (SIRF)</h2>
     <p><strong>Shouse Integrity Recovery Function (SIRF)</strong> decomposes Total Recovery $R_T$:</p>
@@ -71,6 +176,7 @@ window.MathJax = {tex:{inlineMath:[['$','$'],['\\(','\\)']]}};
     </ul>
   </div>
 
+  <!-- Indices (IRE · CEQ) -->
   <div class="card">
     <h2>Indices (IRE · CEQ)</h2>
     <p><strong>Integrity Restoration Equation (IRE):</strong> $$\displaystyle CIRI = 1 - e^{-R_T/K} \qquad;\qquad CII = 1 - CIRI$$</p>
@@ -78,6 +184,7 @@ window.MathJax = {tex:{inlineMath:[['$','$'],['\\(','\\)']]}};
     <p><strong>ROI per Case:</strong> $$\displaystyle ROI_{case}=\frac{R_T}{\max(1,c)}$$</p>
   </div>
 
+  <!-- Live KPIs -->
   <div class="card">
     <h2>Live KPIs (from <code>/ciri/inputs.csv</code>)</h2>
     <div class="kpi">
@@ -89,6 +196,7 @@ window.MathJax = {tex:{inlineMath:[['$','$'],['\\(','\\)']]}};
     <p><label><input type="checkbox" id="strictV2"> Use <strong>Strict v2</strong> component formulas (detention & employment)</label></p>
   </div>
 
+  <!-- Component Breakdown -->
   <div class="card">
     <h3>Component Breakdown</h3>
     <table class="table">
@@ -98,13 +206,16 @@ window.MathJax = {tex:{inlineMath:[['$','$'],['\\(','\\)']]}};
     </table>
   </div>
 
+  <!-- Links & License -->
   <div class="grid">
     <div class="card">
-      <h3>Links</h3>
+      <h3>Audit & Quick Links</h3>
       <ul>
-        <li><a href="/abe---flag/ciri/">CIRI Calculator</a></li>
-        <li><a href="/abe---flag/cibs/">CIBS Budget</a></li>
-        <li><a href="/abe---flag/integration/">Integration KPIs</a></li>
+        <li><a href="/abe---flag/ciri/">CIRI Calculator</a> — inputs, assumptions, and engine output</li>
+        <li><a href="/abe---flag/cibs/">CIBS Budget</a> — public allocation from recovery pool</li>
+        <li><a href="/abe---flag/integration/">Integration KPIs</a> — live tiles and component breakdown</li>
+        <li><a href="/abe---flag/ciri/inputs.csv">/ciri/inputs.csv</a> — current inputs (CSV)</li>
+        <li><a href="/abe---flag/cibs/auto_budget.csv">/cibs/auto_budget.csv</a> — current allocations (CSV)</li>
         <li><a href="https://doi.org/10.5281/zenodo.17586107">DOI 10.5281/zenodo.17586107</a></li>
       </ul>
     </div>
@@ -177,7 +288,6 @@ window.MathJax = {tex:{inlineMath:[['$','$'],['\\(','\\)']]}};
 
   const inputs = await readInputs();
   const toggle = document.getElementById('strictV2');
-
   function refresh(){ render(compute(inputs, toggle.checked)); }
   toggle.addEventListener('change', refresh);
   refresh();
