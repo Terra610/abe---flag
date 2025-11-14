@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://terra610.github.io/abe---flag/cae/schema.json",
+  "title": "CAE — Constitutional Alignment Engine Schema",
+  "description": "Defines the structure and validation rules for CAE model and analysis outputs. Ensures that every statute or clause entry contains a lawful reference, a parsed interpretation, and an alignment score between 0 and 1.",
+  "type": "object",
+  "properties": {
+    "version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+(\\.[0-9]+)?$" },
+    "updated": { "type": "string", "format": "date-time" },
+    "jurisdiction": { "type": "string", "description": "Federal, State, or Local jurisdiction context of the analysis." },
+    "articles": {
+      "type": "array",
+      "description": "List of constitutional articles, sections, or amendments being assessed.",
+      "items": {
+        "type": "object",
+        "required": ["id", "title", "clauses"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[A-Z0-9_.-]+$" },
+          "title": { "type": "string" },
+          "clauses": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["clause_id", "reference", "alignment_score"],
+              "properties": {
+                "clause_id": { "type": "string" },
+                "reference": { "type": "string", "description": "Legal citation or text excerpt being analyzed." },
+                "derived_statutes": {
+                  "type": "array",
+                  "description": "Optional list of related statutes derived from this clause.",
+                  "items": { "type": "string" }
+                },
+                "alignment_score": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1,
+                  "description": "Normalized score of constitutional compliance (1.0 = fully faithful)."
+                },
+                "interpretation": { "type": "string", "description": "Human-readable explanation of the alignment or deviation." },
+                "source_hash": { "type": "string", "pattern": "^[A-Fa-f0-9]{64}$", "description": "SHA256 hash of the source text for integrity verification." }
+              }
+            }
+          }
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "required": ["average_alignment", "deviation_count"],
+      "properties": {
+        "average_alignment": { "type": "number", "minimum": 0, "maximum": 1 },
+        "deviation_count": { "type": "integer", "minimum": 0 },
+        "notes": { "type": "string" }
+      }
+    }
+  },
+  "required": ["version", "updated", "articles", "summary"]
+}
