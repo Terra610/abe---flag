@@ -1,207 +1,342 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>The American Butterfly Effect (A.B.E.)</title>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>The American Butterfly Effect (A.B.E.) — System Hub</title>
+<base href="/abe---flag/">
 
-  <!-- Optional site patch -->
-  <link rel="stylesheet" href="/abe---flag/abe-patch/assets/abe-patch.css">
-
-  <style>
-    :root{
-      --bg:#0b0d12; --panel:#13161b; --ink:#e0e0e0; --muted:#9aa3ad;
-      --edge:rgba(255,255,255,.08); --edge2:rgba(255,255,255,.12);
-      --accent:#5ddfff; --accent2:#ffa559;
-    }
-    *{box-sizing:border-box}
-    body{background:var(--bg);color:var(--ink);font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;line-height:1.65;margin:0}
-    header{background:linear-gradient(90deg,#11151c,#1b1e25);border-bottom:1px solid var(--edge);padding:2rem 1rem;text-align:center}
-    h1{color:var(--accent);font-size:1.9rem;margin:.1rem 0 .4rem;font-weight:800}
-    header p{margin:.25rem 0 0;color:var(--muted)}
-    .top-actions{display:flex;gap:.6rem;flex-wrap:wrap;justify-content:center;margin:.9rem 0 0}
-    .btn,.badge{display:inline-block;text-decoration:none;font-weight:700;border-radius:8px;transition:all .18s ease-in-out}
-    .btn{background:var(--accent);color:#0b0d12;padding:.6rem 1rem;border:1px solid transparent}
-    .btn:hover{background:#82eaff;transform:translateY(-2px);box-shadow:0 0 10px rgba(93,223,255,.6)}
-    .badge{color:var(--accent);border:1px solid var(--accent);padding:.45rem .7rem;font-size:.9rem}
-    .badge:hover{background:rgba(93,223,255,.08);transform:translateY(-2px)}
-    main{max-width:1000px;margin:2rem auto 3.5rem;padding:0 1rem}
-    section{background:rgba(255,255,255,.03);border:1px solid var(--edge);border-radius:12px;
-      padding:1.4rem 1.6rem;margin-bottom:1.4rem;box-shadow:0 0 12px rgba(93,223,255,.05)}
-    section:hover{box-shadow:0 0 16px rgba(93,223,255,.12)}
-    h2{color:var(--accent2);font-size:1.2rem;margin:.2rem 0 .7rem}
-    p{color:#d0d0d0;margin:.4rem 0 .8rem}
-    a{color:#80bfff} a:hover{text-decoration:underline}
-    .nav-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1rem;margin-top:.6rem}
-    .cardlink{display:block;background:#16181d;border:1px solid var(--edge2);border-radius:10px;padding:1rem;text-decoration:none;color:#e8e8e8;transition:transform .15s ease, box-shadow .2s ease}
-    .cardlink:hover{transform:translateY(-4px);box-shadow:0 0 10px rgba(93,223,255,.18)}
-    .cardlink-title{font-weight:700;margin-bottom:.35rem;color:var(--accent);font-size:1rem}
-    .cardlink-desc{color:#c8c8c8;font-size:.92rem}
-    .glossary{font-size:.95rem;color:#c8c8c8}
-    .glossary dt{font-weight:800;color:#eaeef7;margin-top:.5rem}
-    .glossary dd{margin:0 0 .5rem 0}
-    footer{margin-top:2.4rem;text-align:center;font-size:.85rem;color:#888;line-height:1.5;padding-bottom:2.6rem}
-    footer a{color:var(--accent)}
-    .cta-row{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:.6rem}
-  </style>
+<style>
+:root{
+  --bg:#0b0d12; --panel:#141820; --panel2:#0f131a; --ink:#e6e6e6; --muted:#9fb3c8;
+  --line:rgba(255,255,255,.08); --brand:#5ddfff; --accent:#fff750; --ok:#4bd28f; --warn:#ffa559
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+a{color:#80bfff;text-decoration:none} a:hover{text-decoration:underline}
+header{padding:28px 20px;background:linear-gradient(90deg,#11151c,#1b1e25);border-bottom:1px solid var(--line)}
+.wrap{max-width:1100px;margin:0 auto;padding:0 20px}
+h1{margin:0 0 6px}
+.sub{color:var(--muted)}
+.badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.badges a,.chip{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border:1px solid var(--line);border-radius:999px;color:var(--muted)}
+.grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px}
+.tile{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:14px}
+.kpi{display:flex;gap:14px;flex-wrap:wrap}
+.kpi .tile{flex:1 1 220px}
+.num{font-weight:700;font-size:1.25rem}
+small{color:var(--muted)}
+.table{width:100%;border-collapse:collapse;margin-top:8px}
+.table th,.table td{border:1px solid var(--line);padding:10px 12px;text-align:left}
+.table th{background:var(--panel2)}
+.status{display:inline-block;padding:2px 10px;border-radius:999px;border:1px solid var(--line);font-size:.85rem}
+.ok{color:var(--ok);border-color:rgba(75,210,143,.35)}
+.warn{color:var(--warn);border-color:rgba(255,165,89,.35)}
+footer{margin:40px 0 24px;text-align:center;color:var(--muted);font-size:.9rem}
+hr{border:none;border-top:1px solid var(--line);margin:18px 0}
+@media (max-width:720px){.kpi .tile{flex:1 1 100%}}
+</style>
 </head>
-
 <body>
 <header>
-  <h1>The American Butterfly Effect (A.B.E.)</h1>
-  <p>A restoration framework for constitutional, economic, and social integrity — turning harm into measurable recovery.</p>
-  <div class="top-actions">
-    <a class="btn" href="/abe---flag/doctrine/index.html">📜 Doctrine Library</a>
-    <a class="badge" href="/abe---flag/system/index.html">🗺 System Map</a>
-    <a class="badge" href="/abe---flag/macro/index.html">📈 Macro Model</a>
+  <div class="wrap">
+    <h1>🦋 The American Butterfly Effect (A.B.E.)</h1>
+    <div class="sub" id="version-line">Constitutional & economic restoration framework — public, auditable, non-commercial.</div>
+    <div class="badges">
+      <a href="https://doi.org/10.5281/zenodo.17586107" title="DOI: 10.5281/zenodo.17586107">
+        <img src="https://zenodo.org/badge/DOI/10.5281/zenodo.17586107.svg" alt="DOI badge" height="18"/>
+      </a>
+      <span class="chip">License: CC BY-NC 4.0</span>
+      <a class="chip" href="doctrine/index.html">Doctrine Library</a>
+      <a class="chip" href="system/index.html">System Map</a>
+      <a class="chip" href="macro/index.html">Macro Model</a>
+    </div>
   </div>
 </header>
 
-<main>
+<main class="wrap" style="margin:24px auto 44px">
+  <!-- System Overview -->
+  <div class="card">
+    <h2 style="margin:0 0 8px;color:var(--accent)">What A.B.E. Does</h2>
+    <p style="margin:.25rem 0 0">
+      A.B.E. converts <em>constitutional alignment</em> into <em>measurable, auditable economics</em>:
+      <strong>CAE</strong> (law parsing) → <strong>CDI</strong> (divergence signal) → <strong>CIRI</strong> (recovery value) → 
+      <strong>CIBS</strong> (budget) → <strong>CII</strong> (projects) → <strong>Integration</strong> (receipts & attestations).
+    </p>
+  </div>
 
-  <section>
-    <h2>What A.B.E. Is</h2>
-    <p><strong>A.B.E.</strong> is a constitutional and economic recovery system designed to reverse decades of unlawful enforcement and economic suppression. It transforms constitutional fidelity into measurable return on investment using Restoration Economics — showing how freedom and prosperity are mathematically linked.</p>
-    <div class="cta-row">
-      <a class="btn" href="/abe---flag/doctrine/ABE_CRRA_Rebuild.pdf">Read A.B.E. + CRRA + Rebuild</a>
-      <a class="badge" href="/abe---flag/doctrine/constitutional-fidelity.html">Constitutional Fidelity</a>
-      <a class="badge" href="/abe---flag/doctrine/void-ab-initio.html">Void ab Initio</a>
-    </div>
-  </section>
-
-  <section>
-    <h2>Core Mission</h2>
-    <p>Restore lawful governance, rebuild communities, and realign federal and state systems with the Constitution — while generating sustainable growth, equity, and stability.</p>
-  </section>
-
-  <section>
-    <h2>Key Discovery</h2>
-    <p>Misapplied federal transportation regulations (FMCSRs) have produced cascading False Claims Act exposure estimated at <strong>$1.26 trillion (USD)</strong>. Correcting the legal architecture unlocks these same dollars for reform, infrastructure restoration, and broad-based prosperity.</p>
-  </section>
-
-  <section>
-    <h2>The Core Modules</h2>
-    <div class="nav-grid">
-      <a class="cardlink" href="/abe---flag/ciri/index.html">
-        <div class="cardlink-title">⚙ CIRI (Constitutional Integrity Risk Index)</div>
-        <div class="cardlink-desc">Measures risk and GDP suppression from constitutional divergence; seeds recovery pools.</div>
-      </a>
-      <a class="cardlink" href="/abe---flag/cibs/index.html">
-        <div class="cardlink-title">📊 CIBS (Constitutional Integrity Baseline Schema)</div>
-        <div class="cardlink-desc">Canonical map of clauses/rights used for diagnostics, scoring, and budgets.</div>
-      </a>
-      <a class="cardlink" href="/abe---flag/macro/index.html">
-        <div class="cardlink-title">📈 Macroeconomic Cascade Model</div>
-        <div class="cardlink-desc">Connects local correction to national and global economic uplift.</div>
-      </a>
-      <a class="cardlink" href="/abe---flag/system/index.html">
-        <div class="cardlink-title">🗺 System Map</div>
-        <div class="cardlink-desc">Chain-of-custody for law, value, verification, and accountability.</div>
-      </a>
-      <a class="cardlink" href="/abe---flag/doctrine/index.html">
-        <div class="cardlink-title">📜 Foundational Doctrine</div>
-        <div class="cardlink-desc">A.B.E. · Constitutional Fidelity · Void ab Initio.</div>
-      </a>
-      <a class="cardlink" href="/abe---flag/integration/index.html">
-        <div class="cardlink-title">🔗 Integration Layer</div>
-        <div class="cardlink-desc">Transparency & public data pipelines; audit-ready interfaces.</div>
-      </a>
-    </div>
-  </section>
-
-  <section>
-    <h2>Glossary (Acronyms)</h2>
-    <dl class="glossary">
-      <dt>ABE</dt><dd>American Butterfly Effect</dd>
-      <dt>CRRA</dt><dd>Citizens Rights Restoration Act</dd>
-      <dt>CIBS</dt><dd>Constitutional Integrity Baseline Schema</dd>
-      <dt>CIRI</dt><dd>Constitutional Integrity Risk Index</dd>
-      <dt>CII</dt><dd>Constitutional Integrity Index</dd>
-      <dt>CDI</dt><dd>Constitutional Divergence Index</dd>
-    </dl>
-  </section>
-
-  <section>
-    <h2>The Living Remedy</h2>
-    <p>A.B.E. is more than theory — it’s a constitutional economic repair system. It converts violations into growth and lawfulness into profit, using truth, math, and compassion as the operating code of government.</p>
-  </section>
-
-  <!-- ──────────────────────────────── A.B.E. Nav Dock + Live KPIs ──────────────────────────────── -->
-  <section id="abe-navdock" style="background:#141820;border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:16px;margin:28px 0">
-    <h2 style="margin:0 0 12px;color:#5ddfff;font-size:1.1rem;">A.B.E. Navigator · Live Links</h2>
-    <div style="display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))">
-      <div style="background:#0f131a;border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:14px">
-        <div style="font-weight:600;margin-bottom:8px">Doctrines</div>
-        <ul style="list-style:none;padding:0;margin:0;line-height:1.65">
-          <li><a href="/abe---flag/doctrine/ABE_CRRA_Rebuild.pdf">A.B.E. · CRRA · Rebuild Together (viewer)</a></li>
-          <li><a href="/abe---flag/doctrine/constitutional-fidelity.html">Constitutional Fidelity (full text)</a></li>
-          <li><a href="/abe---flag/doctrine/void-ab-initio.html">Void ab Initio (full text)</a></li>
-        </ul>
+  <!-- Live KPIs -->
+  <div class="card">
+    <h3 style="margin:0 0 8px">Live KPIs</h3>
+    <div class="kpi">
+      <div class="tile">
+        <div>Modeled Recovery (CIRI)</div>
+        <div id="k-ciri" class="num">—</div>
+        <small>Computed from <code>/ciri/inputs.csv</code></small>
       </div>
-      <div style="background:#0f131a;border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:14px">
-        <div style="font-weight:600;margin-bottom:8px">Calculators & KPIs</div>
-        <ul style="list-style:none;padding:0;margin:0;line-height:1.8">
-          <li><a href="/abe---flag/ciri/">CIRI Calculator</a> — <span id="kpi-ciri-total" style="opacity:.85">loading…</span></li>
-          <li><a href="/abe---flag/cibs/">CIBS Budget</a> — <span id="kpi-cibs-total" style="opacity:.85">loading…</span></li>
-          <li><a href="/abe---flag/integration/">Integration KPIs</a></li>
-        </ul>
+      <div class="tile">
+        <div>CIRI Index</div>
+        <div id="k-ciri-idx" class="num">—</div>
+        <small>\( 1 - e^{-R_T/K} \) with K-scale</small>
       </div>
-      <div style="background:#0f131a;border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:14px">
-        <div style="font-weight:600;margin-bottom:8px">Archive & License</div>
-        <div style="line-height:1.6">
-          DOI: <a href="https://doi.org/10.5281/zenodo.17586107">10.5281/zenodo.17586107</a><br/>
-          License: <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC BY-NC 4.0</a><br/>
-          Project: <a href="/abe---flag/">terra610.github.io/abe---flag</a>
-        </div>
+      <div class="tile">
+        <div>Public Allocation (CIBS)</div>
+        <div id="k-cibs" class="num">—</div>
+        <small>Sum of <code>/cibs/auto_budget.csv</code></small>
+      </div>
+      <div class="tile">
+        <div>ROI per Case</div>
+        <div id="k-roi" class="num">—</div>
+        <small>\( R_T/\max(1,cases\_avoided) \)</small>
       </div>
     </div>
-  </section>
+  </div>
 
-  <script>
-  (async function(){
-    const usd = n => isFinite(n)? '$'+Math.round(n).toLocaleString() : '—';
-    async function readInputs(){
-      try{
-        const r = await fetch('/abe---flag/ciri/inputs.csv',{cache:'no-store'});
-        const t = await r.text(); const [h,d]=t.trim().split(/\r?\n/);
-        const k=h.split(',').map(s=>s.trim()); const v=d.split(',').map(Number);
-        const o=Object.fromEntries(k.map((x,i)=>[x,v[i]]));
-        const c=o.cases_avoided,C=o.avg_cost_per_case,D=o.jail_days_avoided,J=o.cost_per_jail_day,
-              F=o.fees_canceled_total,P=o.policy_corrections,E=o.avg_enforcement_cost_savings,
-              H=o.households_restored,M=o.avg_monthly_market_spend,m=o.months_effective,
-              pe=o.employment_probability,W=o.avg_monthly_wage,L=o.expected_lawsuits,
-              A=o.avg_payout,lam=o.litigation_multiplier,T=o.transition_costs_one_time;
-        const total = (c*C+F)+(D*J)+(P*E)+(H*M*m)+((H*pe)*W*m)+(L*A*lam)-T;
-        return total;
-      }catch(e){return NaN;}
-    }
-    async function readBudget(){
-      try{
-        const r=await fetch('/abe---flag/cibs/auto_budget.csv',{cache:'no-store'});
-        const lines=(await r.text()).trim().split(/\r?\n/);
-        const idx=lines[0].split(',').map(s=>s.trim()).findIndex(h=>/^value/i.test(h));
-        let s=0; for(let i=1;i<lines.length;i++){const cols=lines[i].split(',');const v=Number((cols[idx]||'').replace(/[^0-9.\-]/g,''));if(!Number.isNaN(v))s+=v;}
-        return s;
-      }catch(e){return NaN;}
-    }
-    const [a,b]=await Promise.all([readInputs(),readBudget()]);
-    const e1=document.getElementById('kpi-ciri-total'),e2=document.getElementById('kpi-cibs-total');
-    if(e1)e1.textContent=isFinite(a)?usd(a):'—';
-    if(e2)e2.textContent=isFinite(b)?usd(b):'—';
-  })();
-  </script>
-  <!-- ──────────────────────────────── End Nav Dock + KPIs ──────────────────────────────── -->
+  <!-- Subsystems -->
+  <div class="grid">
+    <div class="card">
+      <h3>CAE — Constitutional Alignment Engine</h3>
+      <p>Parses the Constitution & positive law; flags misalignment with citations.</p>
+      <table class="table">
+        <tbody>
+          <tr><th>UI</th><td><a href="cae/index.html">cae/index.html</a></td></tr>
+          <tr><th>Schema</th><td id="s-cae" class="status warn">Checking…</td></tr>
+          <tr><th>Model</th><td><a href="cae/model.json">model.json</a></td></tr>
+          <tr><th>Report</th><td><a href="cae/report.csv">report.csv</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h3>CDI — Constitutional Divergence Index</h3>
+      <p>Normalizes CAE findings into a 0–1 signal by domain/jurisdiction.</p>
+      <table class="table">
+        <tbody>
+          <tr><th>UI</th><td><a href="cdi/index.html">cdi/index.html</a></td></tr>
+          <tr><th>Schema</th><td id="s-cdi" class="status warn">Checking…</td></tr>
+          <tr><th>Model</th><td><a href="cdi/model.json">model.json</a></td></tr>
+          <tr><th>Data</th><td><a href="cdi/divergence.csv">divergence.csv</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h3>CIRI — Integrity ROI Engine</h3>
+      <p>Turns divergence + local inputs into recovery dollars and indices.</p>
+      <table class="table">
+        <tbody>
+          <tr><th>UI</th><td><a href="ciri/index.html">ciri/index.html</a></td></tr>
+          <tr><th>Schema</th><td id="s-ciri" class="status warn">Checking…</td></tr>
+          <tr><th>Inputs</th><td><a href="ciri/inputs.csv">inputs.csv</a></td></tr>
+          <tr><th>Spec</th><td><a href="ciri/calc.md">calc.md</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h3>CIBS — Integrity Baseline Schema</h3>
+      <p>Allocates the Recovery Pool into public reinvestment buckets.</p>
+      <table class="table">
+        <tbody>
+          <tr><th>UI</th><td><a href="cibs/index.html">cibs/index.html</a></td></tr>
+          <tr><th>Schema</th><td id="s-cibs" class="status warn">Checking…</td></tr>
+          <tr><th>Template</th><td><a href="cibs/budget_template.csv">budget_template.csv</a></td></tr>
+          <tr><th>Auto Budget</th><td><a href="cibs/auto_budget.csv">auto_budget.csv</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h3>CII — Community Investment Interface</h3>
+      <p>Publishes auditable portfolios (housing, clinics, food, mobility, workforce).</p>
+      <table class="table">
+        <tbody>
+          <tr><th>UI</th><td><a href="cii/index.html">cii/index.html</a></td></tr>
+          <tr><th>Schema</th><td id="s-cii" class="status warn">Checking…</td></tr>
+          <tr><th>Model</th><td><a href="cii/model.json">model.json</a></td></tr>
+          <tr><th>Portfolio</th><td><a href="cii/portfolio.csv">portfolio.csv</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h3>Integration Layer</h3>
+      <p>Receipts, recipient match, retaliation zero, and public attestations.</p>
+      <table class="table">
+        <tbody>
+          <tr><th>UI</th><td><a href="integration/index.html">integration/index.html</a></td></tr>
+          <tr><th>Schema</th><td id="s-integration" class="status warn">Checking…</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h3>System Map</h3>
+      <p>Canonical chain-of-custody & evidence ledger for A.B.E.</p>
+      <table class="table">
+        <tbody>
+          <tr><th>UI</th><td><a href="system/index.html">system/index.html</a></td></tr>
+          <tr><th>Map</th><td><a href="system/map.json">map.json</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h3>Macro — Cascade Model</h3>
+      <p>Top-down impact summary; optional artifacts & downloads.</p>
+      <table class="table">
+        <tbody>
+          <tr><th>UI</th><td><a href="macro/index.html">macro/index.html</a></td></tr>
+          <tr><th>Model</th><td><a href="macro/model.json">model.json</a></td></tr>
+          <tr><th>Downloads</th><td><a href="macro/macro_cascade.csv">macro_cascade.csv</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Schema Status Summary -->
+  <div class="card">
+    <h3 style="margin:0 0 8px">Schema Status Summary</h3>
+    <div class="grid" id="schema-grid">
+      <!-- Filled by script -->
+    </div>
+    <small>Green = schema file found and non-empty; Orange = missing or empty.</small>
+  </div>
 
 </main>
 
-<footer style="text-align:center;margin:40px 0;color:#9fb3c8;font-size:0.9rem;">
-  <div>
-    Authored by <strong>Terra Shouse</strong><br>
-    Licensed under 
-    <a href="https://creativecommons.org/licenses/by-nc/4.0/" style="color:#5ddfff;">CC BY-NC 4.0</a> · 
-    DOI <a href="https://doi.org/10.5281/zenodo.17586107" style="color:#5ddfff;">10.5281/zenodo.17586107</a><br>
-    Integrity only — never for sale. No money requested. No publicity sought.
-  </div>
+<footer>
+  CC BY-NC 4.0 · DOI <a href="https://doi.org/10.5281/zenodo.17586107">10.5281/zenodo.17586107</a><br/>
+  <em>Integrity only — never for sale.</em>
 </footer>
+
+<script>
+// ---------- helpers ----------
+const money = n => {
+  const v = Number(n);
+  if (!isFinite(v)) return '—';
+  try { return new Intl.NumberFormat(undefined,{style:'currency',currency:'USD',maximumFractionDigits:0}).format(v); }
+  catch { return '$'+Math.round(v).toLocaleString(); }
+};
+const pct = x => (x*100).toFixed(2)+'%';
+
+function setStatus(id, ok){
+  const el = document.getElementById(id);
+  if(!el) return;
+  el.textContent = ok ? 'Schema present' : 'Missing';
+  el.classList.remove('warn','ok');
+  el.classList.add(ok ? 'ok' : 'warn');
+}
+
+// ---------- version line from system/map.json ----------
+(async ()=>{
+  try{
+    const r = await fetch('system/map.json',{cache:'no-store'});
+    if(!r.ok) throw 0;
+    const j = await r.json();
+    const v = j.version || '—';
+    const u = j.updated || '';
+    const el = document.getElementById('version-line');
+    if(el){
+      el.textContent = `Constitutional & economic restoration framework — v${v} · updated ${u}`;
+    }
+  }catch(_){}
+})();
+
+// ---------- live KPIs ----------
+(async ()=>{
+  // CIBS total
+  try{
+    const r = await fetch('cibs/auto_budget.csv',{cache:'no-store'});
+    const t = await r.text();
+    const lines = t.trim().split(/\r?\n/).slice(1);
+    const total = lines.reduce((s,line)=>{
+      const v = Number(line.split(',')[1]); return s + (isFinite(v)?v:0);
+    },0);
+    document.getElementById('k-cibs').textContent = money(total);
+  }catch(_){}
+
+  // CIRI compute (demo-aligned with your pages)
+  try{
+    const r = await fetch('ciri/inputs.csv',{cache:'no-store'});
+    const t = await r.text();
+    const [h,d] = t.trim().split(/\r?\n/);
+    const keys = h.split(',').map(s=>s.trim());
+    const vals = d.split(',').map(x=>Number(x));
+    const o = Object.fromEntries(keys.map((k,i)=>[k,vals[i]]));
+
+    const c=o.cases_avoided, C=o.avg_cost_per_case, D=o.jail_days_avoided, J=o.cost_per_jail_day,
+          F=o.fees_canceled_total, P=o.policy_corrections, E=o.avg_enforcement_cost_savings,
+          H=o.households_restored, M=o.avg_monthly_market_spend, m=o.months_effective,
+          pe=o.employment_probability, W=o.avg_monthly_wage, L=o.expected_lawsuits,
+          A=o.avg_payout, lam=o.litigation_multiplier, T=o.transition_costs_one_time;
+
+    const direct = c*C + F;
+    const detention = D*J;
+    const enforce = P*E;
+    const market = H*M*m;
+    const employ = (H*pe)*W*m;
+    const litig = L*A*lam;
+    const total = direct + detention + enforce + market + employ + litig - T;
+    const K = 2_000_000_000;
+    const ciri = 1 - Math.exp(- total / K);
+    const roi = total / Math.max(1,c);
+
+    document.getElementById('k-ciri').textContent = money(total);
+    document.getElementById('k-ciri-idx').textContent = (ciri).toFixed(2);
+    document.getElementById('k-roi').textContent = money(roi);
+  }catch(_){}
+})();
+
+// ---------- schema checks ----------
+(async ()=>{
+  const targets = [
+    {key:'CAE', id:'s-cae', path:'cae/schema.json'},
+    {key:'CDI', id:'s-cdi', path:'cdi/schema.json'},
+    {key:'CIRI',id:'s-ciri',path:'ciri/schema.json'},
+    {key:'CIBS',id:'s-cibs',path:'cibs/schema.json'},
+    {key:'CII', id:'s-cii', path:'cii/schema.json'},
+    {key:'Integration',id:'s-integration',path:'integration/schema.json'}
+  ];
+
+  for(const t of targets){
+    try{
+      const r = await fetch(t.path,{cache:'no-store'});
+      const ok = r.ok && (await r.text()).trim().length>0;
+      setStatus(t.id, ok);
+    }catch(_){
+      setStatus(t.id,false);
+    }
+  }
+
+  // Summary grid (nice overview)
+  const grid = document.getElementById('schema-grid');
+  if(grid){
+    grid.innerHTML = targets.map(t=>{
+      const tagId = `sum-${t.id}`;
+      return `
+      <div class="tile">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <strong>${t.key}</strong>
+          <span id="${tagId}" class="status warn">Checking…</span>
+        </div>
+        <small><code>${t.path}</code></small>
+      </div>`;
+    }).join('');
+
+    // Fill summary statuses
+    for(const t of targets){
+      const el = document.getElementById(`sum-${t.id}`);
+      const src = document.getElementById(t.id);
+      if(el && src){
+        el.textContent = src.textContent;
+        el.classList.remove('ok','warn');
+        el.classList.add(src.classList.contains('ok') ? 'ok' : 'warn');
+      }
+    }
+  }
+})();
+</script>
 </body>
 </html>
