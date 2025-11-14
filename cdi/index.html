@@ -60,6 +60,40 @@
     <p>Model file: <code>model.json</code> · Live data: <code>divergence.csv</code></p>
     <p><a href="./model.json" download>Download model.json</a> · <a href="./divergence.csv" download>Download divergence.csv</a></p>
   </section>
+
+  <!-- ──────────────────────────────── A.B.E. Nav Dock + Live KPIs ──────────────────────────────── -->
+  <section id="abe-navdock" style="background:#141820;border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:1rem 1.25rem;margin-top:2rem">
+    <h3 style="margin:0 0 10px;color:#5ddfff">A.B.E. Navigator · Live Links</h3>
+    <div style="display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))">
+      <div style="background:#0f131a;border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:14px">
+        <div style="font-weight:600;margin-bottom:8px">Doctrines</div>
+        <ul style="list-style:none;padding:0;margin:0;line-height:1.8">
+          <li><a href="/abe---flag/doctrine/ABE_CRRA_Rebuild.pdf">A.B.E. · CRRA · Rebuild Together (viewer)</a></li>
+          <li><a href="/abe---flag/doctrine/constitutional-fidelity.html">Constitutional Fidelity (full text)</a></li>
+          <li><a href="/abe---flag/doctrine/void-ab-initio.html">Void ab Initio (full text)</a></li>
+        </ul>
+      </div>
+
+      <div style="background:#0f131a;border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:14px">
+        <div style="font-weight:600;margin-bottom:8px">Calculators & KPIs</div>
+        <ul style="list-style:none;padding:0;margin:0;line-height:1.9">
+          <li><a href="/abe---flag/ciri/">CIRI Calculator</a> — <span id="dock-ciri-total" style="opacity:.85">loading…</span></li>
+          <li><a href="/abe---flag/cibs/">CIBS Budget</a> — <span id="dock-cibs-total" style="opacity:.85">loading…</span></li>
+          <li><a href="/abe---flag/integration/">Integration KPIs</a></li>
+        </ul>
+      </div>
+
+      <div style="background:#0f131a;border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:14px">
+        <div style="font-weight:600;margin-bottom:8px">Archive & License</div>
+        <div style="line-height:1.7">
+          DOI: <a href="https://doi.org/10.5281/zenodo.17586107">10.5281/zenodo.17586107</a><br/>
+          License: <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC BY-NC 4.0</a><br/>
+          Project: <a href="/abe---flag/">terra610.github.io/abe---flag</a>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- ──────────────────────────────── End Nav Dock ──────────────────────────────── -->
 </main>
 
 <footer>
@@ -71,16 +105,57 @@
 
 <script>
 (async()=>{
+  // Table loader
   const res = await fetch('./divergence.csv');
-  if(!res.ok) return;
-  const text = await res.text();
-  const rows = text.trim().split(/\r?\n/).map(r=>r.split(','));
-  const tbody = document.querySelector('#divTable tbody');
-  rows.slice(1).forEach(r=>{
-    const tr=document.createElement('tr');
-    tr.innerHTML=`<td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td>`;
-    tbody.appendChild(tr);
-  });
+  if(res.ok){
+    const text = await res.text();
+    const rows = text.trim().split(/\r?\n/).map(r=>r.split(','));
+    const tbody = document.querySelector('#divTable tbody');
+    rows.slice(1).forEach(r=>{
+      const tr=document.createElement('tr');
+      tr.innerHTML=`<td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td>`;
+      tbody.appendChild(tr);
+    });
+  }
+
+  // Live KPIs for Dock
+  const fmt$ = n => '$' + (isFinite(n)? Math.round(n).toLocaleString() : '—');
+
+  // CIBS total
+  try {
+    const resC = await fetch('/abe---flag/cibs/auto_budget.csv',{cache:'no-store'});
+    const txt = await resC.text();
+    const [h,...rows] = txt.trim().split(/\r?\n/);
+    const keys = h.split(',').map(s=>s.trim());
+    const total = rows.reduce((s,line)=>{
+      const v = Number(line.split(',')[1]);
+      return s + (isFinite(v)?v:0);
+    },0);
+    document.getElementById('dock-cibs-total').textContent = fmt$(total);
+  } catch(e){
+    document.getElementById('dock-cibs-total').textContent = '—';
+  }
+
+  // CIRI total
+  try {
+    const resR = await fetch('/abe---flag/ciri/inputs.csv',{cache:'no-store'});
+    const txt = await resR.text();
+    const [header,data] = txt.trim().split(/\r?\n/);
+    const keys = header.split(',');
+    const vals = data.split(',').map(x=>Number(x));
+    const obj = Object.fromEntries(keys.map((k,i)=>[k.trim(),vals[i]]));
+
+    const c=obj.cases_avoided, C=obj.avg_cost_per_case, D=obj.jail_days_avoided, J=obj.cost_per_jail_day,
+          F=obj.fees_canceled_total, P=obj.policy_corrections, E=obj.avg_enforcement_cost_savings,
+          H=obj.households_restored, M=obj.avg_monthly_market_spend, m=obj.months_effective,
+          pe=obj.employment_probability, W=obj.avg_monthly_wage, L=obj.expected_lawsuits,
+          A=obj.avg_payout, lam=obj.litigation_multiplier, T=obj.transition_costs_one_time;
+
+    const totalRecovery = (c*C+F) + (D*J) + (P*E) + (H*M*m) + ((H*pe)*W*m) + (L*A*lam) - T;
+    document.getElementById('dock-ciri-total').textContent = fmt$(totalRecovery);
+  } catch(e){
+    document.getElementById('dock-ciri-total').textContent = '—';
+  }
 })();
 </script>
 </body>
