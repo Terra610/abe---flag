@@ -1,4 +1,6 @@
-<!doctype html><html lang="en"><head>
+<!doctype html>
+<html lang="en">
+<head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>CIBS — Constitutional Investment & Budget System</title>
 <base href="/abe---flag/">
@@ -66,6 +68,41 @@ hr{border:none;border-top:1px solid var(--line);margin:16px 0}
       <li>Publish receipts & custodians in the Integration Layer. Every dollar is visible.</li>
     </ol>
   </div>
+
+  <!-- ──────────────────────────────── A.B.E. Nav Dock + Live KPIs ──────────────────────────────── -->
+  <section id="abe-navdock" class="card">
+    <h3 style="margin:0 0 10px;color:#5ddfff">A.B.E. Navigator · Live Links</h3>
+    <div style="display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))">
+      <div style="background:#0f131a;border:1px solid var(--line);border-radius:10px;padding:14px">
+        <div style="font-weight:600;margin-bottom:8px">Doctrines</div>
+        <ul class="small" style="list-style:none;padding:0;margin:0;line-height:1.7">
+          <li><a href="/abe---flag/doctrine/ABE_CRRA_Rebuild.pdf">A.B.E. · CRRA · Rebuild Together (viewer)</a></li>
+          <li><a href="/abe---flag/doctrine/constitutional-fidelity.html">Constitutional Fidelity (full text)</a></li>
+          <li><a href="/abe---flag/doctrine/void-ab-initio.html">Void ab Initio (full text)</a></li>
+        </ul>
+      </div>
+
+      <div style="background:#0f131a;border:1px solid var(--line);border-radius:10px;padding:14px">
+        <div style="font-weight:600;margin-bottom:8px">Calculators & KPIs</div>
+        <ul class="small" style="list-style:none;padding:0;margin:0;line-height:1.9">
+          <li><a href="/abe---flag/ciri/">CIRI Calculator</a> — <span id="kpi-ciri-total" style="opacity:.85">loading…</span></li>
+          <li><a href="/abe---flag/cibs/">CIBS Budget</a> — <span id="kpi-cibs-total" style="opacity:.85">loading…</span></li>
+          <li><a href="/abe---flag/integration/">Integration KPIs</a></li>
+        </ul>
+      </div>
+
+      <div style="background:#0f131a;border:1px solid var(--line);border-radius:10px;padding:14px">
+        <div style="font-weight:600;margin-bottom:8px">Archive & License</div>
+        <div class="small" style="line-height:1.7">
+          DOI: <a href="https://doi.org/10.5281/zenodo.17586107">10.5281/zenodo.17586107</a><br/>
+          License: <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC BY-NC 4.0</a><br/>
+          Project: <a href="/abe---flag/">terra610.github.io/abe---flag</a>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- ──────────────────────────────── End Nav Dock ──────────────────────────────── -->
+
 </main>
 
 <footer>
@@ -82,13 +119,14 @@ hr{border:none;border-top:1px solid var(--line);margin:16px 0}
     const [h, ...rows] = text.trim().split(/\r?\n/);
     const keys = h.split(',').map(s=>s.trim());
     return rows.map(r=>{
-      const vals = r.split(','); 
+      const vals = r.split(',');
       const o = {};
       keys.forEach((k,i)=>o[k]= i===0 ? vals[i] : Number(vals[i]));
       return o;
     });
   }
 
+  // ---- CIBS data (you already had) ----
   const data = await loadCSV('/abe---flag/cibs/auto_budget.csv');
   const total = data.reduce((s,d)=>s+Number(d.value||d.Value||0),0);
 
@@ -113,7 +151,6 @@ hr{border:none;border-top:1px solid var(--line);margin:16px 0}
   const bw = innerW / data.length * 0.7;
   const gap = innerW / data.length * 0.3;
 
-  // axes
   svg.innerHTML = `<g class="axis">
     <line x1="${pad}" y1="${pad}" x2="${pad}" y2="${H-pad}" stroke="rgba(255,255,255,.2)"/>
     <line x1="${pad}" y1="${H-pad}" x2="${W-pad}" y2="${H-pad}" stroke="rgba(255,255,255,.2)"/>
@@ -128,6 +165,36 @@ hr{border:none;border-top:1px solid var(--line);margin:16px 0}
       `<rect class="bar" x="${x}" y="${y}" width="${bw}" height="${h}"></rect>`
     );
   });
+
+  // ---- Nav Dock KPIs ----
+  // CIBS total (we already computed)
+  const elCibs = document.getElementById('kpi-cibs-total');
+  if(elCibs) elCibs.textContent = fmt$(total);
+
+  // CIRI total recovery from inputs.csv
+  try{
+    const res = await fetch('/abe---flag/ciri/inputs.csv',{cache:'no-store'});
+    const text = await res.text();
+    const [h,d] = text.trim().split(/\r?\n/);
+    const keys = h.split(',').map(s=>s.trim());
+    const vals = d.split(',').map(Number);
+    const o = Object.fromEntries(keys.map((k,i)=>[k,vals[i]]));
+
+    // same decomposition as other pages (demo continuity mode)
+    const c=o.cases_avoided, C=o.avg_cost_per_case, D=o.jail_days_avoided, J=o.cost_per_jail_day,
+          F=o.fees_canceled_total, P=o.policy_corrections, E=o.avg_enforcement_cost_savings,
+          H=o.households_restored, M=o.avg_monthly_market_spend, m=o.months_effective,
+          pe=o.employment_probability, W=o.avg_monthly_wage, L=o.expected_lawsuits,
+          A=o.avg_payout, lam=o.litigation_multiplier, T=o.transition_costs_one_time;
+
+    const totalRecovery = (c*C+F) + (D*J) + (P*E) + (H*M*m) + ((H*pe)*W*m) + (L*A*lam) - T;
+    const elCiri = document.getElementById('kpi-ciri-total');
+    if(elCiri) elCiri.textContent = fmt$(totalRecovery);
+  }catch(e){
+    const elCiri = document.getElementById('kpi-ciri-total');
+    if(elCiri) elCiri.textContent = '—';
+  }
 })();
 </script>
-</body></html>
+</body>
+</html>
