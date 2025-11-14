@@ -1,0 +1,186 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>A.B.E. Model Math — SIRF · IRE · CEQ</title>
+<base href="/abe---flag/">
+<!-- Theme -->
+<style>
+:root{
+  --bg:#0b0d12;--panel:#141820;--panel2:#0f131a;--ink:#e6e6e6;--muted:#9fb3c8;
+  --line:rgba(255,255,255,.08);--brand:#5ddfff;--warn:#ffa559;--ok:#4bd28f
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 system-ui}
+a{color:#80bfff} a:hover{text-decoration:underline}
+header{padding:24px 20px;background:linear-gradient(90deg,#11151c,#1b1e25);border-bottom:1px solid var(--line)}
+.wrap{max-width:1100px;margin:0 auto;padding:24px 20px}
+h1{margin:0 0 6px}
+h2{margin:18px 0 6px}
+h3{margin:16px 0 6px}
+.sub{color:var(--muted)}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;margin:18px 0}
+.grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.table{width:100%;border-collapse:collapse}
+.table th,.table td{border:1px solid var(--line);padding:10px 12px;text-align:left}
+.table th{background:var(--panel2)}
+.kpi{display:flex;gap:14px;flex-wrap:wrap}
+.kpi .tile{flex:1 1 240px;background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:12px}
+.kpi .num{font-size:1.35rem;font-weight:700}
+.badge{display:inline-block;padding:2px 8px;border:1px solid var(--line);border-radius:999px;color:var(--muted)}
+footer{margin:36px 0 20px;color:var(--muted);text-align:center;font-size:.9rem}
+code{background:var(--panel2);padding:0 4px;border-radius:6px;border:1px solid var(--line)}
+</style>
+<!-- MathJax (LaTeX renderer) -->
+<script>
+window.MathJax = {tex:{inlineMath:[['$','$'],['\\(','\\)']]}};
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <a href="/abe---flag/" class="badge">← Home</a>
+    <h1>A.B.E. Model Math</h1>
+    <div class="sub">Formal equations for the constitutional integrity engine (SIRF · IRE · CEQ). Computes live from <code>/ciri/inputs.csv</code>.</div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="card">
+    <h2>Notation</h2>
+    <p>
+      Cases avoided $c$, average case cost $\bar{C}$, jail days $D$, jail day cost $\bar{J}$, fees canceled $F$, policy corrections $P$, avg. enforcement savings $\bar{E}$, households restored $H$, market spend $\bar{M}$, months $m$, employment probability $p_e$, avg. wage $\bar{W}$, lawsuits $L$, payout $\bar{A}$, litigation multiplier $\lambda$, transition cost $T$, scaling constant $K$.
+    </p>
+  </div>
+
+  <div class="card">
+    <h2>Core Components (SIRF)</h2>
+    <p><strong>Shouse Integrity Recovery Function (SIRF)</strong> decomposes Total Recovery $R_T$:</p>
+    <p>
+      $$R_T=\underbrace{c\bar{C}+F}_{\text{direct\_case}}
+      +\underbrace{\Phi_D}_{\text{detention}}
+      +\underbrace{P\bar{E}}_{\text{enforcement}}
+      +\underbrace{H\,\bar{M}\,m}_{\text{market\_access}}
+      +\underbrace{\Phi_E}_{\text{employment}}
+      +\underbrace{L\,\bar{A}\,\lambda}_{\text{litigation}}
+      -\underbrace{T}_{\text{transition}}$$
+    </p>
+    <p><em>Mode toggles:</em> detention $\Phi_D$ and employment $\Phi_E$ can be configured as:</p>
+    <ul>
+      <li><strong>Demo continuity (default):</strong> $\Phi_D=D\bar{J}$, $\;\Phi_E=(H p_e)\,\bar{W}\,m$</li>
+      <li><strong>Strict v2:</strong> $\Phi_D=c D \bar{J}$, $\;\Phi_E=c\,p_e\,\bar{W}\,(m/12)$</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>Indices (IRE · CEQ)</h2>
+    <p><strong>Integrity Restoration Equation (IRE):</strong> $$\displaystyle CIRI = 1 - e^{-R_T/K} \qquad;\qquad CII = 1 - CIRI$$</p>
+    <p><strong>Civic Efficiency Quotient (CEQ):</strong> $$\displaystyle CEQ = \frac{R_T}{\text{Input Cost Baseline}} \quad\text{(optional jurisdictional benchmark)}$$</p>
+    <p><strong>ROI per Case:</strong> $$\displaystyle ROI_{case}=\frac{R_T}{\max(1,c)}$$</p>
+  </div>
+
+  <div class="card">
+    <h2>Live KPIs (from <code>/ciri/inputs.csv</code>)</h2>
+    <div class="kpi">
+      <div class="tile"><div>Total Recovery</div><div id="kpi-total" class="num">—</div><small>$R_T$</small></div>
+      <div class="tile"><div>CIRI</div><div id="kpi-ciri" class="num">—</div><small>$1-e^{-R_T/K}$ with $K=2\times10^9$</small></div>
+      <div class="tile"><div>CII</div><div id="kpi-cii" class="num">—</div><small>$1-\text{CIRI}$</small></div>
+      <div class="tile"><div>ROI / Case</div><div id="kpi-roi" class="num">—</div><small>$R_T/\max(1,c)$</small></div>
+    </div>
+    <p><label><input type="checkbox" id="strictV2"> Use <strong>Strict v2</strong> component formulas (detention & employment)</label></p>
+  </div>
+
+  <div class="card">
+    <h3>Component Breakdown</h3>
+    <table class="table">
+      <thead><tr><th>Component</th><th>Formula</th><th>Value (USD)</th></tr></thead>
+      <tbody id="tbody-breakdown"></tbody>
+      <tfoot><tr><th>Total</th><th></th><th id="tfoot-total">—</th></tr></tfoot>
+    </table>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h3>Links</h3>
+      <ul>
+        <li><a href="/abe---flag/ciri/">CIRI Calculator</a></li>
+        <li><a href="/abe---flag/cibs/">CIBS Budget</a></li>
+        <li><a href="/abe---flag/integration/">Integration KPIs</a></li>
+        <li><a href="https://doi.org/10.5281/zenodo.17586107">DOI 10.5281/zenodo.17586107</a></li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>License</h3>
+      <p>CC BY-NC 4.0 — Integrity only, never for sale.</p>
+    </div>
+  </div>
+</main>
+
+<footer>
+  CC BY-NC 4.0 · DOI <a href="https://doi.org/10.5281/zenodo.17586107">10.5281/zenodo.17586107</a> · Integrity only — never for sale.
+</footer>
+
+<script>
+(async function(){
+  const fmt = n => '$' + (isFinite(n)? Math.round(n).toLocaleString() : '—');
+
+  async function readInputs(){
+    const res = await fetch('/abe---flag/ciri/inputs.csv',{cache:'no-store'});
+    const text = await res.text();
+    const [h,d] = text.trim().split(/\r?\n/);
+    const keys = h.split(',').map(s=>s.trim());
+    const vals = d.split(',').map(x=>Number(x));
+    return Object.fromEntries(keys.map((k,i)=>[k,vals[i]]));
+  }
+
+  function compute(o, strict){
+    const c=o.cases_avoided, C=o.avg_cost_per_case, D=o.jail_days_avoided, J=o.cost_per_jail_day,
+          F=o.fees_canceled_total, P=o.policy_corrections, E=o.avg_enforcement_cost_savings,
+          H=o.households_restored, M=o.avg_monthly_market_spend, m=o.months_effective,
+          pe=o.employment_probability, W=o.avg_monthly_wage, L=o.expected_lawsuits,
+          A=o.avg_payout, lam=o.litigation_multiplier, T=o.transition_costs_one_time;
+
+    const direct_case = c*C + F;
+    const detention   = strict ? c*D*J : D*J;
+    const enforcement = P*E;
+    const market      = H*M*m;
+    const employment  = strict ? c*pe*W*(m/12) : (H*pe)*W*m;
+    const litigation  = L*A*lam;
+    const total = direct_case + detention + enforcement + market + employment + litigation - T;
+
+    const K = 2_000_000_000;
+    const CIRI = 1 - Math.exp(- total / K);
+    const CII  = 1 - CIRI;
+    const ROI  = total / Math.max(1,c);
+
+    return {direct_case, detention, enforcement, market, employment, litigation, transition:-T, total, CIRI, CII, ROI};
+  }
+
+  function render(calc){
+    document.getElementById('kpi-total').textContent = fmt(calc.total);
+    document.getElementById('kpi-ciri').textContent  = calc.CIRI.toFixed(2);
+    document.getElementById('kpi-cii').textContent   = calc.CII.toFixed(2);
+    document.getElementById('kpi-roi').textContent   = fmt(calc.ROI);
+
+    const rows = [
+      ['Direct case','c·C + F',calc.direct_case],
+      ['Detention','Φ_D',calc.detention],
+      ['Enforcement','P·E',calc.enforcement],
+      ['Market access','H·M·m',calc.market],
+      ['Employment','Φ_E',calc.employment],
+      ['Litigation','L·A·λ',calc.litigation],
+      ['Transition','−T',calc.transition]
+    ];
+    document.getElementById('tbody-breakdown').innerHTML =
+      rows.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${fmt(r[2])}</td></tr>`).join('');
+    document.getElementById('tfoot-total').textContent = fmt(calc.total);
+  }
+
+  const inputs = await readInputs();
+  const toggle = document.getElementById('strictV2');
+
+  function refresh(){ render(compute(inputs, toggle.checked)); }
+  toggle.addEventListener('change', refresh);
+  refresh();
+})();
+</script>
+</body></html>
