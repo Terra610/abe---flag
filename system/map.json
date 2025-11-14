@@ -1,108 +1,180 @@
 {
-  "version": "0.1",
-  "updated": "2025-11-02T00:00:00Z",
+  "version": "1.0",
+  "updated": "2025-11-14T00:00:00Z",
   "project": "A.B.E. — American Butterfly Effect",
   "author": {
     "name": "Terra Shouse",
     "contact": "terra610",
-    "license": "CC BY 4.0"
+    "license": "CC BY-NC 4.0"
   },
 
   "modules": {
+    "cae": {
+      "name": "CAE",
+      "long_name": "Constitutional Alignment Engine",
+      "purpose": "Parses constitutional text and positive law; flags misalignment and cites controlling authority.",
+      "model_file": "cae/model.json",
+      "schema_file": "cae/schema.json",
+      "report_file": "cae/report.csv",
+      "status": "planned",
+      "ui": "cae/index.html"
+    },
+
+    "cdi": {
+      "name": "CDI",
+      "long_name": "Constitutional Divergence Index",
+      "purpose": "Converts CAE findings into normalized 0–1 divergence signals by domain and jurisdiction.",
+      "inputs": ["cae/report.csv"],
+      "model_file": "cdi/model.json",
+      "data_file": "cdi/divergence.csv",
+      "status": "alpha",
+      "ui": "cdi/index.html"
+    },
+
     "ciri": {
       "name": "CIRI",
       "long_name": "Constitutional Integrity ROI Engine",
-      "purpose": "Quantifies economic, legal, and social recovery impact by ending unlawful enforcement and coercive incentive structures.",
+      "purpose": "Quantifies recoverable economic value from ending unconstitutional harm and restoring lawful practice.",
       "inputs_file": "ciri/inputs.csv",
       "logic_spec": "ciri/calc.md",
       "core_outputs": [
-        "Direct Case Savings",
-        "Detention Savings",
-        "Licensing/Regulatory Correction",
-        "Employment Restoration",
-        "Total Impact"
+        "direct_case",
+        "detention",
+        "enforcement",
+        "market_access",
+        "employment",
+        "litigation",
+        "transition",
+        "total_recovery",
+        "CIRI",
+        "CII",
+        "ROI_per_case"
       ],
-      "primary_output_field": "Total Impact",
+      "primary_output_field": "total_recovery",
       "status": "mvp",
       "ui": "ciri/index.html"
     },
 
     "cibs": {
       "name": "CIBS",
-      "long_name": "Civic Investment Budgeting System",
-      "purpose": "Takes CIRI’s recovered value and assigns it to community repair categories with transparency and auditability.",
+      "long_name": "Constitutional Integrity Baseline Schema",
+      "purpose": "Allocates the Recovery Pool into public reinvestment categories with transparent percentages and auditability.",
       "template_file": "cibs/budget_template.csv",
-      "logic_spec": "cibs/model.md",
-      "allocation_categories": [
-        "Community Housing Support",
-        "Youth / Education / Aftercare",
-        "Veterans & Emergency Relief",
-        "Local Small Business / Job Recovery",
-        "Digital Access / Connectivity",
-        "Legal Defense / Rights Enforcement",
-        "Data Transparency / Public Dashboard",
-        "Administration & Compliance"
-      ],
       "auto_budget_file": "cibs/auto_budget.csv",
       "status": "mvp",
       "ui": "cibs/index.html"
     },
 
+    "cii": {
+      "name": "CII",
+      "long_name": "Community Investment Interface",
+      "purpose": "Publishes auditable project portfolios (housing, clinics, food, mobility, workforce) and KPIs tied to CIBS.",
+      "model_file": "cii/model.json",
+      "portfolio_file": "cii/portfolio.csv",
+      "status": "mvp",
+      "ui": "cii/index.html"
+    },
+
     "integration": {
       "name": "Integration Layer",
-      "purpose": "Verifies that Recovery Pool funds landed correctly, recipients match, retaliation/suppression flags are clear, and audits are signed.",
+      "purpose": "Verifies receipts, matches recipients, detects retaliation/suppression, and posts public attestations.",
       "checks": [
         "receipt_verification",
         "recipient_match",
         "retaliation_zero",
         "public_audit_attestation"
       ],
-      "ui": "integration/index.html",
-      "status": "alpha"
+      "status": "alpha",
+      "ui": "integration/index.html"
     },
 
     "system": {
       "name": "System Map",
-      "purpose": "Canonical chain-of-custody and public evidence ledger.",
+      "purpose": "Canonical chain-of-custody and evidence ledger for A.B.E.",
       "map_file": "system/map.json",
-      "ui": "system/index.html",
-      "status": "mvp"
+      "status": "mvp",
+      "ui": "system/index.html"
+    },
+
+    "macro": {
+      "name": "Macro",
+      "long_name": "Macroeconomic Cascade",
+      "purpose": "Summarizes top-down impact; optional model artifacts and downloads.",
+      "model_file": "macro/model.json",
+      "downloads": [
+        "macro/macro_cascade.csv",
+        "macro/model.json"
+      ],
+      "status": "public",
+      "ui": "macro/index.html"
     }
   },
 
   "flows": [
     {
-      "from": "Public data ingestion",
-      "to": "ciri/inputs.csv",
-      "control": "dataset_signed_or_linked",
+      "from": "Public law & corpus (Constitution, US Code, CFR, state law, precedent)",
+      "to": "cae/report.csv",
+      "control": "source_text_cited_and_hashed",
       "evidence": [
-        "https://terra610.github.io/abe---flag/ciri/inputs.csv"
+        "/abe---flag/cae/index.html",
+        "/abe---flag/cae/model.json",
+        "/abe---flag/cae/schema.json"
+      ]
+    },
+    {
+      "from": "cae/report.csv",
+      "to": "cdi/divergence.csv",
+      "control": "normalization_0_1_with_weights",
+      "evidence": [
+        "/abe---flag/cdi/index.html",
+        "/abe---flag/cdi/model.json"
       ]
     },
     {
       "from": "ciri/inputs.csv",
-      "to": "CIRI: Total Impact",
-      "control": "reproducible_calculation",
+      "to": "ciri/index.html KPIs",
+      "control": "reproducible_browser_math_and_CLI_parity",
       "evidence": [
-        "ciri/index.html",
-        "ciri/calc.md"
+        "/abe---flag/ciri/index.html",
+        "/abe---flag/ciri/calc.md",
+        "/abe---flag/ciri/inputs.csv"
       ]
     },
     {
-      "from": "CIRI: Total Impact",
+      "from": "CDI divergence + local inputs",
+      "to": "CIRI total_recovery (Recovery Pool)",
+      "control": "documented_formulas_SIRF_IRE_CEQ",
+      "evidence": [
+        "/abe---flag/macro/model.html",
+        "DOI:10.5281/zenodo.17586107"
+      ]
+    },
+    {
+      "from": "CIRI total_recovery",
       "to": "cibs/auto_budget.csv",
       "control": "allocation_rules_applied",
       "evidence": [
-        "cibs/index.html",
-        "cibs/budget_template.csv"
+        "/abe---flag/cibs/index.html",
+        "/abe---flag/cibs/auto_budget.csv",
+        "/abe---flag/cibs/budget_template.csv"
       ]
     },
     {
       "from": "cibs/auto_budget.csv",
-      "to": "Integration checks",
-      "control": "receipt_verification, recipient_match, retaliation_zero",
+      "to": "cii/portfolio.csv",
+      "control": "portfolio_alignment_with_budget_and_category_schema",
       "evidence": [
-        "integration/index.html"
+        "/abe---flag/cii/index.html",
+        "/abe---flag/cii/portfolio.csv",
+        "/abe---flag/cii/model.json"
+      ]
+    },
+    {
+      "from": "cii portfolio & disbursements",
+      "to": "Integration checks",
+      "control": "receipts_signed_hashes_retaliation_monitoring",
+      "evidence": [
+        "/abe---flag/integration/index.html"
       ]
     },
     {
@@ -110,10 +182,24 @@
       "to": "Public dashboard / publication",
       "control": "public_audit_attestation",
       "evidence": [
-        "system/index.html",
-        "CC BY 4.0",
-        "SHA256:to_be_added_for_released_artifacts"
+        "/abe---flag/system/index.html",
+        "CC BY-NC 4.0",
+        "SHA256: to_be_added_for_released_artifacts"
       ]
     }
-  ]
+  ],
+
+  "links": {
+    "site_root": "/abe---flag/",
+    "doctrines": "/abe---flag/doctrine/index.html",
+    "ciri": "/abe---flag/ciri/index.html",
+    "cibs": "/abe---flag/cibs/index.html",
+    "cii": "/abe---flag/cii/index.html",
+    "cdi": "/abe---flag/cdi/index.html",
+    "cae": "/abe---flag/cae/index.html",
+    "integration": "/abe---flag/integration/index.html",
+    "macro": "/abe---flag/macro/index.html",
+    "doi": "https://doi.org/10.5281/zenodo.17586107",
+    "license": "https://creativecommons.org/licenses/by-nc/4.0/"
+  }
 }
