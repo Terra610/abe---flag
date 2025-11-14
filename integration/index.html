@@ -1,4 +1,5 @@
-<!doctype html><html lang="en"><head>
+<!doctype html>
+<html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Integration — A.B.E. Public KPIs</title>
 <base href="/abe---flag/">
@@ -84,6 +85,41 @@ footer{margin:36px 0 20px;color:var(--muted);text-align:center;font-size:.9rem}
     <p><label><input type="checkbox" id="strictV2"> Use strict v2 formulas (employment = cases-based; detention = cases × days × cost)</label></p>
     <small>Unchecked = demonstration mode (employment uses households; detention uses aggregate days).</small>
   </div>
+
+  <!-- ──────────────────────────────── A.B.E. Nav Dock + Live KPIs ──────────────────────────────── -->
+  <section id="abe-navdock" class="card" aria-label="A.B.E. Navigator">
+    <h3 style="margin:0 0 10px;color:#5ddfff">A.B.E. Navigator · Live Links</h3>
+    <div style="display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))">
+      <div style="background:#0f131a;border:1px solid var(--line);border-radius:10px;padding:14px">
+        <div style="font-weight:600;margin-bottom:8px">Doctrines</div>
+        <ul class="small" style="list-style:none;padding:0;margin:0;line-height:1.8">
+          <li><a href="/abe---flag/doctrine/ABE_CRRA_Rebuild.pdf">A.B.E. · CRRA · Rebuild Together (viewer)</a></li>
+          <li><a href="/abe---flag/doctrine/constitutional-fidelity.html">Constitutional Fidelity (full text)</a></li>
+          <li><a href="/abe---flag/doctrine/void-ab-initio.html">Void ab Initio (full text)</a></li>
+        </ul>
+      </div>
+
+      <div style="background:#0f131a;border:1px solid var(--line);border-radius:10px;padding:14px">
+        <div style="font-weight:600;margin-bottom:8px">Calculators & KPIs</div>
+        <ul class="small" style="list-style:none;padding:0;margin:0;line-height:1.9">
+          <li><a href="/abe---flag/ciri/">CIRI Calculator</a> — <span id="dock-ciri-total" style="opacity:.85">loading…</span></li>
+          <li><a href="/abe---flag/cibs/">CIBS Budget</a> — <span id="dock-cibs-total" style="opacity:.85">loading…</span></li>
+          <li><a href="/abe---flag/integration/">Integration KPIs</a></li>
+        </ul>
+      </div>
+
+      <div style="background:#0f131a;border:1px solid var(--line);border-radius:10px;padding:14px">
+        <div style="font-weight:600;margin-bottom:8px">Archive & License</div>
+        <div class="small" style="line-height:1.7">
+          DOI: <a href="https://doi.org/10.5281/zenodo.17586107">10.5281/zenodo.17586107</a><br/>
+          License: <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC BY-NC 4.0</a><br/>
+          Project: <a href="/abe---flag/">terra610.github.io/abe---flag</a>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- ──────────────────────────────── End Nav Dock ──────────────────────────────── -->
+
 </main>
 
 <footer>
@@ -131,7 +167,7 @@ footer{margin:36px 0 20px;color:var(--muted);text-align:center;font-size:.9rem}
     const lambda = obj.litigation_multiplier;
     const trans = obj.transition_costs_one_time;
 
-    // Components (two modes for consistency vs strict v2 spec)
+    // Components (demo vs strict v2)
     const direct_case = c * avg_case + fees;
 
     const detention = strict
@@ -151,7 +187,7 @@ footer{margin:36px 0 20px;color:var(--muted);text-align:center;font-size:.9rem}
     const total = direct_case + detention + enforcement + market_access + employment + litigation - trans;
 
     // Indices
-    const K = 2_000_000_000; // scaling constant (tunable per jurisdiction size)
+    const K = 2_000_000_000; // scaling constant
     const CIRI = 1 - Math.exp(- total / K);
     const CII = 1 - CIRI;
     const ROIcase = total / Math.max(1,c);
@@ -174,6 +210,12 @@ footer{margin:36px 0 20px;color:var(--muted);text-align:center;font-size:.9rem}
     document.getElementById('kpi-ciri').textContent = (model.CIRI).toFixed(2);
     document.getElementById('kpi-roi').textContent = fmtUSD(model.ROIcase);
 
+    // Fill Nav Dock KPIs, too
+    const dockCibs = document.getElementById('dock-cibs-total');
+    const dockCiri = document.getElementById('dock-ciri-total');
+    if(dockCibs) dockCibs.textContent = fmtUSD(cibsTotal);
+    if(dockCiri) dockCiri.textContent = fmtUSD(model.total);
+
     // Breakdown table
     const tbody = document.getElementById('breakdown-body');
     const rows = [
@@ -189,10 +231,10 @@ footer{margin:36px 0 20px;color:var(--muted);text-align:center;font-size:.9rem}
     document.getElementById('breakdown-total').textContent = fmtUSD(model.total);
   }
 
-  // Initial render (demo mode for continuity with our walkthrough)
+  // Initial render (demo mode)
   render(false);
 
-  // Toggle for strict v2 formulas
+  // Toggle strict v2
   document.getElementById('strictV2').addEventListener('change', e=>{
     render(!!e.target.checked);
   });
