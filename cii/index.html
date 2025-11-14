@@ -107,6 +107,8 @@
       <h2>📄 Portfolio Preview</h2>
       <div id="portfolio-table" style="margin-top:.5rem"></div>
       <p class="hint" id="portfolio-hint"></p>
+      <!-- Enhanced KPIs container -->
+      <div id="portfolio-kpis" style="margin-top:10px;color:#cfe6ff"></div>
     </section>
 
     <!-- How it fits -->
@@ -212,6 +214,39 @@
           html += '</tbody></table>';
           wrap.innerHTML = html;
           hint.textContent = 'Previewing /cii/portfolio.csv. Update that file to change this view.';
+
+          // --- Enhanced KPIs for portfolio ---
+          (function showPortfolioKPIs(){
+            const idxCost = thead.findIndex(h => /cost|budget|amount|usd/i.test(h||''));
+            const idxHH   = thead.findIndex(h => /household|hh/i.test(h||''));
+            let totalCost = 0, totalHH = 0;
+            body.forEach(r=>{
+              const c = Number((r[idxCost]||'').toString().replace(/[^0-9.\-]/g,''));
+              const h = Number((r[idxHH]  ||'').toString().replace(/[^0-9.\-]/g,''));
+              if (isFinite(c)) totalCost += c;
+              if (isFinite(h)) totalHH   += h;
+            });
+            const avgCPH = (totalHH>0) ? (totalCost/totalHH) : 0;
+            const kpis = document.getElementById('portfolio-kpis');
+            const money = v => { try { return new Intl.NumberFormat(undefined,{style:'currency',currency:'USD',maximumFractionDigits:0}).format(v); } catch { return '$'+Math.round(v).toLocaleString(); } };
+            kpis.innerHTML = `
+              <div style="display:flex;gap:12px;flex-wrap:wrap">
+                <div style="flex:1 1 240px;background:#141820;border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:10px">
+                  <div style="font-size:12px;color:#9fb3c8">Total Investment</div>
+                  <div style="font-weight:800;font-size:20px">${money(totalCost)}</div>
+                </div>
+                <div style="flex:1 1 240px;background:#141820;border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:10px">
+                  <div style="font-size:12px;color:#9fb3c8">Total Households Served</div>
+                  <div style="font-weight:800;font-size:20px">${(Math.round(totalHH)||0).toLocaleString()}</div>
+                </div>
+                <div style="flex:1 1 240px;background:#141820;border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:10px">
+                  <div style="font-size:12px;color:#9fb3c8">Avg. Cost / Household</div>
+                  <div style="font-weight:800;font-size:20px">${money(avgCPH)}</div>
+                </div>
+              </div>
+            `;
+          })();
+
         }
       }else{
         wrap.innerHTML = `
@@ -222,7 +257,7 @@
         hint.textContent = 'Once portfolio.csv is added, refresh to see the table.';
       }
 
-      // (Optional) light check: warn if model.json exists but looks empty
+      // (Optional) light check
       if(modelText){
         try{
           const j = JSON.parse(modelText);
@@ -247,7 +282,7 @@
         document.getElementById('dock-cibs-total').textContent = fmtUSD(total);
       }catch{ const el = document.getElementById('dock-cibs-total'); if(el) el.textContent='—'; }
 
-      // CIRI total (demo-mode, same calc as Integration/CDI)
+      // CIRI total (demo-mode)
       try{
         const r = await fetch('/abe---flag/ciri/inputs.csv',{cache:'no-store'});
         const t = await r.text();
@@ -267,4 +302,4 @@
     })();
   </script>
 </body>
-</html>
+  </html>
