@@ -1,0 +1,13 @@
+{
+  "version": "1.0",
+  "about": "CIBS auto_budget.csv must define category allocations.",
+  "csv": {
+    "path": "/cibs/auto_budget.csv",
+    "required_headers": ["category","value"],
+    "optional_headers": ["percent_of_pool","custodian","notes"],
+    "rules": [
+      "value >= 0",
+      "if percent_of_pool present: sum ≈ 100%"
+    ]
+  }
+}
