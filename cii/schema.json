@@ -1,0 +1,12 @@
+{
+  "version": "1.0",
+  "about": "CII portfolio row definition and minimal KPIs.",
+  "csv": {
+    "path": "/cii/portfolio.csv",
+    "required_headers": ["name","category","cost_usd","households","status"],
+    "status_enum": ["scoping","design","pre-award","active","complete"]
+  },
+  "derived_kpis": [
+    {"name":"cost_per_household","formula":"cost_usd / max(1, households)","unit":"USD/household"}
+  ]
+}
