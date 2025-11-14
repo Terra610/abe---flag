@@ -1,26 +1,74 @@
 {
-  "version": "1.0",
-  "about": "CAE — Constitutional Alignment Engine model schema",
-  "layers": [
-    {"key":"federal_law","name":"U.S. Code & CFR","weight":0.4},
-    {"key":"state_law","name":"State Statutes","weight":0.3},
-    {"key":"case_law","name":"Judicial Precedents","weight":0.2},
-    {"key":"executive_action","name":"Regulations & Orders","weight":0.1}
+  "version": "1.0.0",
+  "updated": "2025-11-14T12:00:00Z",
+  "jurisdiction": "United States — Federal",
+  "articles": [
+    {
+      "id": "ArtI_S8_Cl3",
+      "title": "Article I, Section 8, Clause 3 — Commerce Clause",
+      "clauses": [
+        {
+          "clause_id": "commerce_scope",
+          "reference": "Congress may regulate Commerce with foreign Nations, and among the several States, and with the Indian Tribes.",
+          "derived_statutes": [
+            "15 U.S.C. § 1 (Sherman Act)",
+            "49 U.S.C. Subtitle IV (Transportation)"
+          ],
+          "alignment_score": 0.85,
+          "interpretation": "Current federal posture largely respects interstate scope; risk arises when private, non-commercial conduct is treated as commerce.",
+          "source_hash": "0000000000000000000000000000000000000000000000000000000000000000"
+        },
+        {
+          "clause_id": "noncommercial_limit",
+          "reference": "Limits recognized in Lopez and Morrison; non-economic activity beyond Congress’s reach.",
+          "derived_statutes": [
+            "18 U.S.C. § 922(q) (historical context)",
+            "42 U.S.C. § 13981 (historical context)"
+          ],
+          "alignment_score": 0.40,
+          "interpretation": "Divergence where agencies or states extend ‘commerce’ to private travel or non-economic acts; requires corrective guidance.",
+          "source_hash": "1111111111111111111111111111111111111111111111111111111111111111"
+        }
+      ]
+    },
+    {
+      "id": "ArtI_S8_Cl7",
+      "title": "Article I, Section 8, Clause 7 — Postal Clause",
+      "clauses": [
+        {
+          "clause_id": "postal_infrastructure",
+          "reference": "To establish Post Offices and post Roads.",
+          "derived_statutes": [
+            "39 U.S.C. § 101",
+            "39 U.S.C. § 401"
+          ],
+          "alignment_score": 0.92,
+          "interpretation": "Core federal authority remains intact; risks appear when state or private rules materially impede postal carriage and routes.",
+          "source_hash": "2222222222222222222222222222222222222222222222222222222222222222"
+        }
+      ]
+    },
+    {
+      "id": "Amend_X",
+      "title": "Tenth Amendment — Reservation of Powers",
+      "clauses": [
+        {
+          "clause_id": "reserved_powers_balance",
+          "reference": "The powers not delegated to the United States… are reserved to the States respectively, or to the people.",
+          "derived_statutes": [
+            "State Police Powers (general)",
+            "5 U.S.C. § 3331 (Oath of Office)"
+          ],
+          "alignment_score": 0.70,
+          "interpretation": "Healthy reservation principle exists; divergence where licensing and enforcement frameworks regulate private, non-commercial life as if commerce.",
+          "source_hash": "3333333333333333333333333333333333333333333333333333333333333333"
+        }
+      ]
+    }
   ],
-  "constitutional_sources": [
-    "U.S. Constitution (Articles & Amendments)",
-    "Federalist Papers (contextual intent)",
-    "Supreme Court majority opinions defining limits of power"
-  ],
-  "analysis_methods": {
-    "text_alignment": "semantic similarity of statute intent vs enumerated powers",
-    "authority_check": "compare claimed power source vs Article I/II/III delegation",
-    "rights_conflict": "match prohibitions in Amendments 1–10, 13–15, etc.",
-    "commerce_nexus_audit": "detect misuse of interstate commerce to regulate intrastate or private behavior"
-  },
-  "outputs": {
-    "divergence_index": "0–1 score per statute",
-    "affected_domain": "commerce, due_process, equal_protection, etc.",
-    "recommendation": "clarify, repeal, amend, or harmonize"
+  "summary": {
+    "average_alignment": 0.7175,
+    "deviation_count": 2,
+    "notes": "Primary divergences: (1) non-commercial conduct treated as commerce; (2) state licensing regimes functionally burdening private travel. Postal authority largely aligned."
   }
 }
