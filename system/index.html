@@ -1,271 +1,283 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>A.B.E. System Map — Chain of Custody</title>
-
-  <!-- Optional site patch; safe if missing -->
-  <link rel="stylesheet" href="/abe---flag/abe-patch/assets/abe-patch.css">
-
-  <style>
-    :root{
-      --bg:#0b0d12; --panel:#13161b; --ink:#e0e0e0; --muted:#9aa3ad;
-      --edge:rgba(255,255,255,.08); --edge2:rgba(255,255,255,.12);
-      --accent:#5ddfff; --accent2:#ffa559;
-    }
-    *{box-sizing:border-box}
-    body{background:var(--bg);color:var(--ink);font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;line-height:1.65;margin:0}
-
-    header{
-      background:linear-gradient(90deg,#11151c,#1b1e25);
-      border-bottom:1px solid var(--edge);
-      padding:2rem 1rem;
-      text-align:center;
-      position:relative
-    }
-    .home-btn{
-      position:absolute;left:1rem;top:1.2rem;
-      background:var(--accent);color:#0b0d12;
-      padding:.45rem .9rem;border-radius:8px;font-weight:700;text-decoration:none;font-size:.9rem;
-      transition:all .2s ease-in-out;border:1px solid transparent
-    }
-    .home-btn:hover{background:#82eaff;box-shadow:0 0 8px rgba(93,223,255,.7);transform:translateY(-2px)}
-    h1{color:var(--accent);font-size:1.8rem;margin:.1rem 0 .4rem;font-weight:800}
-    header p{margin:.25rem 0 0;color:var(--muted)}
-    .top-actions{display:flex;gap:.6rem;flex-wrap:wrap;justify-content:center;margin:.9rem 0 0}
-    .btn, .badge{
-      display:inline-block;text-decoration:none;font-weight:700;border-radius:8px;transition:all .18s ease-in-out
-    }
-    .btn{background:var(--accent);color:#0b0d12;padding:.55rem 1rem;border:1px solid transparent}
-    .btn:hover{background:#82eaff;transform:translateY(-2px);box-shadow:0 0 10px rgba(93,223,255,.6)}
-    .badge{color:var(--accent);border:1px solid var(--accent);padding:.45rem .7rem;font-size:.9rem}
-    .badge:hover{background:rgba(93,223,255,.08);transform:translateY(-2px)}
-
-    main{max-width:1000px;margin:2rem auto 3.5rem;padding:0 1rem}
-    section{
-      background:rgba(255,255,255,.03);border:1px solid var(--edge);
-      border-radius:12px;padding:1.2rem 1.4rem;margin-bottom:1.4rem;
-      box-shadow:0 0 12px rgba(93,223,255,.05)
-    }
-    section:hover{box-shadow:0 0 16px rgba(93,223,255,.12)}
-    h2{color:var(--accent2);font-size:1.2rem;margin:.2rem 0 .7rem}
-    a{color:#80bfff} a:hover{text-decoration:underline}
-    code{background:rgba(255,255,255,.07);padding:.2rem .4rem;border-radius:4px;color:#f1fa8c;font-size:.9rem}
-
-    .flow-box{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.15);
-      border-radius:10px;padding:1rem 1.2rem;font-size:.95rem;color:#d0d0d0}
-    .flow-step{margin-bottom:1rem;padding-left:.6rem;border-left:3px solid var(--accent)}
-    .flow-step-title{font-weight:800;color:var(--accent);margin-bottom:.25rem}
-
-    /* KPIs + map table */
-    .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:12px 0}
-    .kpi{background:#16181d;border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:12px}
-    .kpi .lbl{color:#9fb0c9;font-size:12px}
-    .kpi .val{font:800 20px/1 system-ui;margin-top:4px}
-    table.map{width:100%;border-collapse:collapse;margin-top:8px}
-    table.map th, table.map td{padding:8px;border-bottom:1px solid rgba(255,255,255,.08);text-align:left;vertical-align:top}
-    .small{font-size:12px;color:#a7b4c8}
-    .btn-ghost{padding:6px 10px;border:1px solid #2a3344;border-radius:6px;background:#0d0f12;color:#eaeef7;cursor:pointer}
-    .btn-ghost+ .btn-ghost{margin-left:8px}
-    .btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
-  </style>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>A.B.E. System Map — Live Evidence Graph</title>
+<base href="/abe---flag/">
+<style>
+:root{
+  --bg:#0b0d12; --panel:#141820; --panel2:#0f131a; --ink:#e6e6e6; --muted:#9fb3c8;
+  --line:rgba(255,255,255,.10); --brand:#5ddfff; --ok:#4bd28f; --warn:#ffa559; --bad:#ff6b6b;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+a{color:#80bfff;text-decoration:none} a:hover{text-decoration:underline}
+header{padding:24px 20px;background:linear-gradient(90deg,#11151c,#1b1e25);border-bottom:1px solid var(--line)}
+.wrap{max-width:1100px;margin:0 auto;padding:0 20px}
+h1{margin:0 0 4px}
+.sub{color:var(--muted)}
+.grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));margin:16px 0}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px}
+.kpi{display:flex;gap:14px;flex-wrap:wrap}
+.kpi .tile{flex:1 1 220px;background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:12px}
+.kpi .lbl{color:var(--muted);font-size:12px}
+.kpi .val{font:800 22px/1 system-ui;margin-top:4px}
+.legend{display:flex;gap:10px;flex-wrap:wrap;font-size:.95rem;color:var(--muted)}
+.badge{display:inline-block;padding:2px 8px;border:1px solid var(--line);border-radius:999px;color:var(--muted)}
+footer{margin:36px 0 20px;color:var(--muted);text-align:center;font-size:.9rem}
+svg{width:100%;height:520px;display:block;background:#0f131a;border:1px solid var(--line);border-radius:12px}
+.node{cursor:default}
+.node rect{fill:#151b24;stroke:var(--line);stroke-width:1}
+.node text{font:600 13px/1.2 system-ui;fill:#e6e6e6}
+.node .small{font:12px system-ui;fill:#9fb3c8}
+.node.ok rect{stroke:var(--ok);box-shadow:0 0 10px rgba(75,210,143,.6)}
+.node.warn rect{stroke:var(--warn)}
+.node.bad rect{stroke:var(--bad)}
+.link{stroke:#6e7e97;stroke-width:2;marker-end:url(#arrow)}
+.link.good{stroke:var(--ok)}
+.link.warn{stroke:var(--warn)}
+.link.bad{stroke:var(--bad)}
+.note{color:var(--muted);font-size:.95rem}
+.btn{display:inline-block;background:#1b2230;border:1px solid var(--line);padding:.5rem .7rem;border-radius:9px;font-size:.9rem}
+.btn:hover{background:#20283a}
+</style>
 </head>
 <body>
-
 <header>
-  <a href="/abe---flag/index.html" class="home-btn">← Return to Home</a>
-  <h1>🗺 A.B.E. System Map</h1>
-  <p>Canonical chain-of-custody for A.B.E.: how harm is detected, measured, converted to dollars, and reinvested with audit-ready evidence.</p>
-  <div class="top-actions">
-    <a class="btn" href="/abe---flag/doctrine/index.html">📜 Doctrine Library</a>
-    <a class="badge" href="/abe---flag/ciri/index.html">⚙ CIRI</a>
-    <a class="badge" href="/abe---flag/cibs/index.html">📊 CIBS</a>
-    <a class="badge" href="/abe---flag/integration/index.html">🔗 Integration</a>
+  <div class="wrap">
+    <a href="/abe---flag/" class="badge">← Home</a>
+    <h1>A.B.E. System Map — Live Evidence Graph</h1>
+    <div class="sub">CAE → CDI → CIRI → CIBS → Integration → CII → System Ledger. Links reflect data flow; colors reflect verification.</div>
   </div>
 </header>
 
-<main>
-
-  <section>
-    <h2>📂 Core Components</h2>
-    <p>
-      • <a href="/abe---flag/ciri/index.html" class="abe-tooltip" title="Constitutional Integrity ROI Engine">⚙ CIRI</a> — quantifies prevented harm and restored rights.<br>
-      • <a href="/abe---flag/cibs/index.html" class="abe-tooltip" title="Civic Investment Budgeting System">📊 CIBS</a> — turns recovery into budget lines (housing, youth, defense, etc.).<br>
-      • <a href="/abe---flag/integration/index.html">🔗 Integration Layer</a> — detects tampering, diversion, retaliation, or suppression.<br>
-      • <a href="/abe---flag/system/map.json">🗄 <code>system/map.json</code></a> — machine-readable definition of the pipeline (authorship + timestamps).
-    </p>
-  </section>
-
-  <section>
-    <h2>🔁 Flow of Accountability</h2>
-    <div class="flow-box">
-
-      <div class="flow-step">
-        <div class="flow-step-title">1) CIRI — Constitutional Integrity ROI Engine</div>
-        <div>
-          Local data enters <code>ciri/inputs.csv</code>. <code>ciri/calculate.py</code> computes Direct Case Savings,
-          Detention Savings, Licensing Correction, and Employment Restoration.
-          <br><br>Output: a <strong>Total Impact</strong> dollar figure the jurisdiction must reconcile.
-        </div>
-      </div>
-
-      <div class="flow-step">
-        <div class="flow-step-title">2) CIBS — Civic Investment Budgeting System</div>
-        <div>
-          CIRI’s Total Impact becomes the <strong>Recovery Pool</strong>. CIBS allocates that pool to
-          community lines and writes <code>cibs/auto_budget.csv</code> with tags, recipients, and timing.
-        </div>
-      </div>
-
-      <div class="flow-step">
-        <div class="flow-step-title">3) System Map (this page)</div>
-        <div>
-          Expected movement of dollars, attestations, and controls is defined in
-          <a href="/abe---flag/system/map.json"><code>system/map.json</code></a>. It’s public and versioned; anyone can diff it
-          against reality. Any mismatch → someone’s <strong>out of bounds</strong>.
-        </div>
-      </div>
-
-      <div class="flow-step">
-        <div class="flow-step-title">4) Integration & Evidence</div>
-        <div>
-          Programmatic checks verify: (a) funds landed, (b) recipients matched, (c) retaliation/suppression flags are
-          zero, (d) audits signed. Violations auto-raise exceptions and notify oversight.
-        </div>
-      </div>
-
+<main class="wrap">
+  <div class="card">
+    <div class="kpi">
+      <div class="tile"><div class="lbl">Modules Detected</div><div id="k-mod" class="val">—</div></div>
+      <div class="tile"><div class="lbl">Files Verified (ledger)</div><div id="k-files" class="val">—</div></div>
+      <div class="tile"><div class="lbl">Discrepancies</div><div id="k-disc" class="val">—</div></div>
+      <div class="tile"><div class="lbl">Last Check</div><div id="k-time" class="val">—</div></div>
     </div>
-  </section>
-
-  <!-- Live viewer for system/map.json -->
-  <section>
-    <h2>🧩 Live System Map (from <code>system/map.json</code>)</h2>
-    <div class="kpis">
-      <div class="kpi"><div class="lbl">Map Status</div><div id="map-status" class="val">Checking…</div></div>
-      <div class="kpi"><div class="lbl">Flows Defined</div><div id="map-flows" class="val">—</div></div>
-      <div class="kpi"><div class="lbl">Last Updated</div><div id="map-updated" class="val">—</div></div>
+    <div class="legend" style="margin-top:6px">
+      <span>Node stroke = status:</span>
+      <span style="color:var(--ok)">● verified</span>
+      <span style="color:var(--warn)">● partial/unknown</span>
+      <span style="color:var(--bad)">● mismatch</span>
+      <span> · Link color = upstream verified</span>
     </div>
+  </div>
 
-    <div class="small">
-      This viewer loads <code>system/map.json</code> (or <code>/abe---flag/system/map.json</code> fallback) and renders its
-      <em>flows</em> array as verifiable chain-of-custody: <strong>from → to → control → evidence</strong>.
+  <div class="card">
+    <svg id="graph" role="img" aria-label="A.B.E. modules and data flows">
+      <defs>
+        <marker id="arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+          <path d="M0,0 L10,4 L0,8 z" fill="#6e7e97"></path>
+        </marker>
+      </defs>
+    </svg>
+    <div class="note" id="hint">Reading <code>/system/map.json</code> and (if present) <code>/system/ledger.json</code>…</div>
+    <div class="note" style="margin-top:8px">
+      Evidence links: 
+      <a class="btn" href="/abe---flag/system/map.json">map.json</a>
+      <a class="btn" href="/abe---flag/system/ledger.json">ledger.json</a>
+      <a class="btn" href="/abe---flag/ciri/inputs.csv">ciri/inputs.csv</a>
+      <a class="btn" href="/abe---flag/cibs/auto_budget.csv">cibs/auto_budget.csv</a>
+      <a class="btn" href="/abe---flag/integration/index.html">integration</a>
     </div>
+  </div>
 
-    <table id="map-table" class="map" aria-label="System flows table"></table>
-
-    <div style="margin-top:10px">
-      <button id="btn-download" class="btn-ghost">Download Snapshot (JSON)</button>
-      <button id="btn-reload" class="btn-ghost">Reload Map</button>
+  <div class="grid">
+    <div class="card">
+      <h3>What You’re Seeing</h3>
+      <ul class="note">
+        <li><b>Rectangles</b> are modules. Stroke color indicates integrity status based on <code>ledger.json</code>.</li>
+        <li><b>Arrows</b> show the canonical data flow from <code>map.json</code>.</li>
+        <li>If <code>ledger.json</code> is missing or a file can’t be fetched, the node shows as <span style="color:var(--warn)">partial</span>.</li>
+        <li>If a file’s hash doesn’t match the ledger’s SHA-256, the node shows as <span style="color:var(--bad)">mismatch</span>.</li>
+      </ul>
     </div>
-  </section>
-
-  <section>
-    <h2>🔒 Integrity Checklist</h2>
-    <ul>
-      <li>All map entries include <code>from</code>, <code>to</code>, <code>control</code>, and <code>evidence</code> fields.</li>
-      <li>Evidence URLs resolve (HTTP 200) or are embedded hashes/IDs (IPFS, SHA-256, notarized docs).</li>
-      <li>Budget entries in <code>cibs/auto_budget.csv</code> match the <code>to</code> recipients defined in the map.</li>
-      <li>Any redaction is additive (never destructive); original records remain addressable.</li>
-      <li>Every edit to <code>map.json</code> is attributed in Git history (authorship, time, diff).</li>
-    </ul>
-    <p class="small">Result: a tamper-evident public record of value flow that communities can audit without gatekeepers.</p>
-  </section>
-
+    <div class="card">
+      <h3>How to Verify Locally</h3>
+      <ol class="note">
+        <li>Add file entries to <code>/system/ledger.json</code> with a <code>sha256</code> for each tracked artifact.</li>
+        <li>This page will recompute hashes client-side and compare them.</li>
+        <li>Any edit to a tracked file will change its hash and surface a discrepancy.</li>
+      </ol>
+    </div>
+  </div>
 </main>
 
-<!-- Optional patch scripts -->
-<script src="/abe---flag/abe-patch/assets/abe-nav.js"></script>
-<script src="/abe---flag/abe-patch/assets/abe-definitions.js"></script>
+<footer>
+  CC BY-NC 4.0 · DOI <a href="https://doi.org/10.5281/zenodo.17586107">10.5281/zenodo.17586107</a> · Integrity only — never for sale.
+</footer>
 
-<!-- Live map viewer script -->
 <script>
 (async function(){
-  const status = document.getElementById('map-status');
-  const flowsEl = document.getElementById('map-flows');
-  const updatedEl = document.getElementById('map-updated');
-  const table = document.getElementById('map-table');
+  const svg = document.getElementById('graph');
+  const W = svg.clientWidth, H = svg.clientHeight;
+  const padX=70, padY=60, colW = (W - padX*2)/6, rowH = (H - padY*2)/3;
 
-  async function loadMap(){
-    const urls = ['map.json','/abe---flag/system/map.json'];
-    for (const u of urls){
-      try {
-        const r = await fetch(u, {cache:'no-store'});
-        if (r.ok) { const j = await r.json(); j.__src = u; return j; }
-      } catch(_) {}
+  const KM = id => document.getElementById(id);
+  const set = (id,val)=> KM(id).textContent = val;
+  const ts = ()=> new Date().toLocaleString();
+
+  const fetchJSON = async (url)=> {
+    const r = await fetch(url, {cache:'no-store'}); if(!r.ok) throw new Error(url+': '+r.status);
+    return r.json();
+  };
+
+  // Compute SHA-256 of fetched file
+  async function sha256Of(url){
+    try{
+      const r = await fetch(url, {cache:'no-store'}); if(!r.ok) return {ok:false};
+      const buf = await r.arrayBuffer();
+      const hash = await crypto.subtle.digest('SHA-256', buf);
+      const hex = [...new Uint8Array(hash)].map(b=>b.toString(16).padStart(2,'0')).join('');
+      return {ok:true, hex};
+    }catch(e){ return {ok:false}; }
+  }
+
+  // 1) Load map.json (required)
+  let map;
+  try{ map = await fetchJSON('/abe---flag/system/map.json'); }
+  catch(e){ KM('hint').innerHTML = '❌ Could not load <code>/system/map.json</code>. Ensure the file exists.'; return; }
+
+  // Normalize modules
+  const moduleOrder = ['cae','cdi','ciri','cibs','integration','cii','system'];
+  const labels = {
+    cae:'CAE — Constitutional Alignment Engine',
+    cdi:'CDI — Constitutional Divergence Index',
+    ciri:'CIRI — Constitutional Integrity ROI Engine',
+    cibs:'CIBS — Civic Investment Budget System',
+    integration:'Integration — Verification & Audit',
+    cii:'CII — Community Investment Interface',
+    system:'System Ledger'
+  };
+
+  // 2) Load ledger.json (optional), then verify files
+  let ledger = null, ledgerEntries = [], nodeStatus = {}, discrepancies=0, verifiedFiles=0;
+  try{
+    ledger = await fetchJSON('/abe---flag/system/ledger.json');
+    ledgerEntries = Array.isArray(ledger.entries) ? ledger.entries : [];
+  }catch(_){ /* optional */ }
+
+  // Build map: module -> files[]
+  const filesByModule = {};
+  ledgerEntries.forEach(e=>{
+    const mod = (e.module||'').toLowerCase();
+    filesByModule[mod] = filesByModule[mod] || [];
+    filesByModule[mod].push(e);
+  });
+
+  // Verify each file in ledger
+  for(const mod in filesByModule){
+    let modOk = true, modBad = false;
+    for(const ent of filesByModule[mod]){
+      const want = (ent.sha256||'').toLowerCase();
+      const path = ent.file || '';
+      const {ok, hex} = await sha256Of('/abe---flag'+path.replace(/^\/?abe---flag/,''));
+      if(!ok || !hex){ modOk = false; discrepancies++; continue; }
+      if(want && hex !== want){ modOk = false; modBad = true; discrepancies++; }
+      else { verifiedFiles++; }
     }
-    return null;
+    nodeStatus[mod] = modBad ? 'bad' : (modOk ? 'ok' : 'warn');
   }
 
-  function renderEmpty(){
-    status.textContent = 'Not found';
-    flowsEl.textContent = '0';
-    updatedEl.textContent = '—';
-    table.innerHTML =
-      '<thead><tr><th>From</th><th>To</th><th>Control</th><th>Evidence</th></tr></thead>' +
-      '<tbody><tr><td colspan="4" class="small">No <code>system/map.json</code> present yet. Create one to define expected flows.</td></tr></tbody>';
+  // Any module without ledger entries defaults to 'warn' (unknown/partial)
+  moduleOrder.forEach(m=>{ if(!nodeStatus[m]) nodeStatus[m] = 'warn'; });
+
+  // 3) Layout nodes (fixed grid, L→R flow)
+  // Place in two rows to keep edges short
+  const layout = {
+    cae:         {c:0, r:0},
+    cdi:         {c:1, r:0},
+    ciri:        {c:2, r:0},
+    cibs:        {c:3, r:0},
+    integration: {c:4, r:0},
+    cii:         {c:5, r:0},
+    system:      {c:5, r:1}
+  };
+
+  function nodePos(key){
+    const p = layout[key];
+    const x = padX + p.c*colW;
+    const y = padY + p.r*rowH;
+    return {x,y};
   }
 
-  function render(map){
-    status.textContent = 'Loaded';
-    const flows = Array.isArray(map.flows) ? map.flows : [];
-    flowsEl.textContent = String(flows.length);
-    const when = map.updated || map.last_updated || map.timestamp || '';
-    updatedEl.textContent = when || 'unspecified';
-
-    const head = '<thead><tr><th>From</th><th>To</th><th>Control</th><th>Evidence</th></tr></thead>';
-    const rows = flows.map(f => {
-      const ev = Array.isArray(f.evidence) ? f.evidence : (f.evidence ? [f.evidence] : []);
-      const evHtml = ev.length
-        ? ev.map(e => {
-            if (typeof e === 'string' && /^https?:\/\//.test(e)) {
-              return `<a href="${e}" target="_blank" rel="noopener">${e}</a>`;
-            } else if (typeof e === 'string') {
-              return `<code>${e}</code>`;
-            } else {
-              return `<code>${JSON.stringify(e)}</code>`;
-            }
-          }).join('<br>')
-        : '<span class="small">—</span>';
-      return `<tr>
-        <td>${f.from ? String(f.from) : '<span class="small">—</span>'}</td>
-        <td>${f.to ? String(f.to) : '<span class="small">—</span>'}</td>
-        <td>${f.control ? String(f.control) : '<span class="small">—</span>'}</td>
-        <td>${evHtml}</td>
-      </tr>`;
-    }).join('');
-
-    table.innerHTML = head + '<tbody>' + (rows || '<tr><td colspan="4" class="small">No flows yet.</td></tr>') + '</tbody>';
-
-    document.getElementById('btn-download').onclick = () => {
-      const snapshot = {
-        generated: new Date().toISOString(),
-        source: map.__src || 'map.json',
-        flows: map.flows || [],
-        meta: { updated: when || null }
-      };
-      const blob = new Blob([JSON.stringify(snapshot, null, 2)], {type:'application/json'});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url; a.download = 'system_map_snapshot.json'; a.click();
-      URL.revokeObjectURL(url);
-    };
-
-    document.getElementById('btn-reload').onclick = () => { init(); };
+  // 4) Draw links
+  const flows = Array.isArray(map.flows) ? map.flows : [];
+  function linkColor(fromKey){
+    const st = nodeStatus[(fromKey||'').toLowerCase()] || 'warn';
+    return st==='ok' ? 'good' : (st==='bad' ? 'bad' : 'warn');
   }
 
-  async function init(){
-    status.textContent = 'Checking…';
-    flowsEl.textContent = '—';
-    updatedEl.textContent = '—';
-    table.innerHTML = '';
-    const map = await loadMap();
-    if (!map) renderEmpty(); else render(map);
+  flows.forEach(f=>{
+    const fromK = (f.from||f.From||'').toLowerCase();
+    const toK   = (f.to||f.To||'').toLowerCase();
+    if(!layout[fromK] || !layout[toK]) return;
+    const a = nodePos(fromK), b = nodePos(toK);
+    const x1=a.x+140, y1=a.y+40, x2=b.x+10, y2=b.y+40; // offsets into rectangles
+    const path = `M${x1},${y1} C ${x1+50},${y1} ${x2-50},${y2} ${x2},${y2}`;
+    const l = document.createElementNS('http://www.w3.org/2000/svg','path');
+    l.setAttribute('d', path);
+    l.setAttribute('class', 'link '+linkColor(fromK));
+    svg.appendChild(l);
+  });
+
+  // 5) Draw nodes
+  function addNode(key,label){
+    const st = nodeStatus[key] || 'warn';
+    const pos = nodePos(key);
+    const g = document.createElementNS('http://www.w3.org/2000/svg','g');
+    g.setAttribute('class','node '+st);
+    const w=180,h=80, rx=10, ry=10;
+
+    const rect = document.createElementNS('http://www.w3.org/2000/svg','rect');
+    rect.setAttribute('x', pos.x); rect.setAttribute('y', pos.y);
+    rect.setAttribute('width', w); rect.setAttribute('height', h);
+    rect.setAttribute('rx', rx); rect.setAttribute('ry', ry);
+    g.appendChild(rect);
+
+    const t1 = document.createElementNS('http://www.w3.org/2000/svg','text');
+    t1.setAttribute('x', pos.x+12); t1.setAttribute('y', pos.y+28);
+    t1.textContent = label.split(' — ')[0]; // short code (CAE, CDI, etc.)
+    g.appendChild(t1);
+
+    const t2 = document.createElementNS('http://www.w3.org/2000/svg','text');
+    t2.setAttribute('x', pos.x+12); t2.setAttribute('y', pos.y+50);
+    t2.setAttribute('class','small');
+    t2.textContent = (label.split(' — ')[1]||'').substring(0,42);
+    g.appendChild(t2);
+
+    const t3 = document.createElementNS('http://www.w3.org/2000/svg','text');
+    t3.setAttribute('x', pos.x+12); t3.setAttribute('y', pos.y+70);
+    t3.setAttribute('class','small');
+    t3.textContent = st==='ok'?'verified':(st==='bad'?'mismatch':'partial/unknown');
+    g.appendChild(t3);
+
+    svg.appendChild(g);
   }
 
-  await init();
+  moduleOrder.forEach(k=>{
+    if(!layout[k]) return;
+    addNode(k, labels[k] || k.toUpperCase());
+  });
+
+  // KPIs
+  const modCount = moduleOrder.length;
+  set('k-mod', modCount);
+  set('k-files', verifiedFiles);
+  set('k-disc', discrepancies);
+  set('k-time', ts());
+
+  // Hint
+  KM('hint').innerHTML = ledger
+    ? `Loaded <code>map.json</code> and <code>ledger.json</code>. Verified ${verifiedFiles} file(s); ${discrepancies} discrepancy(ies).`
+    : `Loaded <code>map.json</code>. No <code>ledger.json</code> found — nodes shown as partial/unknown.`;
 })();
 </script>
-
 </body>
 </html>
