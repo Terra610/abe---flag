@@ -147,6 +147,40 @@
     </ul>
   </section>
 
+  <!-- ──────────────────────────────── A.B.E. Nav Dock + Live KPIs ──────────────────────────────── -->
+  <section id="abe-navdock" class="ciri-box" aria-label="A.B.E. Navigator">
+    <h3 style="margin:0 0 10px;color:#5ddfff">A.B.E. Navigator · Live Links</h3>
+    <div style="display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))">
+      <div style="background:#151922;border:1px solid #232a36;border-radius:10px;padding:14px">
+        <div style="font-weight:600;margin-bottom:8px">Doctrines</div>
+        <ul class="ciri-small" style="list-style:none;padding:0;margin:0;line-height:1.8">
+          <li><a href="/abe---flag/doctrine/ABE_CRRA_Rebuild.pdf">A.B.E. · CRRA · Rebuild Together (viewer)</a></li>
+          <li><a href="/abe---flag/doctrine/constitutional-fidelity.html">Constitutional Fidelity (full text)</a></li>
+          <li><a href="/abe---flag/doctrine/void-ab-initio.html">Void ab Initio (full text)</a></li>
+        </ul>
+      </div>
+
+      <div style="background:#151922;border:1px solid #232a36;border-radius:10px;padding:14px">
+        <div style="font-weight:600;margin-bottom:8px">Calculators & KPIs</div>
+        <ul class="ciri-small" style="list-style:none;padding:0;margin:0;line-height:1.9">
+          <li><a href="/abe---flag/ciri/">CIRI Calculator</a> — <span id="dock-ciri-total" style="opacity:.85">loading…</span></li>
+          <li><a href="/abe---flag/cibs/">CIBS Budget</a> — <span id="dock-cibs-total" style="opacity:.85">loading…</span></li>
+          <li><a href="/abe---flag/integration/">Integration KPIs</a></li>
+        </ul>
+      </div>
+
+      <div style="background:#151922;border:1px solid #232a36;border-radius:10px;padding:14px">
+        <div style="font-weight:600;margin-bottom:8px">Archive & License</div>
+        <div class="ciri-small" style="line-height:1.7">
+          DOI: <a href="https://doi.org/10.5281/zenodo.17586107">10.5281/zenodo.17586107</a><br/>
+          License: <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC BY-NC 4.0</a><br/>
+          Project: <a href="/abe---flag/">terra610.github.io/abe---flag</a>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- ──────────────────────────────── End Nav Dock ──────────────────────────────── -->
+
 </main>
 
 <!-- ===== CIRI calculator script (aligned to your CSV headers) ===== -->
@@ -172,10 +206,6 @@
   function num(x){ const n = Number(String(x||"").replace(/[^0-9.\-]/g,"")); return isFinite(n)?n:0; }
 
   function compute(d){
-    // CSV columns (exactly your file):
-    // cases_avoided,avg_cost_per_case,jail_days_avoided,cost_per_jail_day,fees_canceled_total,
-    // licenses_restored,avg_monthly_wage,employment_probability,months_effective,
-    // expected_lawsuits,avg_payout,multiplier,transition_costs_one_time
     const cases_avoided          = num(d.cases_avoided);
     const avg_cost_per_case      = num(d.avg_cost_per_case);
     const jail_days_avoided      = num(d.jail_days_avoided);
@@ -196,7 +226,6 @@
     const employment    = cases_avoided * avg_monthly_wage * employment_probability * (months_effective/12);
     const lawsuits_avo  = expected_lawsuits * avg_payout * multiplier;
 
-    // If you later price mobility, plug licenses_restored * price here:
     const licensing_val = 0;
 
     let total = direct_case + detention + fees + employment + lawsuits_avo + licensing_val - transition_costs;
@@ -227,6 +256,7 @@
   }
 
   async function boot(){
+    // Load CIRI inputs
     for(const u of CANDIDATES){
       try{
         const r = await fetch(u,{cache:"no-store"});
@@ -278,6 +308,30 @@
       {k:"Law.", v:R.parts.lawsuits_avo},
     ];
     drawBars(document.getElementById("ciri-chart"), bars);
+
+    // ── Nav Dock KPIs: CIRI total from this page
+    const elDockCiri = document.getElementById('dock-ciri-total');
+    if(elDockCiri) elDockCiri.textContent = money(R.total);
+
+    // ── Nav Dock KPIs: CIBS total from /cibs/auto_budget.csv
+    try{
+      const res = await fetch('/abe---flag/cibs/auto_budget.csv',{cache:'no-store'});
+      const text = await res.text();
+      const [h,...rows] = text.trim().split(/\r?\n/);
+      const keys = h.split(',').map(s=>s.trim());
+      const sum = rows.reduce((acc, line)=>{
+        const vals = line.split(',');
+        const obj = {};
+        keys.forEach((k,i)=>obj[k]= i===0 ? vals[i] : Number(vals[i]));
+        const v = Number(obj.value || obj.Value || 0);
+        return acc + (isFinite(v)? v : 0);
+      },0);
+      const elDockCibs = document.getElementById('dock-cibs-total');
+      if(elDockCibs) elDockCibs.textContent = money(sum);
+    }catch(_){
+      const elDockCibs = document.getElementById('dock-cibs-total');
+      if(elDockCibs) elDockCibs.textContent = '—';
+    }
 
     // Download report
     document.getElementById("btn-download").addEventListener("click", ()=>{
