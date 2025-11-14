@@ -1,12 +1,21 @@
 {
   "version": "1.0",
-  "description": "Defines domains and weighting factors for constitutional divergence scoring.",
-  "domains": [
-    {"key":"commerce", "name":"Commerce Regulation", "weight":0.25},
-    {"key":"justice", "name":"Judicial Oversight & Remedies", "weight":0.20},
-    {"key":"healthcare", "name":"Healthcare Policy & Funding", "weight":0.15},
-    {"key":"transport", "name":"Mobility & Transportation", "weight":0.10},
-    {"key":"education", "name":"Education & Access", "weight":0.15},
-    {"key":"housing", "name":"Housing & Property Rights", "weight":0.15}
-  ]
+  "about": "CDI — Constitutional Divergence Index model (signals, weights, normalization).",
+  "signals": [
+    { "key": "stops_per_1k",        "name": "Stops per 1k residents",             "direction": "higher=worse", "scale": "minmax", "weight": 0.20 },
+    { "key": "charge_mix",          "name": "Charge mix (nonviolent %)",          "direction": "higher=worse", "scale": "minmax", "weight": 0.15 },
+    { "key": "time_to_counsel",     "name": "Days to counsel",                    "direction": "higher=worse", "scale": "minmax", "weight": 0.15 },
+    { "key": "dismissal_rate",      "name": "Case dismissal rate",                "direction": "higher=better","scale": "minmax", "invert": true, "weight": 0.15 },
+    { "key": "pretext_ratio",       "name": "Pretext stop ratio",                 "direction": "higher=worse", "scale": "minmax", "weight": 0.20 },
+    { "key": "budget_divergence",   "name": "Budget divergence from CIBS guard",  "direction": "higher=worse", "scale": "minmax", "weight": 0.15 }
+  ],
+  "combine": {
+    "method": "logistic",
+    "beta0": 0.0,
+    "note": "delta = σ(beta0 + Σ w_i * (2*z_i - 1)) where z_i ∈ [0,1]"
+  },
+  "sources": {
+    "csv": "./divergence.csv",
+    "required_headers": ["category","signal_key","value","z_norm","confidence"]
+  }
 }
