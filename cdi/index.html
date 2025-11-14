@@ -5,36 +5,119 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>CDI — Constitutional Divergence Index</title>
   <style>
-    :root{
-      --bg:#0b0d12;--panel:#141820;--panel2:#0f131a;
-      --ink:#e6e6e6;--muted:#9fb3c8;--line:rgba(255,255,255,.08);
-      --brand:#5ddfff;--warn:#ffa559;--ok:#4bd28f
-    }
-    body{background:var(--bg);color:var(--ink);font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif;margin:0;line-height:1.6}
-    a{color:#80bfff;text-decoration:none} a:hover{text-decoration:underline}
-    header{background:linear-gradient(90deg,#11151c,#1b1e25);border-bottom:1px solid var(--line);padding:22px 18px;text-align:center}
-    h1{margin:.1rem 0 .2rem;color:#5ddfff}
-    .sub{color:var(--muted)}
-    .wrap{max-width:1050px;margin:0 auto;padding:22px 18px}
-    .grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
-    .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;margin:16px 0}
-    .tile{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:14px}
-    .num{font:800 22px/1 system-ui}
-    small{color:var(--muted)}
-    table{width:100%;border-collapse:collapse}
-    th,td{border:1px solid var(--line);padding:10px 12px;text-align:left}
-    th{background:var(--panel2)}
-    .good{color:var(--ok)} .bad{color:var(--warn)}
-    footer{margin:36px 0 20px;color:var(--muted);text-align:center;font-size:.9rem}
-    .badge{display:inline-block;padding:2px 8px;border:1px solid var(--line);border-radius:999px;color:var(--muted)}
+    body{background:#0b0d12;color:#e6e6e6;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;margin:0;line-height:1.6}
+    header{background:#12161f;text-align:center;padding:1rem;border-bottom:1px solid rgba(255,255,255,.08)}
+    h1{color:#5ddfff;margin-bottom:.25rem}
+    p.lead{color:#c8d2df;margin-top:0}
+    main{max-width:900px;margin:1.5rem auto;padding:0 1rem}
+    section{background:#141820;border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:1rem 1.25rem;margin-bottom:1rem}
+    code{background:rgba(255,255,255,.08);padding:.1rem .3rem;border-radius:6px}
+    table{width:100%;border-collapse:collapse;margin-top:1rem}
+    th,td{border:1px solid rgba(255,255,255,.08);padding:.5rem;text-align:left}
+    th{background:#1b1f26;color:#5ddfff}
+    footer{text-align:center;font-size:.85rem;color:#9fb3c8;padding:1rem;margin-top:2rem;border-top:1px solid rgba(255,255,255,.08)}
+    a{color:#5ddfff;text-decoration:none} a:hover{text-decoration:underline}
+    .badge{display:inline-block;padding:.25rem .5rem;border-radius:6px;font-weight:700}
+    .ok{background:#0f2b1e;color:#4bd28f;border:1px solid #265c42}
+    .warn{background:#2b2610;color:#ffa559;border:1px solid #5c4b26}
+    .err{background:#2b1010;color:#ff6b6b;border:1px solid #5c2626}
   </style>
 </head>
 <body>
 <header>
-  <div class="wrap">
-    <a href="/abe---flag/" class="badge">← Home</a>
-    <h1>CDI — Constitutional Divergence Index</h1>
-    <div class="sub">Auto-computed from CAE. Higher alignment → lower divergence. Self-correcting by design.</div>
+  <h1>CDI — Constitutional Divergence Index</h1>
+  <p class="lead">Quantifies deviation from constitutional fidelity across domains.</p>
+  <nav aria-label="Site">
+    <a href="../index.html">🏠 Home</a> ·
+    <a href="../ciri/index.html">CIRI</a> ·
+    <a href="../cibs/index.html">CIBS</a> ·
+    <a href="../cii/index.html">CII</a> ·
+    <a href="../macro/index.html">Macro</a>
+  </nav>
+</header>
+
+<main>
+  <section>
+    <h2>📊 What is CDI?</h2>
+    <p>
+      The <strong>Constitutional Divergence Index</strong> measures the extent to which laws, budgets, or policies diverge from constitutional limits and obligations.
+      Scores range from <strong>0.00 (fully faithful)</strong> to <strong>1.00 (fully divergent)</strong>.
+    </p>
+    <p>
+      CDI data feeds directly into <a href="../ciri/index.html">CIRI</a>, which translates these deviations into measurable economic recovery values.
+    </p>
+  </section>
+
+  <section>
+    <h2>📈 Divergence by Category</h2>
+    <p>Below is a sample of calculated divergence scores. These values can be refined by jurisdiction or sector.</p>
+    <table id="divTable" aria-describedby="divTableNote">
+      <thead>
+        <tr><th>Category</th><th>Divergence (0–1.0)</th><th>Confidence</th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <p id="divTableNote" style="color:#9fb3c8;font-size:.9rem;margin:.5rem 0 0;">
+      Source file: <code>/cdi/divergence.csv</code>
+    </p>
+  </section>
+
+  <!-- Validator block -->
+  <section aria-live="polite">
+    <h2>✅ CDI Model Validation</h2>
+    <div id="cdi-validate" class="badge warn">Loading validator…</div>
+    <p style="color:#9fb3c8;font-size:.9rem;margin-top:.6rem">
+      Validates <code>/cdi/model.json</code> against <code>/cdi/schema.json</code> (structure, types, ranges).
+    </p>
+  </section>
+
+  <section>
+    <h2>📁 Source Data</h2>
+    <p>Model file: <code>model.json</code> · Live data: <code>divergence.csv</code></p>
+    <p><a href="./model.json" download>Download model.json</a> · <a href="./divergence.csv" download>Download divergence.csv</a></p>
+  </section>
+</main>
+
+<footer>
+  © 2025 Terra Dawn Shouse ·
+  <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener" style="color:#5ddfff">
+    CC BY-NC 4.0 International License
+  </a>
+</footer>
+
+<script>
+(async()=>{
+  // Load and render divergence.csv safely
+  try{
+    const res = await fetch('./divergence.csv',{cache:'no-store'});
+    if(!res.ok) throw new Error('divergence.csv not found');
+    const text = await res.text();
+    const rows = text.trim().split(/\r?\n/).map(r=>r.split(','));
+    const tbody = document.querySelector('#divTable tbody');
+    rows.slice(1).forEach(r=>{
+      const tr=document.createElement('tr');
+      const [cat,div,conf]=r;
+      const td1=document.createElement('td'); td1.textContent=cat||'';
+      const td2=document.createElement('td'); td2.textContent=div||'';
+      const td3=document.createElement('td'); td3.textContent=conf||'';
+      tr.append(td1,td2,td3);
+      tbody.appendChild(tr);
+    });
+  }catch(e){
+    const tbody = document.querySelector('#divTable tbody');
+    const tr=document.createElement('tr');
+    const td=document.createElement('td');
+    td.colSpan=3; td.textContent='Could not load divergence.csv';
+    tr.appendChild(td); tbody.appendChild(tr);
+  }
+})();
+</script>
+
+<!-- Hook in live validator -->
+<script src="./validate_cdi.js"></script>
+</body>
+</html>
+```0    <div class="sub">Auto-computed from CAE. Higher alignment → lower divergence. Self-correcting by design.</div>
   </div>
 </header>
 
