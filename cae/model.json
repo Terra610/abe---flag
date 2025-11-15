@@ -6,23 +6,11 @@
     "license": "CC BY-NC 4.0",
     "doi": "10.5281/zenodo.17586107"
   },
-
   "weights": {
     "clarity_of_scope": 0.35,
     "constitutional_nexus": 0.35,
     "operational_fidelity": 0.30
   },
-
-  "categories": [
-    {"key": "housing",     "name": "Housing",                         "multiplier": 1.6},
-    {"key": "health",      "name": "Community Health",                "multiplier": 1.4},
-    {"key": "food",        "name": "Food Systems",                    "multiplier": 1.3},
-    {"key": "education",   "name": "Education & Skills",              "multiplier": 1.5},
-    {"key": "transport",   "name": "Mobility",                        "multiplier": 1.2},
-    {"key": "justice",     "name": "Civil Rights & Legal Integrity",  "multiplier": 1.8},
-    {"key": "environment", "name": "Ecological Stewardship",          "multiplier": 1.4}
-  ],
-
   "clauses": [
     {
       "clause_id": "CommerceClause_FMCSA_Scope",
@@ -47,45 +35,7 @@
     {
       "clause_id": "CFR40_13h_DOT_Testing_SafetySensitiveOnly",
       "title": "49 CFR §40.13(h) — DOT Testing Applies Only to Safety-Sensitive Employees",
-      "constitutional_anchor": "U.S. Const. art. I, §8, cl.3; due process & equal protection (5th/14th)",
-      "statutes": ["49 U.S.C. §31306", "49 U.S.C. §45102"],
-      "regulations": ["49 CFR §40.13(h)"],
-      "intent": "Alcohol/drug testing regime is limited to DOT-regulated, safety-sensitive roles — not the general public.",
-      "scope_notes": [
-        "Implied-consent constructs cannot expand DOT testing to non-DOT citizens absent lawful nexus.",
-        "Misapplication increases divergence (jurisdictional overreach)."
-      ],
-      "alignment_score": 0.91,
-      "confidence": 0.78,
-      "tags": ["Part40", "testing-scope", "safety-sensitive"],
-      "source_hash": "sha256:PLACEHOLDER",
-      "evidence_links": [
-        "https://www.ecfr.gov/current/title-49/subtitle-A/part-40#p-40.13(h)"
-      ]
-    },
-    {
-      "clause_id": "FHWA_FMCSA_TruckParking_2025_Memo",
-      "title": "FHWA–FMCSA 2025 Memo — Truck Parking Eligibility (Titles 23 & 49)",
-      "constitutional_anchor": "U.S. Const. art. I, §8, cl.3 (Commerce / freight system)",
-      "statutes": ["23 U.S.C. (Federal-aid highways)", "49 U.S.C. (Motor carriers)"],
-      "regulations": [],
-      "intent": "Clarifies federal funds eligibility for truck parking within freight/logistics (commercial) scope.",
-      "scope_notes": [
-        "State Freight Plans must assess commercial-vehicle parking; scope remains freight-centric.",
-        "Confirms the policy intent is commercial operators, not private motorists."
-      ],
-      "alignment_score": 0.88,
-      "confidence": 0.74,
-      "tags": ["FHWA", "truck-parking", "freight"],
-      "source_hash": "sha256:PLACEHOLDER",
-      "evidence_links": [
-        "https://www.fhwa.dot.gov/",
-        "https://www.fmcsa.dot.gov/"
-      ]
-    }
-  ]
-}      "title": "49 CFR §40.13(h) — DOT Testing Applies Only to Safety-Sensitive Employees",
-      "constitutional_anchor": "U.S. Const. art. I, §8, cl.3; due process & equal protection (5th/14th)",
+      "constitutional_anchor": "U.S. Const. art. I, §8, cl.3; Due Process & Equal Protection (5th/14th)",
       "statutes": ["49 U.S.C. §31306", "49 U.S.C. §45102"],
       "regulations": ["49 CFR §40.13(h)"],
       "intent": "Alcohol/drug testing regime is limited to DOT-regulated, safety-sensitive roles — not the general public.",
@@ -123,4 +73,3 @@
     }
   ]
 }
-    }
