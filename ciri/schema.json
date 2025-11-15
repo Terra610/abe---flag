@@ -1,28 +1,25 @@
 {
-  "version": "2.0",
-  "about": "CIRI input schema (must match /ciri/inputs.csv header).",
-  "fields": [
-    {"name":"cases_avoided","type":"number","unit":"count","min":0,"required":true},
-    {"name":"avg_cost_per_case","type":"number","unit":"USD/case","min":0,"required":true},
-    {"name":"jail_days_avoided","type":"number","unit":"days","min":0,"required":true},
-    {"name":"cost_per_jail_day","type":"number","unit":"USD/day","min":0,"required":true},
-    {"name":"fees_canceled_total","type":"number","unit":"USD","min":0,"required":true},
-    {"name":"policy_corrections","type":"number","unit":"count","min":0,"required":true},
-    {"name":"avg_enforcement_cost_savings","type":"number","unit":"USD/event","min":0,"required":true},
-    {"name":"households_restored","type":"number","unit":"households","min":0,"required":true},
-    {"name":"avg_monthly_market_spend","type":"number","unit":"USD/household·mo","min":0,"required":true},
-    {"name":"months_effective","type":"number","unit":"months","min":0,"max":60,"required":true},
-    {"name":"employment_probability","type":"number","unit":"0–1","min":0,"max":1,"required":true},
-    {"name":"avg_monthly_wage","type":"number","unit":"USD/mo","min":0,"required":true},
-    {"name":"expected_lawsuits","type":"number","unit":"count","min":0,"required":true},
-    {"name":"avg_payout","type":"number","unit":"USD/case","min":0,"required":true},
-    {"name":"litigation_multiplier","type":"number","unit":"x","min":0,"required":true},
-    {"name":"transition_costs_one_time","type":"number","unit":"USD","min":0,"required":true}
-  ],
-  "indices": {
-    "CIRI": "1 - exp(- total_recovery / K)",
-    "CII":  "1 - CIRI",
-    "ROI_per_case": "total_recovery / max(1, cases_avoided)"
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CIRI inputs.csv header schema",
+  "type": "object",
+  "properties": {
+    "cases_avoided": {"type":"number","minimum":0},
+    "avg_cost_per_case": {"type":"number","minimum":0},
+    "jail_days_avoided": {"type":"number","minimum":0},
+    "cost_per_jail_day": {"type":"number","minimum":0},
+    "fees_canceled_total": {"type":"number","minimum":0},
+    "employment_probability": {"type":"number","minimum":0},
+    "avg_monthly_wage": {"type":"number","minimum":0},
+    "months_effective": {"type":"number","minimum":0},
+    "expected_lawsuits": {"type":"number","minimum":0},
+    "avg_payout": {"type":"number","minimum":0},
+    "multiplier": {"type":"number","minimum":0},
+    "transition_costs_one_time": {"type":"number","minimum":0}
   },
-  "defaults": { "K": 2000000000 }
+  "required": [
+    "cases_avoided","avg_cost_per_case","jail_days_avoided","cost_per_jail_day",
+    "fees_canceled_total","employment_probability","avg_monthly_wage","months_effective",
+    "expected_lawsuits","avg_payout","transition_costs_one_time"
+  ],
+  "additionalProperties": true
 }
