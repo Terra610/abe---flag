@@ -26,7 +26,7 @@
       "alignment_score": 0.86,
       "confidence": 0.82,
       "tags": ["FMCSA", "commerce-nexus", "transport"],
-      "source_hash": "sha256:PLACEHOLDER",
+      "source_hash": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
       "evidence_links": [
         "https://www.ecfr.gov/current/title-49/subtitle-B/chapter-III",
         "https://uscode.house.gov/view.xhtml?path=/prelim@title49/subtitle6/partB"
@@ -46,7 +46,7 @@
       "alignment_score": 0.91,
       "confidence": 0.78,
       "tags": ["Part40", "testing-scope", "safety-sensitive"],
-      "source_hash": "sha256:PLACEHOLDER",
+      "source_hash": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
       "evidence_links": [
         "https://www.ecfr.gov/current/title-49/subtitle-A/part-40#p-40.13(h)"
       ]
@@ -60,6 +60,19 @@
       "intent": "Clarifies federal funds eligibility for truck parking within freight/logistics (commercial) scope.",
       "scope_notes": [
         "State Freight Plans must assess commercial-vehicle parking; scope remains freight-centric.",
+        "Confirms the policy intent is commercial operators, not private motorists."
+      ],
+      "alignment_score": 0.88,
+      "confidence": 0.74,
+      "tags": ["FHWA", "truck-parking", "freight"],
+      "source_hash": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+      "evidence_links": [
+        "https://www.fhwa.dot.gov/",
+        "https://www.fmcsa.dot.gov/"
+      ]
+    }
+  ]
+}        "State Freight Plans must assess commercial-vehicle parking; scope remains freight-centric.",
         "Confirms the policy intent is commercial operators, not private motorists."
       ],
       "alignment_score": 0.88,
