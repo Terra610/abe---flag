@@ -1,40 +1,73 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://terra610.github.io/abe---flag/cae/schema.json",
-  "title": "CAE — Constitutional Alignment Engine Schema",
-  "description": "Defines the structure and validation rules for CAE model and analysis outputs. Ensures that every statute or clause entry contains a lawful reference, a parsed interpretation, and an alignment score between 0 and 1.",
+  "title": "CAE Model",
   "type": "object",
+  "required": ["version", "updated", "authority", "weights", "clauses"],
   "properties": {
-    "version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+(\\.[0-9]+)?$" },
+    "version": { "type": "string" },
     "updated": { "type": "string", "format": "date-time" },
-    "jurisdiction": { "type": "string", "description": "Federal, State, or Local jurisdiction context of the analysis." },
-    "articles": {
+    "authority": {
+      "type": "object",
+      "required": ["name", "license", "doi"],
+      "properties": {
+        "name": { "type": "string" },
+        "license": { "type": "string" },
+        "doi": { "type": "string" }
+      }
+    },
+    "weights": {
+      "type": "object",
+      "required": ["clarity_of_scope", "constitutional_nexus", "operational_fidelity"],
+      "properties": {
+        "clarity_of_scope": { "type": "number", "minimum": 0, "maximum": 1 },
+        "constitutional_nexus": { "type": "number", "minimum": 0, "maximum": 1 },
+        "operational_fidelity": { "type": "number", "minimum": 0, "maximum": 1 }
+      }
+    },
+    "clauses": {
       "type": "array",
-      "description": "List of constitutional articles, sections, or amendments being assessed.",
+      "minItems": 3,
       "items": {
         "type": "object",
-        "required": ["id", "title", "clauses"],
+        "required": [
+          "clause_id",
+          "title",
+          "constitutional_anchor",
+          "statutes",
+          "regulations",
+          "intent",
+          "scope_notes",
+          "alignment_score",
+          "confidence",
+          "tags",
+          "source_hash",
+          "evidence_links"
+        ],
         "properties": {
-          "id": { "type": "string", "pattern": "^[A-Z0-9_.-]+$" },
+          "clause_id": { "type": "string" },
           "title": { "type": "string" },
-          "clauses": {
+          "constitutional_anchor": { "type": "string" },
+          "statutes": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+          "regulations": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+          "intent": { "type": "string" },
+          "scope_notes": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+          "alignment_score": { "type": "number", "minimum": 0, "maximum": 1 },
+          "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+          "tags": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+          "source_hash": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}$"
+          },
+          "evidence_links": {
             "type": "array",
-            "items": {
-              "type": "object",
-              "required": ["clause_id", "reference", "alignment_score"],
-              "properties": {
-                "clause_id": { "type": "string" },
-                "reference": { "type": "string", "description": "Legal citation or text excerpt being analyzed." },
-                "derived_statutes": {
-                  "type": "array",
-                  "description": "Optional list of related statutes derived from this clause.",
-                  "items": { "type": "string" }
-                },
-                "alignment_score": {
-                  "type": "number",
-                  "minimum": 0,
-                  "maximum": 1,
-                  "description": "Normalized score of constitutional compliance (1.0 = fully faithful)."
+            "items": { "type": "string", "format": "uri" },
+            "minItems": 1
+          }
+        }
+      }
+    }
+  }
+}                  "description": "Normalized score of constitutional compliance (1.0 = fully faithful)."
                 },
                 "interpretation": { "type": "string", "description": "Human-readable explanation of the alignment or deviation." },
                 "source_hash": { "type": "string", "pattern": "^[A-Fa-f0-9]{64}$", "description": "SHA256 hash of the source text for integrity verification." }
