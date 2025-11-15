@@ -1,0 +1,39 @@
+{
+  "title": "ABE Integrity Audit Certificate",
+  "type": "object",
+  "required": ["audit_id","generated_at","overall","modules","material","hash_of_material_list"],
+  "properties": {
+    "audit_id": {"type":"string"},
+    "generated_at": {"type":"string","format":"date-time"},
+    "overall": {"type":"string","enum":["ok","warn","bad"]},
+    "modules": {
+      "type":"object",
+      "properties": {
+        "ciri":{"$ref":"#/definitions/mod"},
+        "cibs":{"$ref":"#/definitions/mod"},
+        "cdi":{"$ref":"#/definitions/mod"},
+        "cae":{"$ref":"#/definitions/mod"}
+      }
+    },
+    "material": {
+      "type":"array",
+      "items":{"type":"object","required":["path","sha256"],"properties":{
+        "path":{"type":"string"},
+        "sha256":{"type":["string","null"]}
+      }}
+    },
+    "hash_of_material_list":{"type":"string"}
+  },
+  "definitions": {
+    "mod": {
+      "type":"object",
+      "required":["status","message","sha256"],
+      "properties":{
+        "status":{"type":"string","enum":["ok","warn","bad"]},
+        "message":{"type":"string"},
+        "sha256":{"type":["string","null"]},
+        "derived":{"type":["object","null"]}
+      }
+    }
+  }
+}
