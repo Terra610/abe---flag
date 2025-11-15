@@ -72,17 +72,4 @@
       ]
     }
   ]
-}        "State Freight Plans must assess commercial-vehicle parking; scope remains freight-centric.",
-        "Confirms the policy intent is commercial operators, not private motorists."
-      ],
-      "alignment_score": 0.88,
-      "confidence": 0.74,
-      "tags": ["FHWA", "truck-parking", "freight"],
-      "source_hash": "sha256:PLACEHOLDER",
-      "evidence_links": [
-        "https://www.fhwa.dot.gov/",
-        "https://www.fmcsa.dot.gov/"
-      ]
     }
-  ]
-}
