@@ -1,40 +1,129 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>CAE — Constitutional Alignment Engine</title>
-<base href="/abe---flag/">
 <style>
-:root{
-  --bg:#0b0d12;--panel:#141820;--panel2:#0f131a;--ink:#e6e6e6;--muted:#9fb3c8;
-  --line:rgba(255,255,255,.08);--brand:#5ddfff;--ok:#4bd28f;--warn:#ffa559
-}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
-a{color:#80bfff} a:hover{text-decoration:underline}
-header{padding:24px 20px;background:linear-gradient(90deg,#11151c,#1b1e25);border-bottom:1px solid var(--line)}
-.wrap{max-width:1100px;margin:0 auto;padding:24px 20px}
-h1{margin:0 0 6px}
-.sub{color:var(--muted)}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;margin:18px 0}
-.table{width:100%;border-collapse:collapse}
-.table th,.table td{border:1px solid var(--line);padding:10px 12px;text-align:left}
-.table th{background:var(--panel2)}
-.badge{display:inline-block;padding:2px 8px;border:1px solid var(--line);border-radius:999px;color:var(--muted)}
-.kpi{display:flex;gap:14px;flex-wrap:wrap}
-.kpi .tile{flex:1 1 220px;background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:12px}
-.kpi .num{font-size:1.3rem;font-weight:700}
-small{color:var(--muted)}
-footer{margin:36px 0 20px;color:var(--muted);text-align:center;font-size:.9rem}
+:root{--bg:#0b0d12;--panel:#141820;--ink:#e6e6e6;--muted:#9fb3c8;--line:rgba(255,255,255,.08);--ok:#4bd28f;--bad:#ff6b6b;--brand:#5ddfff}
+*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui}
+a{color:#80bfff} header{padding:20px;background:#11151c;border-bottom:1px solid var(--line);text-align:center}
+main{max-width:980px;margin:20px auto;padding:0 16px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px;margin:12px 0}
+.kpi{display:flex;gap:12px;flex-wrap:wrap}
+.tile{flex:1 1 240px;border:1px solid var(--line);border-radius:10px;padding:12px;background:#10151d}
+.num{font-weight:800}
+.ok{color:var(--ok)} .bad{color:var(--bad)}
+pre{white-space:pre-wrap;overflow:auto;background:#10151d;border:1px solid var(--line);border-radius:10px;padding:12px}
 </style>
 </head>
 <body>
 <header>
-  <div class="wrap">
-    <a href="/abe---flag/" class="badge">← Home</a>
-    <h1>CAE — Constitutional Alignment Engine</h1>
-    <div class="sub">Validates CAE model data against schema and surfaces alignment KPIs that feed CDI → CIRI.</div>
+  <h1>CAE — Constitutional Alignment Engine</h1>
+  <div><a href="../index.html">← Home</a> · <a href="../integration/index.html">Integration</a></div>
+</header>
+
+<main>
+  <div class="card">
+    <h3>Status</h3>
+    <div class="kpi">
+      <div class="tile"><div>model.json</div><div id="k-model" class="num">checking…</div></div>
+      <div class="tile"><div>schema.json</div><div id="k-schema" class="num">checking…</div></div>
+      <div class="tile"><div>Validation</div><div id="k-valid" class="num">—</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Diagnostics</h3>
+    <div id="diag">No issues.</div>
+  </div>
+
+  <div class="card">
+    <h3>Loaded Weights</h3>
+    <pre id="weights">—</pre>
+  </div>
+
+  <div class="card">
+    <h3>Clauses (3 shown)</h3>
+    <pre id="clauses">—</pre>
+  </div>
+</main>
+
+<script>
+async function fetchJSON(path){
+  const r = await fetch(path,{cache:'no-store'});
+  if(!r.ok) throw new Error(path+': HTTP '+r.status);
+  return r.json();
+}
+function set(el, txt, cls){ const e=document.getElementById(el); e.textContent=txt; e.className=cls?cls:''; }
+
+function validate(model, schema){
+  const issues=[];
+  function req(obj, key, type){
+    if(!(key in obj)) issues.push(`Missing "${key}"`);
+    else if(type && typeof obj[key]!==type) issues.push(`"${key}" should be ${type}`);
+  }
+  req(model,'version','string');
+  req(model,'updated','string');
+  req(model,'authority','object');
+  req(model,'weights','object');
+  req(model,'clauses','object'); // array but typeof === 'object'
+
+  // weights
+  if(model.weights){
+    ['clarity_of_scope','constitutional_nexus','operational_fidelity'].forEach(k=>{
+      if(!(k in model.weights)) issues.push(`weights.${k} required`);
+      else if(typeof model.weights[k]!=='number') issues.push(`weights.${k} must be number`);
+    });
+  }
+
+  // clauses
+  if(Array.isArray(model.clauses)){
+    if(model.clauses.length<3) issues.push('clauses must have at least 3 items');
+    model.clauses.forEach((c,i)=>{
+      ['clause_id','title','constitutional_anchor','intent'].forEach(k=>{
+        if(!(k in c)) issues.push(`clauses[${i}].${k} missing`);
+      });
+      ['statutes','regulations','scope_notes','tags','evidence_links'].forEach(k=>{
+        if(!Array.isArray(c[k])||c[k].length<1) issues.push(`clauses[${i}].${k} must be non-empty array`);
+      });
+      ['alignment_score','confidence'].forEach(k=>{
+        const v=c[k]; if(typeof v!=='number'||v<0||v>1) issues.push(`clauses[${i}].${k} must be 0..1`);
+      });
+      if(typeof c.source_hash!=='string' || !/^sha256:[0-9a-f]{64}$/.test(c.source_hash))
+        issues.push(`clauses[${i}].source_hash must match sha256:...64 hex`);
+    });
+  }else{
+    issues.push('clauses must be an array');
+  }
+
+  return issues;
+}
+
+(async()=>{
+  try{
+    const model = await fetchJSON('./model.json'); set('k-model','OK','ok');
+    const schema = await fetchJSON('./schema.json'); set('k-schema','OK','ok');
+
+    const issues = validate(model, schema);
+    if(issues.length){
+      set('k-valid','BAD','bad');
+      document.getElementById('diag').innerHTML =
+        '<ul>'+issues.map(x=>`<li>${x}</li>`).join('')+'</ul>';
+    }else{
+      set('k-valid','OK','ok');
+      document.getElementById('diag').textContent = 'All checks passed.';
+    }
+
+    document.getElementById('weights').textContent = JSON.stringify(model.weights, null, 2);
+    document.getElementById('clauses').textContent = JSON.stringify(model.clauses.slice(0,3), null, 2);
+  }catch(e){
+    set('k-model','ERR','bad'); document.getElementById('diag').textContent = e.message;
+  }
+})();
+</script>
+</body>
+</html>    <div class="sub">Validates CAE model data against schema and surfaces alignment KPIs that feed CDI → CIRI.</div>
   </div>
 </header>
 
