@@ -23,6 +23,11 @@ footer{margin:36px 0 20px;color:var(--muted);text-align:center;font-size:.9rem}
 .bar{fill:#2d6cdf}
 .axis text{fill:#9fb3c8;font:12px system-ui}
 hr{border:none;border-top:1px solid var(--line);margin:16px 0}
+/* validator banner */
+#cibs-health{border:1px solid #2a3344;border-radius:10px;padding:10px;background:#0e1218;margin:-6px 0 12px}
+#cibs-health.ok{border-color:#245b3c;background:#0f1713}
+#cibs-health.warn{border-color:#66501f;background:#17140b}
+#cibs-health.err{border-color:#6b2a2a;background:#170f10}
 </style>
 </head>
 <body>
@@ -35,6 +40,109 @@ hr{border:none;border-top:1px solid var(--line);margin:16px 0}
 </header>
 
 <main class="wrap">
+  <div id="cibs-health" aria-live="polite">Checking auto_budget.csv…</div>
+
+  <div class="card">
+    <div class="kpi">
+      <div class="tile"><div>Total Allocation</div><div id="k-total" class="num">—</div><div class="small">From <code>/cibs/auto_budget.csv</code></div></div>
+      <div class="tile"><div>Categories</div><div id="k-count" class="num">—</div><div class="small">Active reinvestment lines</div></div>
+      <div class="tile"><div>Status</div><div id="k-status" class="num" style="color:#4bd28f">Present</div><div class="small">Live, public, auditable</div></div>
+    </div>
+    <div class="small" id="k-stamp">Loaded: —</div>
+  </div>
+
+  <div class="card">
+    <h3>Auto Budget Preview</h3>
+    <div class="small">Source: <a href="/abe---flag/cibs/auto_budget.csv">/cibs/auto_budget.csv</a></div>
+    <table class="table" id="tbl">
+      <thead><tr><th>Category</th><th>Value (USD)</th><th>% of Pool</th></tr></thead>
+      <tbody></tbody>
+      <tfoot><tr><th>Total</th><th id="t-sum">—</th><th id="t-100">100%</th></tr></tfoot>
+    </table>
+  </div>
+
+  <div class="card">
+    <h3>Allocation Chart</h3>
+    <svg id="chart" viewBox="0 0 720 360" role="img" aria-label="Allocation chart"></svg>
+    <div class="small">Visualization of category shares.</div>
+  </div>
+
+  <div class="card">
+    <h3>Next Steps</h3>
+    <ol class="small">
+      <li>Update <code>/ciri/inputs.csv</code> and recompute the Recovery Pool.</li>
+      <li>Adjust <code>/cibs/auto_budget.csv</code> to match the new pool and policy weights.</li>
+      <li>Publish receipts & custodians in the Integration Layer. Every dollar is visible.</li>
+    </ol>
+  </div>
+</main>
+
+<footer>
+  CC BY-NC 4.0 · DOI <a href="https://doi.org/10.5281/zenodo.17586107">10.5281/zenodo.17586107</a> · Integrity only — never for sale.
+</footer>
+
+<script>
+(async function(){
+  const fmt$ = n => '$' + (isFinite(n)? Math.round(n).toLocaleString() : '—');
+
+  async function loadCSV(url){
+    const res = await fetch(url, {cache:'no-store'});
+    const text = await res.text();
+    // simple robust parse (quotes)
+    const rows=[]; let i=0,f='',row=[],q=false; const s=text.trim();
+    while(i<s.length){ const c=s[i++]; if(q){ if(c=='"' && s[i]=='"'){f+='"';i++;} else if(c=='"'){q=false;} else f+=c; }
+      else { if(c=='"'){q=true;} else if(c==','){row.push(f);f='';} else if(c=='\n'||c=='\r'){ if(f!==''||row.length){row.push(f);rows.push(row);f='';row=[];} } else f+=c; } }
+    if(f!==''||row.length){row.push(f);rows.push(row);}
+    const head = rows.shift().map(h=>h.trim());
+    return {head, rows};
+  }
+
+  const {head, rows} = await loadCSV('/abe---flag/cibs/auto_budget.csv');
+  const idxCat = head.indexOf('category')>-1? head.indexOf('category'): head.indexOf('Category');
+  const idxVal = head.indexOf('value')>-1? head.indexOf('value'): head.indexOf('Value');
+  const data = rows.map(r=>({cat:r[idxCat], val:Number((r[idxVal]||'').replace(/[^0-9.\-]/g,''))||0}));
+  const total = data.reduce((s,d)=>s+d.val,0);
+
+  // KPIs
+  document.getElementById('k-total').textContent = fmt$(total);
+  document.getElementById('k-count').textContent = data.length;
+  document.getElementById('k-stamp').textContent = 'Loaded: ' + new Date().toLocaleString();
+
+  // Table
+  const tbody = document.querySelector('#tbl tbody');
+  tbody.innerHTML = '';
+  data.forEach(d=>{
+    const tr=document.createElement('tr');
+    const td1=document.createElement('td'); td1.textContent=d.cat;
+    const td2=document.createElement('td'); td2.textContent=fmt$(d.val);
+    const td3=document.createElement('td'); td3.textContent= total? (100*d.val/total).toFixed(2)+'%':'0%';
+    tr.append(td1,td2,td3); tbody.appendChild(tr);
+  });
+  document.getElementById('t-sum').textContent = fmt$(total);
+
+  // Chart (pure SVG)
+  const svg = document.getElementById('chart');
+  const W=720,H=360,pad=50,innerW=W-2*pad,innerH=H-2*pad;
+  const max = Math.max(...data.map(d=>d.val),1);
+  const bw = innerW / data.length * 0.7;
+  const gap = innerW / data.length * 0.3;
+  svg.innerHTML = `<g class="axis">
+    <line x1="${pad}" y1="${pad}" x2="${pad}" y2="${H-pad}" stroke="rgba(255,255,255,.2)"/>
+    <line x1="${pad}" y1="${H-pad}" x2="${W-pad}" y2="${H-pad}" stroke="rgba(255,255,255,.2)"/>
+  </g>`;
+  data.forEach((d,i)=>{
+    const h = innerH * (d.val/max);
+    const x = pad + i*(bw+gap);
+    const y = H - pad - h;
+    svg.insertAdjacentHTML('beforeend', `<rect class="bar" x="${x}" y="${y}" width="${bw}" height="${h}"></rect>`);
+  });
+})();
+</script>
+
+<!-- validator (new) -->
+<script src="./validate_cibs.js"></script>
+</body>
+</html><main class="wrap">
   <div class="card">
     <div class="kpi">
       <div class="tile"><div>Total Allocation</div><div id="k-total" class="num">—</div><div class="small">From <code>/cibs/auto_budget.csv</code></div></div>
