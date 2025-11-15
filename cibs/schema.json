@@ -1,13 +1,11 @@
 {
-  "version": "1.0",
-  "about": "CIBS auto_budget.csv must define category allocations.",
-  "csv": {
-    "path": "/cibs/auto_budget.csv",
-    "required_headers": ["category","value"],
-    "optional_headers": ["percent_of_pool","custodian","notes"],
-    "rules": [
-      "value >= 0",
-      "if percent_of_pool present: sum ≈ 100%"
-    ]
-  }
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "title":"CIBS auto_budget.csv header schema",
+  "type":"object",
+  "properties":{
+    "category":{"type":"string","minLength":1},
+    "value":{"type":"number","minimum":0}
+  },
+  "required":["category","value"],
+  "additionalProperties":true
 }
