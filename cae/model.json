@@ -11,6 +11,25 @@
     "constitutional_nexus": 0.35,
     "operational_fidelity": 0.30
   },
+
+  "categories": [
+    {
+      "key": "constitutional_alignment",
+      "name": "Constitutional Alignment",
+      "multiplier": 1.0
+    },
+    {
+      "key": "federal_scope",
+      "name": "Federal Scope Verification",
+      "multiplier": 0.9
+    },
+    {
+      "key": "state_scope",
+      "name": "State Scope Verification",
+      "multiplier": 0.85
+    }
+  ],
+
   "clauses": [
     {
       "clause_id": "CommerceClause_FMCSA_Scope",
