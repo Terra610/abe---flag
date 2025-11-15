@@ -5,29 +5,46 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>CDI — Constitutional Divergence Index</title>
   <style>
-    body{background:#0b0d12;color:#e6e6e6;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;margin:0;line-height:1.6}
-    header{background:#12161f;text-align:center;padding:1rem;border-bottom:1px solid rgba(255,255,255,.08)}
-    h1{color:#5ddfff;margin-bottom:.25rem}
-    p.lead{color:#c8d2df;margin-top:0}
-    main{max-width:900px;margin:1.5rem auto;padding:0 1rem}
-    section{background:#141820;border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:1rem 1.25rem;margin-bottom:1rem}
+    :root{
+      --bg:#0b0d12; --panel:#141820; --panel2:#0f131a;
+      --ink:#e6e6e6; --muted:#9fb3c8; --line:rgba(255,255,255,.08);
+      --brand:#5ddfff; --accent:#ffa559;
+    }
+    *{box-sizing:border-box}
+    body{background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;margin:0;line-height:1.6}
+    header{background:linear-gradient(90deg,#11151c,#1b1e25);text-align:center;padding:1.2rem;border-bottom:1px solid var(--line)}
+    h1{color:var(--brand);margin:.1rem 0 .3rem}
+    p.lead{color:#c8d2df;margin:.2rem 0 0}
+    nav a{color:#80bfff;text-decoration:none}
+    nav a:hover{text-decoration:underline}
+    main{max-width:1000px;margin:1.5rem auto 3rem;padding:0 1rem}
+    section{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:1rem 1.25rem;margin-bottom:1rem}
     code{background:rgba(255,255,255,.08);padding:.1rem .3rem;border-radius:6px}
-    table{width:100%;border-collapse:collapse;margin-top:1rem}
-    th,td{border:1px solid rgba(255,255,255,.08);padding:.5rem;text-align:left}
-    th{background:#1b1f26;color:#5ddfff}
-    footer{text-align:center;font-size:.85rem;color:#9fb3c8;padding:1rem;margin-top:2rem;border-top:1px solid rgba(255,255,255,.08)}
+    table{width:100%;border-collapse:collapse;margin-top:.6rem}
+    th,td{border:1px solid var(--line);padding:.55rem;text-align:left}
+    th{background:#1b1f26;color:#cfe6ff}
+    .num{text-align:right;font-variant-numeric:tabular-nums}
+    footer{text-align:center;font-size:.85rem;color:#9fb3c8;padding:1rem;margin-top:2rem;border-top:1px solid var(--line)}
     a{color:#5ddfff;text-decoration:none} a:hover{text-decoration:underline}
-    .badge{display:inline-block;padding:.25rem .5rem;border-radius:6px;font-weight:700}
-    .ok{background:#0f2b1e;color:#4bd28f;border:1px solid #265c42}
-    .warn{background:#2b2610;color:#ffa559;border:1px solid #5c4b26}
-    .err{background:#2b1010;color:#ff6b6b;border:1px solid #5c2626}
+
+    /* Health banner used by validate_cdi.js */
+    #cdi-health{border:1px solid #2a3344;border-radius:10px;padding:10px;background:#0e1218;margin:-.25rem 0 .9rem}
+    #cdi-health.ok{border-color:#245b3c;background:#0f1713}
+    #cdi-health.warn{border-color:#66501f;background:#17140b}
+    #cdi-health.err{border-color:#6b2a2a;background:#170f10}
+
+    /* Nav Dock tiles */
+    .dock-grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+    .dock-tile{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:14px}
+    .dock-tile h3{margin:.1rem 0 .4rem;font-size:1rem;color:#eaeef7}
+    .muted{color:#9fb3c8}
   </style>
 </head>
 <body>
 <header>
   <h1>CDI — Constitutional Divergence Index</h1>
-  <p class="lead">Quantifies deviation from constitutional fidelity across domains.</p>
-  <nav aria-label="Site">
+  <p class="lead">Quantifies deviation from constitutional fidelity across domains to drive lawful realignment.</p>
+  <nav style="margin-top:.4rem">
     <a href="../index.html">🏠 Home</a> ·
     <a href="../ciri/index.html">CIRI</a> ·
     <a href="../cibs/index.html">CIBS</a> ·
@@ -35,6 +52,171 @@
     <a href="../macro/index.html">Macro</a>
   </nav>
 </header>
+
+<main>
+  <!-- Live health banner (validator will set status) -->
+  <section id="cdi-health" aria-live="polite">Checking divergence.csv and model.json…</section>
+
+  <section>
+    <h2>📊 What is CDI?</h2>
+    <p>
+      The <strong>Constitutional Divergence Index</strong> measures the extent to which laws, budgets, or policies diverge
+      from constitutional limits and obligations. Scores range from <strong>0.00 (fully faithful)</strong> to
+      <strong>1.00 (fully divergent)</strong>. CDI signals flow into
+      <a href="../ciri/index.html">CIRI</a> to convert divergence into measurable recovery value.
+    </p>
+    <p class="muted">Source files: <code>./model.json</code> (scoring model) · <code>./divergence.csv</code> (observations)</p>
+  </section>
+
+  <section>
+    <h2>📈 Divergence by Category</h2>
+    <p class="muted">These values can be refined per jurisdiction. Update <code>divergence.csv</code> to modify the table.</p>
+    <table aria-label="CDI divergence table">
+      <thead>
+        <tr><th>Category</th><th>Divergence (0–1.0)</th><th>Confidence</th></tr>
+      </thead>
+      <tbody id="divTableBody"></tbody>
+      <tfoot>
+        <tr><th>Total Categories</th><th id="catCount" class="num">—</th><th></th></tr>
+      </tfoot>
+    </table>
+  </section>
+
+  <!-- ───────────────────── A.B.E. Navigator · Live KPIs ───────────────────── -->
+  <section>
+    <h2>🧭 A.B.E. Navigator · Live Links</h2>
+    <div class="dock-grid">
+      <div class="dock-tile">
+        <h3>Doctrines</h3>
+        <ul style="list-style:none;padding:0;margin:0;line-height:1.8">
+          <li><a href="/abe---flag/doctrine/ABE_CRRA_Rebuild.pdf">ABE + CRRA + Rebuild (33-page)</a></li>
+          <li><a href="/abe---flag/doctrine/constitutional-fidelity.html">Constitutional Fidelity (full text)</a></li>
+          <li><a href="/abe---flag/doctrine/void-ab-initio.html">Void ab Initio (full text)</a></li>
+        </ul>
+      </div>
+      <div class="dock-tile">
+        <h3>Calculators & KPIs</h3>
+        <ul style="list-style:none;padding:0;margin:0;line-height:1.9">
+          <li><a href="/abe---flag/ciri/">CIRI Calculator</a> — <span id="dock-ciri-total" class="muted">loading…</span></li>
+          <li><a href="/abe---flag/cibs/">CIBS Budget</a> — <span id="dock-cibs-total" class="muted">loading…</span></li>
+          <li><a href="/abe---flag/integration/">Integration KPIs</a></li>
+        </ul>
+      </div>
+      <div class="dock-tile">
+        <h3>Archive & License</h3>
+        <div class="muted" style="line-height:1.7">
+          DOI: <a href="https://doi.org/10.5281/zenodo.17586107">10.5281/zenodo.17586107</a><br/>
+          License: <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC BY-NC 4.0</a><br/>
+          Project: <a href="/abe---flag/">terra610.github.io/abe---flag</a>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- ──────────────────── /Navigator ──────────────────── -->
+</main>
+
+<footer>
+  © 2025 Terra Dawn Shouse ·
+  <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener" style="color:#5ddfff">
+    CC BY-NC 4.0 International License
+  </a>
+</footer>
+
+<script>
+  // Robust CSV parser (handles quotes)
+  function parseCSV(text){
+    const rows=[]; let i=0, f='', r=[], q=false;
+    const s=text.trim();
+    while(i<s.length){
+      const c=s[i++];
+      if(q){
+        if(c=='"' && s[i]=='"'){ f+='"'; i++; }
+        else if(c=='"'){ q=false; }
+        else { f+=c; }
+      }else{
+        if(c=='"'){ q=true; }
+        else if(c==','){ r.push(f); f=''; }
+        else if(c=='\n'||c=='\r'){ if(f!==''||r.length){ r.push(f); rows.push(r); f=''; r=[]; } }
+        else { f+=c; }
+      }
+    }
+    if(f!==''||r.length){ r.push(f); rows.push(r); }
+    return rows;
+  }
+
+  (async()=>{
+    try{
+      const res = await fetch('./divergence.csv',{cache:'no-store'});
+      if(!res.ok) throw new Error('CSV not found');
+      const text = await res.text();
+      const rows = parseCSV(text);
+      if(!rows.length) throw new Error('CSV empty');
+
+      const head = rows.shift().map(h=>h.trim().toLowerCase());
+      const idx = Object.fromEntries(head.map((h,i)=>[h,i]));
+      const tb = document.getElementById('divTableBody');
+      tb.innerHTML='';
+
+      let count=0;
+      rows.forEach(r=>{
+        if(!r.length) return;
+        const tr=document.createElement('tr');
+
+        const td1=document.createElement('td'); td1.textContent = r[idx.category ?? 0] ?? '';
+        const td2=document.createElement('td'); td2.textContent = r[idx.divergence ?? 1] ?? '';
+        const td3=document.createElement('td'); td3.textContent = r[idx.confidence ?? 2] ?? '';
+
+        tr.append(td1,td2,td3);
+        tb.appendChild(tr);
+        count++;
+      });
+      document.getElementById('catCount').textContent = count;
+    }catch(e){
+      const tb = document.getElementById('divTableBody');
+      const tr=document.createElement('tr'); const td=document.createElement('td');
+      td.colSpan=3; td.textContent='Could not load divergence.csv';
+      tr.appendChild(td); tb.appendChild(tr);
+    }
+  })();
+
+  // Nav Dock KPIs (same logic used on CII)
+  (async function(){
+    // CIBS total
+    try{
+      const r = await fetch('/abe---flag/cibs/auto_budget.csv',{cache:'no-store'});
+      const t = await r.text();
+      const lines = t.trim().split(/\r?\n/);
+      const total = lines.slice(1).reduce((s,line)=>{
+        const v = Number(line.split(',')[1]?.replace(/[^0-9.\-]/g,''));
+        return s + (isFinite(v)?v:0);
+      },0);
+      document.getElementById('dock-cibs-total').textContent = '$' + Math.round(total).toLocaleString();
+    }catch{ const el=document.getElementById('dock-cibs-total'); if(el) el.textContent='—'; }
+
+    // CIRI total (demo math)
+    try{
+      const r = await fetch('/abe---flag/ciri/inputs.csv',{cache:'no-store'});
+      const t = await r.text();
+      const [h,d] = t.trim().split(/\r?\n/);
+      const keys = h.split(','); const vals = d.split(',').map(x=>Number(String(x).replace(/[^0-9.\-]/g,'')));
+      const o = Object.fromEntries(keys.map((k,i)=>[k.trim(), vals[i]]));
+
+      const totalRecovery = (o.cases_avoided*o.avg_cost_per_case + o.fees_canceled_total)
+                          + (o.jail_days_avoided*o.cost_per_jail_day)
+                          + (o.households_restored*o.avg_monthly_market_spend*o.months_effective || 0)
+                          + ((o.cases_avoided*o.employment_probability)*o.avg_monthly_wage*(o.months_effective/12))
+                          + (o.expected_lawsuits*o.avg_payout*(o.litigation_multiplier||1))
+                          - (o.transition_costs_one_time||0);
+
+      document.getElementById('dock-ciri-total').textContent = '$' + Math.round(totalRecovery).toLocaleString();
+    }catch{ const el=document.getElementById('dock-ciri-total'); if(el) el.textContent='—'; }
+  })();
+</script>
+
+<!-- Live validator -->
+<script src="./validate_cdi.js"></script>
+</body>
+</html></header>
 
 <main>
   <section>
