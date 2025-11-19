@@ -1,23 +1,59 @@
-# A.B.E. Macroeconomic Cascade Model
-Author: Terra Shouse  
-Project: American Butterfly Effect (A.B.E.)  
-License: CC BY 4.0
+# A.B.E. Macroeconomic Cascade Model  
+**Nation-scale projections from one restored community.**
 
-## What this is
-This model shows how repairing one community — lawfully, economically, constitutionally — scales into statewide and national recovery.
+The Macro Model takes the recovery value from a single community — the “Restored Community Unit” — and scales it to any number of communities nationwide.  
+It’s the high-altitude view of what systemic constitutional fidelity does to the economy at scale.
 
-It is not charity. It is recovery of value that was already being burned through unconstitutional enforcement, retaliatory fines, coerced poverty, blocked mobility, and preventable incarceration.
+If CIRI shows what one county gets back, the Macro Model shows what America gets back.
 
-## Core mechanics
-- **Investment per site:** \$10M–\$25M  
-- **Citizens directly served:** 3,500–5,600  
-- **Jobs created:** ~550 @ \$42K average salary  
-- **Annual recurring ROI:** 1.5×–3.0× and compounding  
-- **Direct cost avoidance:**  
-  - \$6.0M/yr less in criminal justice system burn  
-  - \$4.2M/yr less in emergency / crisis medical burn  
-- **Economic multipliers:**  
-  - 2.4× GDP  
+---
+
+# 🔥 What This Module Does  
+- Loads the macro model JSON (`ABE_MacroCascadeModel.json`)
+- Uses multipliers (GDP, wages, spending)
+- Computes:
+  - direct investment per community  
+  - jobs created  
+  - citizens served  
+  - recurring savings  
+- Projects:
+  - total GDP uplift  
+  - wage uplift  
+  - local spending uplift  
+  - annual recurring savings  
+- Draws three live bar charts (GDP, wages, spending)
+- Lets visitors:
+  - adjust the number of communities  
+  - download a scenario CSV  
+  - run analyses with their own uploaded CIRI data (if present)
+
+---
+
+# 🔥 Constitutional Purpose  
+When rights are violated at scale, the harm is not anecdotal — it’s national.  
+Thousands of jurisdictions misapplying statutes add up to **billions in lost GDP, wages, and public wealth**.
+
+The Macro Model demonstrates a simple truth:
+
+> **If the Constitution is followed everywhere, prosperity compounds everywhere.**
+
+This module shows how restoring fidelity in even one county ripples outward into jobs, spending, health, justice, and national economic strength.
+
+---
+
+# 🦋 How It Connects  
+- CIRI determines the per-community recovery value  
+- Macro multiplies that value across counties, districts, or entire states  
+- The charts show:
+  - per-community effect  
+  - scenario-wide effect  
+
+Visitors can run:  
+**100 communities → 1,000 → 10,000 → national cascade.**
+
+---
+
+# 🧩 Files  - 2.4× GDP  
   - 1.8× wages  
   - 2.0× local spending  
 - **Macro impact:**  
