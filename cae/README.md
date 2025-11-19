@@ -1,20 +1,54 @@
 # CAE — Constitutional Alignment Engine  
-*(American Butterfly Effect — Core Module)*
+**The legal intelligence core of A.B.E.**
 
-### 🧭 Purpose
-The **Constitutional Alignment Engine (CAE)** quantifies how closely federal and state laws, regulations, or administrative practices align with their **constitutional intent**.  
-It is the *ground truth* layer of the A.B.E. ecosystem — feeding directly into the **CDI (Constitutional Divergence Index)**, which in turn drives CIRI → CIBS → CII self-correcting recovery flows.
+CAE parses statutes, regulations, clauses, memos, and scope notes to map whether government actions align with constitutional limits.  
+It’s effectively your *fidelity compass*.
 
-CAE doesn’t judge people — it measures systems.  
-Every dataset you add here is a mirror held up to the law itself, showing how far we’ve drifted and how close we can realign.
+No speculation.  
+No political spin.  
+Just structured legal analysis.
 
 ---
 
-### 🧩 File Overview
-| File | Description |
-|------|--------------|
-| `model.json` | Contains the active alignment dataset (clauses, constitutional anchors, statutes, scores). |
-| `schema.json` | JSON schema validating structure and field types for `model.json`. |
+# 🔥 What This Module Does  
+- Loads `model.json` (clauses, weights, scopes, evidence)  
+- Validates via schema  
+- Shows:
+  - each clause  
+  - alignment score  
+  - confidence  
+  - statutory anchors  
+  - scope notes  
+- Provides the legal basis for CDI  
+- Acts as the “law layer” of A.B.E.
+
+---
+
+# 🔥 Constitutional Purpose  
+A government cannot claim lawful authority if:
+
+- the statute doesn’t apply,  
+- the scope doesn’t reach the citizen,  
+- or the regulation was lifted from the wrong context entirely.
+
+CAE exposes these mismatches clearly and structurally.
+
+This solves a critical national problem:
+
+> **People are being regulated as if they were commercial operators when they are not.**
+
+The CAE model makes the distinction undeniable, using the government’s own statutes, CFR sections, memos, and intent notes.
+
+---
+
+# 🦋 How It Connects  
+CAE → CDI → CIRI → CIBS → CII → Integration → Receipts
+
+Everything downstream relies on CAE’s fidelity.
+
+---
+
+# 🧩 Files| `schema.json` | JSON schema validating structure and field types for `model.json`. |
 | `README.md` | You’re reading it. |
 
 ---
