@@ -1,21 +1,65 @@
-# CIRI — Constitutional Integrity ROI Engine  
-*(American Butterfly Effect — Recovery Computation Layer)*
+# CIRI — Constitutional Integrity ROI Engine
 
-### 🧭 Purpose
-The **Constitutional Integrity ROI Engine (CIRI)** translates *legal realignment* into *economic and social recovery values*.  
-Where **CAE** and **CDI** measure constitutional drift, **CIRI** answers the next question:
+CIRI is the financial heart of the A.B.E. system.  
+It turns constitutional overreach — wrongful detention, misapplied statutes, unlawful enforcement — into **measurable economic recovery** for any jurisdiction.
 
-> “If we fix it, what happens to people, communities, and the economy?”
-
-CIRI is the **mathematical bridge** between restored legality and restored prosperity.  
-It proves that fidelity to constitutional law produces measurable gain — not just moral alignment.
+CIRI answers one blunt question:  
+**“What did this divergence cost your people, and what do you gain by fixing it?”**
 
 ---
 
-### ⚙️ How It Works
-1. **Input:**  
-   - Reads `inputs.csv` — a structured dataset describing quantifiable effects of divergence (cases, costs, days detained, employment impacts, etc.).
-   - References **CDI’s** current divergence to scale national recovery potential.
+# 🔥 What CIRI Does  
+- Reads a single-row CSV (`inputs.csv`)  
+- Computes six categories of recovered value:  
+  - direct case costs  
+  - detention  
+  - fees/fines  
+  - employment and wage restoration  
+  - household spending  
+  - litigation avoided  
+- Subtracts transition cost  
+- Outputs:  
+  - **Total Recovery**  
+  - **CIRI Index**  
+  - **CII Index**  
+  - **ROI per case**  
+  - **Bar charts**  
+  - **Receipts**
+
+---
+
+# 🦋 Upload Your Own Data  
+Visitors can upload their own CSV.  
+
+**Everything runs entirely in-browser.**  
+The uploaded file is never sent anywhere.
+
+After upload you get:
+
+- recalculated KPIs  
+- source indicator (“Using your uploaded file — private”)  
+- downloadable report  
+- optional PDF receipt  
+- optional scenario export (`ABE_CIRI_SCENARIO_V2.csv`)
+
+If no file is uploaded, CIRI loads the repo’s `inputs.csv`.
+
+---
+
+# 🔥 Constitutional Purpose  
+Government overreach isn’t “just unconstitutional.”  
+It has a price tag.
+
+CIRI exposes the financial damage caused when agencies apply the wrong laws, stretch statutory authority, or treat private citizens as commercial operators.  
+Every dollar in the Recovery metric is **proof of harm**, and every positive change is **proof of what fidelity restores**.
+
+This flips the narrative:
+
+> *“Rights violations are abstract”* → **No, they are quantifiable losses your community has been paying for.**
+
+---
+
+# 📄 Files   - References **CDI’s** current divergence to scale national recovery potential.
 
 2. **Process:**  
    - Computes *recoverable economic value* by reversing the costs of divergence:
