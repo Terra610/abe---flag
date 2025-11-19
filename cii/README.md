@@ -1,23 +1,54 @@
-# CII — Constitutional Integrity Index
+# CII — Community Investment Interface  
+**Turning recovery dollars into real projects.**
 
-CII converts A.B.E. math into mission.  
-It’s where recovery dollars turn into real projects, verified progress, and public trust.
+CII is the bridge between recovered value and boots-on-the-ground improvements.  
+It takes the budget categories from CIBS and pairs them with real, auditable project portfolios.
+
+Think:  
+Affordable units, clinics, food hubs, transit pilots, credentialing centers — all represented as transparent rows in a CSV.
 
 ---
 
-## Step 1. Load the Portfolio
+# 🔥 What This Module Does  
+- Loads:
+  - `model.json` — categories + multipliers  
+  - `portfolio.csv` — project list  
+- Performs:
+  - category match  
+  - multiplier-based estimation  
+  - cost formatting  
+- Shows:
+  - status cards for model/portfolio health  
+  - preview table of projects  
+  - clean links to Integration Layer  
+  - explanation of how dollars become deliverables
 
-Open `cii/portfolio.csv`.  
-Each row is a project derived from your CIBS allocations.
+---
 
-| name | category | cost_usd | households | status |
-|------|-----------|-----------|-------------|--------|
-| 12-unit infill apartments | housing | 2400000 | 12 | scoping |
-| Community clinic buildout | health | 1800000 | 350 | design |
-| Regional food hub | food | 950000 | 900 | pre-award |
-| Adult credentialing center | education | 650000 | 220 | active |
-| Transit micro-mobility pilot | transport | 400000 | 1500 | active |
+# 🔥 Constitutional Purpose  
+Rights restoration means nothing if people’s lives don’t improve.
 
+CII ensures that the value recovered from correcting constitutional errors flows into **visible, tangible** community outcomes.  
+
+This beats “policy promises” with a very simple counter-narrative:
+
+> **Show the projects. Show the cost. Show the impact. Make it auditable.**
+
+Everything is open.  
+Everything can be checked.  
+Nothing is hidden in bureaucracy.
+
+---
+
+# 🦋 How It Connects  
+- CIBS provides category totals  
+- CII shows what those totals buy  
+- Integration verifies the numbers  
+- Macro demonstrates the scaling effect
+
+---
+
+# 🧩 Files
 ---
 
 ## Step 2. Match to CIBS Allocations
