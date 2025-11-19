@@ -1,19 +1,50 @@
 # CDI — Constitutional Divergence Index  
-*(American Butterfly Effect — Alignment Analytics Layer)*
+**Quantifying how far a jurisdiction has drifted from constitutional alignment.**
 
-### 🧭 Purpose
-The **Constitutional Divergence Index (CDI)** measures how far current law, policy, or regulation has drifted from its constitutional foundation.  
-It does not rely on opinions or politics — only data.  
-CDI listens to the **CAE (Constitutional Alignment Engine)**, which scores each clause for its fidelity to constitutional scope.  
-Then it transforms those scores into a single divergence metric:  
-> **CDI = 1 − average(alignment_scores)**
+Where CAE provides the legal diagnosis, CDI provides the signal.  
+It condenses constitutional errors into a numeric index (0–1) that downstream systems can use.
+
+0.00 → fully aligned  
+1.00 → maximally divergent
 
 ---
 
-### ⚙️ How It Works
-1. **CAE** defines and updates alignment scores (`alignment_score` 0–1).  
-2. **CDI** fetches `/cae/model.json`, computes the mean, and converts it into a divergence percentage.  
-3. The **Realignment Δ** metric shows improvement or regression since the last update.  
+# 🔥 What This Module Does  
+- Loads `divergence.csv`  
+- Validates fields via schema  
+- Displays:
+  - divergence category  
+  - numerical score  
+  - confidence  
+- Feeds the divergence signal into CIRI  
+- Helps jurisdictions see exactly which domains are bleeding integrity
+
+---
+
+# 🔥 Constitutional Purpose  
+Divergence has patterns.  
+When government applies the wrong statutes or stretches authority, the damage clusters by domain:
+
+- traffic  
+- detention  
+- commerce  
+- health  
+- licensing  
+- civil rights  
+
+CDI makes these patterns measurable.  
+This gives communities leverage because:
+
+> **You can deny an accusation, but you can’t deny a pattern backed by your own data.**
+
+---
+
+# 🦋 How It Connects  
+CAE flags the legal issues → CDI quantifies them → CIRI assigns the economic impact.
+
+---
+
+# 🧩 Files3. The **Realignment Δ** metric shows improvement or regression since the last update.  
    - Positive Δ → Healing (realignment)  
    - Negative Δ → Drift (divergence increase)
 
