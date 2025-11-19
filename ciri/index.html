@@ -11,7 +11,11 @@
       --accent:#5ddfff; --accent2:#ffa559;
     }
     *{box-sizing:border-box}
-    body{background:var(--bg);color:var(--ink);font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;line-height:1.65;margin:0}
+    body{
+      background:var(--bg);color:var(--ink);
+      font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+      line-height:1.65;margin:0
+    }
 
     header{
       background:linear-gradient(90deg,#11151c,#1b1e25);
@@ -27,14 +31,497 @@
       text-decoration:none;font-size:.9rem;
       transition:all .2s ease-in-out;border:1px solid transparent;
     }
-    .home-btn:hover{background:#82eaff;box-shadow:0 0 8px rgba(93,223,255,.7);transform:translateY(-2px)}
-    h1{color:var(--accent2);font-size:1.8rem;margin:.1rem 0 .4rem;font-weight:800}
+    .home-btn:hover{
+      background:#82eaff;box-shadow:0 0 8px rgba(93,223,255,.7);
+      transform:translateY(-2px);
+    }
+    h1{
+      color:var(--accent2);font-size:1.8rem;
+      margin:.1rem 0 .4rem;font-weight:800;
+    }
     header p{margin:.25rem 0 0;color:var(--muted)}
-    .top-actions{display:flex;gap:.6rem;flex-wrap:wrap;justify-content:center;margin:.9rem 0 0}
-    .btn,.badge{display:inline-block;text-decoration:none;font-weight:700;border-radius:8px;transition:all .18s ease-in-out}
-    .btn{background:var(--accent);color:#0b0d12;padding:.55rem 1rem;border:1px solid transparent}
-    .btn:hover{background:#82eaff;transform:translateY(-2px);box-shadow:0 0 10px rgba(93,223,255,.6)}
-    .badge{color:var(--accent);border:1px solid var(--accent);padding:.45rem .7rem;font-size:.9rem}
+    .top-actions{
+      display:flex;gap:.6rem;flex-wrap:wrap;
+      justify-content:center;margin:.9rem 0 0;
+    }
+    .btn,.badge{
+      display:inline-block;text-decoration:none;font-weight:700;
+      border-radius:8px;transition:all .18s ease-in-out;
+    }
+    .btn{
+      background:var(--accent);color:#0b0d12;
+      padding:.55rem 1rem;border:1px solid transparent;
+    }
+    .btn:hover{
+      background:#82eaff;transform:translateY(-2px);
+      box-shadow:0 0 10px rgba(93,223,255,.6);
+    }
+    .badge{
+      color:var(--accent);border:1px solid var(--accent);
+      padding:.45rem .7rem;font-size:.9rem;
+    }
+    .badge:hover{
+      background:rgba(93,223,255,.08);transform:translateY(-2px);
+    }
+
+    main{max-width:1000px;margin:2rem auto 3.5rem;padding:0 1rem}
+    section{
+      background:rgba(255,255,255,.03);
+      border:1px solid var(--edge);
+      border-radius:12px;
+      padding:1.2rem 1.4rem;
+      margin-bottom:1.4rem;
+      box-shadow:0 0 12px rgba(93,223,255,.05);
+    }
+    section:hover{box-shadow:0 0 16px rgba(93,223,255,.12)}
+    h2{color:var(--accent2);font-size:1.2rem;margin:.2rem 0 .7rem}
+    a{color:#80bfff} a:hover{text-decoration:underline}
+    pre,code{
+      background:rgba(255,255,255,.07);
+      padding:.25rem .4rem;border-radius:6px;color:#e3e3e3;
+    }
+
+    /* CIRI live calculator styles */
+    .ciri-box{
+      background:#111;border:1px solid #222;
+      border-radius:10px;padding:16px;margin:20px 0;
+    }
+    .ciri-kpis{
+      display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+      gap:12px;margin:12px 0;
+    }
+    .ciri-kpi{
+      background:#151922;border:1px solid #232a36;
+      border-radius:10px;padding:12px;
+    }
+    .ciri-kpi .lbl{color:#9fb0c9;font-size:12px}
+    .ciri-kpi .val{font:800 22px/1 system-ui;margin-top:4px}
+    .ciri-small{font-size:12px;color:#9fb0c9}
+    .ciri-grid{
+      display:grid;grid-template-columns:1fr 1fr;gap:16px;
+    }
+    .ciri-grid>div{
+      background:#151922;border:1px solid #232a36;
+      border-radius:10px;padding:12px;
+    }
+    .ciri-table{width:100%;border-collapse:collapse}
+    .ciri-table th,.ciri-table td{
+      padding:6px;border-bottom:1px solid #232a36;text-align:left;
+    }
+    .ciri-err{color:#f99}
+    canvas{max-width:100%}
+    .btn-ghost{
+      padding:6px 10px;border:1px solid #2a3344;border-radius:6px;
+      background:#0d0f12;color:#eaeef7;cursor:pointer;
+    }
+    .btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
+    @media (max-width:800px){.ciri-grid{grid-template-columns:1fr}}
+
+    /* Data health banner from validator */
+    #data-health{
+      border:1px solid #2a3344;border-radius:10px;
+      padding:10px;background:#0e1218;
+      margin:-.4rem 0 1rem;font-size:.9rem;
+    }
+    #data-health.ok{border-color:#245b3c;background:#0f1713}
+    #data-health.warn{border-color:#66501f;background:#17140b}
+    #data-health.err{border-color:#6b2a2a;background:#170f10}
+
+    footer{
+      margin:32px 0 24px;text-align:center;
+      color:#8fa1b6;font-size:.85rem;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <a href="/abe---flag/index.html" class="home-btn">← Return to Home</a>
+  <h1>CIRI (Constitutional Integrity ROI Engine)</h1>
+  <p>The A.B.E. model for quantifying the financial impact of constitutional compliance.</p>
+  <div class="top-actions">
+    <a class="btn" href="/abe---flag/doctrine/index.html">📜 Doctrine Library</a>
+    <a class="badge" href="/abe---flag/cibs/index.html">📊 CIBS</a>
+    <a class="badge" href="/abe---flag/system/index.html">🗺 System Map</a>
+    <a class="badge" href="/abe---flag/integration/index.html">🔗 Integration</a>
+  </div>
+</header>
+
+<main>
+  <!-- Data health banner (driven by validate_ciri.js) -->
+  <section id="data-health" aria-live="polite">
+    Checking inputs.csv…
+  </section>
+
+  <section>
+    <h2>🧮 Run the CIRI Calculator</h2>
+    <p>
+      The <strong>CIRI</strong> engine lets anyone measure the
+      <em>economic impact of constitutional compliance</em>
+      for their own city or county — using a single CSV.
+    </p>
+    <ol>
+      <li>Open <a href="./inputs.csv">inputs.csv</a> and replace the example numbers with your local data.</li>
+      <li>Optional CLI run (writes CIBS budget):<br><code>python3 ciri/calculate.py</code></li>
+      <li>View results below and/or in CIBS after running the CLI.</li>
+    </ol>
+    <p class="ciri-small">
+      Browser math and CLI math are aligned. No server required.
+    </p>
+  </section>
+
+  <!-- Live calculator -->
+  <section>
+    <h2>⚡ Live CIRI Calculator (reads <code>./inputs.csv</code>)</h2>
+    <div id="ciri-app" class="ciri-box">
+      <div class="ciri-kpis">
+        <div class="ciri-kpi">
+          <div class="lbl">Total Recovery (USD)</div>
+          <div id="kpi-total" class="val">—</div>
+        </div>
+        <div class="ciri-kpi">
+          <div class="lbl">CIRI • Risk Index</div>
+          <div id="kpi-ciri" class="val">—</div>
+        </div>
+        <div class="ciri-kpi">
+          <div class="lbl">CII • Integrity Index</div>
+          <div id="kpi-cii" class="val">—</div>
+        </div>
+        <div class="ciri-kpi">
+          <div class="lbl">ROI per Case Avoided</div>
+          <div id="kpi-roi" class="val">—</div>
+        </div>
+      </div>
+
+      <div class="ciri-grid">
+        <div>
+          <div style="font-weight:700;margin-bottom:8px">Inputs</div>
+          <table id="ciri-inputs" class="ciri-table" aria-label="CIRI inputs table"></table>
+          <div id="ciri-status" class="ciri-small" style="margin-top:8px">Loading inputs…</div>
+        </div>
+        <div>
+          <div style="font-weight:700;margin-bottom:8px">Assumptions</div>
+          <div class="ciri-small">
+            Risk scaling K = <code id="lbl-k">$1,000,000,000</code><br>
+            (Matches CLI; adjust in code if your jurisdiction scale is different.)
+          </div>
+          <div id="ciri-breakdown" class="ciri-small" style="margin-top:10px"></div>
+          <canvas id="ciri-chart" height="120" aria-label="Breakdown chart"></canvas>
+          <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
+            <button id="btn-download" class="btn-ghost">Download Report (CSV)</button>
+            <button id="btn-export-runs" class="btn-ghost">Export My CIRI Runs (JSON)</button>
+            <a class="btn-ghost" href="/abe---flag/cibs/index.html">Open CIBS (Budget)</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About -->
+  <section>
+    <h2>About CIRI</h2>
+    <p>
+      CIRI translates lawful governance into measurable economic outcomes. Each prevented violation reduces
+      measurable fiscal waste. Proper implementation strengthens GDP, restores public trust, and lowers state dependency.
+    </p>
+    <ul>
+      <li><a href="./inputs.csv">Download example input sheet</a></li>
+    </ul>
+  </section>
+
+  <!-- A.B.E. Nav Dock + KPIs -->
+  <section id="abe-navdock" class="ciri-box" aria-label="A.B.E. Navigator">
+    <h3 style="margin:0 0 10px;color:#5ddfff">A.B.E. Navigator · Live Links</h3>
+    <div style="display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))">
+      <div style="background:#151922;border:1px solid #232a36;border-radius:10px;padding:14px">
+        <div style="font-weight:600;margin-bottom:8px">Doctrines</div>
+        <ul class="ciri-small" style="list-style:none;padding:0;margin:0;line-height:1.8">
+          <li><a href="/abe---flag/doctrine/ABE_CRRA_Rebuild.pdf">A.B.E. · CRRA · Rebuild Together (viewer)</a></li>
+          <li><a href="/abe---flag/doctrine/constitutional-fidelity.html">Constitutional Fidelity (full text)</a></li>
+          <li><a href="/abe---flag/doctrine/void-ab-initio.html">Void ab Initio (full text)</a></li>
+        </ul>
+      </div>
+
+      <div style="background:#151922;border:1px solid #232a36;border-radius:10px;padding:14px">
+        <div style="font-weight:600;margin-bottom:8px">Calculators & KPIs</div>
+        <ul class="ciri-small" style="list-style:none;padding:0;margin:0;line-height:1.9">
+          <li><a href="/abe---flag/ciri/">CIRI Calculator</a> — <span id="dock-ciri-total" style="opacity:.85">loading…</span></li>
+          <li><a href="/abe---flag/cibs/">CIBS Budget</a> — <span id="dock-cibs-total" style="opacity:.85">loading…</span></li>
+          <li><a href="/abe---flag/integration/">Integration KPIs</a></li>
+        </ul>
+      </div>
+
+      <div style="background:#151922;border:1px solid #232a36;border-radius:10px;padding:14px">
+        <div style="font-weight:600;margin-bottom:8px">Archive & License</div>
+        <div class="ciri-small" style="line-height:1.7">
+          DOI: <a href="https://doi.org/10.5281/zenodo.17586107">10.5281/zenodo.17586107</a><br/>
+          License: <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC BY-NC 4.0</a><br/>
+          Project: <a href="/abe---flag/">terra610.github.io/abe---flag</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- CIRI calculator script -->
+<script>
+(function(){
+  const K = 1_000_000_000;
+
+  function money(n){
+    try{
+      return n.toLocaleString(undefined,{
+        style:"currency",currency:"USD",maximumFractionDigits:0
+      });
+    }catch(_){
+      return "$"+Math.round(n).toLocaleString();
+    }
+  }
+  function pct(x){ return (x*100).toFixed(1)+"%"; }
+
+  const CANDIDATES = ["./inputs.csv","/abe---flag/ciri/inputs.csv"];
+  let csvText = null, src = null;
+
+  function parseCSV(txt){
+    const lines = txt.trim().split(/\r?\n/).filter(Boolean);
+    const head  = (lines.shift()||"").split(",").map(s=>s.trim());
+    const row   = (lines.shift()||"").split(",").map(s=>s.trim());
+    const obj   = {};
+    head.forEach((h,i)=> obj[h]=row[i]);
+    return {head,row,obj};
+  }
+
+  function num(x){
+    const n = Number(String(x||"").replace(/[^0-9.\-]/g,""));
+    return isFinite(n)? n : 0;
+  }
+
+  function compute(d){
+    const cases_avoided          = num(d.cases_avoided);
+    const avg_cost_per_case      = num(d.avg_cost_per_case);
+    const jail_days_avoided      = num(d.jail_days_avoided);
+    const cost_per_jail_day      = num(d.cost_per_jail_day);
+    const fees_canceled_total    = num(d.fees_canceled_total);
+    const licenses_restored      = num(d.licenses_restored); // not yet priced
+    const avg_monthly_wage       = num(d.avg_monthly_wage);
+    const employment_probability = num(d.employment_probability);
+    const months_effective       = num(d.months_effective);
+    const expected_lawsuits      = num(d.expected_lawsuits);
+    const avg_payout             = num(d.avg_payout);
+    const multiplier             = num(d.multiplier);
+    const transition_costs       = num(d.transition_costs_one_time);
+
+    const direct_case   = cases_avoided * avg_cost_per_case;
+    const detention     = jail_days_avoided * cost_per_jail_day;
+    const fees          = fees_canceled_total;
+    const employment    = cases_avoided * avg_monthly_wage * employment_probability * (months_effective/12);
+    const lawsuits_avo  = expected_lawsuits * avg_payout * multiplier;
+
+    // If you later price licenses_restored, plug it here
+    const licensing_val = 0;
+
+    let total = direct_case + detention + fees + employment + lawsuits_avo + licensing_val - transition_costs;
+    total = Math.max(0,total);
+
+    const ciri = 1 - Math.exp(- total / Math.max(1,K));
+    const cii  = 1 - ciri;
+    const roi_per_case = cases_avoided>0 ? total/cases_avoided : 0;
+
+    return {
+      total, ciri, cii, roi_per_case,
+      parts:{direct_case, detention, fees, employment, lawsuits_avo, licensing_val, transition_costs}
+    };
+  }
+
+  function drawBars(canvas, values){
+    const ctx = canvas.getContext("2d");
+    const W = canvas.width, H = canvas.height;
+    const max = Math.max(...values.map(v=>v.v), 1);
+    ctx.clearRect(0,0,W,H);
+    const n = values.length, bw = Math.floor(W/(n*2)), gap = bw;
+    const base = H - 12;
+    values.forEach((item, i)=>{
+      const h = Math.round((item.v/max)*(H-24));
+      ctx.fillStyle = "#e0e0e0";
+      ctx.fillRect(10 + i*(bw+gap), base-h, bw, h);
+      ctx.font = "11px system-ui";
+      ctx.fillText(item.k, 10 + i*(bw+gap), H-2);
+    });
+  }
+
+  // ---- Local run history logger (browser-only) ----
+  function logRun(parsed, R, opts = {}){
+    try{
+      const existing = JSON.parse(localStorage.getItem('ciri_runs') || '[]');
+      existing.push({
+        at: new Date().toISOString(),
+        source: opts.source || 'inputs.csv',
+        inputs: parsed.obj,
+        results: {
+          total: R.total,
+          ciri: R.ciri,
+          cii: R.cii,
+          roi_per_case: R.roi_per_case
+        },
+        audit: opts.audit || null
+      });
+      localStorage.setItem('ciri_runs', JSON.stringify(existing.slice(-100)));
+    }catch(e){
+      console.warn('Could not log CIRI run:', e);
+    }
+  }
+
+  async function boot(){
+    // Load CIRI inputs
+    for(const u of CANDIDATES){
+      try{
+        const r = await fetch(u,{cache:"no-store"});
+        if(r.ok){ csvText = await r.text(); src = u; break; }
+      }catch(_){}
+    }
+    const status = document.getElementById("ciri-status");
+    if(!csvText){
+      status.innerHTML = '<span class="ciri-err">Could not load inputs.csv</span>';
+      return;
+    }
+    status.textContent = `Loaded inputs from ${src}`;
+
+    const parsed = parseCSV(csvText);
+
+    // Render inputs table
+    const t = document.getElementById("ciri-inputs");
+    t.innerHTML = '<thead><tr><th>Field</th><th>Value</th></tr></thead><tbody>'
+      + parsed.head.map((h,i)=>`<tr><td>${h}</td><td>${parsed.row[i]??""}</td></tr>`).join("")
+      + '</tbody>';
+
+    // Compute results
+    const R = compute(parsed.obj);
+
+    // KPIs
+    document.getElementById("kpi-total").textContent = money(R.total);
+    document.getElementById("kpi-ciri").textContent  = pct(R.ciri);
+    document.getElementById("kpi-cii").textContent   = pct(R.cii);
+    document.getElementById("kpi-roi").textContent   = money(R.roi_per_case);
+
+    // Breakdown
+    const brk = document.getElementById("ciri-breakdown");
+    brk.innerHTML = `
+      <div><strong>Breakdown</strong></div>
+      <ul>
+        <li>Direct case savings: <strong>${money(R.parts.direct_case)}</strong></li>
+        <li>Detention savings: <strong>${money(R.parts.detention)}</strong></li>
+        <li>Fees canceled: <strong>${money(R.parts.fees)}</strong></li>
+        <li>Employment & income restoration: <strong>${money(R.parts.employment)}</strong></li>
+        <li>Lawsuits avoided (expected × payout × multiplier): <strong>${money(R.parts.lawsuits_avo)}</strong></li>
+        <li>Transition costs (one-time): <strong>−${money(R.parts.transition_costs)}</strong></li>
+      </ul>
+      <div class="ciri-small">Risk scaling K = ${money(K)} • CIRI = 1 − exp(−Total/K)</div>
+    `;
+
+    // Chart
+    const bars = [
+      {k:"Case", v:R.parts.direct_case},
+      {k:"Det.", v:R.parts.detention},
+      {k:"Fees", v:R.parts.fees},
+      {k:"Emp.", v:R.parts.employment},
+      {k:"Law.", v:R.parts.lawsuits_avo},
+    ];
+    drawBars(document.getElementById("ciri-chart"), bars);
+
+    // Nav Dock: CIRI total from this run
+    const elDockCiri = document.getElementById('dock-ciri-total');
+    if(elDockCiri) elDockCiri.textContent = money(R.total);
+
+    // Nav Dock: CIBS total from /cibs/auto_budget.csv
+    try{
+      const res = await fetch('/abe---flag/cibs/auto_budget.csv',{cache:'no-store'});
+      const text = await res.text();
+      const [h,...rows] = text.trim().split(/\r?\n/);
+      const keys = h.split(',').map(s=>s.trim());
+      const sum = rows.reduce((acc,line)=>{
+        const vals = line.split(',');
+        const obj = {};
+        keys.forEach((k,i)=> obj[k] = i===0 ? vals[i] : Number(vals[i]));
+        const v = Number(obj.value || obj.Value || 0);
+        return acc + (isFinite(v)? v : 0);
+      },0);
+      const elDockCibs = document.getElementById('dock-cibs-total');
+      if(elDockCibs) elDockCibs.textContent = money(sum);
+    }catch(_){
+      const elDockCibs = document.getElementById('dock-cibs-total');
+      if(elDockCibs) elDockCibs.textContent = '—';
+    }
+
+    // Pull audit summary from validator (if it set one)
+    const auditSummary = window.CIRI_AUDIT_SUMMARY || null;
+    logRun(parsed, R, { source: src, audit: auditSummary });
+
+    // Download single-run report
+    document.getElementById("btn-download").addEventListener("click", ()=>{
+      const now = new Date().toISOString();
+      const lines = [
+        ["Generated", now],
+        ["Source CSV", src],
+        [],
+        ["Metric","Value"],
+        ["Total Recovery (USD)", R.total],
+        ["CIRI (Risk Index)", R.ciri],
+        ["CII (Integrity Index)", R.cii],
+        ["ROI per Case Avoided", R.roi_per_case],
+        ["Direct Case Savings", R.parts.direct_case],
+        ["Detention Savings", R.parts.detention],
+        ["Fees Canceled", R.parts.fees],
+        ["Employment Restoration", R.parts.employment],
+        ["Lawsuits Avoided", R.parts.lawsuits_avo],
+        ["Transition Costs", R.parts.transition_costs],
+        [],
+        ["Input Field","CSV Value"],
+        ...Object.entries(parsed.obj).map(([k,v])=>[k,v])
+      ];
+      const csv = lines.map(r=>r.join(",")).join("\n");
+      const blob = new Blob([csv],{type:"text/csv"});
+      const url  = URL.createObjectURL(blob);
+      const a    = document.createElement("a");
+      a.href = url; a.download = "CIRI_report.csv"; a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    // Export all local runs history
+    const btnExport = document.getElementById('btn-export-runs');
+    if(btnExport){
+      btnExport.addEventListener('click', ()=>{
+        try{
+          const runs = localStorage.getItem('ciri_runs') || '[]';
+          const blob = new Blob([runs],{type:'application/json'});
+          const url  = URL.createObjectURL(blob);
+          const a    = document.createElement("a");
+          a.href = url; a.download = "CIRI_runs_history.json"; a.click();
+          URL.revokeObjectURL(url);
+        }catch(e){
+          alert('Could not export run history. Try again or clear your browser storage.');
+        }
+      });
+    }
+  }
+
+  boot();
+})();
+</script>
+
+<!-- validator (if present, will drive #data-health and can set window.CIRI_AUDIT_SUMMARY) -->
+<script src="./validate_ciri.js"></script>
+
+<footer>
+  © 2025 Terra Dawn Shouse — American Butterfly Effect (A.B.E.)<br>
+  Licensed under
+  <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener" style="color:#5ddfff">
+    Creative Commons Attribution–NonCommercial 4.0 International (CC BY-NC 4.0)
+  </a><br>
+  <em>Integrity only — never for sale.</em>
+</footer>
+
+</body>
+</html>    .badge{color:var(--accent);border:1px solid var(--accent);padding:.45rem .7rem;font-size:.9rem}
     .badge:hover{background:rgba(93,223,255,.08);transform:translateY(-2px)}
 
     main{max-width:1000px;margin:2rem auto 3.5rem;padding:0 1rem}
