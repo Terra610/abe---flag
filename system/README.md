@@ -1,22 +1,42 @@
-# System Ledger — A.B.E. Chain of Custody & Evidence Map  
-*(American Butterfly Effect — Public Integrity Layer)*
+# A.B.E. System Map  
+**The chain-of-custody for constitutional and economic truth.**
 
-### 🧭 Purpose
-The **System Ledger** is the *root record* of the A.B.E. ecosystem.  
-It permanently documents how lawful recovery moves through every stage — from divergence correction to tangible prosperity.
+The System Map shows how data flows across the entire A.B.E. engine — from legal alignment (CAE) to divergence (CDI), to recovery value (CIRI), to reinvestment (CIBS/CII), and finally to tamper-evident receipts (Integration).
 
-Each file, dataset, and verification record across A.B.E. ties back to this ledger for authenticity and audit continuity.
+Think of it as the blueprint of a transparent, accountable public system.
 
 ---
 
-### ⚙️ Core Function
-The ledger maintains an **immutable, chronological map** of all modules:
+# 🔥 What This Module Does  
+- Loads `map.json`  
+- Displays:
+  - nodes  
+  - edges  
+  - dependencies  
+  - versioning  
+  - update timestamps  
+- Helps auditors and analysts verify:
+  - where values came from  
+  - how they moved  
+  - whether each step is intact
 
-| Step | Module | Function |
-|------|---------|-----------|
-| 1️⃣ | **CAE / CDI** | Analyze constitutional alignment and divergence |
-| 2️⃣ | **CIRI** | Quantify recovery value of lawful correction |
-| 3️⃣ | **CIBS** | Allocate recovery into auditable budgets |
+---
+
+# 🔥 Constitutional Purpose  
+Accountability requires visibility.
+
+Most government systems hide their internal mechanics, creating plausible deniability and making it almost impossible for citizens to prove systemic harm.
+
+The A.B.E. System Map does the opposite:
+
+> **It shows the whole pipeline — openly and permanently.**
+
+This is how constitutional fidelity becomes not just a standard, but a provable workflow.
+
+---
+
+# 🦋 How It Connects  
+Every module in A.B.E. appears as a node:| 3️⃣ | **CIBS** | Allocate recovery into auditable budgets |
 | 4️⃣ | **Integration** | Verify delivery and public attestation |
 | 5️⃣ | **CII** | Execute investments at community level |
 | 6️⃣ | **System Ledger** | Record and hash all above for verification |
