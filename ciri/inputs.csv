@@ -1,2 +1,2 @@
 cases_avoided,avg_cost_per_case,jail_days_avoided,cost_per_jail_day,fees_canceled_total,policy_corrections,avg_enforcement_cost_savings,households_restored,avg_monthly_market_spend,months_effective,employment_probability,avg_monthly_wage,expected_lawsuits,avg_payout,litigation_multiplier,transition_costs_one_time
-1200,950,3800,98,420000,1800,85,60000,450,9,0.62,3800,6,75000,0.50,400000
+5000,2000,1500,120,25000000,0,0,5000,600,12,0.3,3000,100,100000,1.5,5000000
