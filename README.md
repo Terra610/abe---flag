@@ -1,23 +1,63 @@
 # 🦋 The American Butterfly Effect (A.B.E.)
+**Constitutional & Economic Restoration Engine — Public, Auditable, Non-Commercial**
 
-**A.B.E. = American Butterfly Effect**  
-A constitutional–economic engine that turns *alignment with the U.S. Constitution* into *measurable, auditable prosperity* — without needing a proprietary platform, cloud backend, or corporate gatekeepers.
+A.B.E. is a full-stack system built to do one thing with absolute clarity:  
+**show what happens — economically, legally, and structurally — when a government follows the Constitution, and what it costs when it doesn’t.**
 
-This repo hosts the **public, static implementation** of the A.B.E. engine on GitHub Pages:
+This project turns constitutional fidelity into measurable prosperity using a modular set of public, client-side tools:
 
-> `https://terra610.github.io/abe---flag/`
+- **CAE** — Constitutional Alignment Engine  
+- **CDI** — Constitutional Divergence Index  
+- **CIRI** — Constitutional Integrity ROI Engine  
+- **CIBS** — Reinvestment/budget allocator  
+- **CII** — Community investment portfolio builder  
+- **Macro Model** — Nation-scale projections  
+- **Integration Layer** — Receipts, verification, and hashing  
+- **System Map** — Chain-of-custody for the entire engine
 
-Everything here runs **in your browser**, with **your data**, under a **non-commercial open license**.
+Everything is **browser-only**, **open**, and **non-commercial**.  
+No servers. No data harvesting. No surveillance. No gatekeeping.
 
 ---
 
-## 1. What A.B.E. Actually Does
+# ✨ What Problem This Solves  
+America loses billions each year from one root failure:  
+**misalignment between government actions and constitutional limits.**
 
-At a high level, A.B.E. is a **pipeline**:
+Most people feel the harm (unlawful detention, fees, overreach, civil-rights bleed-out).  
+A.B.E. is the first open framework that:
 
-1. **CAE — Constitutional Alignment Engine**  
-   Parses law, regulations, and policy (e.g., FMCSA, Title 49, etc.) to determine **what’s actually in scope** constitutionally.
+- exposes the systemic error,
+- attaches a measurable dollar value to it,
+- shows the repair value if fidelity is restored.
 
+This is constitutional economics — not theory, not vibes — **math with receipts**.
+
+---
+
+# 🔥 Constitutional Purpose  
+The Constitution isn’t an abstract philosophy. It’s the operating system of the country.  
+When agencies or states wander off-script — especially by applying commercial codes to private citizens — **the divergence becomes measurable harm.**
+
+A.B.E. quantifies that harm and shows the recovery unlocked when government returns to its lawful boundaries.
+
+This is not anti-government.  
+This is *pro-Constitution, pro-people, pro-integrity* governance.
+
+---
+
+# 📂 Project Structure  
+Each module folder includes its own README explaining:
+
+- What it does  
+- How it works  
+- How to use it  
+- Privacy behavior  
+- Inputs/outputs  
+- How it fits into A.B.E.’s chain  
+- Constitutional purpose  
+
+Modules live in:
 2. **CDI — Constitutional Divergence Index**  
    Measures where practice diverges from that scope: overreach, misuse, ultra vires behavior.
 
