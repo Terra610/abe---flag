@@ -1,23 +1,62 @@
-# Integration Layer — Verification & Audit System  
-*(American Butterfly Effect — Trust Layer)*
+# Integration Layer — Public KPIs & Integrity Receipts
 
-### 🧭 Purpose
-The **Integration Layer** is where *data meets accountability.*  
-It receives the **budget outputs from CIBS** and verifies that every allocated dollar:
-- Reached its intended recipient,  
-- Was not diverted, delayed, or suppressed,  
-- And is publicly auditable from source to outcome.
+The Integration Layer is the **evidence desk** of A.B.E.  
+It connects the outputs of CIRI and CIBS, verifies data integrity, hashes artifacts, and produces **tamper-evident receipts**.
 
-Think of it as A.B.E.’s **fiscal immune system** — it detects corruption, duplication, and retaliation anywhere in the process.
+This is where A.B.E. stops being “a calculator” and becomes **auditable evidence**.
 
 ---
 
-### ⚙️ How It Works
-1. **Input Sources**
-   - `/cibs/auto_budget.csv` → declared allocations  
-   - `/cii/portfolio.csv` → project-level implementation records  
-   - `/integration/logs.json` → receipt verification & attestation records  
-   - `/system/map.json` → canonical data chain reference
+# 🔥 What It Does  
+- Reads CIRI and CIBS outputs  
+- Recomputes KPIs to confirm consistency  
+- Loads CDI + CAE for context  
+- Runs integrity checks:  
+  - presence  
+  - parse  
+  - plausibility  
+  - hash  
+- Produces an audit packet:  
+  - JSON report  
+  - SHA-256 hashes  
+  - timestamp  
+  - all displayed on-screen  
+- Visitor can download the audit as:  
+  - `abe_audit_<id>.json`  
+  - optional PDF (if enabled)
+
+---
+
+# 🔥 Constitutional Purpose  
+Accountability requires chain-of-custody.  
+Without receipts, government can hand-wave anything away.
+
+The Integration Layer ensures:
+
+- the math is auditable  
+- the data is consistent  
+- the evidence is self-contained  
+- nothing relies on trust  
+- no one can alter or deny the outputs later  
+
+This is how you create a **public, constitutional audit trail** for communities reclaiming their rights.
+
+---
+
+# 🦋 How User Upload Affects It  
+If a visitor uploads a custom CIRI CSV:
+
+- Integration uses **their** numbers  
+- All KPIs update  
+- The audit report reflects their scenario  
+- No data is saved or transmitted  
+- They alone control the receipt
+
+This gives every person, attorney, or jurisdiction a **court-ready snapshot** with no server involved.
+
+---
+
+# 📄 Files   - `/system/map.json` → canonical data chain reference
 
 2. **Process**
    - Compares **declared budgets (CIBS)** to **received funds (Integration Receipts)**  
