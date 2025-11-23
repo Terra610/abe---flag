@@ -39,3 +39,15 @@ Everything runs inside *your* browser — never on a server.
 
 ## 🗂 Required CSV Columns
 Your CSV must include:
+
+program_name,  
+federal_authority_citation,  
+fiscal_year,  
+state_or_jurisdiction,  
+agency,  
+line_item_description,  
+spend_category_code,  
+amount_usd,  
+notes (optional)
+
+See `inputs.csv` for an example spanning MCSAP, Medicaid, TANF, Highway Grants, CDBG, Title I, and SLFRF.
