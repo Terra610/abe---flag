@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Start Here — American Butterfly Effect (A.B.E.)</title>
+<base href="/abe---flag/">
+<style>
+:root{
+  --bg:#0b0d12;--panel:#141820;--panel2:#0f131a;--ink:#e6e6e6;--muted:#9fb3c8;
+  --line:rgba(255,255,255,.08);--brand:#5ddfff;--accent:#fff750;--ok:#4bd28f;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+a{color:#80bfff;text-decoration:none}
+a:hover{text-decoration:underline}
+header{padding:24px 20px;background:linear-gradient(90deg,#11151c,#1b1e25);border-bottom:1px solid var(--line)}
+.wrap{max-width:1100px;margin:0 auto;padding:0 20px}
+h1{margin:0 0 6px;font-size:1.9rem}
+.sub{color:var(--muted);max-width:720px}
+.badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.badge{display:inline-flex;align-items:center;padding:5px 10px;border-radius:999px;border:1px solid var(--line);font-size:.85rem;color:var(--muted)}
+main{max-width:1100px;margin:22px auto 42px;padding:0 20px}
+section{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin-bottom:16px}
+h2{margin:.1rem 0 .4rem;color:var(--accent);font-size:1.25rem}
+p{margin:.25rem 0 .6rem}
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.tile{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.tile h3{margin:0 0 .35rem;font-size:1.05rem}
+.small{color:var(--muted);font-size:.9rem}
+.btn{display:inline-block;margin-top:.4rem;padding:.4rem .7rem;border-radius:9px;border:1px solid var(--line);background:#10141d;color:var(--ink);font-size:.9rem}
+.btn:hover{border-color:var(--brand)}
+.code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.85rem;background:#0f131a;border-radius:8px;padding:.45rem .55rem;border:1px solid var(--line);display:inline-block}
+.callout{border-left:3px solid var(--brand);padding-left:10px;margin-top:8px}
+footer{margin:34px 0 20px;text-align:center;color:var(--muted);font-size:.85rem}
+@media (max-width:720px){
+  h1{font-size:1.55rem}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <a href="/abe---flag/index.html" class="badge">← Back to A.B.E. Hub</a>
+    <h1>Start Here</h1>
+    <div class="sub">
+      You don’t need to be a lawyer or a quant to use A.B.E.
+      This page routes you to the right part of the engine and tells you, in plain language,
+      what to do when you get there.
+    </div>
+    <div class="badges">
+      <span class="badge">License: CC BY-NC 4.0</span>
+      <span class="badge">No logins · No tracking · Local-only CSV uploads</span>
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- 1. Quick “what is this?” -->
+  <section>
+    <h2>What is A.B.E. in one sentence?</h2>
+    <p>
+      A.B.E. is a <strong>constitutional prosperity engine</strong> — it turns
+      “are we following the Constitution?” into <strong>hard numbers</strong>:
+      dollars recovered, harm reduced, and budgets realigned.
+    </p>
+    <p class="small">
+      Under the hood: CAE (law alignment) → CDI (divergence score) →
+      CIRI (recovery value) → CIBS (budget) → CII (projects) →
+      Integration (public receipts).
+    </p>
+    <div class="callout small">
+      All math is transparent. All formulas are documented. Every calculator can
+      run off <span class="code">.csv</span> files you control.
+    </div>
+  </section>
+
+  <!-- 2. Pick your situation -->
+  <section>
+    <h2>Pick the situation closest to you</h2>
+    <div class="grid">
+      <div class="tile">
+        <h3>🚔 I’m dealing with tickets, detention, or court abuse</h3>
+        <p class="small">
+          You want to know the <strong>economic harm</strong> from unconstitutional enforcement
+          (traffic stops, jail days, bogus fees, threatened lawsuits, etc.).
+        </p>
+        <p class="small"><strong>Go here:</strong> CIRI calculator.</p>
+        <a class="btn" href="/abe---flag/ciri/index.html">Open CIRI — Run Your Case CSV</a>
+        <p class="small">
+          On the CIRI page: download <code class="code">inputs.csv</code>, plug in your
+          numbers (or county/state numbers), then upload it back into the page and
+          download your <strong>Constitutional Recovery Receipt</strong>.
+        </p>
+      </div>
+
+      <div class="tile">
+        <h3>💸 I’m looking at budgets & funding priorities</h3>
+        <p class="small">
+          You want to see how recovered value (<strong>CIRI</strong>) turns into housing,
+          clinics, food, transit, and other community investments.
+        </p>
+        <p class="small"><strong>Go here:</strong> CIBS + CII.</p>
+        <a class="btn" href="/abe---flag/cibs/index.html">Open CIBS — Budget View</a>
+        <a class="btn" href="/abe---flag/cii/index.html" style="margin-left:.3rem">Open CII — Projects</a>
+        <p class="small">
+          These pages read shared CSV / JSON files and show how each dollar is allocated
+          and which projects it supports.
+        </p>
+      </div>
+
+      <div class="tile">
+        <h3>📊 I work in government, oversight, or policy</h3>
+        <p class="small">
+          You want <strong>audit-grade evidence</strong> for courts, legislatures,
+          IG offices, GAO-style reviews, or internal risk teams.
+        </p>
+        <p class="small"><strong>Go here:</strong> Integration layer + System Map.</p>
+        <a class="btn" href="/abe---flag/integration/index.html">Open Integration KPIs</a>
+        <a class="btn" href="/abe---flag/system/index.html" style="margin-left:.3rem">Open System Map</a>
+        <p class="small">
+          Integration reproduces the core KPIs and generates local audit certificates.
+          The System Map shows how data flows from source files into every public number.
+        </p>
+      </div>
+
+      <div class="tile">
+        <h3>📚 I want the doctrine and the receipts</h3>
+        <p class="small">
+          You want to read the constitutional and economic reasoning:
+          how the engine is grounded in the U.S. Constitution and existing statutes.
+        </p>
+        <p class="small"><strong>Go here:</strong> Doctrine library.</p>
+        <a class="btn" href="/abe---flag/doctrine/index.html">Open Doctrine Library</a>
+        <p class="small">
+          Start with <em>A.B.E. · CRRA · Rebuild Together</em> (4-page public doctrine),
+          then dive into <em>Constitutional Fidelity</em> and <em>Void ab Initio</em>.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. How uploads & privacy work -->
+  <section>
+    <h2>How uploads, privacy, and receipts work</h2>
+    <p class="small">
+      A.B.E. runs on a simple rule:
+      <strong>your data stays on your device unless you choose to share it.</strong>
+    </p>
+    <ul class="small">
+      <li>CSV uploads are processed <strong>locally in your browser</strong> using JavaScript.</li>
+      <li>No logins, no accounts, no hidden API calls to a backend.</li>
+      <li>You can download every result as CSV (and, on some pages, as JSON audit files).</li>
+      <li>If you publish anything, you decide what to redact before you send it to anyone.</li>
+    </ul>
+    <div class="callout small">
+      If you can’t safely expose a name or case number, replace it with an internal ID.
+      The math doesn’t care what the label is — it only cares about the structure of the CSV.
+    </div>
+  </section>
+
+  <!-- 4. Where this is going (Funding module mention) -->
+  <section>
+    <h2>What’s coming next</h2>
+    <p class="small">
+      The next public module will let you upload <strong>funding / grant</strong> data
+      and see where federal program rules, state statutes, and real-world practice diverge.
+      That will plug straight into CAE, CDI, and CIRI to quantify misuse and recovery.
+    </p>
+    <p class="small">
+      When that’s live, it will appear here as:
+      <code class="code">Funding Alignment Audit</code> → “Upload your funding CSV,
+      see where practice breaks the rules, and export an audit-ready report.”
+    </p>
+  </section>
+</main>
+
+<footer>
+  CC BY-NC 4.0 · DOI <a href="https://doi.org/10.5281/zenodo.17586107">10.5281/zenodo.17586107</a><br/>
+  <em>Integrity only — never for sale.</em>
+</footer>
+</body>
+</html>
