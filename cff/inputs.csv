@@ -1,0 +1,5 @@
+program_name,federal_authority_citation,fiscal_year,state_or_jurisdiction,agency,line_item_description,spend_category_code,amount_usd,notes
+MCSAP,49 U.S.C. 31102,2025,Iowa,Dept. of Public Safety,Commercial motor vehicle safety inspections,ON_MISSION,1500000,"Core CMV enforcement"
+MCSAP,49 U.S.C. 31102,2025,Iowa,Dept. of Public Safety,General traffic patrol of non-commercial drivers,OFF_MISSION,800000,"Spending outside CMV scope"
+MCSAP,49 U.S.C. 31102,2025,Iowa,Dept. of Public Safety,Data systems & admin for CMV safety,ON_MISSION,300000,"Program administration"
+MCSAP,49 U.S.C. 31102,2025,Iowa,Dept. of Public Safety,Mixed enforcement operations (unclear split between CMV and non-CMV),UNCLEAR,500000,"Needs further breakdown"
