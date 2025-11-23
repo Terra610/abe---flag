@@ -1,0 +1,411 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>CFF — Constitutional Funding Forensics | A.B.E.</title>
+<base href="/abe---flag/">
+<style>
+:root{
+  --bg:#0b0d12;--panel:#141820;--panel2:#0f131a;
+  --ink:#e6e6e6;--muted:#9fb3c8;--line:rgba(255,255,255,.08);
+  --accent:#5ddfff;--accent2:#ffa559;--ok:#4bd28f;--warn:#ffa559;--bad:#ff6b6b;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+a{color:#80bfff;text-decoration:none}a:hover{text-decoration:underline}
+header{padding:24px 20px;background:linear-gradient(90deg,#11151c,#1b1e25);border-bottom:1px solid var(--line)}
+.wrap{max-width:1100px;margin:0 auto;padding:0 20px}
+h1{margin:0 0 6px;font-size:1.7rem;color:var(--accent2);font-weight:800}
+.sub{color:var(--muted);max-width:720px}
+.badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:6px 11px;border-radius:999px;border:1px solid var(--line);font-size:.85rem;color:var(--muted);background:rgba(0,0,0,.2)}
+main{max-width:1100px;margin:24px auto 44px;padding:0 20px}
+section{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin-bottom:16px}
+h2{margin:.1rem 0 .6rem;color:var(--accent2);font-size:1.2rem}
+small,.note{color:var(--muted);font-size:.9rem}
+.grid{display:grid;gap:14px}
+.kpis{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.tile{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:12px}
+.k-label{font-size:.9rem;color:var(--muted)}
+.k-value{font-size:1.3rem;font-weight:700;margin-top:2px}
+.table{width:100%;border-collapse:collapse;font-size:.9rem}
+.table th,.table td{border:1px solid var(--line);padding:6px 8px;text-align:left}
+.table th{background:rgba(255,255,255,.03)}
+.bad{color:var(--bad)}.ok{color:var(--ok)}.warn{color:var(--warn)}
+.controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:8px}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:.45rem .9rem;border-radius:8px;border:1px solid var(--line);background:#0f131a;color:var(--ink);font-size:.9rem;cursor:pointer}
+.btn:hover{border-color:var(--accent)}
+.btn-ghost{background:#0d0f12}
+.source-pill{display:inline-flex;align-items:center;gap:6px;border-radius:999px;border:1px solid var(--line);padding:4px 10px;font-size:.8rem;color:var(--muted);background:#0d1016}
+.source-pill code{background:none;padding:0;color:var(--accent)}
+input[type=file]{font-size:.8rem}
+.drop-zone{
+  margin-top:6px;border:1px dashed var(--line);border-radius:8px;
+  padding:10px 12px;font-size:.85rem;color:var(--muted);text-align:center;
+  background:#0d1016;
+}
+.drop-zone.dragover{border-color:var(--accent);background:rgba(93,223,255,.06);color:var(--accent)}
+pre{background:#0f131a;border:1px solid var(--line);border-radius:10px;padding:10px;font-size:.8rem;overflow:auto}
+footer{margin:36px 0 20px;text-align:center;color:var(--muted);font-size:.85rem}
+@media(max-width:720px){
+  header{padding:20px 12px}
+  main{padding:0 12px}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1>CFF — Constitutional Funding Forensics</h1>
+    <div class="sub">
+      Follows the money from federal appropriation law → state statutes → line-item spend.
+      All math runs in your browser. No uploads. No tracking. Just receipts.
+    </div>
+    <div class="badges">
+      <a class="chip" href="/abe---flag/index.html">← Back to A.B.E. Hub</a>
+      <span class="chip">License: CC BY-NC 4.0</span>
+      <a class="chip" href="/abe---flag/ciri/index.html">CIRI (Recovery)</a>
+      <a class="chip" href="/abe---flag/cibs/index.html">CIBS (Budget)</a>
+      <a class="chip" href="/abe---flag/integration/index.html">Integration</a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- Intro -->
+  <section>
+    <h2>What CFF Does</h2>
+    <p>
+      CFF is the “follow the money” module of the A.B.E. engine. It doesn’t guess intent,
+      and it doesn’t touch your private documents. It just takes a funding table you already have and
+      answers three questions:
+    </p>
+    <ol>
+      <li>How many dollars are clearly used for the purpose Congress actually authorized?</li>
+      <li>How many dollars are clearly off-mission?</li>
+      <li>How much is stuck in the gray zone that needs tighter reporting?</li>
+    </ol>
+    <p class="note">
+      You stay in control of the legal judgment. CFF simply turns that judgment into public, auditable math.
+    </p>
+  </section>
+
+  <!-- Live calculator -->
+  <section>
+    <h2>⚖️ Live Funding Forensics</h2>
+
+    <div class="controls">
+      <span class="source-pill">
+        Source:
+        <label><input type="radio" name="mode" value="repo" checked> use example <code>cff/inputs.csv</code></label>
+        ·
+        <label><input type="radio" name="mode" value="upload"> upload CSV (local only)</label>
+      </span>
+      <input type="file" id="file-input" accept=".csv" style="display:none">
+      <button id="btn-download" class="btn btn-ghost">Download Forensics Report (CSV)</button>
+    </div>
+    <div id="drop-zone" class="drop-zone" aria-label="Drop CSV here">
+      Drop your funding CSV here or switch to “upload CSV” and pick a file.
+    </div>
+    <p class="note" style="margin-top:6px">
+      Expected headers (v1): <code>program_name, federal_authority_citation, fiscal_year, state_or_jurisdiction, agency, line_item_description, spend_category_code, amount_usd, notes</code>.
+    </p>
+
+    <div class="grid kpis" style="margin-top:14px">
+      <div class="tile">
+        <div class="k-label">Total Federal Funds (analyzed)</div>
+        <div id="kpi-total" class="k-value">—</div>
+        <div class="note">Sum of <code>amount_usd</code> across all rows.</div>
+      </div>
+      <div class="tile">
+        <div class="k-label">Lawful / On-Mission</div>
+        <div id="kpi-on" class="k-value">—</div>
+        <div class="note">Rows marked <code>ON_MISSION</code>.</div>
+      </div>
+      <div class="tile">
+        <div class="k-label">Flagged Misuse (Off-Mission)</div>
+        <div id="kpi-off" class="k-value bad">—</div>
+        <div class="note">Rows marked <code>OFF_MISSION</code>.</div>
+      </div>
+      <div class="tile">
+        <div class="k-label">Overreach Index / Fidelity Score</div>
+        <div id="kpi-index" class="k-value">—</div>
+        <div class="note">
+          Overreach = OFF_MISSION ÷ Total • Fidelity = 1 − Overreach
+        </div>
+      </div>
+    </div>
+
+    <div class="tile" style="margin-top:14px">
+      <div style="font-weight:600;margin-bottom:6px">Line-Item View</div>
+      <table class="table" id="cff-table" aria-label="Funding table">
+        <thead>
+          <tr>
+            <th>Program</th>
+            <th>Authority</th>
+            <th>FY</th>
+            <th>State</th>
+            <th>Agency</th>
+            <th>Description</th>
+            <th>Category</th>
+            <th>Amount (USD)</th>
+            <th>Flag</th>
+          </tr>
+        </thead>
+        <tbody id="cff-body">
+          <tr><td colspan="9" style="text-align:center;color:var(--muted)">Loading CFF inputs…</td></tr>
+        </tbody>
+      </table>
+      <div id="cff-status" class="note" style="margin-top:6px"></div>
+    </div>
+
+    <div style="margin-top:10px">
+      <details>
+        <summary class="note" style="cursor:pointer">How to code <code>spend_category_code</code> (ON_MISSION / OFF_MISSION / UNCLEAR)</summary>
+        <div class="note" style="margin-top:6px">
+          <strong>ON_MISSION</strong>: The line item falls squarely inside the statute that funded it.<br>
+          <strong>OFF_MISSION</strong>: The line item is clearly outside the statute’s purpose (e.g., using a CMV grant to police non-commercial commuters).<br>
+          <strong>UNCLEAR</strong>: Mixed or poorly described; could be on-mission but needs better breakdown or documentation.
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- Privacy & purpose -->
+  <section>
+    <h2>🔒 Privacy & Constitutional Purpose</h2>
+    <p class="note">
+      CFF never sends your data anywhere. CSV files are read directly in your browser and stay on your device.
+      That isn’t just a UX choice — it’s part of the constitutional design. When the public can audit funding
+      flows without handing their case files to a gatekeeper, it breaks the monopoly on who gets to “see”
+      misuse and overreach.
+    </p>
+    <p class="note">
+      The model’s job is to show, in plain dollars, where statutes and funding terms are being honored — and where
+      they’re being stretched past their lawful edge.
+    </p>
+  </section>
+</main>
+
+<footer>
+  © 2025 Terra Dawn Shouse — American Butterfly Effect (A.B.E.) ·
+  <a href="https://doi.org/10.5281/zenodo.17586107">DOI 10.5281/zenodo.17586107</a><br/>
+  CC BY-NC 4.0 • Integrity only — never for sale.
+</footer>
+
+<script>
+(function(){
+  const money = n => {
+    const v = Number(n);
+    if(!isFinite(v)) return '—';
+    try{
+      return v.toLocaleString(undefined,{style:'currency',currency:'USD',maximumFractionDigits:0});
+    }catch(_){
+      return '$'+Math.round(v).toLocaleString();
+    }
+  };
+  const pct = x => (x*100).toFixed(1)+'%';
+
+  const REPO_CSV = "/abe---flag/cff/inputs.csv";
+
+  function parseCSV(text){
+    const lines = text.trim().split(/\\r?\\n/).filter(Boolean);
+    if(!lines.length) return {head:[], rows:[]};
+    const head = lines[0].split(',').map(s=>s.trim());
+    const rows = lines.slice(1).map(line=> {
+      const cells = line.split(','); // v1: assume simple, no embedded commas
+      const obj = {};
+      head.forEach((h,i)=>{ obj[h] = (cells[i]||"").trim(); });
+      return obj;
+    });
+    return {head, rows};
+  }
+
+  function num(x){
+    const n = Number(String(x||"").replace(/[^0-9.\\-]/g,""));
+    return isFinite(n)? n : 0;
+  }
+
+  function classifyRow(row){
+    const code = String(row.spend_category_code || row.SpendCategory || "").trim().toUpperCase();
+    if(code === "ON_MISSION") return "ON_MISSION";
+    if(code === "OFF_MISSION") return "OFF_MISSION";
+    if(code === "UNCLEAR") return "UNCLEAR";
+    return "UNCLEAR";
+  }
+
+  function compute(rows){
+    let total=0, on=0, off=0, unclear=0;
+    const enriched = rows.map(r=>{
+      const amt = num(r.amount_usd || r.amount || r.Amount);
+      const cat = classifyRow(r);
+      total += amt;
+      if(cat==="ON_MISSION") on += amt;
+      else if(cat==="OFF_MISSION") off += amt;
+      else unclear += amt;
+      return Object.assign({}, r, { __amount:amt, __cat:cat });
+    });
+    const overreach = total>0 ? off/total : 0;
+    const fidelity  = 1 - overreach;
+    return { total, on, off, unclear, overreach, fidelity, rows:enriched };
+  }
+
+  function render(result, srcLabel){
+    // KPIs
+    document.getElementById("kpi-total").textContent = money(result.total);
+    document.getElementById("kpi-on").textContent    = money(result.on);
+    document.getElementById("kpi-off").textContent   = money(result.off);
+    document.getElementById("kpi-index").textContent =
+      pct(result.overreach) + " overreach / " + pct(result.fidelity) + " fidelity";
+
+    // Table
+    const body = document.getElementById("cff-body");
+    if(!result.rows.length){
+      body.innerHTML = '<tr><td colspan="9" style="text-align:center;color:var(--muted)">No rows found in CSV.</td></tr>';
+    }else{
+      body.innerHTML = result.rows.map(r=>{
+        const flagClass =
+          r.__cat === "OFF_MISSION" ? "bad" :
+          r.__cat === "ON_MISSION" ? "ok" : "warn";
+        const flagLabel =
+          r.__cat === "OFF_MISSION" ? "OFF-MISSION" :
+          r.__cat === "ON_MISSION" ? "ON-MISSION" : "UNCLEAR";
+        return `<tr>
+          <td>${r.program_name||""}</td>
+          <td>${r.federal_authority_citation||""}</td>
+          <td>${r.fiscal_year||""}</td>
+          <td>${r.state_or_jurisdiction||""}</td>
+          <td>${r.agency||""}</td>
+          <td>${r.line_item_description||""}</td>
+          <td>${r.spend_category_code||""}</td>
+          <td>${money(r.__amount)}</td>
+          <td class="${flagClass}">${flagLabel}</td>
+        </tr>`;
+      }).join("");
+    }
+
+    document.getElementById("cff-status").textContent =
+      "Analyzed " + result.rows.length + " line items from " + srcLabel;
+
+    // Attach download handler using a closure
+    const btn = document.getElementById("btn-download");
+    btn.onclick = ()=>{
+      const now = new Date().toISOString();
+      const header = [
+        ["A.B.E. Constitutional Funding Forensics (CFF) Receipt"],
+        ["Generated at", now],
+        ["Source", srcLabel],
+        [],
+        ["Metric","Value"],
+        ["Total Funds (analyzed)", result.total],
+        ["On-Mission (lawful)", result.on],
+        ["Off-Mission (flagged misuse)", result.off],
+        ["Unclear / mixed", result.unclear],
+        ["Overreach Index (OFF/Total)", result.overreach],
+        ["Fidelity Score (1 − Overreach)", result.fidelity],
+        [],
+        ["program_name","federal_authority_citation","fiscal_year","state_or_jurisdiction","agency","line_item_description","spend_category_code","amount_usd","notes"]
+      ];
+      const detailRows = result.rows.map(r=>[
+        r.program_name||"",
+        r.federal_authority_citation||"",
+        r.fiscal_year||"",
+        r.state_or_jurisdiction||"",
+        r.agency||"",
+        r.line_item_description||"",
+        r.spend_category_code||"",
+        r.__amount,
+        r.notes||""
+      ]);
+      const csvLines = header.concat(detailRows).map(row=>row.join(",")).join("\\n");
+      const blob = new Blob([csvLines],{type:"text/csv"});
+      const url  = URL.createObjectURL(blob);
+      const a    = document.createElement("a");
+      a.href = url;
+      a.download = "ABE_CFF_Funding_Forensics_Receipt.csv";
+      a.click();
+      URL.revokeObjectURL(url);
+    };
+  }
+
+  async function loadRepo(){
+    const status = document.getElementById("cff-status");
+    status.textContent = "Loading cff/inputs.csv…";
+    try{
+      const res = await fetch(REPO_CSV,{cache:"no-store"});
+      if(!res.ok) throw new Error("HTTP "+res.status);
+      const text = await res.text();
+      const parsed = parseCSV(text);
+      const result = compute(parsed.rows);
+      render(result,"repo cff/inputs.csv");
+    }catch(e){
+      console.error(e);
+      status.textContent = "Could not load cff/inputs.csv from repo.";
+    }
+  }
+
+  function handleFile(file){
+    const status = document.getElementById("cff-status");
+    if(!file){ return; }
+    status.textContent = "Reading "+file.name+"…";
+    const reader = new FileReader();
+    reader.onload = ev=>{
+      try{
+        const parsed = parseCSV(ev.target.result);
+        const result = compute(parsed.rows);
+        render(result,"uploaded file ("+file.name+")");
+      }catch(err){
+        console.error(err);
+        status.textContent = "Could not parse that CSV. Check the header row and try again.";
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  function initSourceControls(){
+    const radios = document.querySelectorAll('input[name="mode"]');
+    const fileInput = document.getElementById("file-input");
+    radios.forEach(r=>{
+      r.addEventListener("change", e=>{
+        if(e.target.value === "upload"){
+          fileInput.style.display = "inline-block";
+        }else{
+          fileInput.style.display = "none";
+          fileInput.value = "";
+          loadRepo();
+        }
+      });
+    });
+    fileInput.addEventListener("change", e=>{
+      const file = e.target.files[0];
+      if(file) handleFile(file);
+    });
+  }
+
+  function initDropZone(){
+    const dz = document.getElementById("drop-zone");
+    dz.addEventListener("dragover", e=>{
+      e.preventDefault();
+      dz.classList.add("dragover");
+    });
+    dz.addEventListener("dragleave", e=>{
+      e.preventDefault();
+      dz.classList.remove("dragover");
+    });
+    dz.addEventListener("drop", e=>{
+      e.preventDefault();
+      dz.classList.remove("dragover");
+      const file = e.dataTransfer.files[0];
+      if(file) handleFile(file);
+    });
+  }
+
+  // boot
+  initSourceControls();
+  initDropZone();
+  loadRepo();
+})();
+</script>
+</body>
+  </html>
