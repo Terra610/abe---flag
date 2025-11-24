@@ -25,6 +25,14 @@ main{max-width:1100px;margin:22px auto 40px;padding:0 20px}
 .grid-2{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
 .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px}
 .tile{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:12px}
+/* Fix long header wrapping */
+.note code.hdr {
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-size: 0.85rem;
+  display: block;
+  margin-top: 4px;
+}
 h2{margin:0 0 .4rem;font-size:1.1rem}
 small,.muted{color:var(--muted);font-size:.9rem}
 .kpi-label{font-size:.9rem;color:var(--muted)}
@@ -89,8 +97,25 @@ footer{margin:36px 0 22px;text-align:center;color:var(--muted);font-size:.9rem}
         <input id="file" type="file" accept=".csv,text/csv"/>
       </div>
       <div class="note" style="margin-top:8px">
-        Required header (single row):<br/>
-        <code>cases_avoided,avg_cost_per_case,jail_days_avoided,cost_per_jail_day,fees_canceled_total,policy_corrections,avg_enforcement_cost_savings,households_restored,avg_monthly_market_spend,months_effective,employment_probability,avg_monthly_wage,expected_lawsuits,avg_payout,litigation_multiplier,transition_costs_one_time</code>
+  Required header (single row):<br/>
+  <code class="hdr">
+cases_avoided,
+avg_cost_per_case,
+jail_days_avoided,
+cost_per_jail_day,
+fees_canceled_total,
+policy_corrections,
+avg_enforcement_cost_savings,
+households_restored,
+avg_monthly_market_spend,
+months_effective,
+employment_probability,
+avg_monthly_wage,
+expected_lawsuits,
+avg_payout,
+litigation_multiplier,
+transition_costs_one_time
+  </code>
       </div>
       <div id="load-status" class="note" style="margin-top:8px">
         Using repo baseline. No local override loaded yet.
