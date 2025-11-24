@@ -1,7 +1,8 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Integration — A.B.E. Public KPIs & Integrity</title>
 <base href="/abe---flag/">
 <style>
@@ -11,295 +12,63 @@
 }
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 system-ui}
-a{color:#80bfff} a:hover{text-decoration:underline}
-header{padding:24px 20px;background:linear-gradient(90deg,#11151c,#1b1e25);border-bottom:1px solid var(--line)}
+a{color:#80bfff;text-decoration:none}
+a:hover{text-decoration:underline}
+header{
+  padding:24px 20px;
+  background:linear-gradient(90deg,#11151c,#1b1e25);
+  border-bottom:1px solid var(--line)
+}
 .wrap{max-width:1100px;margin:0 auto;padding:24px 20px}
 h1{margin:0 0 6px}
 .sub{color:var(--muted)}
 .grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;margin:18px 0}
-.tile{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:14px}
+.card{
+  background:var(--panel);border:1px solid var(--line);
+  border-radius:12px;padding:16px;margin:18px 0
+}
+.tile{
+  background:var(--panel2);border:1px solid var(--line);
+  border-radius:10px;padding:14px
+}
 .num{font-size:1.35rem;font-weight:700}
 small{color:var(--muted)}
 table{width:100%;border-collapse:collapse}
 th,td{border:1px solid var(--line);padding:10px 12px;text-align:left}
 th{background:var(--panel2)}
 footer{margin:36px 0 20px;color:var(--muted);text-align:center;font-size:.9rem}
-.badge{display:inline-block;padding:2px 8px;border:1px solid var(--line);border-radius:999px;color:var(--muted)}
-.btn{display:inline-block;border:1px solid var(--line);background:#0f131a;color:#e6e6e6;padding:.55rem .9rem;border-radius:9px;text-decoration:none;cursor:pointer}
+.badge{
+  display:inline-block;padding:2px 8px;border:1px solid var(--line);
+  border-radius:999px;color:var(--muted);font-size:.85rem
+}
+.btn{
+  display:inline-block;border:1px solid var(--line);
+  background:#0f131a;color:#e6e6e6;
+  padding:.55rem .9rem;border-radius:9px;
+  text-decoration:none;cursor:pointer
+}
 .btn:hover{border-color:var(--brand)}
-.status{display:inline-block;padding:.1rem .5rem;border-radius:999px;border:1px solid var(--line);font-size:.85rem}
+.status{
+  display:inline-block;padding:.1rem .5rem;border-radius:999px;
+  border:1px solid var(--line);font-size:.85rem
+}
 .s-ok{background:rgba(75,210,143,.12);color:var(--ok);border-color:rgba(75,210,143,.35)}
 .s-warn{background:rgba(255,165,89,.12);color:var(--warn);border-color:rgba(255,165,89,.35)}
 .s-bad{background:rgba(255,107,107,.12);color:var(--bad);border-color:rgba(255,107,107,.35)}
 .kright{float:right}
-pre.code{white-space:pre-wrap;background:#0f131a;border:1px solid var(--line);border-radius:10px;padding:12px;overflow:auto}
-.mono{font-family:ui-monospace,SFMono-Regular,Consolas,Monaco,monospace}
-</style>
-</head>
-<body>
-<header>
-  <div class="wrap">
-    <a href="/abe---flag/" class="badge">← Home</a>
-    <h1>Integration Layer — Public KPIs & Integrity</h1>
-    <div class="sub">Live signals from the A.B.E. pipeline (CIRI → CIBS), plus one-click integrity verification.</div>
-  </div>
-</header>
-
-<main class="wrap">
-  <!-- Live KPIs -->
-  <div class="grid">
-    <div class="tile">
-      <div>Public Allocation (CIBS)</div>
-      <div id="kpi-cibs-total" class="num">—</div>
-      <small>Sum of <code>/cibs/auto_budget.csv</code> (current published plan)</small>
-    </div>
-    <div class="tile">
-      <div>Modeled Recovery (CIRI)</div>
-      <div id="kpi-ciri-total" class="num">—</div>
-      <small id="kpi-ciri-note">Computed from <code>/ciri/inputs.csv</code> (engine estimate).</small>
-    </div>
-    <div class="tile">
-      <div>CIRI Index</div>
-      <div id="kpi-ciri" class="num">—</div>
-      <small>\( CIRI = 1 - e^{-R_T/K} \) with K-scale</small>
-    </div>
-    <div class="tile">
-      <div>ROI per Case</div>
-      <div id="kpi-roi" class="num">—</div>
-      <small>\( ROI_{case}=R_T/\max(1,cases) \)</small>
-    </div>
-  </div>
-
-  <!-- Integrity Controls -->
-  <div class="card">
-    <h3 style="margin:0 0 .6rem">Integrity Beacon<span class="kright"><button id="btn-verify" class="btn">Verify Now</button></span></h3>
-    <small>Runs local, dependency-free checks: file presence, schema plausibility, recomputed KPIs, and SHA-256 hashes.</small>
-    <div id="beacons" class="grid" style="margin-top:10px">
-      <div class="tile"><div><strong>CIRI</strong> (<code>ciri/inputs.csv</code>)</div><div id="b-ciri" class="status">—</div></div>
-      <div class="tile"><div><strong>CIBS</strong> (<code>cibs/auto_budget.csv</code>)</div><div id="b-cibs" class="status">—</div></div>
-      <div class="tile"><div><strong>CDI</strong> (<code>cdi/divergence.csv</code>)</div><div id="b-cdi" class="status">—</div></div>
-      <div class="tile"><div><strong>CAE</strong> (<code>cae/model.json</code>)</div><div id="b-cae" class="status">—</div></div>
-    </div>
-    <div style="margin-top:10px">
-      <button id="btn-download" class="btn" disabled>Download Audit Certificate (JSON)</button>
-    </div>
-  </div>
-
-  <!-- Detailed Results -->
-  <div class="card">
-    <h3 style="margin:0 0 .6rem">Verification Results</h3>
-    <table>
-      <thead><tr><th>Artifact</th><th>Checks</th><th>Status</th><th>SHA-256</th></tr></thead>
-      <tbody id="result-rows"></tbody>
-    </table>
-    <div id="result-meta" style="margin-top:10px" class="mono small"></div>
-    <h4 style="margin:16px 0 6px">Raw JSON</h4>
-    <pre id="raw" class="code mono" aria-label="Raw audit JSON">—</pre>
-  </div>
-
-  <div class="card">
-    <h3 style="margin:0 0 .6rem">Audit Trail (sources)</h3>
-    <ul>
-      <li><a href="/abe---flag/ciri/inputs.csv">/ciri/inputs.csv</a> — engine inputs</li>
-      <li><a href="/abe---flag/cibs/auto_budget.csv">/cibs/auto_budget.csv</a> — public allocation</li>
-      <li><a href="/abe---flag/cdi/divergence.csv">/cdi/divergence.csv</a> — divergence inputs</li>
-      <li><a href="/abe---flag/cae/model.json">/cae/model.json</a> — alignment corpus map</li>
-      <li><a href="/abe---flag/macro/model.html">/macro/model.html</a> — formal equations</li>
-      <li><a href="https://doi.org/10.5281/zenodo.17586107">DOI 10.5281/zenodo.17586107</a> — permanent archive</li>
-    </ul>
-  </div>
-</main>
-
-<footer>
-  CC BY-NC 4.0 · DOI <a href="https://doi.org/10.5281/zenodo.17586107">10.5281/zenodo.17586107</a> · Integrity only — never for sale.
-</footer>
-
-<script src="/abe---flag/system/integrity.js"></script>
-<script>
-(function(){
-  const fmtMoney = n => {
-    const v = Number(n);
-    if(!isFinite(v)) return '—';
-    try{
-      return new Intl.NumberFormat(undefined,{style:'currency',currency:'USD',maximumFractionDigits:0}).format(v);
-    }catch(_){
-      return '$'+Math.round(v).toLocaleString();
-    }
-  };
-
-  const SCEN_KEY = 'ABE_CIRI_SCENARIO_V2';
-  const K_CIRI_V2 = 1_000_000_000;
-
-  function computeCiriMetrics(d){
-    const num = x => {
-      const n = Number(String(x||"").replace(/[^0-9.\\-]/g,""));
-      return isFinite(n)?n:0;
-    };
-
-    const cases_avoided          = num(d.cases_avoided);
-    const avg_cost_per_case      = num(d.avg_cost_per_case);
-    const jail_days_avoided      = num(d.jail_days_avoided);
-    const cost_per_jail_day      = num(d.cost_per_jail_day);
-    const fees_canceled_total    = num(d.fees_canceled_total);
-    const policy_corrections     = num(d.policy_corrections);
-    const avg_enforcement_cost_savings = num(d.avg_enforcement_cost_savings);
-    const households_restored    = num(d.households_restored);
-    const avg_monthly_market_spend = num(d.avg_monthly_market_spend);
-    const months_effective       = num(d.months_effective);
-    const employment_probability = num(d.employment_probability);
-    const avg_monthly_wage       = num(d.avg_monthly_wage);
-    const expected_lawsuits      = num(d.expected_lawsuits);
-    const avg_payout             = num(d.avg_payout);
-    const litigation_multiplier  = num(d.litigation_multiplier || d.multiplier);
-    const transition_costs       = num(d.transition_costs_one_time);
-
-    const direct_case   = cases_avoided * avg_cost_per_case;
-    const detention     = jail_days_avoided * cost_per_jail_day;
-    const fees          = fees_canceled_total;
-    const enforcement   = policy_corrections * avg_enforcement_cost_savings;
-    const market_access = households_restored * avg_monthly_market_spend * months_effective;
-    const employment    = cases_avoided * employment_probability * avg_monthly_wage * (months_effective/12);
-    const litigation    = expected_lawsuits * avg_payout * litigation_multiplier;
-    const licensing_val = 0;
-
-    let total = direct_case + detention + fees + enforcement + market_access + employment + litigation - transition_costs;
-    total = Math.max(0,total);
-
-    const ciri_index   = 1 - Math.exp(- total / Math.max(1,K_CIRI_V2));
-    const cii_index    = 1 - ciri_index;
-    const roi_per_case = cases_avoided>0 ? total / cases_avoided : 0;
-
-    return { total_recovery: total, ciri_index, cii_index, roi_per_case };
-  }
-
-  function loadLocalScenario(){
-    try{
-      const raw = localStorage.getItem(SCEN_KEY);
-      if(!raw) return null;
-      const scen = JSON.parse(raw);
-      if(!scen || !scen.outputs || typeof scen.outputs.total_recovery !== 'number') return null;
-      return scen;
-    }catch(e){
-      console.warn('Could not read ABE_CIRI_SCENARIO_V2', e);
-      return null;
-    }
-  }
-
-  function overlayWithLocalScenario(){
-    const scen = loadLocalScenario();
-    if(!scen) return;
-    const out = scen.outputs;
-
-    const elTotal = document.getElementById('kpi-ciri-total');
-    const elIdx   = document.getElementById('kpi-ciri');
-    const elRoi   = document.getElementById('kpi-roi');
-    if(elTotal) elTotal.textContent = fmtMoney(out.total_recovery) + ' *';
-    if(elIdx)   elIdx.textContent   = out.ciri_index.toFixed(2) + ' *';
-    if(elRoi)   elRoi.textContent   = fmtMoney(out.roi_per_case) + ' *';
-
-    const note = document.getElementById('kpi-ciri-note');
-    if(note){
-      note.innerHTML =
-        'Baseline from <code>/ciri/inputs.csv</code>. '+
-        'Asterisk (*) shows your last local CIRI scenario from this browser (ABE_CIRI_SCENARIO_V2).';
-    }
-  }
-
-  // quick KPIs
-  (async function kpis(){
-    // CIBS total
-    try{
-      const r = await fetch('/abe---flag/cibs/auto_budget.csv',{cache:'no-store'});
-      const t = await r.text();
-      const lines = t.trim().split(/\\r?\\n/);
-      const total = lines.slice(1).reduce((s,line)=>{
-        const v = Number(line.split(',')[1]); return s + (isFinite(v)?v:0);
-      },0);
-      document.getElementById('kpi-cibs-total').textContent = fmtMoney(total);
-    }catch(_){}
-
-    // CIRI v2 baseline
-    try{
-      const r = await fetch('/abe---flag/ciri/inputs.csv',{cache:'no-store'});
-      const t = await r.text();
-      const lines = t.trim().split(/\\r?\\n/).filter(Boolean);
-      const head  = (lines[0]||'').split(',').map(s=>s.trim());
-      const row   = (lines[1]||'').split(',').map(s=>s.trim());
-      const obj   = {};
-      head.forEach((h,i)=>obj[h]=row[i]);
-
-      const out = computeCiriMetrics(obj);
-      document.getElementById('kpi-ciri-total').textContent = fmtMoney(out.total_recovery);
-      document.getElementById('kpi-ciri').textContent       = out.ciri_index.toFixed(2);
-      document.getElementById('kpi-roi').textContent        = fmtMoney(out.roi_per_case);
-    }catch(_){}
-
-    // Overlay with local scenario if present
-    overlayWithLocalScenario();
-  })();
-
-  // integrity button
-  const btn = document.getElementById('btn-verify');
-  const dl  = document.getElementById('btn-download');
-  btn.addEventListener('click', async ()=>{
-    btn.disabled = true; btn.textContent = 'Verifying…';
-    const report = await window.runIntegrity({
-      base:'/abe---flag',
-      files:{
-        ciri:'/abe---flag/ciri/inputs.csv',
-        cibs:'/abe---flag/cibs/auto_budget.csv',
-        cdi:'/abe---flag/cdi/divergence.csv',
-        cae:'/abe---flag/cae/model.json'
-      }
-    });
-
-    const set = (id, s) => {
-      const el = document.getElementById(id);
-      el.className = 'status ' + (s==='ok'?'s-ok':s==='warn'?'s-warn':'s-bad');
-      el.textContent = s.toUpperCase();
-    };
-    set('b-ciri', report.modules.ciri.status);
-    set('b-cibs', report.modules.cibs.status);
-    set('b-cdi',  report.modules.cdi.status);
-    set('b-cae',  report.modules.cae.status);
-
-    const rows = [
-      ['ciri/inputs.csv',        report.modules.ciri.message, report.modules.ciri.status, report.modules.ciri.sha256],
-      ['cibs/auto_budget.csv',  report.modules.cibs.message, report.modules.cibs.status, report.modules.cibs.sha256],
-      ['cdi/divergence.csv',    report.modules.cdi.message,  report.modules.cdi.status,  report.modules.cdi.sha256],
-      ['cae/model.json',        report.modules.cae.message,  report.modules.cae.status,  report.modules.cae.sha256],
-    ];
-    document.getElementById('result-rows').innerHTML =
-      rows.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2].toUpperCase()}</td><td class="mono">${r[3]}</td></tr>`).join('');
-
-    document.getElementById('raw').textContent = JSON.stringify(report,null,2);
-    document.getElementById('result-meta').textContent =
-      `audit_id: ${report.audit_id} • generated_at: ${report.generated_at}`;
-
-    dl.disabled = false;
-    dl.onclick = ()=>{
-      const blob = new Blob([JSON.stringify(report,null,2)],{type:'application/json'});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url; a.download = `abe_audit_${report.audit_id}.json`; a.click();
-      URL.revokeObjectURL(url);
-    };
-
-    btn.disabled = false; btn.textContent = 'Verify Now';
-  });
-})();
-</script>
-</body>
-</html>.mono{font-family:ui-monospace,SFMono-Regular,Consolas,Monaco,monospace}
-
-/* scenario pill */
-#scenario-pill{
-  display:inline-flex;align-items:center;gap:6px;
-  padding:4px 10px;border-radius:999px;
-  border:1px solid var(--line);background:#0f131a;
-  font-size:.8rem;color:var(--muted);
+pre.code{
+  white-space:pre-wrap;background:#0f131a;border:1px solid var(--line);
+  border-radius:10px;padding:12px;overflow:auto
 }
+.mono{font-family:ui-monospace,SFMono-Regular,Consolas,Monaco,monospace}
+.small{font-size:.85rem}
+.banner{
+  margin-top:8px;padding:8px 10px;border-radius:8px;
+  border:1px solid var(--line);font-size:.85rem
+}
+.banner-ok{border-color:rgba(75,210,143,.5);background:rgba(75,210,143,.08);color:var(--ok)}
+.banner-warn{border-color:rgba(255,165,89,.5);background:rgba(255,165,89,.08);color:var(--warn)}
+.nav{margin-top:8px;display:flex;flex-wrap:wrap;gap:8px}
 </style>
 </head>
 <body>
@@ -307,58 +76,72 @@ pre.code{white-space:pre-wrap;background:#0f131a;border:1px solid var(--line);bo
   <div class="wrap">
     <a href="/abe---flag/" class="badge">← Home</a>
     <h1>Integration Layer — Public KPIs & Integrity</h1>
-    <div class="sub">Live signals from the A.B.E. pipeline (CIRI → CIBS), plus one-click integrity verification.</div>
+    <div class="sub">
+      Live signals from the A.B.E. pipeline (CFF → CIRI → CIBS), plus one-click integrity verification.
+    </div>
+    <div class="nav">
+      <a class="btn" href="../cff/index.html">CFF</a>
+      <a class="btn" href="../ciri/index.html">CIRI</a>
+      <a class="btn" href="../cibs/index.html">CIBS</a>
+      <a class="btn" href="../macro/index.html">Macro</a>
+      <a class="btn" href="../system/index.html">System Map</a>
+    </div>
   </div>
 </header>
 
 <main class="wrap">
 
-  <!-- Scenario source indicator -->
-  <div class="card">
-    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
-      <div><strong>Scenario Source</strong></div>
-      <div id="scenario-pill">
-        <span id="scenario-label">Baseline from <code>/ciri/inputs.csv</code></span>
-      </div>
+  <!-- Live KPIs -->
+  <div class="grid">
+    <div class="tile">
+      <div>Public Allocation (CIBS)</div>
+      <div id="kpi-cibs-total" class="num">—</div>
+      <small>Sum of <code>/cibs/auto_budget.csv</code> (current published plan).</small>
     </div>
-    <small id="scenario-note">
-      If you run a CIRI scenario in this browser, this page will mirror those results locally using ABE_CIRI_SCENARIO_V2. No uploaded CSVs are stored on any server.
+    <div class="tile">
+      <div>Base Recovery (CIRI only)</div>
+      <div id="kpi-ciri-total" class="num">—</div>
+      <small>Computed from <code>/ciri/inputs.csv</code> (engine estimate).</small>
+    </div>
+    <div class="tile">
+      <div>OFF_MISSION from CFF (local)</div>
+      <div id="kpi-cff-off" class="num">—</div>
+      <small>Read from <code>localStorage.ABE_CFF_OFF_MISSION_TOTAL</code>.</small>
+    </div>
+    <div class="tile">
+      <div>Total Recovery (CIRI + CFF)</div>
+      <div id="kpi-total-plus-cff" class="num">—</div>
+      <small>Base CIRI recovery plus CFF’s OFF_MISSION misuse.</small>
+    </div>
+    <div class="tile">
+      <div>CIRI Index</div>
+      <div id="kpi-ciri" class="num">—</div>
+      <small>\( CIRI = 1 - e^{-R_T/K} \) with K-scale.</small>
+    </div>
+    <div class="tile">
+      <div>ROI per Case</div>
+      <div id="kpi-roi" class="num">—</div>
+      <small>\( ROI_{case}=R_T/\max(1,cases) \).</small>
+    </div>
+  </div>
+  <div id="cff-context" class="banner banner-warn">
+    No CFF OFF_MISSION transfer detected yet. Run the CFF engine and click
+    “Send to CIRI (local only)” to link funding misuse into this view.
+  </div>
+
+  <!-- Integrity Controls -->
+  <div class="card">
+    <h3 style="margin:0 0 .6rem">
+      Integrity Beacon
+      <span class="kright"><button id="btn-verify" class="btn">Verify Now</button></span>
+    </h3>
+    <small>
+      Runs local, dependency-free checks: file presence, schema plausibility, recomputed KPIs, and SHA-256 hashes.
     </small>
-  </div>
-
-  <!-- Live KPIs -->
-  <div class="grid">
-    <div class="tile">
-      <div>Public Allocation (CIBS)</div>
-      <div id="kpi-cibs-total" class="num">—</div>
-      <small>Sum of <code>/cibs/auto_budget.csv</code> (current published plan)</small>
-    </div>
-    <div class="tile">
-      <div>Modeled Recovery (CIRI)</div>
-      <div id="kpi-ciri-total" class="num">—</div>
-      <small id="kpi-ciri-note">
-        Uses latest CIRI scenario on this device when available; otherwise baseline from <code>/ciri/inputs.csv</code>.
-      </small>
-    </div>
-    <div class="tile">
-      <div>CIRI Index</div>
-      <div id="kpi-ciri" class="num">—</div>
-      <small>\( CIRI = 1 - e^{-R_T/K} \) with K-scale (v2: K = 1,000,000,000)</small>
-    </div>
-    <div class="tile">
-      <div>ROI per Case</div>
-      <div id="kpi-roi" class="num">—</div>
-      <small>\( ROI_{case}=R_T/\max(1,cases) \)</small>
-    </div>
-  </div>
-
-  <!-- Integrity Controls -->
-  <div class="card">
-    <h3 style="margin:0 0 .6rem">Integrity Beacon<span class="kright"><button id="btn-verify" class="btn">Verify Now</button></span></h3>
-    <small>Runs local, dependency-free checks: file presence, schema plausibility, recomputed KPIs, and SHA-256 hashes.</small>
     <div id="beacons" class="grid" style="margin-top:10px">
       <div class="tile"><div><strong>CIRI</strong> (<code>ciri/inputs.csv</code>)</div><div id="b-ciri" class="status">—</div></div>
       <div class="tile"><div><strong>CIBS</strong> (<code>cibs/auto_budget.csv</code>)</div><div id="b-cibs" class="status">—</div></div>
+      <div class="tile"><div><strong>CFF</strong> (<code>cff/inputs.csv</code>)</div><div id="b-cff" class="status">—</div></div>
       <div class="tile"><div><strong>CDI</strong> (<code>cdi/divergence.csv</code>)</div><div id="b-cdi" class="status">—</div></div>
       <div class="tile"><div><strong>CAE</strong> (<code>cae/model.json</code>)</div><div id="b-cae" class="status">—</div></div>
     </div>
@@ -382,6 +165,7 @@ pre.code{white-space:pre-wrap;background:#0f131a;border:1px solid var(--line);bo
   <div class="card">
     <h3 style="margin:0 0 .6rem">Audit Trail (sources)</h3>
     <ul>
+      <li><a href="/abe---flag/cff/inputs.csv">/cff/inputs.csv</a> — OFF_MISSION funding inputs</li>
       <li><a href="/abe---flag/ciri/inputs.csv">/ciri/inputs.csv</a> — engine inputs</li>
       <li><a href="/abe---flag/cibs/auto_budget.csv">/cibs/auto_budget.csv</a> — public allocation</li>
       <li><a href="/abe---flag/cdi/divergence.csv">/cdi/divergence.csv</a> — divergence inputs</li>
@@ -398,302 +182,43 @@ pre.code{white-space:pre-wrap;background:#0f131a;border:1px solid var(--line);bo
 
 <script src="/abe---flag/system/integrity.js"></script>
 <script>
+// ---------- helpers ----------
+const money = n => {
+  const v = Number(n);
+  if (!isFinite(v)) return '—';
+  try {
+    return new Intl.NumberFormat(undefined,{
+      style:'currency',currency:'USD',maximumFractionDigits:0
+    }).format(v);
+  } catch {
+    return '$'+Math.round(v).toLocaleString();
+  }
+};
+
+// CFF local read
+function readCff(){
+  let off = 0;
+  let ctx = null;
+  try{
+    const raw = localStorage.getItem('ABE_CFF_OFF_MISSION_TOTAL');
+    if(raw) off = Number(raw) || 0;
+    const meta = localStorage.getItem('ABE_CFF_CONTEXT');
+    if(meta) ctx = JSON.parse(meta);
+  }catch(_){}
+  return {off,ctx};
+}
+
 (async function init(){
-  const fmtMoney = n => '$' + (isFinite(n)? Math.round(n).toLocaleString() : '—');
-  const SCEN_KEY = 'ABE_CIRI_SCENARIO_V2';
-  const K = 1_000_000_000; // v2 risk scaling (matches CIRI page)
+  const kCibs  = document.getElementById('kpi-cibs-total');
+  const kBase  = document.getElementById('kpi-ciri-total');
+  const kCff   = document.getElementById('kpi-cff-off');
+  const kTotal = document.getElementById('kpi-total-plus-cff');
+  const kIdx   = document.getElementById('kpi-ciri');
+  const kRoi   = document.getElementById('kpi-roi');
+  const cffBanner = document.getElementById('cff-context');
 
-  function num(x){
-    const n = Number(String(x||"").replace(/[^0-9.\\-]/g,""));
-    return isFinite(n)?n:0;
-  }
-
-  // CIRI v2 metric computation (aligned with ciri/index.html)
-  function computeCiriMetrics(d){
-    const cases_avoided          = num(d.cases_avoided);
-    const avg_cost_per_case      = num(d.avg_cost_per_case);
-    const jail_days_avoided      = num(d.jail_days_avoided);
-    const cost_per_jail_day      = num(d.cost_per_jail_day);
-    const fees_canceled_total    = num(d.fees_canceled_total);
-    const policy_corrections     = num(d.policy_corrections);
-    const avg_enforcement_cost_savings = num(d.avg_enforcement_cost_savings);
-    const households_restored    = num(d.households_restored);
-    const avg_monthly_market_spend = num(d.avg_monthly_market_spend);
-    const months_effective       = num(d.months_effective);
-    const employment_probability = num(d.employment_probability);
-    const avg_monthly_wage       = num(d.avg_monthly_wage);
-    const expected_lawsuits      = num(d.expected_lawsuits);
-    const avg_payout             = num(d.avg_payout);
-    const litigation_multiplier  = num(d.litigation_multiplier || d.multiplier);
-    const transition_costs       = num(d.transition_costs_one_time);
-
-    const direct_case   = cases_avoided * avg_cost_per_case;
-    const detention     = jail_days_avoided * cost_per_jail_day;
-    const fees          = fees_canceled_total;
-    const enforcement   = policy_corrections * avg_enforcement_cost_savings;
-    const market_access = households_restored * avg_monthly_market_spend * months_effective;
-    const employment    = cases_avoided * employment_probability * avg_monthly_wage * (months_effective/12);
-    const lawsuits_avo  = expected_lawsuits * avg_payout * litigation_multiplier;
-    const licensing_val = 0;
-
-    let total = direct_case + detention + fees + enforcement + market_access + employment + lawsuits_avo - transition_costs;
-    total = Math.max(0,total);
-
-    const ciri_index   = 1 - Math.exp(- total / Math.max(1,K));
-    const cii_index    = 1 - ciri_index;
-    const roi_per_case = cases_avoided>0 ? total / cases_avoided : 0;
-
-    return {
-      total_recovery: total,
-      ciri_index,
-      cii_index,
-      roi_per_case
-    };
-  }
-
-  async function loadCibsTotal(){
-    try{
-      const r = await fetch('/abe---flag/cibs/auto_budget.csv',{cache:'no-store'});
-      const t = await r.text();
-      const lines = t.trim().split(/\\r?\\n/);
-      const total = lines.slice(1).reduce((s,line)=>{
-        const v = Number(line.split(',')[1]); return s + (isFinite(v)?v:0);
-      },0);
-      return total;
-    }catch{
-      return null;
-    }
-  }
-
-  async function loadScenarioFromLocal(){
-    try{
-      const raw = localStorage.getItem(SCEN_KEY);
-      if(!raw) return null;
-      const scen = JSON.parse(raw);
-      if(!scen || !scen.outputs || typeof scen.outputs.total_recovery !== 'number') return null;
-      return scen;
-    }catch(e){
-      console.warn('Could not read local CIRI scenario', e);
-      return null;
-    }
-  }
-
-  async function computeScenarioFromRepo(){
-    try{
-      const r = await fetch('/abe---flag/ciri/inputs.csv',{cache:'no-store'});
-      if(!r.ok) throw new Error('No inputs.csv');
-      const t = await r.text();
-      const lines = t.trim().split(/\\r?\\n/).filter(Boolean);
-      const head  = (lines[0]||'').split(',').map(s=>s.trim());
-      const row   = (lines[1]||'').split(',').map(s=>s.trim());
-      const obj   = {};
-      head.forEach((h,i)=>{ obj[h]=row[i]; });
-      const outputs = computeCiriMetrics(obj);
-      return {
-        version: '2.0-baseline',
-        timestamp: new Date().toISOString(),
-        source: '/ciri/inputs.csv (baseline)',
-        origin: 'integration/index.html',
-        K,
-        hash: null,
-        inputs: obj,
-        outputs
-      };
-    }catch(e){
-      console.warn('Could not compute repo-based scenario', e);
-      return null;
-    }
-  }
-
-  // ---------- live KPIs ----------
-  async function kpis(){
-    // CIBS total (always from repo)
-    const cibsTotal = await loadCibsTotal();
-    if(cibsTotal != null){
-      document.getElementById('kpi-cibs-total').textContent = fmtMoney(cibsTotal);
-    }
-
-    // CIRI: prefer local scenario, fallback to repo baseline
-    const localScenario = await loadScenarioFromLocal();
-    const scenarioLabelEl = document.getElementById('scenario-label');
-    const scenarioNoteEl  = document.getElementById('scenario-note');
-
-    let scenario = localScenario;
-    if(scenario){
-      scenarioLabelEl.innerHTML = 'Your last CIRI scenario (local to this browser)';
-      if(scenarioNoteEl){
-        scenarioNoteEl.textContent =
-          'KPIs below are derived from your last CIRI run on this device (stored locally as ABE_CIRI_SCENARIO_V2). Clear browser data to remove it. No uploaded CSVs are stored on any server.';
-      }
-    }else{
-      scenario = await computeScenarioFromRepo();
-      if(scenario){
-        scenarioLabelEl.innerHTML = 'Baseline from <code>/ciri/inputs.csv</code>';
-        if(scenarioNoteEl){
-          scenarioNoteEl.textContent =
-            'No local CIRI scenario found. Using the public baseline from /ciri/inputs.csv.';
-        }
-      }
-    }
-
-    if(!scenario || !scenario.outputs){
-      document.getElementById('kpi-ciri-total').textContent = '—';
-      document.getElementById('kpi-ciri').textContent = '—';
-      document.getElementById('kpi-roi').textContent = '—';
-      return;
-    }
-
-    const out = scenario.outputs;
-    document.getElementById('kpi-ciri-total').textContent = fmtMoney(out.total_recovery);
-    document.getElementById('kpi-ciri').textContent       = out.ciri_index.toFixed(2);
-    document.getElementById('kpi-roi').textContent        = fmtMoney(out.roi_per_case);
-  }
-
-  await kpis();
-
-  // ---------- integrity button (unchanged) ----------
-  const btn = document.getElementById('btn-verify');
-  const dl  = document.getElementById('btn-download');
-  btn.addEventListener('click', async ()=>{
-    btn.disabled = true; btn.textContent = 'Verifying…';
-    const report = await window.runIntegrity({
-      base:'/abe---flag',
-      files:{
-        ciri:'/abe---flag/ciri/inputs.csv',
-        cibs:'/abe---flag/cibs/auto_budget.csv',
-        cdi:'/abe---flag/cdi/divergence.csv',
-        cae:'/abe---flag/cae/model.json'
-      }
-    });
-
-    // beacons
-    const set = (id, s) => {
-      const el = document.getElementById(id);
-      el.className = 'status ' + (s==='ok'?'s-ok':s==='warn'?'s-warn':'s-bad');
-      el.textContent = s.toUpperCase();
-    };
-    set('b-ciri', report.modules.ciri.status);
-    set('b-cibs', report.modules.cibs.status);
-    set('b-cdi',  report.modules.cdi.status);
-    set('b-cae',  report.modules.cae.status);
-
-    // table
-    const rows = [
-      ['ciri/inputs.csv',       report.modules.ciri.message, report.modules.ciri.status, report.modules.ciri.sha256],
-      ['cibs/auto_budget.csv',  report.modules.cibs.message, report.modules.cibs.status, report.modules.cibs.sha256],
-      ['cdi/divergence.csv',    report.modules.cdi.message,  report.modules.cdi.status,  report.modules.cdi.sha256],
-      ['cae/model.json',        report.modules.cae.message,  report.modules.cae.status,  report.modules.cae.sha256],
-    ];
-    document.getElementById('result-rows').innerHTML =
-      rows.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2].toUpperCase()}</td><td class="mono">${r[3]}</td></tr>`).join('');
-
-    document.getElementById('raw').textContent = JSON.stringify(report,null,2);
-    document.getElementById('result-meta').textContent =
-      `audit_id: ${report.audit_id} • generated_at: ${report.generated_at}`;
-
-    // download certificate
-    dl.disabled = false;
-    dl.onclick = ()=>{
-      const blob = new Blob([JSON.stringify(report,null,2)],{type:'application/json'});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url; a.download = `abe_audit_${report.audit_id}.json`; a.click();
-      URL.revokeObjectURL(url);
-    };
-
-    btn.disabled = false; btn.textContent = 'Verify Now';
-  });
-})();
-</script>
-</body>
-</html>.mono{font-family:ui-monospace,SFMono-Regular,Consolas,Monaco,monospace}
-</style>
-</head>
-<body>
-<header>
-  <div class="wrap">
-    <a href="/abe---flag/" class="badge">← Home</a>
-    <h1>Integration Layer — Public KPIs & Integrity</h1>
-    <div class="sub">Live signals from the A.B.E. pipeline (CIRI → CIBS), plus one-click integrity verification.</div>
-  </div>
-</header>
-
-<main class="wrap">
-  <!-- Live KPIs -->
-  <div class="grid">
-    <div class="tile">
-      <div>Public Allocation (CIBS)</div>
-      <div id="kpi-cibs-total" class="num">—</div>
-      <small>Sum of <code>/cibs/auto_budget.csv</code> (current published plan)</small>
-    </div>
-    <div class="tile">
-      <div>Modeled Recovery (CIRI)</div>
-      <div id="kpi-ciri-total" class="num">—</div>
-      <small>Computed from <code>/ciri/inputs.csv</code> (engine estimate)</small>
-    </div>
-    <div class="tile">
-      <div>CIRI Index</div>
-      <div id="kpi-ciri" class="num">—</div>
-      <small>\( CIRI = 1 - e^{-R_T/K} \) with K-scale</small>
-    </div>
-    <div class="tile">
-      <div>ROI per Case</div>
-      <div id="kpi-roi" class="num">—</div>
-      <small>\( ROI_{case}=R_T/\max(1,cases) \)</small>
-    </div>
-  </div>
-
-  <!-- Integrity Controls -->
-  <div class="card">
-    <h3 style="margin:0 0 .6rem">Integrity Beacon<span class="kright"><button id="btn-verify" class="btn">Verify Now</button></span></h3>
-    <small>Runs local, dependency-free checks: file presence, schema plausibility, recomputed KPIs, and SHA-256 hashes.</small>
-    <div id="beacons" class="grid" style="margin-top:10px">
-      <div class="tile"><div><strong>CIRI</strong> (<code>ciri/inputs.csv</code>)</div><div id="b-ciri" class="status">—</div></div>
-      <div class="tile"><div><strong>CIBS</strong> (<code>cibs/auto_budget.csv</code>)</div><div id="b-cibs" class="status">—</div></div>
-      <div class="tile"><div><strong>CDI</strong> (<code>cdi/divergence.csv</code>)</div><div id="b-cdi" class="status">—</div></div>
-      <div class="tile"><div><strong>CAE</strong> (<code>cae/model.json</code>)</div><div id="b-cae" class="status">—</div></div>
-    </div>
-    <div style="margin-top:10px">
-      <button id="btn-download" class="btn" disabled>Download Audit Certificate (JSON)</button>
-    </div>
-  </div>
-
-  <!-- Detailed Results -->
-  <div class="card">
-    <h3 style="margin:0 0 .6rem">Verification Results</h3>
-    <table>
-      <thead><tr><th>Artifact</th><th>Checks</th><th>Status</th><th>SHA-256</th></tr></thead>
-      <tbody id="result-rows"></tbody>
-    </table>
-    <div id="result-meta" style="margin-top:10px" class="mono small"></div>
-    <h4 style="margin:16px 0 6px">Raw JSON</h4>
-    <pre id="raw" class="code mono" aria-label="Raw audit JSON">—</pre>
-  </div>
-
-  <div class="card">
-    <h3 style="margin:0 0 .6rem">Audit Trail (sources)</h3>
-    <ul>
-      <li><a href="/abe---flag/ciri/inputs.csv">/ciri/inputs.csv</a> — engine inputs</li>
-      <li><a href="/abe---flag/cibs/auto_budget.csv">/cibs/auto_budget.csv</a> — public allocation</li>
-      <li><a href="/abe---flag/cdi/divergence.csv">/cdi/divergence.csv</a> — divergence inputs</li>
-      <li><a href="/abe---flag/cae/model.json">/cae/model.json</a> — alignment corpus map</li>
-      <li><a href="/abe---flag/macro/model.html">/macro/model.html</a> — formal equations</li>
-      <li><a href="https://doi.org/10.5281/zenodo.17586107">DOI 10.5281/zenodo.17586107</a> — permanent archive</li>
-    </ul>
-  </div>
-</main>
-
-<footer>
-  CC BY-NC 4.0 · DOI <a href="https://doi.org/10.5281/zenodo.17586107">10.5281/zenodo.17586107</a> · Integrity only — never for sale.
-</footer>
-
-<script src="/abe---flag/system/integrity.js"></script>
-<script>
-(async function init(){
-  // quick KPIs (same as before)
-  const fmt = n => '$' + (isFinite(n)? Math.round(n).toLocaleString() : '—');
-
-  async function kpis(){
+  // ----- KPIs -----
+  async function loadKpis(){
     // CIBS total
     try{
       const r = await fetch('/abe---flag/cibs/auto_budget.csv',{cache:'no-store'});
@@ -702,10 +227,13 @@ pre.code{white-space:pre-wrap;background:#0f131a;border:1px solid var(--line);bo
       const total = lines.slice(1).reduce((s,line)=>{
         const v = Number(line.split(',')[1]); return s + (isFinite(v)?v:0);
       },0);
-      document.getElementById('kpi-cibs-total').textContent = fmt(total);
-    }catch{}
+      kCibs.textContent = money(total);
+    }catch(_){}
 
-    // CIRI derived
+    // CIRI base
+    let totalBase = NaN;
+    let idx = NaN;
+    let roi = NaN;
     try{
       const r = await fetch('/abe---flag/ciri/inputs.csv',{cache:'no-store'});
       const t = await r.text();
@@ -719,18 +247,47 @@ pre.code{white-space:pre-wrap;background:#0f131a;border:1px solid var(--line);bo
             pe=o.employment_probability, W=o.avg_monthly_wage, L=o.expected_lawsuits,
             A=o.avg_payout, lam=o.litigation_multiplier, T=o.transition_costs_one_time;
 
-      const total = (c*C+F) + (D*J) + (P*E) + (H*M*m) + ((H*pe)*W*m) + (L*A*lam) - T;
+      const direct = c*C+F;
+      const detention = D*J;
+      const enforce = P*E;
+      const market = H*M*m;
+      const employ = (H*pe)*W*m;
+      const litig = L*A*lam;
+      totalBase = direct + detention + enforce + market + employ + litig - T;
       const K = 2_000_000_000;
-      const CIRI = 1 - Math.exp(- total / K);
-      const ROI  = total / Math.max(1,c);
-      document.getElementById('kpi-ciri-total').textContent = fmt(total);
-      document.getElementById('kpi-ciri').textContent = CIRI.toFixed(2);
-      document.getElementById('kpi-roi').textContent = fmt(ROI);
-    }catch{}
-  }
-  kpis();
+      idx = 1 - Math.exp(- totalBase / K);
+      roi = totalBase / Math.max(1,c);
+      kBase.textContent = money(totalBase);
+      kIdx.textContent = idx.toFixed(2);
+      kRoi.textContent = money(roi);
+    }catch(_){}
 
-  // integrity button
+    // CFF local + combined
+    const {off,ctx} = readCff();
+    if(off && off > 0){
+      kCff.textContent = money(off);
+      const totalPlus = (isFinite(totalBase)?totalBase:0) + off;
+      kTotal.textContent = money(totalPlus);
+      cffBanner.classList.remove('banner-warn');
+      cffBanner.classList.add('banner-ok');
+      cffBanner.innerHTML =
+        `CFF OFF_MISSION transfer detected: <strong>${money(off)}</strong> is being treated as part of the recovery pool here.<br>`+
+        `<span class="small">Context: ${
+          ctx && ctx.source ? ctx.source : 'local CFF run'
+        } · ${ctx && ctx.time ? ctx.time : 'timestamp stored locally'}</span>`;
+    }else{
+      kCff.textContent = '—';
+      const totalPlus = isFinite(totalBase)? totalBase : NaN;
+      kTotal.textContent = isFinite(totalPlus)? money(totalPlus) : '—';
+      cffBanner.classList.remove('banner-ok');
+      cffBanner.classList.add('banner-warn');
+      cffBanner.textContent =
+        'No CFF OFF_MISSION transfer detected yet. Run the CFF engine and click “Send to CIRI (local only)” to link funding misuse into this view.';
+    }
+  }
+  loadKpis();
+
+  // ----- Integrity button -----
   const btn = document.getElementById('btn-verify');
   const dl  = document.getElementById('btn-download');
   btn.addEventListener('click', async ()=>{
@@ -740,12 +297,12 @@ pre.code{white-space:pre-wrap;background:#0f131a;border:1px solid var(--line);bo
       files:{
         ciri:'/abe---flag/ciri/inputs.csv',
         cibs:'/abe---flag/cibs/auto_budget.csv',
+        cff:'/abe---flag/cff/inputs.csv',
         cdi:'/abe---flag/cdi/divergence.csv',
         cae:'/abe---flag/cae/model.json'
       }
     });
 
-    // beacons
     const set = (id, s) => {
       const el = document.getElementById(id);
       el.className = 'status ' + (s==='ok'?'s-ok':s==='warn'?'s-warn':'s-bad');
@@ -753,15 +310,16 @@ pre.code{white-space:pre-wrap;background:#0f131a;border:1px solid var(--line);bo
     };
     set('b-ciri', report.modules.ciri.status);
     set('b-cibs', report.modules.cibs.status);
+    if(report.modules.cff) set('b-cff', report.modules.cff.status);
     set('b-cdi',  report.modules.cdi.status);
     set('b-cae',  report.modules.cae.status);
 
-    // table
     const rows = [
-      ['ciri/inputs.csv', report.modules.ciri.message, report.modules.ciri.status, report.modules.ciri.sha256],
-      ['cibs/auto_budget.csv', report.modules.cibs.message, report.modules.cibs.status, report.modules.cibs.sha256],
-      ['cdi/divergence.csv', report.modules.cdi.message, report.modules.cdi.status, report.modules.cdi.sha256],
-      ['cae/model.json', report.modules.cae.message, report.modules.cae.status, report.modules.cae.sha256],
+      ['ciri/inputs.csv',       report.modules.ciri.message, report.modules.ciri.status, report.modules.ciri.sha256],
+      ['cibs/auto_budget.csv',  report.modules.cibs.message, report.modules.cibs.status, report.modules.cibs.sha256],
+      ['cff/inputs.csv',        report.modules.cff ? report.modules.cff.message : 'included in hash set', report.modules.cff ? report.modules.cff.status : 'ok', report.modules.cff ? report.modules.cff.sha256 : '—'],
+      ['cdi/divergence.csv',    report.modules.cdi.message,  report.modules.cdi.status,  report.modules.cdi.sha256],
+      ['cae/model.json',        report.modules.cae.message,  report.modules.cae.status,  report.modules.cae.sha256],
     ];
     document.getElementById('result-rows').innerHTML =
       rows.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2].toUpperCase()}</td><td class="mono">${r[3]}</td></tr>`).join('');
@@ -770,7 +328,6 @@ pre.code{white-space:pre-wrap;background:#0f131a;border:1px solid var(--line);bo
     document.getElementById('result-meta').textContent =
       `audit_id: ${report.audit_id} • generated_at: ${report.generated_at}`;
 
-    // download certificate
     dl.disabled = false;
     dl.onclick = ()=>{
       const blob = new Blob([JSON.stringify(report,null,2)],{type:'application/json'});
