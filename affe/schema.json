@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AFFE — Appropriation Fidelity & Funding Extractor Schema",
+  "description": "Defines the normalized structure produced by AFFE after parsing CSV, Excel, or PDF funding documents.",
+  "type": "object",
+  "properties": {
+    "program_name": { "type": "string" },
+    "federal_authority_citation": { "type": "string" },
+    "fiscal_year": { "type": "integer" },
+    "state_or_jurisdiction": { "type": "string" },
+    "agency": { "type": "string" },
+    "line_item_description": { "type": "string" },
+    "spend_category_code": {
+      "type": "string",
+      "enum": ["ON_MISSION", "OFF_MISSION", "UNCLEAR"]
+    },
+    "amount_usd": { "type": "number" },
+    "notes": { "type": "string" }
+  },
+  "required": [
+    "program_name",
+    "federal_authority_citation",
+    "fiscal_year",
+    "state_or_jurisdiction",
+    "agency",
+    "line_item_description",
+    "spend_category_code",
+    "amount_usd"
+  ]
+}
