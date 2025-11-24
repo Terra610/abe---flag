@@ -1,86 +1,174 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>The American Butterfly Effect (A.B.E.) — System Hub</title>
-<base href="/abe---flag/">
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>The American Butterfly Effect (A.B.E.)</title>
+  <!-- base so all module links work from GitHub Pages -->
+  <base href="/abe---flag/"/>
 
-<style>
-:root{
-  --bg:#0b0d12; --panel:#141820; --panel2:#0f131a; --ink:#e6e6e6; --muted:#9fb3c8;
-  --line:rgba(255,255,255,.08); --brand:#5ddfff; --accent:#fff750; --ok:#4bd28f; --warn:#ffa559;
-}
-*{box-sizing:border-box}
-body{
-  margin:0;background:var(--bg);color:var(--ink);
-  font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
-}
-a{color:#80bfff;text-decoration:none}
-a:hover{text-decoration:underline}
-header{
-  padding:28px 20px;
-  background:linear-gradient(90deg,#11151c,#1b1e25);
-  border-bottom:1px solid var(--line);
-}
-.wrap{max-width:1100px;margin:0 auto;padding:0 20px}
-h1{margin:0 0 6px}
-.sub{color:var(--muted)}
-.badges{
-  display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;align-items:center;
-}
-.badges a,.chip{
-  display:inline-flex;align-items:center;gap:6px;
-  padding:6px 10px;border:1px solid var(--line);
-  border-radius:999px;color:var(--muted);font-size:.9rem;
-}
-.grid{
-  display:grid;gap:16px;
-  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-}
-.card{
-  background:var(--panel);border:1px solid var(--line);
-  border-radius:12px;padding:16px;margin-bottom:16px;
-}
-.tile{
-  background:var(--panel2);border:1px solid var(--line);
-  border-radius:10px;padding:14px;
-}
-.kpi{display:flex;gap:14px;flex-wrap:wrap}
-.kpi .tile{flex:1 1 220px}
-.num{font-weight:700;font-size:1.25rem}
-small{color:var(--muted)}
-.table{width:100%;border-collapse:collapse;margin-top:8px}
-.table th,.table td{
-  border:1px solid var(--line);padding:10px 12px;text-align:left;
-}
-.table th{background:var(--panel2)}
-.status{
-  display:inline-block;padding:2px 10px;border-radius:999px;
-  border:1px solid var(--line);font-size:.85rem;
-}
-.ok{color:var(--ok);border-color:rgba(75,210,143,.35)}
-.warn{color:var(--warn);border-color:rgba(255,165,89,.35)}
-footer{
-  margin:40px 0 24px;text-align:center;
-  color:var(--muted);font-size:.9rem;
-}
-hr{border:none;border-top:1px solid var(--line);margin:18px 0}
-@media (max-width:720px){
-  .kpi .tile{flex:1 1 100%}
-}
-</style>
+  <style>
+    :root{
+      --bg:#0b0d12;
+      --panel:#141820;
+      --panel2:#0f131a;
+      --line:rgba(255,255,255,.08);
+      --brand:#5ddfff;
+      --accent:#82eaff;
+      --accent2:#ffd96a;
+      --ink:#e6e6e6;
+      --muted:#9fb3c8;
+      --ok:#4bd28f;
+      --warn:#ffa559;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+      background:var(--bg);
+      color:var(--ink);
+    }
+    a{color:#80bfff;text-decoration:none}
+    a:hover{text-decoration:underline}
+    header{
+      padding:24px 20px;
+      background:linear-gradient(90deg,#11151c,#181f2c);
+      border-bottom:1px solid var(--line);
+    }
+    .wrap{max-width:1100px;margin:0 auto;padding:0}
+    h1{margin:0 0 6px;font-size:2rem}
+    .sub{color:var(--muted);font-size:.95rem}
+    .badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+    .badge,.chip{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:4px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(15,19,26,.9);
+      font-size:.75rem;
+      color:var(--muted);
+      white-space:nowrap;
+    }
+    .chip{cursor:pointer}
+    .chip:hover{border-color:var(--accent);color:var(--accent)}
+
+    main{max-width:1100px;margin:24px auto 44px;padding:0 20px}
+    section{margin-bottom:22px;background:rgba(255,255,255,.03);border-radius:12px;padding:18px 16px;border:1px solid var(--line);box-shadow:0 0 12px rgba(0,0,0,.35);}
+    section:hover{box-shadow:0 0 18px rgba(93,223,255,.12);}
+    h2{margin:0 0 .4rem;font-size:1.1rem}
+    h3{margin:0 0 .25rem;font-size:1rem}
+    .muted{color:var(--muted);font-size:.9rem}
+    .grid{display:grid;gap:16px}
+    .grid-2{grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+    .card{background:var(--panel);border-radius:10px;padding:14px 16px;border:1px solid var(--line);}
+    .tile{background:var(--panel2);border-radius:10px;padding:12px 14px;border:1px solid var(--line);}
+    .kpi-label{font-size:.85rem;color:var(--muted)}
+    .kpi-val{font-size:1.4rem;font-weight:700;margin-top:2px}
+    .note{font-size:.8rem;color:var(--muted);margin-top:4px}
+    .table{
+      width:100%;
+      border-collapse:collapse;
+      font-size:.88rem;
+    }
+    .table th,.table td{
+      border:1px solid var(--line);
+      padding:6px 8px;
+      text-align:left;
+    }
+    .table th{background:var(--panel2);font-weight:600}
+    .status-pill{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:2px 9px;
+      border-radius:999px;
+      font-size:.75rem;
+      border:1px solid;
+    }
+    .status-pill.ok{
+      color:var(--ok);
+      border-color:rgba(75,210,143,.35);
+      background:rgba(75,210,143,.08);
+    }
+    .status-pill.warn{
+      color:var(--warn);
+      border-color:rgba(255,165,89,.35);
+      background:rgba(255,165,89,.08);
+    }
+    .schema-pill{min-width:115px;text-align:center}
+    .schema-grid{margin-top:10px;display:grid;gap:8px}
+    .schema-row{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      padding:6px 10px;
+      border-radius:999px;
+      background:rgba(15,19,26,.9);
+      border:1px solid var(--line);
+      font-size:.82rem;
+    }
+    .schema-row code{font-size:.75rem;color:var(--muted)}
+    .btn{
+      padding:.45rem 1.1rem;
+      border-radius:6px;
+      border:1px solid transparent;
+      font-size:.85rem;
+      cursor:pointer;
+      background:var(--accent);
+      color:#0b0d12;
+      font-weight:600;
+      transition:.12s ease-in-out;
+    }
+    .btn:hover{
+      border-color:var(--accent2);
+      background:#c0f4ff;
+    }
+    .btn-ghost{
+      padding:.45rem 1rem;
+      border-radius:6px;
+      border:1px solid var(--line);
+      background:#0d0f12;
+      color:var(--ink);
+      font-size:.8rem;
+      cursor:pointer;
+    }
+    .btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
+    code{background:rgba(255,255,255,.06);padding:2px 5px;border-radius:4px;font-size:.8rem}
+    small{color:var(--muted);font-size:.75rem}
+    footer{
+      margin:34px 0 18px;
+      text-align:center;
+      font-size:.8rem;
+      color:var(--muted);
+    }
+    /* CIRI header wrap fix */
+    .note code.hdr{
+      white-space:pre-wrap;
+      word-break:break-word;
+      font-size:.85rem;
+      display:block;
+      margin-top:4px;
+    }
+    @media (max-width:720px){
+      header{padding:18px 16px}
+      .wrap,main{padding:0 14px}
+      .schema-row{flex-direction:column;align-items:flex-start;gap:4px}
+    }
+  </style>
 </head>
 <body>
 <header>
   <div class="wrap">
     <h1>🦋 The American Butterfly Effect (A.B.E.)</h1>
     <div class="sub" id="version-line">
-      Constitutional & economic restoration framework — public, auditable, non-commercial.
+      Constitutional &amp; economic restoration framework — public, auditable, non-commercial.
     </div>
     <div class="badges">
-      <a href="https://doi.org/10.5281/zenodo.17586107" title="DOI: 10.5281/zenodo.17586107">
-        <img src="https://zenodo.org/badge/DOI/10.5281/zenodo.17586107.svg" alt="DOI badge" height="18"/>
+      <a class="badge" href="https://doi.org/10.5281/zenodo.17586107" title="DOI: 10.5281/zenodo.17586107">
+        <span>DOI</span>
+        <span>10.5281/zenodo.17586107</span>
       </a>
       <span class="chip">License: CC BY-NC 4.0</span>
       <a class="chip" href="start/index.html">⭐ Start Here</a>
@@ -91,322 +179,429 @@ hr{border:none;border-top:1px solid var(--line);margin:18px 0}
   </div>
 </header>
 
-<main class="wrap" style="margin:24px auto 44px">
-  <!-- System Overview -->
-  <div class="card">
-    <h2 style="margin:0 0 8px;color:var(--accent)">What A.B.E. Does</h2>
-    <p style="margin:.25rem 0 0">
-      A.B.E. converts <em>constitutional alignment</em> into <em>measurable, auditable economics</em>:
-      <strong>CAE</strong> (law parsing) → <strong>CDI</strong> (divergence signal) → 
-      <strong>CIRI</strong> (recovery value) → <strong>CFF</strong> (funding forensics) →
-      <strong>CIBS</strong> (budget) → <strong>CII</strong> (projects) → <strong>Integration</strong> (receipts & attestations).
+<main>
+  <!-- What A.B.E. Does -->
+  <section>
+    <h2>What A.B.E. Does</h2>
+    <p class="muted">
+      A.B.E. is a <strong>constitutional integrity engine</strong>.  
+      It takes the laws we already have — the U.S. Constitution, Title 49, appropriations law, and agency rules —
+      and turns them into <strong>live, auditable math</strong>:
     </p>
-  </div>
+    <ul class="muted">
+      <li>Shows where governments drift off-mission or outside their lawful authority.</li>
+      <li>Quantifies how much money that drift burns every year.</li>
+      <li>Models what happens when those violations stop — to households, markets, and public budgets.</li>
+    </ul>
+  </section>
+
+  <!-- How it works -->
+  <section>
+    <h2>How the Engine Flows</h2>
+    <p class="muted">
+      At a high level, the pipeline looks like this:
+    </p>
+    <p class="muted">
+      <strong>CAE</strong> (Constitution) → <strong>CDI</strong> (divergence signal) →  
+      <strong>AFFE</strong> (appropriation extractor) → <strong>CFF</strong> (funding forensics) →  
+      <strong>CIRI</strong> (recovery dollars &amp; indices) → <strong>CIBS</strong> (public allocation) →  
+      <strong>CII</strong> (projects) → <strong>Integration</strong> (receipts &amp; attestations).
+    </p>
+    <p class="muted">
+      AFFE + CFF act as the engine’s <strong>appropriations kill-switch</strong>: they follow the money,
+      prove where statutes are being ignored, and hand those OFF_MISSION dollars into CIRI as recoverable value.
+    </p>
+  </section>
 
   <!-- Live KPIs -->
-  <div class="card">
-    <h3 style="margin:0 0 8px">Live KPIs</h3>
-    <div class="kpi">
+  <section>
+    <h2>Live KPIs</h2>
+    <div class="grid grid-2">
       <div class="tile">
-        <div>Modeled Recovery (CIRI)</div>
-        <div id="k-ciri" class="num">—</div>
-        <small>Computed from <code>/ciri/inputs.csv</code></small>
+        <div class="kpi-label">Modeled Recovery (CIRI)</div>
+        <div id="k-total" class="kpi-val">—</div>
+        <div class="note">
+          Computed from <code>ciri/inputs.csv</code> plus any OFF_MISSION dollars handed off from CFF.
+        </div>
       </div>
       <div class="tile">
-        <div>CIRI Index</div>
-        <div id="k-ciri-idx" class="num">—</div>
-        <small>\( 1 - e^{-R_T/K} \) with K-scale</small>
+        <div class="kpi-label">CIRI Index</div>
+        <div id="k-ciri-idx" class="kpi-val">—</div>
+        <div class="note">
+          \( 1 - e^{-R_T/K} \) at the current configuration.
+        </div>
       </div>
       <div class="tile">
-        <div>Public Allocation (CIBS)</div>
-        <div id="k-cibs" class="num">—</div>
-        <small>Sum of <code>/cibs/auto_budget.csv</code></small>
+        <div class="kpi-label">Public Allocation (CIBS)</div>
+        <div id="k-cibs" class="kpi-val">—</div>
+        <div class="note">
+          Sum of <code>cibs/auto_budget.csv</code> — the reinvestment plan that flows from the recovery pool.
+        </div>
       </div>
       <div class="tile">
-        <div>ROI per Case</div>
-        <div id="k-roi" class="num">—</div>
-        <small>\( R_T/\max(1,cases\_avoided) \)</small>
+        <div class="kpi-label">ROI per Case</div>
+        <div id="k-roi" class="kpi-val">—</div>
+        <div class="note">
+          \( R_T / \max(1,\text{cases\_avoided}) \) — dollars of modeled recovery per person un-harmed.
+        </div>
       </div>
     </div>
-  </div>
+    <p class="note" style="margin-top:10px">
+      Baseline values are computed from the repo CSVs. If you’ve run a local scenario in CIRI on this device,
+      your last run will appear here automatically.
+    </p>
+  </section>
 
-  <!-- Subsystems -->
-  <div class="grid">
-    <div class="card">
-      <h3>CAE — Constitutional Alignment Engine</h3>
-      <p>Parses the Constitution & positive law; flags misalignment with citations.</p>
-      <table class="table">
-        <tbody>
+  <!-- Engine modules -->
+  <section>
+    <h2>Engine Modules</h2>
+    <div class="grid grid-2">
+
+      <!-- CAE -->
+      <div class="card">
+        <h3>CAE — Constitutional Alignment Engine</h3>
+        <p class="muted">Parses the Constitution &amp; positive law; flags misalignment with citations.</p>
+        <table class="table">
+          <tbody>
           <tr><th>UI</th><td><a href="cae/index.html">cae/index.html</a></td></tr>
-          <tr><th>Schema</th><td id="s-cae" class="status warn">Checking…</td></tr>
+          <tr><th>Schema</th><td id="s-cae" class="schema-pill">Checking…</td></tr>
           <tr><th>Model</th><td><a href="cae/model.json">model.json</a></td></tr>
           <tr><th>Report</th><td><a href="cae/report.csv">report.csv</a></td></tr>
-        </tbody>
-      </table>
-    </div>
+          </tbody>
+        </table>
+      </div>
 
-    <div class="card">
-      <h3>CDI — Constitutional Divergence Index</h3>
-      <p>Normalizes CAE findings into a 0–1 signal by domain/jurisdiction.</p>
-      <table class="table">
-        <tbody>
+      <!-- CDI -->
+      <div class="card">
+        <h3>CDI — Constitutional Divergence Index</h3>
+        <p class="muted">Normalizes CAE findings into a 0–1 signal by domain/jurisdiction.</p>
+        <table class="table">
+          <tbody>
           <tr><th>UI</th><td><a href="cdi/index.html">cdi/index.html</a></td></tr>
-          <tr><th>Schema</th><td id="s-cdi" class="status warn">Checking…</td></tr>
+          <tr><th>Schema</th><td id="s-cdi" class="schema-pill">Checking…</td></tr>
           <tr><th>Model</th><td><a href="cdi/model.json">model.json</a></td></tr>
           <tr><th>Data</th><td><a href="cdi/divergence.csv">divergence.csv</a></td></tr>
-        </tbody>
-      </table>
-    </div>
+          </tbody>
+        </table>
+      </div>
 
-    <div class="card">
-  <h3>AFFE — Appropriation Fidelity &amp; Funding Engine</h3>
-  <p>Turns messy funding reports (CSV, Excel, PDF) into clean, CFF-ready CSVs.</p>
+      <!-- AFFE -->
+      <div class="card">
+        <h3>AFFE — Appropriation Fidelity &amp; Funding Extractor</h3>
+        <p class="muted">
+          Turns messy funding reports (CSV, Excel, PDFs you’ve already converted) into a clean, CFF-ready
+          appropriation map — per program, per state, per fiscal year.
+        </p>
+        <table class="table">
+          <tbody>
+          <tr><th>UI</th><td><a href="affe/index.html">affe/index.html</a></td></tr>
+          <tr><th>Schema</th><td id="s-affe" class="schema-pill">Checking…</td></tr>
+          <tr><th>Template</th><td><a href="affe/template.json">template.json</a></td></tr>
+          <tr><th>Docs</th><td><a href="affe/README.md">README.md</a></td></tr>
+          </tbody>
+        </table>
+      </div>
 
-  <table class="table">
-    <tr>
-      <th>UI</th>
-      <td><a href="affe/index.html">affe/index.html</a></td>
-    </tr>
-    <tr>
-      <th>Template</th>
-      <td><a href="affe/template.json">template.json</a></td>
-    </tr>
-    <tr>
-      <th>Docs</th>
-      <td><a href="affe/README.md">README.md</a></td>
-    </tr>
-  </table>
-    </div>
-   
-    <div class="card">
-      <h3>CIRI — Integrity ROI Engine</h3>
-      <p>Turns divergence + local inputs into recovery dollars and indices.</p>
-      <table class="table">
-        <tbody>
+      <!-- CFF -->
+      <div class="card">
+        <h3>CFF — Constitutional Funding Forensics</h3>
+        <p class="muted">
+          Audits each line of funding against its statutory purpose; quantifies ON_MISSION vs OFF_MISSION dollars.
+        </p>
+        <table class="table">
+          <tbody>
+          <tr><th>UI</th><td><a href="cff/index.html">cff/index.html</a></td></tr>
+          <tr><th>Schema</th><td id="s-cff" class="schema-pill">Checking…</td></tr>
+          <tr><th>Inputs</th><td><a href="cff/inputs.csv">inputs.csv</a></td></tr>
+          <tr><th>Docs</th><td><a href="cff/README.md">README.md</a></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- CIRI -->
+      <div class="card">
+        <h3>CIRI — Integrity ROI Engine</h3>
+        <p class="muted">
+          Turns divergence + local inputs into recovery dollars and indices, using only existing law.
+        </p>
+        <table class="table">
+          <tbody>
           <tr><th>UI</th><td><a href="ciri/index.html">ciri/index.html</a></td></tr>
-          <tr><th>Schema</th><td id="s-ciri" class="status warn">Checking…</td></tr>
+          <tr><th>Schema</th><td id="s-ciri" class="schema-pill">Checking…</td></tr>
           <tr><th>Inputs</th><td><a href="ciri/inputs.csv">inputs.csv</a></td></tr>
           <tr><th>Spec</th><td><a href="ciri/calc.md">calc.md</a></td></tr>
-        </tbody>
-      </table>
-    </div>
+          </tbody>
+        </table>
+      </div>
 
-    <div class="card">
-      <h3>CFF — Constitutional Funding Forensics</h3>
-      <p>Tests whether federal dollars are being spent on the purposes Congress actually authorized.</p>
-      <table class="table">
-        <tbody>
-          <tr><th>UI</th><td><a href="cff/index.html">cff/index.html</a></td></tr>
-          <tr><th>Schema</th><td id="s-cff" class="status warn">Checking…</td></tr>
-          <tr><th>Inputs</th><td><a href="cff/inputs.csv">inputs.csv</a></td></tr>
-          <tr><th>README</th><td><a href="cff/README.md">README.md</a></td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="card">
-      <h3>CIBS — Integrity Baseline Schema</h3>
-      <p>Allocates the Recovery Pool into public reinvestment buckets.</p>
-      <table class="table">
-        <tbody>
+      <!-- CIBS -->
+      <div class="card">
+        <h3>CIBS — Integrity Baseline Schema</h3>
+        <p class="muted">
+          Allocates the Recovery Pool into public reinvestment buckets (housing, food, clinics, mobility, work).
+        </p>
+        <table class="table">
+          <tbody>
           <tr><th>UI</th><td><a href="cibs/index.html">cibs/index.html</a></td></tr>
-          <tr><th>Schema</th><td id="s-cibs" class="status warn">Checking…</td></tr>
+          <tr><th>Schema</th><td id="s-cibs" class="schema-pill">Checking…</td></tr>
           <tr><th>Template</th><td><a href="cibs/budget_template.csv">budget_template.csv</a></td></tr>
           <tr><th>Auto Budget</th><td><a href="cibs/auto_budget.csv">auto_budget.csv</a></td></tr>
-        </tbody>
-      </table>
-    </div>
+          </tbody>
+        </table>
+      </div>
 
-    <div class="card">
-      <h3>CII — Community Investment Interface</h3>
-      <p>Publishes auditable portfolios (housing, clinics, food, mobility, workforce).</p>
-      <table class="table">
-        <tbody>
+      <!-- CII -->
+      <div class="card">
+        <h3>CII — Community Investment Interface</h3>
+        <p class="muted">
+          Publishes auditable portfolios (housing, clinics, food, mobility, workforce) tied to CIBS allocations.
+        </p>
+        <table class="table">
+          <tbody>
           <tr><th>UI</th><td><a href="cii/index.html">cii/index.html</a></td></tr>
-          <tr><th>Schema</th><td id="s-cii" class="status warn">Checking…</td></tr>
+          <tr><th>Schema</th><td id="s-cii" class="schema-pill">Checking…</td></tr>
           <tr><th>Model</th><td><a href="cii/model.json">model.json</a></td></tr>
-          <tr><th>Portfolio</th><td><a href="cii/portfolio.csv">portfolio.csv</a></td></tr>
-        </tbody>
-      </table>
-    </div>
+          <tr><th>Report</th><td><a href="cii/report.csv">report.csv</a></td></tr>
+          </tbody>
+        </table>
+      </div>
 
-    <div class="card">
-      <h3>Integration Layer</h3>
-      <p>Receipts, recipient match, retaliation zero, and public attestations.</p>
-      <table class="table">
-        <tbody>
+      <!-- Integration -->
+      <div class="card">
+        <h3>Integration Layer</h3>
+        <p class="muted">
+          Receipts, recipient match, retaliation-zero, and public attestations — the closing of the loop.
+        </p>
+        <table class="table">
+          <tbody>
           <tr><th>UI</th><td><a href="integration/index.html">integration/index.html</a></td></tr>
-          <tr><th>Schema</th><td id="s-integration" class="status warn">Checking…</td></tr>
-        </tbody>
-      </table>
-    </div>
+          <tr><th>Schema</th><td id="s-integration" class="schema-pill">Checking…</td></tr>
+          </tbody>
+        </table>
+      </div>
 
-    <div class="card">
-      <h3>System Map</h3>
-      <p>Canonical chain-of-custody & evidence ledger for A.B.E.</p>
-      <table class="table">
-        <tbody>
+      <!-- System Map -->
+      <div class="card">
+        <h3>System Map</h3>
+        <p class="muted">Canonical chain-of-custody &amp; evidence ledger for A.B.E.</p>
+        <table class="table">
+          <tbody>
           <tr><th>UI</th><td><a href="system/index.html">system/index.html</a></td></tr>
           <tr><th>Map</th><td><a href="system/map.json">map.json</a></td></tr>
-        </tbody>
-      </table>
-    </div>
+          </tbody>
+        </table>
+      </div>
 
-    <div class="card">
-      <h3>Macro — Cascade Model</h3>
-      <p>Top-down impact summary; optional artifacts & downloads.</p>
-      <table class="table">
-        <tbody>
+      <!-- Macro -->
+      <div class="card">
+        <h3>Macro — Cascade Model</h3>
+        <p class="muted">Top-down impact summary; optional artifacts &amp; downloads.</p>
+        <table class="table">
+          <tbody>
           <tr><th>UI</th><td><a href="macro/index.html">macro/index.html</a></td></tr>
           <tr><th>Model</th><td><a href="macro/model.json">model.json</a></td></tr>
           <tr><th>Downloads</th><td><a href="macro/macro_cascade.csv">macro_cascade.csv</a></td></tr>
-        </tbody>
-      </table>
+          </tbody>
+        </table>
+      </div>
+
     </div>
-  </div>
+  </section>
 
   <!-- Schema Status Summary -->
-  <div class="card">
-    <h3 style="margin:0 0 8px">Schema Status Summary</h3>
-    <div class="grid" id="schema-grid">
-      <!-- Filled by script -->
+  <section>
+    <h2>Schema Status Summary</h2>
+    <p class="muted">
+      Green = schema file found and non-empty; Orange = missing or empty.  
+      The checks are performed live in your browser using <code>fetch()</code>.
+    </p>
+    <div id="schema-grid" class="schema-grid">
+      <!-- filled by script -->
     </div>
-    <small>Green = schema file found and non-empty; Orange = missing or empty.</small>
-  </div>
+  </section>
 
 </main>
 
 <footer>
   CC BY-NC 4.0 · DOI <a href="https://doi.org/10.5281/zenodo.17586107">10.5281/zenodo.17586107</a><br/>
-  <em>Integrity only — never for sale.</em>
+  Integrity only — never for sale.
 </footer>
 
 <script>
-// ---------- helpers ----------
-const money = n => {
-  const v = Number(n);
-  if (!isFinite(v)) return '—';
-  try {
-    return new Intl.NumberFormat(undefined,{
-      style:'currency',currency:'USD',maximumFractionDigits:0
-    }).format(v);
-  } catch {
-    return '$'+Math.round(v).toLocaleString();
+  function money(x){
+    if(!isFinite(x)) return '—';
+    const n = Math.round(x);
+    return n.toLocaleString('en-US',{style:'currency',currency:'USD',maximumFractionDigits:0});
   }
-};
 
-function setStatus(id, ok){
-  const el = document.getElementById(id);
-  if(!el) return;
-  el.textContent = ok ? 'Schema present' : 'Missing';
-  el.classList.remove('warn','ok');
-  el.classList.add(ok ? 'ok' : 'warn');
-}
+  // Very small CIRI metric helper (matches v2 logic shell)
+  function computeCiriMetrics(d){
+    const cases = Number(d.cases_avoided)||0;
+    const avg_cost = Number(d.avg_cost_per_case)||0;
+    const jail_days = Number(d.jail_days_avoided)||0;
+    const cost_per_jail_day = Number(d.cost_per_jail_day)||0;
+    const fees_canceled = Number(d.fees_canceled_total)||0;
+    const policy_corr = Number(d.policy_corrections)||0;
+    const avg_enf_savings = Number(d.avg_enforcement_cost_savings)||0;
+    const households = Number(d.households_restored)||0;
+    const avg_market = Number(d.avg_monthly_market_spend)||0;
+    const months = Number(d.months_effective)||0;
+    const employment_p = Number(d.employment_probability)||0;
+    const avg_wage = Number(d.avg_monthly_wage)||0;
+    const expected_lawsuits = Number(d.expected_lawsuits)||0;
+    const avg_payout = Number(d.avg_payout)||0;
+    const litig_mult = Number(d.litigation_multiplier)||0;
+    const transition = Number(d.transition_costs_one_time)||0;
 
-// ---------- version line from system/map.json ----------
-(async ()=>{
-  try{
-    const r = await fetch('system/map.json',{cache:'no-store'});
-    if(!r.ok) throw 0;
-    const j = await r.json();
-    const v = j.version || '—';
-    const u = j.updated || '';
-    const el = document.getElementById('version-line');
-    if(el){
-      el.textContent = `Constitutional & economic restoration framework — v${v} · updated ${u}`;
-    }
-  }catch(_){}
-})();
+    const direct_case = cases * avg_cost;
+    const detention = jail_days * cost_per_jail_day;
+    const enforcement = avg_enf_savings * cases;
+    const market = households * avg_market * months;
+    const employment = households * employment_p * avg_wage * months;
+    const litigation = expected_lawsuits * avg_payout * litig_mult;
 
-// ---------- live KPIs ----------
-(async ()=>{
-  // CIBS total
-  try{
-    const r = await fetch('cibs/auto_budget.csv',{cache:'no-store'});
-    const t = await r.text();
-    const lines = t.trim().split(/\r?\n/).slice(1);
-    const total = lines.reduce((s,line)=>{
-      const v = Number(line.split(',')[1]); return s + (isFinite(v)?v:0);
-    },0);
-    document.getElementById('k-cibs').textContent = money(total);
-  }catch(_){}
+    let total = direct_case + detention + fees_canceled + enforcement +
+                market + employment + policy_corr + litigation - transition;
+    if(!isFinite(total)) total = 0;
 
-  // CIRI compute
-  try{
-    const r = await fetch('ciri/inputs.csv',{cache:'no-store'});
-    const t = await r.text();
-    const [h,d] = t.trim().split(/\r?\n/);
-    const keys = h.split(',').map(s=>s.trim());
-    const vals = d.split(',').map(x=>Number(x));
-    const o = Object.fromEntries(keys.map((k,i)=>[k,vals[i]]));
+    const K = 2_000_000_000; // scaling constant from original CIRI
+    const ciri_idx = 1 - Math.exp(- total / Math.max(1,K));
+    const roi_per_case = cases>0 ? total / cases : 0;
 
-    const c=o.cases_avoided, C=o.avg_cost_per_case, D=o.jail_days_avoided, J=o.cost_per_jail_day,
-          F=o.fees_canceled_total, P=o.policy_corrections, E=o.avg_enforcement_cost_savings,
-          H=o.households_restored, M=o.avg_monthly_market_spend, m=o.months_effective,
-          pe=o.employment_probability, W=o.avg_monthly_wage, L=o.expected_lawsuits,
-          A=o.avg_payout, lam=o.litigation_multiplier, T=o.transition_costs_one_time;
+    return { total_recovery: total, ciri_index: ciri_idx, roi_per_case };
+  }
 
-    const direct = c*C + F;
-    const detention = D*J;
-    const enforce = P*E;
-    const market = H*M*m;
-    const employ = (H*pe)*W*m;
-    const litig = L*A*lam;
-    const total = direct + detention + enforce + market + employ + litig - T;
-    const K = 2_000_000_000;
-    const ciri = 1 - Math.exp(- total / K);
-    const roi = total / Math.max(1,c);
-
-    document.getElementById('k-ciri').textContent = money(total);
-    document.getElementById('k-ciri-idx').textContent = ciri.toFixed(2);
-    document.getElementById('k-roi').textContent = money(roi);
-  }catch(_){}
-})();
-
-// ---------- schema checks ----------
-(async ()=>{
-  const targets = [
-    {key:'CAE',           id:'s-cae',         path:'cae/schema.json'},
-    {key:'CDI',           id:'s-cdi',         path:'cdi/schema.json'},
-    {key:'CIRI',          id:'s-ciri',        path:'ciri/schema.json'},
-    {key:'CFF',           id:'s-cff',         path:'cff/schema.json'},
-    {key:'CIBS',          id:'s-cibs',        path:'cibs/schema.json'},
-    {key:'CII',           id:'s-cii',         path:'cii/schema.json'},
-    {key:'Integration',   id:'s-integration', path:'integration/schema.json'}
-  ];
-
-  // check each schema
-  const results = {};
-  for(const t of targets){
-    let ok = false;
+  // Load any local CIRI scenario
+  function loadLocalCiriScenario(){
     try{
-      const r = await fetch(t.path,{cache:'no-store'});
-      ok = r.ok && (await r.text()).trim().length > 0;
-    }catch(_){
-      ok = false;
+      const raw = localStorage.getItem('ABE_CIRI_SCENARIO_V2');
+      if(!raw) return null;
+      const scen = JSON.parse(raw);
+      if(!scen || !scen.outputs || typeof scen.outputs.total_recovery !== 'number') return null;
+      return scen;
+    }catch(e){
+      console.warn('Could not read ABE_CIRI_SCENARIO_V2 from localStorage', e);
+      return null;
     }
-    results[t.id] = ok;
-    setStatus(t.id, ok);
   }
 
-  // Summary grid
-  const grid = document.getElementById('schema-grid');
-  if(grid){
-    grid.innerHTML = targets.map(t=>{
-      const ok = results[t.id];
-      const cls = ok ? 'status ok' : 'status warn';
-      const label = ok ? 'Schema present' : 'Missing';
-      return `
-        <div class="tile">
-          <div style="display:flex;justify-content:space-between;align-items:center">
-            <strong>${t.key}</strong>
-            <span class="${cls}">${label}</span>
-          </div>
-          <small><code>${t.path}</code></small>
-        </div>`;
-    }).join('');
+  function overlayLocalCiriKPIs(){
+    const scen = loadLocalCiriScenario();
+    if(!scen) return;
+    const out = scen.outputs;
+    const elTotal = document.getElementById('k-total');
+    const elIdx = document.getElementById('k-ciri-idx');
+    const elRoi = document.getElementById('k-roi');
+    if(elTotal) elTotal.textContent = money(out.total_recovery) + ' *';
+    if(elIdx) elIdx.textContent = out.ciri_index.toFixed(2) + ' *';
+    if(elRoi) elRoi.textContent = money(out.roi_per_case) + ' *';
   }
-})();
+
+  (async ()=>{
+    // Version line from system/map.json (if present)
+    try{
+      const r = await fetch('system/map.json',{cache:'no-store'});
+      if(r.ok){
+        const j = await r.json();
+        const v = j.version || '—';
+        const u = j.updated || '';
+        const el = document.getElementById('version-line');
+        if(el){
+          el.textContent = `Constitutional & economic restoration framework — v${v}` + (u ? ` · updated ${u}` : '');
+        }
+      }
+    }catch(_){}
+
+    // CIBS total for KPI
+    try{
+      const r = await fetch('cibs/auto_budget.csv',{cache:'no-store'});
+      if(r.ok){
+        const t = await r.text();
+        const lines = t.trim().split(/\r?\n/).slice(1);
+        const total = lines.reduce((s,line)=>{
+          const parts = line.split(',');
+          const val = Number(parts[1]);
+          return s + (isFinite(val)?val:0);
+        },0);
+        const el = document.getElementById('k-cibs');
+        if(el) el.textContent = money(total);
+      }
+    }catch(_){}
+
+    // CIRI v2 baseline KPI from ciri/inputs.csv
+    try{
+      const r = await fetch('ciri/inputs.csv',{cache:'no-store'});
+      if(r.ok){
+        const t = await r.text();
+        const lines = t.trim().split(/\r?\n/).filter(Boolean);
+        if(lines.length>=2){
+          const head = lines[0].split(',').map(s=>s.trim());
+          const row = lines[1].split(',').map(s=>s.trim());
+          const obj = {};
+          head.forEach((h,i)=>{ obj[h] = row[i]; });
+          const out = computeCiriMetrics(obj);
+          const elTotal = document.getElementById('k-total');
+          const elIdx = document.getElementById('k-ciri-idx');
+          const elRoi = document.getElementById('k-roi');
+          if(elTotal) elTotal.textContent = money(out.total_recovery);
+          if(elIdx) elIdx.textContent = out.ciri_index.toFixed(2);
+          if(elRoi) elRoi.textContent = money(out.roi_per_case);
+        }
+      }
+    }catch(_){}
+
+    // Overlay local scenario if present (adds asterisk)
+    overlayLocalCiriKPIs();
+
+    // -------- schema checks --------
+    const targets = [
+      { key:'CAE',         id:'s-cae',         path:'cae/schema.json' },
+      { key:'CDI',         id:'s-cdi',         path:'cdi/schema.json' },
+      { key:'AFFE',        id:'s-affe',        path:'affe/schema.json' },
+      { key:'CFF',         id:'s-cff',         path:'cff/schema.json' },
+      { key:'CIRI',        id:'s-ciri',        path:'ciri/schema.json' },
+      { key:'CIBS',        id:'s-cibs',        path:'cibs/schema.json' },
+      { key:'CII',         id:'s-cii',         path:'cii/schema.json' },
+      { key:'Integration', id:'s-integration', path:'integration/schema.json' }
+    ];
+
+    const results = {};
+
+    for(const t of targets){
+      let ok = false;
+      try{
+        const r = await fetch(t.path,{cache:'no-store'});
+        if(r.ok){
+          const txt = (await r.text()).trim();
+          ok = txt.length>0;
+        }
+      }catch(_){}
+      results[t.key] = ok;
+
+      const el = document.getElementById(t.id);
+      if(el){
+        el.textContent = ok ? 'Schema present' : 'Missing / empty';
+        el.classList.remove('ok','warn');
+        el.classList.add(ok ? 'ok' : 'warn','status-pill');
+      }
+    }
+
+    // Summary grid
+    const grid = document.getElementById('schema-grid');
+    if(grid){
+      grid.innerHTML = targets.map(t=>{
+        const ok = results[t.key];
+        const pillClass = ok ? 'ok' : 'warn';
+        const label = ok ? 'Schema present' : 'Missing / empty';
+        return `
+          <div class="schema-row">
+            <span><strong>${t.key}</strong> <code>${t.path}</code></span>
+            <span class="status-pill ${pillClass}">${label}</span>
+          </div>
+        `;
+      }).join('');
+    }
+  })();
 </script>
 </body>
-            </html>
+                                  </html>
