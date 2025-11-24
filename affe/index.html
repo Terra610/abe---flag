@@ -1,0 +1,577 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>AFFE — Appropriation Fidelity & Funding Engine | A.B.E.</title>
+  <base href="/abe---flag/"/>
+  <!-- External libs (client-side only) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" integrity="sha512-8pXbBAHhUuCivX23gIqsvG4fx0Zc8Co3skxzRCW2QHbh9+oizHfKMK1N2rY2F1QBiC62uK0VdlcH8X58lmQe4w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js" integrity="sha512-+cDXx8yp4I8/7QzrHrtxKwO4BMDU+pIxf717GSGXw3L12p0q9StusDEU8MWGwxTptERaCLllwvCyc9P6DsJ9gA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+  <style>
+    :root{
+      --bg:#0b0d12;
+      --panel:#141820;
+      --panel2:#10141d;
+      --line:rgba(255,255,255,.08);
+      --brand:#5ddfff;
+      --accent:#ffa559;
+      --ok:#4bd28f;
+      --warn:#f9b34c;
+      --text:#e6e6e6;
+      --muted:#9fb0c6;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--text);
+      font:15px/1.6 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+    }
+    a{color:#80bfff;text-decoration:none}
+    a:hover{text-decoration:underline}
+    header{
+      padding:20px 24px;
+      border-bottom:1px solid var(--line);
+      background:linear-gradient(90deg,#0f1219,#171b24);
+    }
+    .wrap{max-width:1100px;margin:0 auto}
+    header .row{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:16px;
+      flex-wrap:wrap;
+    }
+    h1{
+      margin:0;
+      font-size:1.5rem;
+      color:var(--brand);
+    }
+    .sub{color:var(--muted);font-size:.92rem;margin-top:4px}
+    .badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+    .chip{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      border-radius:999px;
+      padding:2px 10px;
+      border:1px solid var(--line);
+      font-size:.8rem;
+      color:var(--muted);
+      background:rgba(255,255,255,.02);
+    }
+    .chip strong{color:var(--brand);font-weight:600}
+    main{max-width:1100px;margin:22px auto 40px;padding:0 16px}
+    .grid{display:grid;gap:16px}
+    .grid-2{grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
+    .card{
+      background:var(--panel);
+      border-radius:12px;
+      border:1px solid var(--line);
+      padding:16px 18px 18px;
+    }
+    h2{margin:0 0 .4rem;font-size:1.1rem}
+    p.muted{color:var(--muted);font-size:.9rem;margin:.1rem 0 .6rem}
+    .btn{
+      border-radius:8px;
+      border:1px solid var(--line);
+      background:#1b2230;
+      color:var(--text);
+      padding:.45rem .9rem;
+      font-size:.9rem;
+      cursor:pointer;
+    }
+    .btn:hover{background:#21293a}
+    .btn[disabled]{opacity:.4;cursor:not-allowed}
+    .btn-primary{
+      background:var(--brand);
+      color:#041019;
+      border-color:rgba(93,223,255,.5);
+      font-weight:600;
+    }
+    .btn-primary:hover{background:#7fe5ff}
+    .drop{
+      border:1px dashed var(--brand);
+      border-radius:10px;
+      padding:18px 14px;
+      margin-top:10px;
+      text-align:center;
+      background:rgba(93,223,255,.03);
+      font-size:.9rem;
+      color:var(--muted);
+      cursor:pointer;
+    }
+    .drop.dragover{
+      background:rgba(93,223,255,.08);
+      border-color:var(--accent);
+      color:var(--accent);
+    }
+    .file-pill{
+      margin-top:8px;
+      font-size:.85rem;
+      color:var(--muted);
+    }
+    .file-pill strong{color:var(--text)}
+    .note{font-size:.85rem;color:var(--muted);margin-top:6px}
+    .note.warn{color:var(--warn)}
+    .mapping{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      margin-top:8px;
+    }
+    .map-row{
+      display:grid;
+      grid-template-columns:minmax(180px,240px) minmax(0,1fr);
+      gap:8px;
+      align-items:center;
+    }
+    .map-label{font-size:.9rem;color:var(--text)}
+    .map-label small{display:block;color:var(--muted);font-size:.78rem}
+    .req{color:#ff7b7b;font-weight:700;margin-left:3px}
+    select{
+      width:100%;
+      border-radius:8px;
+      border:1px solid var(--line);
+      background:var(--panel2);
+      color:var(--text);
+      padding:.35rem .5rem;
+      font-size:.88rem;
+    }
+    table{
+      width:100%;
+      border-collapse:collapse;
+      font-size:.82rem;
+      margin-top:8px;
+    }
+    th,td{
+      border-bottom:1px solid var(--line);
+      padding:4px 6px;
+      text-align:left;
+      max-width:140px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    th{font-weight:600;color:var(--muted);background:var(--panel2)}
+    tbody tr:nth-child(even){background:#11141c}
+    .kpi-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:8px}
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      padding:2px 10px;
+      font-size:.8rem;
+      color:var(--muted);
+      background:rgba(255,255,255,.02);
+    }
+    .status-ok{color:var(--ok)}
+    .status-warn{color:var(--warn)}
+    details{
+      margin-top:10px;
+      font-size:.85rem;
+      color:var(--muted);
+    }
+    details summary{cursor:pointer}
+    pre{
+      max-height:200px;
+      overflow:auto;
+      background:var(--panel2);
+      border-radius:8px;
+      padding:8px;
+      font-size:.78rem;
+      line-height:1.5;
+    }
+    footer{
+      margin:32px 0 18px;
+      text-align:center;
+      font-size:.85rem;
+      color:var(--muted);
+    }
+    @media (max-width:720px){
+      header{padding:16px}
+      main{padding:0 12px}
+      .map-row{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="row">
+      <div>
+        <a href="index.html">← Return to Home</a>
+        <h1>⚖️ AFFE — Appropriation Fidelity & Funding Engine</h1>
+        <div class="sub">
+          Turn messy funding reports into clean, CFF-ready CSVs — locally, with no uploads.
+        </div>
+        <div class="badges">
+          <span class="chip"><strong>CFF</strong> pre-processor</span>
+          <span class="chip">Local only • Browser-run</span>
+          <a class="chip" href="cff/index.html">Open CFF</a>
+          <a class="chip" href="ciri/index.html">Open CIRI</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="grid grid-2">
+    <!-- Upload -->
+    <div class="card">
+      <h2>1. Drop a funding file</h2>
+      <p class="muted">
+        AFFE accepts <strong>CSV, Excel, or PDF</strong> reports and extracts line items in your browser.
+      </p>
+      <button id="btn-choose" class="btn">Choose file…</button>
+      <input id="file-input" type="file" accept=".csv,.txt,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/pdf" style="display:none"/>
+
+      <div id="drop-zone" class="drop">
+        <strong>Drop CSV, Excel, or PDF here</strong><br/>
+        <span class="note">No uploads. Parsing happens inside your device only.</span>
+      </div>
+
+      <div id="file-pill" class="file-pill">
+        No file loaded yet.
+      </div>
+
+      <div id="upload-note" class="note">
+        Tip: export your state / agency grant report as CSV or Excel for best results.
+      </div>
+
+      <details id="debug-detail">
+        <summary>Show extraction details</summary>
+        <pre id="debug-log">Waiting for file…</pre>
+      </details>
+    </div>
+
+    <!-- Mapping -->
+    <div class="card">
+      <h2>2. Map columns to CFF schema</h2>
+      <p class="muted">
+        Tell AFFE which columns match the CFF template. Required fields are marked with <span class="req">*</span>.
+      </p>
+      <div id="mapping" class="mapping">
+        <!-- mapping rows injected here -->
+      </div>
+      <div class="kpi-row">
+        <span class="pill">
+          <span id="status-rows">0 rows parsed</span>
+        </span>
+        <span class="pill">
+          <span id="status-required">0 / 0 required fields mapped</span>
+        </span>
+      </div>
+      <div id="map-warn" class="note warn" style="display:none">
+        Map all required fields and load at least one row to enable export.
+      </div>
+    </div>
+  </section>
+
+  <!-- Preview + Download -->
+  <section class="grid" style="margin-top:18px">
+    <div class="card">
+      <h2>3. Preview mapped output</h2>
+      <p class="muted">
+        This is what will be written into your <code>affe_output.csv</code> for CFF.
+      </p>
+      <div style="overflow:auto">
+        <table id="preview-table">
+          <thead></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div class="kpi-row">
+        <button id="btn-download" class="btn btn-primary" disabled>Download CFF-ready CSV</button>
+        <span id="status-download" class="note">
+          Waiting for valid mappings…
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    A.B.E. · AFFE → CFF → CIRI chain · CC BY-NC 4.0 · Integrity only — never for sale.
+  </footer>
+</main>
+
+<script src="affe/parser.js"></script>
+<script>
+  // ----------------- Template definition (must match CFF) -----------------
+  const AFFE_TEMPLATE_FIELDS = [
+    { key:'program_name', label:'Program name', required:true, help:'e.g., MCSAP, Medicaid, TANF, Highway Grants.' },
+    { key:'federal_authority_citation', label:'Federal authority citation', required:true, help:'e.g., 49 U.S.C. 31102, 42 U.S.C. §1396.' },
+    { key:'fiscal_year', label:'Fiscal year', required:true, help:'e.g., 2024, 2025.' },
+    { key:'state_or_jurisdiction', label:'State or jurisdiction', required:true, help:'e.g., Iowa, Texas, CA, tribal nation.' },
+    { key:'agency', label:'Agency', required:true, help:'Department or division spending the funds.' },
+    { key:'line_item_description', label:'Line item description', required:true, help:'Plain language use: “CMV inspections,” “General traffic patrol,” etc.' },
+    { key:'spend_category_code', label:'Spend category code', required:true, help:'Use ON_MISSION, OFF_MISSION, or UNCLEAR.' },
+    { key:'amount_usd', label:'Amount (USD)', required:true, help:'Dollar value of the line item.' },
+    { key:'notes', label:'Notes', required:false, help:'Citations, GAO/OIG references, internal IDs.' }
+  ];
+
+  // ----------------- State -----------------
+  let affeSource = null;    // { columns:[], rows:[], sourceType:'' }
+  let affeMapping = {};     // fieldKey -> sourceColumnName (string)
+
+  // ----------------- Helpers -----------------
+  function logDebug(msg, obj){
+    const pre = document.getElementById('debug-log');
+    const time = new Date().toISOString().split('T')[1].replace('Z','');
+    pre.textContent += '\\n['+time+'] ' + msg;
+    if(obj){
+      pre.textContent += '\\n' + JSON.stringify(obj,null,2) + '\\n';
+    }
+  }
+
+  function setFileStatus(text){
+    document.getElementById('file-pill').innerHTML = text;
+  }
+
+  function autoGuessColumn(fieldKey, columns){
+    const key = fieldKey.toLowerCase();
+    const synonyms = {
+      program_name:['program','grant','funding_program'],
+      federal_authority_citation:['citation','authority','statute','usc','legal_basis'],
+      fiscal_year:['fy','fiscal_year','year'],
+      state_or_jurisdiction:['state','jurisdiction','province'],
+      agency:['agency','department','dept','division'],
+      line_item_description:['description','line_item','purpose','project','activity'],
+      spend_category_code:['category','spend_category','mission_code'],
+      amount_usd:['amount','total','value','obligated','expended','usd','dollars'],
+      notes:['notes','comment','remark','reference']
+    };
+    const list = synonyms[fieldKey] || [];
+    let best = '';
+    columns.forEach(col=>{
+      const norm = col.toLowerCase().replace(/[^a-z0-9]+/g,'_');
+      if(norm === key){ best = col; return; }
+      if(!best && list.some(s=>norm.includes(s))) best = col;
+    });
+    return best;
+  }
+
+  function buildMappingUI(columns){
+    const container = document.getElementById('mapping');
+    if(!columns || !columns.length){
+      container.innerHTML = '<div class="note">Load a file to map its columns into the CFF schema.</div>';
+      affeMapping = {};
+      updateStatusBadges();
+      updatePreview();
+      return;
+    }
+    let html = '';
+    AFFE_TEMPLATE_FIELDS.forEach(field=>{
+      const guess = autoGuessColumn(field.key, columns);
+      if(guess) affeMapping[field.key] = guess;
+      html += `
+        <div class="map-row">
+          <div class="map-label">
+            ${field.label}${field.required ? '<span class="req">*</span>' : ''}
+            <small>${field.help}</small>
+          </div>
+          <div>
+            <select data-field="${field.key}">
+              <option value="">— choose source column —</option>
+              ${columns.map(c=>`<option value="${c}" ${c===guess?'selected':''}>${c}</option>`).join('')}
+            </select>
+          </div>
+        </div>
+      `;
+    });
+    container.innerHTML = html;
+    // Attach listeners
+    container.querySelectorAll('select').forEach(sel=>{
+      sel.addEventListener('change',()=>{
+        const field = sel.getAttribute('data-field');
+        affeMapping[field] = sel.value || '';
+        updateStatusBadges();
+        updatePreview();
+      });
+    });
+    updateStatusBadges();
+    updatePreview();
+  }
+
+  function getMappedRows(){
+    if(!affeSource || !affeSource.rows) return [];
+    const rows = [];
+    const cols = affeSource.columns || [];
+    const mapping = affeMapping || {};
+    affeSource.rows.forEach(row=>{
+      const out = {};
+      let hasValue = false;
+      AFFE_TEMPLATE_FIELDS.forEach(field=>{
+        const srcCol = mapping[field.key] || '';
+        let v = '';
+        if(srcCol && row && Object.prototype.hasOwnProperty.call(row,srcCol)){
+          v = row[srcCol];
+        }
+        if(field.key === 'amount_usd'){
+          const num = parseFloat(String(v).replace(/[^0-9.\\-]/g,''));
+          v = Number.isFinite(num) ? num.toFixed(2) : '';
+        }
+        if(typeof v === 'number') v = String(v);
+        out[field.key] = (v ?? '').toString().trim();
+        if(out[field.key] !== '') hasValue = true;
+      });
+      if(hasValue) rows.push(out);
+    });
+    return rows;
+  }
+
+  function updatePreview(){
+    const table = document.getElementById('preview-table');
+    const thead = table.querySelector('thead');
+    const tbody = table.querySelector('tbody');
+    tbody.innerHTML = '';
+    if(!affeSource){
+      thead.innerHTML = '';
+      return;
+    }
+    // header
+    thead.innerHTML = '<tr>' + AFFE_TEMPLATE_FIELDS.map(f=>`<th>${f.key}</th>`).join('') + '</tr>';
+    const mapped = getMappedRows();
+    mapped.slice(0,10).forEach(row=>{
+      const tds = AFFE_TEMPLATE_FIELDS.map(f=>`<td title="${(row[f.key]||'').replace(/"/g,'&quot;')}">${row[f.key] || ''}</td>`).join('');
+      tbody.innerHTML += '<tr>'+tds+'</tr>';
+    });
+    if(!mapped.length){
+      tbody.innerHTML = '<tr><td colspan="'+AFFE_TEMPLATE_FIELDS.length+'">No mapped rows yet. Check your field mapping and file contents.</td></tr>';
+    }
+    updateDownloadState();
+  }
+
+  function updateStatusBadges(){
+    const rowsCount = affeSource && affeSource.rows ? affeSource.rows.length : 0;
+    document.getElementById('status-rows').textContent = rowsCount + ' rows parsed';
+    const required = AFFE_TEMPLATE_FIELDS.filter(f=>f.required).length;
+    let mapped = 0;
+    AFFE_TEMPLATE_FIELDS.forEach(f=>{
+      if(f.required && affeMapping[f.key]) mapped++;
+    });
+    document.getElementById('status-required').textContent =
+      mapped + ' / ' + required + ' required fields mapped';
+  }
+
+  function allRequiredMapped(){
+    return AFFE_TEMPLATE_FIELDS
+      .filter(f=>f.required)
+      .every(f=>affeMapping[f.key] && affeMapping[f.key].length);
+  }
+
+  function updateDownloadState(){
+    const btn = document.getElementById('btn-download');
+    const status = document.getElementById('status-download');
+    const warn = document.getElementById('map-warn');
+    const mapped = getMappedRows();
+    const ok = affeSource && mapped.length > 0 && allRequiredMapped();
+    btn.disabled = !ok;
+    if(ok){
+      status.textContent = 'Ready. Download will contain '+mapped.length+' mapped rows.';
+      warn.style.display = 'none';
+    }else{
+      status.textContent = 'Waiting for valid mappings…';
+      warn.style.display = 'block';
+    }
+  }
+
+  function toCsv(rows){
+    if(!rows.length) return '';
+    const cols = AFFE_TEMPLATE_FIELDS.map(f=>f.key);
+    const escape = v=>{
+      if(v == null) return '';
+      const s = String(v);
+      if(s.includes('"') || s.includes(',') || s.includes('\\n')){
+        return '"'+s.replace(/"/g,'""')+'"';
+      }
+      return s;
+    };
+    const lines = [];
+    lines.push(cols.join(','));
+    rows.forEach(row=>{
+      lines.push(cols.map(c=>escape(row[c] ?? '')).join(','));
+    });
+    return lines.join('\\n');
+  }
+
+  function handleFile(file){
+    if(!file) return;
+    setFileStatus('Loading <strong>'+file.name+'</strong>…');
+    logDebug('Parsing file: '+file.name);
+    AFFEParser.parseFile(file).then(result=>{
+      affeSource = result;
+      affeMapping = {};
+      setFileStatus('Loaded <strong>'+file.name+'</strong> ('+result.sourceType+', '+result.rows.length+' rows)');
+      logDebug('Parse result', {columns:result.columns, rows:result.rows.length, sourceType:result.sourceType});
+      document.getElementById('debug-detail').open = false;
+      buildMappingUI(result.columns);
+      updatePreview();
+    }).catch(err=>{
+      console.error(err);
+      setFileStatus('<span class="status-warn">Could not read file. See debug log.</span>');
+      logDebug('Error parsing file: '+err.message);
+      affeSource = null;
+      affeMapping = {};
+      buildMappingUI([]);
+    });
+  }
+
+  // ----------------- Wire up UI -----------------
+  (function init(){
+    const drop = document.getElementById('drop-zone');
+    const fileInput = document.getElementById('file-input');
+    const chooseBtn = document.getElementById('btn-choose');
+
+    chooseBtn.addEventListener('click',()=>fileInput.click());
+    fileInput.addEventListener('change',e=>{
+      const f = e.target.files && e.target.files[0];
+      if(f) handleFile(f);
+    });
+
+    ['dragenter','dragover'].forEach(ev=>{
+      drop.addEventListener(ev,e=>{
+        e.preventDefault();
+        e.stopPropagation();
+        drop.classList.add('dragover');
+      });
+    });
+    ['dragleave','drop'].forEach(ev=>{
+      drop.addEventListener(ev,e=>{
+        e.preventDefault();
+        e.stopPropagation();
+        drop.classList.remove('dragover');
+      });
+    });
+    drop.addEventListener('drop',e=>{
+      const f = e.dataTransfer.files && e.dataTransfer.files[0];
+      if(f) handleFile(f);
+    });
+    drop.addEventListener('click',()=>fileInput.click());
+
+    document.getElementById('btn-download').addEventListener('click',()=>{
+      const rows = getMappedRows();
+      if(!rows.length) return;
+      const csv = toCsv(rows);
+      const blob = new Blob([csv],{type:'text/csv'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'affe_output_for_cff.csv';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    });
+
+    // initial empty mapping UI
+    buildMappingUI([]);
+  })();
+</script>
+</body>
+</html>
