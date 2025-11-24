@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "AFFE — Appropriation Fidelity & Funding Extractor Schema",
-  "description": "Defines the normalized structure produced by AFFE after parsing CSV, Excel, or PDF funding documents.",
+  "title": "AFFE — Appropriation Fidelity & Funding Extractor",
   "type": "object",
+  "description": "Normalized funding row produced by AFFE for CFF.",
   "properties": {
     "program_name": { "type": "string" },
     "federal_authority_citation": { "type": "string" },
@@ -26,5 +26,6 @@
     "line_item_description",
     "spend_category_code",
     "amount_usd"
-  ]
+  ],
+  "additionalProperties": false
 }
