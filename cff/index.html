@@ -1,281 +1,343 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>CFF — Constitutional Funding Forensics | A.B.E.</title>
-<base href="../">
-
+<base href="/abe---flag/">
 <style>
 :root{
-  --bg:#0b0d12;--panel:#141820;--panel2:#0f131a;
-  --ink:#e6e6e6;--muted:#9fb3c8;
-  --line:rgba(255,255,255,.08);
-  --brand:#5ddfff;--accent:#ffa559;
-  --ok:#4bd28f;--warn:#ffa559;
+  --bg:#0b0d12;--panel:#141820;--panel2:#0f131a;--ink:#e6e6e6;--muted:#9fb3c8;
+  --line:rgba(255,255,255,.08);--brand:#5ddfff;--accent:#ffa559;--ok:#4bd28f;--warn:#ffa559;--bad:#ff6b6b;
 }
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
 a{color:#80bfff;text-decoration:none}
 a:hover{text-decoration:underline}
-
-header{
-  padding:24px 20px;
-  background:linear-gradient(90deg,#11151c,#0b0d12);
-  border-bottom:1px solid var(--line)
+header{padding:24px 20px;background:linear-gradient(90deg,#11151c,#1b1e25);border-bottom:1px solid var(--line)}
+.wrap{max-width:1100px;margin:0 auto;padding:0 20px}
+h1{margin:0 0 6px}
+.sub{color:var(--muted)}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.badge,.chip{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;border:1px solid var(--line);font-size:.88rem;color:var(--muted);background:rgba(0,0,0,.15)}
+main{max-width:1100px;margin:22px auto 40px;padding:0 20px}
+.grid{display:grid;gap:16px}
+.grid-2{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px}
+.tile{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:12px}
+h2{margin:0 0 .4rem;font-size:1.1rem}
+small,.muted{color:var(--muted);font-size:.9rem}
+strong.code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace}
+.kpi-label{font-size:.9rem;color:var(--muted)}
+.kpi-val{font-size:1.4rem;font-weight:700;margin-top:4px}
+.kpi-pill{display:inline-flex;align-items:center;gap:4px;border-radius:999px;border:1px solid var(--line);padding:2px 8px;font-size:.8rem;color:var(--muted);margin-top:4px}
+.status{display:inline-block;padding:2px 8px;border-radius:999px;border:1px solid var(--line);font-size:.8rem}
+.s-ok{background:rgba(75,210,143,.12);color:var(--ok);border-color:rgba(75,210,143,.4)}
+.s-warn{background:rgba(255,165,89,.12);color:var(--warn);border-color:rgba(255,165,89,.4)}
+.s-bad{background:rgba(255,107,107,.12);color:var(--bad);border-color:rgba(255,107,107,.4)}
+.btn{display:inline-flex;align-items:center;justify-content:center;padding:.5rem .8rem;border-radius:9px;border:1px solid var(--line);background:#0f131a;color:var(--ink);font-size:.9rem;cursor:pointer;text-decoration:none}
+.btn:hover{border-color:var(--brand)}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+table{width:100%;border-collapse:collapse;font-size:.9rem}
+th,td{border:1px solid var(--line);padding:6px 8px;text-align:left}
+th{background:var(--panel2);font-weight:500}
+tbody tr:nth-child(even){background:rgba(255,255,255,.01)}
+code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.85rem}
+.drop{border:1px dashed var(--line);border-radius:10px;padding:14px;text-align:center;font-size:.9rem;color:var(--muted);cursor:pointer;margin-top:8px}
+.drop.dragover{border-color:var(--brand);background:rgba(93,223,255,.06);color:var(--ink)}
+.note{font-size:.85rem;color:var(--muted);margin-top:6px}
+footer{margin:36px 0 22px;text-align:center;color:var(--muted);font-size:.9rem}
+@media (min-width:720px){
+  .grid-2{grid-template-columns:2fr 3fr}
 }
-header h1{margin:0;font-size:1.55rem;font-weight:700}
-header .sub{color:var(--muted);margin-top:4px;font-size:.9rem}
-
-.wrap{max-width:780px;margin:0 auto;padding:24px}
-
-.card{
-  background:var(--panel);border:1px solid var(--line);
-  border-radius:12px;padding:24px;margin-bottom:28px;
-  box-shadow:0 0 28px rgba(93,223,255,.05)
-}
-
-h2{margin:0 0 12px;color:var(--brand);font-size:1.3rem}
-p{margin:.35rem 0 .85rem}
-
-.drop-zone{
-  margin-top:12px;
-  border:2px dashed var(--brand);
-  border-radius:10px;padding:22px;
-  text-align:center;font-size:.9rem;color:var(--muted);
-}
-.drop-zone.dragover{
-  border-color:var(--accent);
-  background:rgba(255,165,89,.08)
-}
-
-button{
-  background:var(--brand);color:#0b0d12;
-  padding:.6rem 1.2rem;border-radius:6px;
-  border:1px solid transparent;
-  font-size:.95rem;font-weight:600;
-  cursor:pointer;transition:.15s ease-in-out
-}
-button:hover{
-  background:#82eaff;
-  transform:translateY(-2px);
-  box-shadow:0 4px 10px rgba(93,223,255,.25)
-}
-.btn-ghost{
-  background:#0d0f12;color:var(--accent);
-  border:1px solid var(--accent);
-}
-.btn-ghost:hover{
-  background:rgba(255,165,89,.07);
-  border-color:var(--accent);
-  transform:translateY(-2px)
-}
-
-table{width:100%;border-collapse:collapse;margin-top:16px;font-size:.85rem}
-th,td{padding:8px;border-bottom:1px solid var(--line);text-align:left}
-th{background:var(--panel2);color:var(--muted)}
-tr:hover td{background:rgba(93,223,255,.04)}
-
-.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin:18px 0}
-.kpi{
-  background:var(--panel2);
-  border:1px solid var(--line);
-  border-radius:10px;padding:14px;
-}
-.kpi .lbl{font-size:.75rem;color:var(--muted)}
-.kpi .val{font-size:1.2rem;font-weight:700}
-
-.banner{
-  border-radius:10px;padding:14px;margin-top:18px;
-  font-size:.9rem;
-  border:1px solid var(--accent);
-  background:rgba(255,165,89,.07);
-  color:var(--accent)
-}
-
-footer{margin:40px 0;text-align:center;font-size:.8rem;color:var(--muted)}
 </style>
 </head>
-
 <body>
 <header>
-  <h1>⚖️ CFF — Constitutional Funding Forensics</h1>
-  <div class="sub">Follow the money. Restore the law.</div>
+  <div class="wrap">
+    <div>
+      <a href="/abe---flag/" class="badge">← Home</a>
+      <h1>⚖️ CFF — Constitutional Funding Forensics</h1>
+      <div class="sub">Follow the money. Restore the law. All in your browser.</div>
+      <div class="badges" style="margin-top:8px">
+        <span class="chip">No uploads · Local only</span>
+        <a class="chip" href="/abe---flag/ciri/index.html">CIRI Engine</a>
+        <a class="chip" href="/abe---flag/integration/index.html">Integration</a>
+      </div>
+    </div>
+  </div>
 </header>
 
-<div class="wrap">
-
-  <!-- Upload -->
-  <div class="card">
-    <h2>📤 Upload Your Funding CSV</h2>
-    <p>This runs 100% locally in your browser. No uploads. No tracking. No storage.</p>
-
-    <input type="file" id="fileInput" accept=".csv" style="margin-top:8px">
-
-    <div class="drop-zone" id="dropZone">
-      Drag & drop CSV here<br>(must match the CFF template)
-    </div>
-  </div>
-
-  <!-- Results -->
-  <div id="results" style="display:none">
-
+<main class="wrap">
+  <section class="grid grid-2">
     <div class="card">
-      <h2>📊 Forensic Funding Summary</h2>
-
-      <div class="kpis">
-        <div class="kpi"><div class="lbl">ON_MISSION</div><div class="val" id="kpiOn">$0</div></div>
-        <div class="kpi"><div class="lbl">OFF_MISSION</div><div class="val" id="kpiOff">$0</div></div>
-        <div class="kpi"><div class="lbl">UNCLEAR</div><div class="val" id="kpiUnclear">$0</div></div>
-        <div class="kpi"><div class="lbl">TOTAL</div><div class="val" id="kpiTotal">$0</div></div>
+      <h2>1. Load Funding Data</h2>
+      <p class="muted">Use the example file (<code>cff/inputs.csv</code>) or drop in your own CSV with the required columns.</p>
+      <button id="btn-demo" class="btn">Use repo example (inputs.csv)</button>
+      <div id="drop" class="drop">
+        <strong>Drop your CSV here</strong><br/>
+        or tap to pick a file
+        <input id="file" type="file" accept=".csv,text/csv" style="display:none"/>
       </div>
-
-      <button id="btnJson">Download Forensic JSON</button>
+      <div class="note">
+        Required columns:<br/>
+        <code>program_name, federal_authority_citation, fiscal_year, state_or_jurisdiction, agency, line_item_description, spend_category_code, amount_usd, notes</code>
+      </div>
+      <div id="load-status" class="note" style="margin-top:8px">No file loaded yet.</div>
     </div>
 
-    <!-- Table -->
     <div class="card">
-      <h2>📚 Line-Item Breakdown</h2>
-      <table id="dataTable">
+      <h2>2. Forensic Summary</h2>
+      <div class="grid" style="gap:10px">
+        <div class="tile">
+          <div class="kpi-label">ON_MISSION (lawful spend)</div>
+          <div id="k-on" class="kpi-val">—</div>
+        </div>
+        <div class="tile">
+          <div class="kpi-label">OFF_MISSION (recoverable)</div>
+          <div id="k-off" class="kpi-val">—</div>
+          <div id="k-off-share" class="kpi-pill" style="display:none"></div>
+        </div>
+        <div class="tile">
+          <div class="kpi-label">UNCLEAR / mixed</div>
+          <div id="k-unclear" class="kpi-val">—</div>
+        </div>
+        <div class="tile">
+          <div class="kpi-label">Programs · States · Fiscal years</div>
+          <div id="k-meta" class="kpi-val">—</div>
+        </div>
+      </div>
+      <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+        <button id="btn-send-ciri" class="btn" disabled>Send OFF_MISSION to CIRI (local only)</button>
+        <span id="send-status" class="note"></span>
+      </div>
+      <div class="note" style="margin-top:6px">
+        This writes a local note into <code>localStorage</code> on <em>this device only</em>.  
+        CIRI will read it and fold OFF_MISSION dollars into the recovery pool.
+      </div>
+    </div>
+  </section>
+
+  <section class="card" style="margin-top:18px">
+    <h2>3. Program × State × Year Breakdown</h2>
+    <p class="muted">Quick pivot of ON/OFF/UNCLEAR spending. Use this to line up against statutory purpose and appropriations law.</p>
+    <div style="overflow:auto;margin-top:8px">
+      <table id="tbl" style="min-width:640px">
         <thead>
           <tr>
-            <th>Program</th><th>Authority</th><th>Year</th>
-            <th>State</th><th>Agency</th><th>Description</th>
-            <th>Category</th><th>Amount</th>
+            <th>Program</th>
+            <th>State/Jurisdiction</th>
+            <th>Fiscal Year</th>
+            <th>ON_MISSION</th>
+            <th>OFF_MISSION</th>
+            <th>UNCLEAR</th>
           </tr>
         </thead>
-        <tbody></tbody>
+        <tbody id="tbl-body">
+          <tr><td colspan="6" style="text-align:center;color:var(--muted)">Load a CSV to see the breakdown.</td></tr>
+        </tbody>
       </table>
     </div>
+  </section>
+</main>
 
-    <!-- Send to CIRI -->
-    <div class="card">
-      <h2>🔗 Send OFF_MISSION Total to CIRI</h2>
-      <p>The OFF_MISSION amount will be stored locally and read by CIRI when you visit that page.</p>
-
-      <button id="btnToCiri" class="btn-ghost">Send to CIRI (local only)</button>
-
-      <div class="banner">
-        Nothing leaves your device.  
-        Stored as: <code>ABE_CFF_OFF_MISSION_TOTAL</code> and <code>ABE_CFF_CONTEXT</code>.
-      </div>
-    </div>
-
-  </div>
-
-</div>
-
-<footer>American Butterfly Effect (A.B.E.) — Constitutional restoration through transparent math.</footer>
+<footer>
+  CC BY-NC 4.0 · DOI <a href="https://doi.org/10.5281/zenodo.17586107">10.5281/zenodo.17586107</a><br/>
+  Integrity only — never for sale.
+</footer>
 
 <script>
-/* CSV → rows */
-function csvToRows(text){
-  const rows=[];let i=0,field='',row=[],inQ=false;
-  while(i<text.length){
-    const c=text[i++];
-    if(inQ){
-      if(c==='"' && text[i]==='"'){ field+='"'; i++; }
-      else if(c==='"'){ inQ=false; }
-      else field+=c;
-    } else {
-      if(c==='"'){ inQ=true; }
-      else if(c===','){ row.push(field); field=''; }
-      else if(c==='\n'||c==='\r'){
-        if(field!==''||row.length){ row.push(field); rows.push(row); field=''; row=[]; }
-      } else field+=c;
+const fmtMoney = n => isFinite(n) ? '$' + Math.round(n).toLocaleString() : '—';
+const pct = (part,total) => total>0 ? (part*100/total).toFixed(1)+'%' : '—';
+
+const DEMO_PATH = '/abe---flag/cff/inputs.csv';
+const LS_KEY_TOTAL = 'ABE_CFF_OFF_MISSION_TOTAL';
+const LS_KEY_CTX   = 'ABE_CFF_CONTEXT';
+
+function parseCsv(text){
+  const lines = text.trim().split(/\r?\n/).filter(Boolean);
+  if(lines.length<2) return [];
+  const head = lines[0].split(',').map(s=>s.trim());
+  return lines.slice(1).map(line=>{
+    const cols = line.split(','); // simple split, assumes no embedded commas
+    const row = {};
+    head.forEach((h,i)=> row[h] = (cols[i]||'').trim());
+    row.amount_usd = Number(row.amount_usd || 0);
+    row.spend_category_code = (row.spend_category_code||'').trim().toUpperCase();
+    return row;
+  });
+}
+
+function summarize(rows){
+  const totals = {ON_MISSION:0,OFF_MISSION:0,UNCLEAR:0};
+  const meta = {programs:new Set(),states:new Set(),years:new Set()};
+  const agg = {}; // key: program|state|year
+
+  for(const r of rows){
+    const cat = ['ON_MISSION','OFF_MISSION','UNCLEAR'].includes(r.spend_category_code)
+      ? r.spend_category_code : 'UNCLEAR';
+    const amt = isFinite(r.amount_usd) ? r.amount_usd : 0;
+    totals[cat] += amt;
+
+    meta.programs.add(r.program_name||'?');
+    meta.states.add(r.state_or_jurisdiction||'?');
+    meta.years.add(String(r.fiscal_year||'?'));
+
+    const key = (r.program_name||'?')+'|'+(r.state_or_jurisdiction||'?')+'|'+(r.fiscal_year||'?');
+    if(!agg[key]) agg[key] = {program:r.program_name||'?',state:r.state_or_jurisdiction||'?',year:r.fiscal_year||'?',ON_MISSION:0,OFF_MISSION:0,UNCLEAR:0};
+    agg[key][cat] += amt;
+  }
+  return {totals,meta,agg:Object.values(agg)};
+}
+
+function renderSummary(summary){
+  const {totals,meta,agg} = summary;
+  const grand = totals.ON_MISSION + totals.OFF_MISSION + totals.UNCLEAR;
+
+  document.getElementById('k-on').textContent      = fmtMoney(totals.ON_MISSION);
+  document.getElementById('k-off').textContent     = fmtMoney(totals.OFF_MISSION);
+  document.getElementById('k-unclear').textContent = fmtMoney(totals.UNCLEAR);
+  document.getElementById('k-meta').textContent    =
+    `${meta.programs.size} prog · ${meta.states.size} state(s) · ${meta.years.size} FY`;
+
+  const pill = document.getElementById('k-off-share');
+  if(totals.OFF_MISSION>0 && grand>0){
+    pill.style.display = 'inline-flex';
+    pill.textContent = pct(totals.OFF_MISSION, grand)+' of total';
+  }else{
+    pill.style.display = 'none';
+  }
+
+  const body = document.getElementById('tbl-body');
+  if(!agg.length){
+    body.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--muted)">No rows after parsing.</td></tr>';
+  }else{
+    body.innerHTML = agg.map(r=>`
+      <tr>
+        <td>${r.program}</td>
+        <td>${r.state}</td>
+        <td>${r.year}</td>
+        <td>${fmtMoney(r.ON_MISSION)}</td>
+        <td>${fmtMoney(r.OFF_MISSION)}</td>
+        <td>${fmtMoney(r.UNCLEAR)}</td>
+      </tr>
+    `).join('');
+  }
+}
+
+function saveToLocalForCiri(summary){
+  const off = summary.totals.OFF_MISSION || 0;
+  const grand = summary.totals.ON_MISSION + summary.totals.OFF_MISSION + summary.totals.UNCLEAR;
+  try{
+    if(!(off>0)){
+      localStorage.removeItem(LS_KEY_TOTAL);
+      localStorage.removeItem(LS_KEY_CTX);
+      return {saved:false,off};
+    }
+    const ctx = {
+      source:'CFF',
+      generated_at:new Date().toISOString(),
+      total_spend:grand,
+      off_mission:off,
+      share: grand>0 ? off/grand : 0,
+      note:'OFF_MISSION dollars available for recovery; computed by CFF on this device only.'
+    };
+    localStorage.setItem(LS_KEY_TOTAL, String(off));
+    localStorage.setItem(LS_KEY_CTX, JSON.stringify(ctx));
+    return {saved:true,off};
+  }catch(e){
+    console.warn('Could not write CFF context to localStorage', e);
+    return {saved:false,off};
+  }
+}
+
+(function init(){
+  const btnDemo = document.getElementById('btn-demo');
+  const drop = document.getElementById('drop');
+  const fileInput = document.getElementById('file');
+  const loadStatus = document.getElementById('load-status');
+  const btnSend = document.getElementById('btn-send-ciri');
+  const sendStatus = document.getElementById('send-status');
+
+  let currentSummary = null;
+
+  async function loadDemo(){
+    try{
+      loadStatus.textContent = 'Loading repo example (cff/inputs.csv)…';
+      const r = await fetch(DEMO_PATH,{cache:'no-store'});
+      if(!r.ok) throw new Error('HTTP '+r.status);
+      const txt = await r.text();
+      const rows = parseCsv(txt);
+      if(!rows.length) throw new Error('No rows');
+      currentSummary = summarize(rows);
+      renderSummary(currentSummary);
+      loadStatus.textContent = `Loaded example file: ${rows.length.toLocaleString()} row(s).`;
+      btnSend.disabled = false;
+      sendStatus.textContent = '';
+    }catch(e){
+      console.error(e);
+      loadStatus.textContent = 'Could not load example CSV.';
+      currentSummary = null;
+      btnSend.disabled = true;
     }
   }
-  if(field!==''||row.length){ row.push(field); rows.push(row); }
-  return rows;
-}
 
-/* Handle CSV parsing + render */
-function handleCSV(text){
-  const rows = csvToRows(text.trim());
-  if(rows.length<2){ alert("CSV has no data"); return; }
+  function handleFiles(files){
+    if(!files || !files.length) return;
+    const f = files[0];
+    if(!/\.csv$/i.test(f.name) && f.type.indexOf('csv')===-1){
+      loadStatus.textContent = 'Please provide a .csv file.';
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = ev=>{
+      try{
+        const txt = String(ev.target.result||'');
+        const rows = parseCsv(txt);
+        if(!rows.length) throw new Error('No rows');
+        currentSummary = summarize(rows);
+        renderSummary(currentSummary);
+        loadStatus.textContent = `Loaded ${f.name} · ${rows.length.toLocaleString()} row(s).`;
+        btnSend.disabled = false;
+        sendStatus.textContent = '';
+      }catch(err){
+        console.error(err);
+        loadStatus.textContent = 'Could not parse CSV. Check the header row against the README.';
+        currentSummary = null;
+        btnSend.disabled = true;
+      }
+    };
+    reader.onerror = ()=>{ loadStatus.textContent = 'Error reading file.'; };
+    reader.readAsText(f);
+  }
 
-  const headers = rows[0];
-  const data = rows.slice(1);
+  btnDemo.addEventListener('click', loadDemo);
 
-  let on=0, off=0, unclear=0, total=0;
-
-  const tbody = document.querySelector("#dataTable tbody");
-  tbody.innerHTML='';
-
-  data.forEach(r=>{
-    const obj = Object.fromEntries(headers.map((h,i)=>[h,r[i]]));
-    const amt = Number((obj.amount_usd||'0').replace(/[^0-9.-]/g,''))||0;
-    total += amt;
-    if(obj.spend_category_code==="ON_MISSION") on+=amt;
-    else if(obj.spend_category_code==="OFF_MISSION") off+=amt;
-    else if(obj.spend_category_code==="UNCLEAR") unclear+=amt;
-
-    const tr=document.createElement("tr");
-    tr.innerHTML=`
-      <td>${obj.program_name||''}</td>
-      <td>${obj.federal_authority_citation||''}</td>
-      <td>${obj.fiscal_year||''}</td>
-      <td>${obj.state_or_jurisdiction||''}</td>
-      <td>${obj.agency||''}</td>
-      <td>${obj.line_item_description||''}</td>
-      <td>${obj.spend_category_code||''}</td>
-      <td>$${amt.toLocaleString()}</td>
-    `;
-    tbody.appendChild(tr);
+  drop.addEventListener('click', ()=>fileInput.click());
+  drop.addEventListener('dragover', e=>{e.preventDefault();drop.classList.add('dragover');});
+  drop.addEventListener('dragleave', e=>{e.preventDefault();drop.classList.remove('dragover');});
+  drop.addEventListener('drop', e=>{
+    e.preventDefault();
+    drop.classList.remove('dragover');
+    handleFiles(e.dataTransfer.files);
   });
+  fileInput.addEventListener('change', e=>handleFiles(e.target.files));
 
-  document.getElementById("kpiOn").textContent="$"+on.toLocaleString();
-  document.getElementById("kpiOff").textContent="$"+off.toLocaleString();
-  document.getElementById("kpiUnclear").textContent="$"+unclear.toLocaleString();
-  document.getElementById("kpiTotal").textContent="$"+total.toLocaleString();
-
-  window.CFF_RESULT = {on,off,unclear,total};
-
-  document.getElementById("results").style.display='block';
-}
-
-/* File upload */
-document.getElementById("fileInput").addEventListener("change",e=>{
-  const f=e.target.files[0]; if(!f) return;
-  f.text().then(handleCSV);
-});
-
-/* Drag+drop */
-const drop=document.getElementById("dropZone");
-drop.addEventListener("dragover",e=>{
-  e.preventDefault(); drop.classList.add("dragover");
-});
-drop.addEventListener("dragleave",()=>drop.classList.remove("dragover"));
-drop.addEventListener("drop",e=>{
-  e.preventDefault(); drop.classList.remove("dragover");
-  const f=e.dataTransfer.files[0]; if(!f) return;
-  f.text().then(handleCSV);
-});
-
-/* Download JSON */
-document.getElementById("btnJson").addEventListener("click",()=>{
-  const blob=new Blob([JSON.stringify(window.CFF_RESULT,null,2)],{type:"application/json"});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement("a");
-  a.href=url; a.download="cff_forensic_result.json"; a.click();
-  URL.revokeObjectURL(url);
-});
-
-/* Send to CIRI (local only) */
-document.getElementById("btnToCiri").addEventListener("click",()=>{
-  if(!window.CFF_RESULT){ alert("Upload a CSV first"); return; }
-
-  localStorage.setItem("ABE_CFF_OFF_MISSION_TOTAL", String(window.CFF_RESULT.off));
-
-  localStorage.setItem("ABE_CFF_CONTEXT", JSON.stringify({
-    time: new Date().toISOString(),
-    source: "CFF",
-    note: "OFF_MISSION transfer from CFF to CIRI"
-  }));
-
-  alert("OFF_MISSION total stored locally. CIRI will read it when you visit the CIRI page.");
-});
+  btnSend.addEventListener('click', ()=>{
+    if(!currentSummary){
+      sendStatus.textContent = 'Load a CSV first.';
+      return;
+    }
+    const {saved,off} = saveToLocalForCiri(currentSummary);
+    if(saved){
+      sendStatus.textContent = `OFF_MISSION total ${fmtMoney(off)} sent to CIRI on this device. Open the CIRI page to see it folded into the recovery pool.`;
+    }else if(off>0){
+      sendStatus.textContent = 'Could not write to localStorage (browser restricted). CIRI will not see this handoff.';
+    }else{
+      sendStatus.textContent = 'OFF_MISSION total is zero; nothing to send.';
+    }
+  });
+})();
 </script>
-
 </body>
 </html>
