@@ -1,399 +1,400 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>CIRI — Integrity ROI Engine | A.B.E.</title>
 <base href="/abe---flag/">
-
 <style>
 :root{
-  --bg:#0b0d12;--panel:#141820;--panel2:#0f131a;
-  --ink:#e6e6e6;--muted:#9fb3c8;
-  --line:rgba(255,255,255,.08);
-  --brand:#5ddfff;--accent:#ffa559;--ok:#4bd28f;
+  --bg:#0b0d12;--panel:#141820;--panel2:#0f131a;--ink:#e6e6e6;--muted:#9fb3c8;
+  --line:rgba(255,255,255,.08);--brand:#5ddfff;--accent:#ffa559;--ok:#4bd28f;--warn:#ffa559;--bad:#ff6b6b;
 }
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
 a{color:#80bfff;text-decoration:none}
 a:hover{text-decoration:underline}
-
-header{
-  padding:20px;
-  background:linear-gradient(90deg,#11151c,#0b0d12);
-  border-bottom:1px solid var(--line)
+header{padding:24px 20px;background:linear-gradient(90deg,#11151c,#1b1e25);border-bottom:1px solid var(--line)}
+.wrap{max-width:1100px;margin:0 auto;padding:0 20px}
+h1{margin:0 0 6px}
+.sub{color:var(--muted)}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.badge,.chip{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;border:1px solid var(--line);font-size:.88rem;color:var(--muted);background:rgba(0,0,0,.15)}
+main{max-width:1100px;margin:22px auto 40px;padding:0 20px}
+.grid{display:grid;gap:16px}
+.grid-2{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px}
+.tile{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:12px}
+h2{margin:0 0 .4rem;font-size:1.1rem}
+small,.muted{color:var(--muted);font-size:.9rem}
+.kpi-label{font-size:.9rem;color:var(--muted)}
+.kpi-val{font-size:1.4rem;font-weight:700;margin-top:4px}
+.note{font-size:.85rem;color:var(--muted);margin-top:6px}
+.btn{display:inline-flex;align-items:center;justify-content:center;padding:.5rem .8rem;border-radius:9px;border:1px solid var(--line);background:#0f131a;color:var(--ink);font-size:.9rem;cursor:pointer;text-decoration:none}
+.btn:hover{border-color:var(--brand)}
+.btn[disabled]{opacity:.4;cursor:not-allowed}
+table{width:100%;border-collapse:collapse;font-size:.9rem}
+th,td{border:1px solid var(--line);padding:6px 8px;text-align:left}
+th{background:var(--panel2);font-weight:500}
+tbody tr:nth-child(even){background:rgba(255,255,255,.02)}
+code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.85rem}
+input[type=file]{display:none}
+.src-pill{display:inline-flex;align-items:center;gap:6px;padding:4px 9px;border-radius:999px;border:1px solid var(--line);font-size:.85rem;background:rgba(0,0,0,.18);color:var(--muted)}
+.bad{color:var(--bad)}
+.ok{color:var(--ok)}
+.drop{border:1px dashed var(--line);border-radius:10px;padding:14px;text-align:center;font-size:.9rem;color:var(--muted);cursor:pointer;margin-top:8px}
+.drop.dragover{border-color:var(--brand);background:rgba(93,223,255,.06);color:var(--ink)}
+.tag{display:inline-flex;align-items:center;gap:4px;border-radius:999px;border:1px solid var(--line);padding:2px 8px;font-size:.78rem;color:var(--muted)}
+footer{margin:36px 0 22px;text-align:center;color:var(--muted);font-size:.9rem}
+@media (min-width:720px){
+  .grid-2{grid-template-columns:2fr 3fr}
 }
-header .wrap{
-  max-width:1000px;margin:0 auto;
-  display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;
-}
-.nav{display:flex;flex-wrap:wrap;gap:8px}
-.badge{
-  display:inline-flex;align-items:center;gap:6px;
-  padding:4px 10px;border-radius:999px;
-  border:1px solid var(--line);font-size:.85rem;color:var(--muted)
-}
-.badge strong{color:var(--ink)}
-
-main{max-width:1000px;margin:24px auto 40px;padding:0 20px}
-.card{
-  background:var(--panel);border:1px solid var(--line);
-  border-radius:12px;padding:18px 18px 20px;margin-bottom:20px;
-  box-shadow:0 0 24px rgba(0,0,0,.35)
-}
-h1{margin:0 0 4px;font-size:1.55rem}
-h2{margin:0 0 10px;color:var(--brand);font-size:1.1rem}
-p{margin:.3rem 0 .8rem}
-.small{font-size:.85rem;color:var(--muted)}
-
-.grid{
-  display:grid;gap:12px;
-  grid-template-columns:repeat(auto-fit,minmax(220px,1fr))
-}
-
-.kpi{
-  background:var(--panel2);
-  border:1px solid var(--line);
-  border-radius:10px;padding:12px
-}
-.kpi .lbl{font-size:.8rem;color:var(--muted)}
-.kpi .val{margin-top:2px;font-weight:700;font-size:1.2rem}
-
-button{
-  background:var(--brand);color:#05070a;
-  border-radius:7px;border:1px solid transparent;
-  padding:.45rem .95rem;font-size:.9rem;font-weight:600;
-  cursor:pointer;transition:.15s ease;
-}
-button:hover{
-  background:#82eaff;
-  transform:translateY(-1px);
-  box-shadow:0 3px 10px rgba(93,223,255,.3)
-}
-.btn-ghost{
-  background:#0d1017;color:var(--accent);
-  border-color:var(--accent);
-}
-.btn-ghost:hover{
-  background:rgba(255,165,89,.08);
-  box-shadow:0 3px 10px rgba(255,165,89,.3)
-}
-
-input[type=file]{
-  margin-top:8px;font-size:.85rem;color:var(--muted)
-}
-.drop-zone{
-  margin-top:10px;border:2px dashed var(--brand);
-  border-radius:10px;padding:16px;text-align:center;
-  font-size:.85rem;color:var(--muted)
-}
-.drop-zone.dragover{
-  border-color:var(--accent);
-  background:rgba(255,165,89,.08)
-}
-
-table{width:100%;border-collapse:collapse;margin-top:12px;font-size:.82rem}
-th,td{padding:7px 8px;border-bottom:1px solid var(--line);text-align:left}
-th{background:var(--panel2);color:var(--muted)}
-tr:hover td{background:rgba(93,223,255,.04)}
-
-.banner{
-  border-radius:10px;padding:10px 12px;margin-top:10px;
-  border:1px solid var(--accent);
-  background:rgba(255,165,89,.09);
-  font-size:.86rem;color:var(--accent)
-}
-.banner.ok{border-color:var(--ok);background:rgba(75,210,143,.08);color:var(--ok)}
-
-footer{margin:32px 0 20px;text-align:center;font-size:.82rem;color:var(--muted)}
-code{font-size:.85em;background:#0f131a;padding:1px 4px;border-radius:4px}
 </style>
 </head>
 <body>
-
 <header>
   <div class="wrap">
     <div>
       <a href="/abe---flag/" class="badge">← Home</a>
-      <h1>CIRI — Integrity ROI Engine</h1>
-      <div class="small">Turns divergence + local inputs into modeled recovery dollars.</div>
-    </div>
-    <div class="nav">
-      <a class="badge" href="cff/index.html"><strong>CFF</strong> Funding Forensics</a>
-      <a class="badge" href="cibs/index.html">CIBS</a>
-      <a class="badge" href="macro/index.html">Macro</a>
-      <a class="badge" href="integration/index.html">Integration</a>
+      <h1>💹 CIRI — Integrity ROI Engine</h1>
+      <div class="sub">Turns divergence + local inputs into recovery dollars and indices. All in your browser.</div>
+      <div class="badges" style="margin-top:8px">
+        <span class="chip">Local only · No uploads</span>
+        <a class="chip" href="/abe---flag/cff/index.html">CFF (Funding Forensics)</a>
+        <a class="chip" href="/abe---flag/cibs/index.html">CIBS</a>
+        <a class="chip" href="/abe---flag/macro/index.html">Macro</a>
+        <a class="chip" href="/abe---flag/integration/index.html">Integration</a>
+      </div>
     </div>
   </div>
 </header>
 
-<main>
-
-  <!-- Load / Upload -->
-  <section class="card">
-    <h2>📥 Load Inputs</h2>
-    <p class="small">
-      You can run CIRI on the repo’s baseline inputs, or on your own CSV. Everything runs locally in your browser.
-    </p>
-    <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:8px">
-      <button id="btn-load-repo">Use repo baseline (<code>ciri/inputs.csv</code>)</button>
-      <span class="small">or upload your own:</span>
-      <input id="file-input" type="file" accept=".csv">
-    </div>
-    <div id="drop-zone" class="drop-zone">
-      Drag & drop a CIRI CSV here (must match the template header).
-    </div>
-    <div id="source-label" class="small" style="margin-top:8px;color:var(--muted)">Source: not loaded yet.</div>
-  </section>
-
-  <!-- KPIs -->
-  <section class="card">
-    <h2>📊 Recovery Outputs</h2>
-    <div class="grid">
-      <div class="kpi">
-        <div class="lbl">Base Recovery (CIRI only)</div>
-        <div class="val" id="k-base-total">—</div>
-        <div class="small">Direct CIRI engine result.</div>
+<main class="wrap">
+  <section class="grid grid-2">
+    <div class="card">
+      <h2>1. Choose Inputs</h2>
+      <p class="muted">
+        Use the default repo inputs (<code>ciri/inputs.csv</code>) or drop in your own CSV in the same format.
+      </p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px">
+        <button id="btn-default" class="btn">Use repo baseline</button>
+        <button id="btn-file" class="btn">Upload CSV</button>
       </div>
-      <div class="kpi">
-        <div class="lbl">OFF_MISSION from CFF</div>
-        <div class="val" id="k-cff-off">—</div>
-        <div class="small">Read from local <code>ABE_CFF_OFF_MISSION_TOTAL</code>.</div>
+      <div id="src-pill" class="src-pill">
+        Source: <strong>Repo baseline</strong> (<code>ciri/inputs.csv</code>)
       </div>
-      <div class="kpi">
-        <div class="lbl">Total Recovery (CIRI + CFF)</div>
-        <div class="val" id="k-total-plus-cff">—</div>
-        <div class="small">What A.B.E. treats as the full recovery pool.</div>
+      <div id="drop" class="drop">
+        <strong>Drop your CIRI CSV here</strong><br/>
+        or tap “Upload CSV”
+        <input id="file" type="file" accept=".csv,text/csv"/>
       </div>
-      <div class="kpi">
-        <div class="lbl">CIRI Index</div>
-        <div class="val" id="k-index">—</div>
-        <div class="small"><code>1 - e^{-R_T/K}</code> with K = 2B.</div>
+      <div class="note" style="margin-top:8px">
+        Required header (single row):<br/>
+        <code>cases_avoided,avg_cost_per_case,jail_days_avoided,cost_per_jail_day,fees_canceled_total,policy_corrections,avg_enforcement_cost_savings,households_restored,avg_monthly_market_spend,months_effective,employment_probability,avg_monthly_wage,expected_lawsuits,avg_payout,litigation_multiplier,transition_costs_one_time</code>
       </div>
-      <div class="kpi">
-        <div class="lbl">ROI per Case</div>
-        <div class="val" id="k-roi">—</div>
-        <div class="small"><code>R_T / max(1, cases_avoided)</code>.</div>
+      <div id="load-status" class="note" style="margin-top:8px">
+        Using repo baseline. No local override loaded yet.
       </div>
+      <div id="cff-pill" class="note" style="margin-top:10px"></div>
     </div>
 
-    <div id="cff-banner" class="banner">
-      No CFF OFF_MISSION transfer detected yet. Run the CFF engine and click “Send to CIRI (local only)” to link funding misuse into this recovery model.
+    <div class="card">
+      <h2>2. Recovery KPIs (CIRI v2)</h2>
+      <div class="grid" style="gap:10px">
+        <div class="tile">
+          <div class="kpi-label">Total Recovery (CIRI)</div>
+          <div id="k-total" class="kpi-val">—</div>
+          <div class="note">Includes repo inputs + any OFF_MISSION dollars handed off from CFF on this device.</div>
+        </div>
+        <div class="tile">
+          <div class="kpi-label">CIRI Index</div>
+          <div id="k-idx" class="kpi-val">—</div>
+          <div class="note"><code>1 - e^{-R_T/K}</code>, with <code>K = 2,000,000,000</code></div>
+        </div>
+        <div class="tile">
+          <div class="kpi-label">ROI per Case</div>
+          <div id="k-roi" class="kpi-val">—</div>
+          <div class="note"><code>R_T / max(1, cases_avoided)</code></div>
+        </div>
+        <div class="tile">
+          <div class="kpi-label">Households Restored</div>
+          <div id="k-hh" class="kpi-val">—</div>
+          <div class="note">Pulled from the same CSV.</div>
+        </div>
+      </div>
+      <div class="note" style="margin-top:10px">
+        This run is stored locally as <code>ABE_CIRI_SCENARIO_V2</code> so the homepage and Integration layer can reflect <em>your</em> numbers on this device.
+      </div>
     </div>
   </section>
 
-  <!-- Inputs echo -->
-  <section class="card">
-    <h2>🧮 Inputs Snapshot</h2>
-    <p class="small">
-      This echoes the row from your CIRI CSV so a judge, AG, or watchdog can see exactly what the engine used.
-    </p>
-    <table id="inputs-table">
-      <thead></thead>
-      <tbody></tbody>
-    </table>
+  <section class="card" style="margin-top:18px">
+    <h2>3. Component Breakdown</h2>
+    <p class="muted">How CIRI builds the recovery pool from each part of the CSV.</p>
+    <div style="overflow:auto;margin-top:8px">
+      <table style="min-width:640px">
+        <thead>
+          <tr>
+            <th>Component</th>
+            <th>Formula</th>
+            <th>Value (USD)</th>
+          </tr>
+        </thead>
+        <tbody id="tbl-body">
+          <tr><td colspan="3" style="text-align:center;color:var(--muted)">Run the model to see the breakdown.</td></tr>
+        </tbody>
+      </table>
+    </div>
   </section>
-
-  <!-- Download -->
-  <section class="card">
-    <h2>📥 Download Scenario Receipt</h2>
-    <p class="small">
-      Download a local JSON “receipt” of this run (inputs + outputs). Nothing is stored on the server — this is just for your records or court exhibits.
-    </p>
-    <button id="btn-receipt" class="btn-ghost">Download CIRI Scenario JSON</button>
-  </section>
-
 </main>
 
 <footer>
-  A.B.E. CIRI Engine · CC BY-NC 4.0 · Integrity only — never for sale.
+  CC BY-NC 4.0 · DOI <a href="https://doi.org/10.5281/zenodo.17586107">10.5281/zenodo.17586107</a><br/>
+  Integrity only — never for sale.
 </footer>
 
 <script>
-// ---------- helpers ----------
-const money = n=>{
-  const v = Number(n);
-  if(!isFinite(v)) return '—';
+const K_CIRI_V2 = 2_000_000_000;
+const SCEN_KEY = 'ABE_CIRI_SCENARIO_V2';
+const CFF_KEY_TOTAL = 'ABE_CFF_OFF_MISSION_TOTAL';
+const CFF_KEY_CTX   = 'ABE_CFF_CONTEXT';
+
+const money = n => isFinite(n) ? '$' + Math.round(n).toLocaleString() : '—';
+
+function parseCsv(text){
+  const lines = text.trim().split(/\r?\n/).filter(Boolean);
+  if(lines.length<2) throw new Error('CSV must have a header row + one data row');
+  const head = lines[0].split(',').map(s=>s.trim());
+  const row  = lines[1].split(',').map(s=>s.trim());
+  const obj = {};
+  head.forEach((h,i)=> obj[h] = row[i] ?? '');
+  return obj;
+}
+
+function num(x){ const v = Number(x); return isFinite(v)?v:0; }
+
+function readCffHandoff(){
   try{
-    return new Intl.NumberFormat(undefined,{
-      style:'currency',currency:'USD',maximumFractionDigits:0
-    }).format(v);
-  }catch{
-    return '$'+Math.round(v).toLocaleString();
+    const raw = localStorage.getItem(CFF_KEY_TOTAL);
+    if(!raw) return null;
+    const total = Number(raw);
+    if(!isFinite(total) || total<=0) return null;
+    let ctx = null;
+    try{ ctx = JSON.parse(localStorage.getItem(CFF_KEY_CTX)||'null'); }catch(_){}
+    return {total,ctx};
+  }catch(e){
+    console.warn('Could not read CFF handoff', e);
+    return null;
   }
-};
-
-function csvToRows(text){
-  const rows=[];let i=0,field='',row=[],inQ=false;
-  for(;i<text.length;i++){
-    const c=text[i];
-    if(inQ){
-      if(c==='"' && text[i+1]==='"'){ field+='"'; i++; }
-      else if(c==='"'){ inQ=false; }
-      else field+=c;
-    }else{
-      if(c==='"'){ inQ=true; }
-      else if(c===','){ row.push(field); field=''; }
-      else if(c==='\n' || c==='\r'){
-        if(field!=='' || row.length){ row.push(field); rows.push(row); field=''; row=[]; }
-      }else field+=c;
-    }
-  }
-  if(field!==''||row.length){ row.push(field); rows.push(row); }
-  return rows;
 }
 
-// ---------- CFF localStorage read ----------
-function readCff(){
-  let off = 0;
-  let ctx = null;
-  try{
-    const raw = localStorage.getItem('ABE_CFF_OFF_MISSION_TOTAL');
-    if(raw) off = Number(raw) || 0;
-    const meta = localStorage.getItem('ABE_CFF_CONTEXT');
-    if(meta) ctx = JSON.parse(meta);
-  }catch(_){}
-  return {off,ctx};
-}
+function computeCiriMetrics(d){
+  const cases_avoided       = num(d.cases_avoided);
+  const avg_cost_per_case   = num(d.avg_cost_per_case);
+  const jail_days_avoided   = num(d.jail_days_avoided);
+  const cost_per_jail_day   = num(d.cost_per_jail_day);
+  const fees_canceled_total = num(d.fees_canceled_total);
+  const policy_corrections  = num(d.policy_corrections);
+  const avg_enforcement_cost_savings = num(d.avg_enforcement_cost_savings);
+  const households_restored = num(d.households_restored);
+  const avg_monthly_market_spend = num(d.avg_monthly_market_spend);
+  const months_effective    = num(d.months_effective);
+  const employment_probability = num(d.employment_probability);
+  const avg_monthly_wage    = num(d.avg_monthly_wage);
+  const expected_lawsuits   = num(d.expected_lawsuits);
+  const avg_payout          = num(d.avg_payout);
+  const litigation_multiplier = num(d.litigation_multiplier);
+  const transition_costs_one_time = num(d.transition_costs_one_time);
 
-// ---------- core CIRI math ----------
-function computeCiri(o){
-  const c=o.cases_avoided, C=o.avg_cost_per_case, D=o.jail_days_avoided, J=o.cost_per_jail_day,
-        F=o.fees_canceled_total, P=o.policy_corrections, E=o.avg_enforcement_cost_savings,
-        H=o.households_restored, M=o.avg_monthly_market_spend, m=o.months_effective,
-        pe=o.employment_probability, W=o.avg_monthly_wage, L=o.expected_lawsuits,
-        A=o.avg_payout, lam=o.litigation_multiplier, T=o.transition_costs_one_time;
+  const direct_case   = cases_avoided * avg_cost_per_case;
+  const detention     = jail_days_avoided * cost_per_jail_day;
+  const fees          = fees_canceled_total;
+  const enforcement   = policy_corrections * avg_enforcement_cost_savings;
+  const market_access = households_restored * avg_monthly_market_spend * months_effective;
+  const employment    = households_restored * employment_probability * avg_monthly_wage * months_effective;
+  const litigation    = expected_lawsuits * avg_payout * litigation_multiplier;
+  const transition    = transition_costs_one_time;
 
-  const direct   = c*C + F;
-  const detention= D*J;
-  const enforce  = P*E;
-  const market   = H*M*m;
-  const employ   = (H*pe)*W*m;
-  const litig    = L*A*lam;
+  let total = direct_case + detention + fees + enforcement + market_access + employment + litigation - transition;
 
-  const totalBase = direct + detention + enforce + market + employ + litig - T;
-  const K = 2_000_000_000;
-  const index = 1 - Math.exp(- totalBase / K);
-  const roi   = totalBase / Math.max(1,c||1);
-
-  return {totalBase,index,roi};
-}
-
-// ---------- UI wires ----------
-const sourceLabel = document.getElementById('source-label');
-const inputsHead  = document.querySelector('#inputs-table thead');
-const inputsBody  = document.querySelector('#inputs-table tbody');
-
-let lastScenario = null; // for receipt
-
-function applyScenarioFromCsv(text, sourceTag){
-  const rows = csvToRows(text.trim());
-  if(rows.length < 2){
-    alert('CSV appears empty. Need at least a header and one data row.');
-    return;
-  }
-  const headers = rows[0].map(h=>h.trim());
-  const dataRow = rows[1]; // single-row model
-
-  const o = Object.fromEntries(headers.map((h,i)=>[h, Number(dataRow[i]) ]));
-  const {totalBase,index,roi} = computeCiri(o);
-
-  // read CFF
-  const {off,ctx} = readCff();
-  const totalPlusCff = totalBase + (off||0);
-
-  // KPIs
-  document.getElementById('k-base-total').textContent      = money(totalBase);
-  document.getElementById('k-cff-off').textContent         = off ? money(off) : '—';
-  document.getElementById('k-total-plus-cff').textContent  = money(totalPlusCff);
-  document.getElementById('k-index').textContent           = index.toFixed(2);
-  document.getElementById('k-roi').textContent             = money(roi);
-
-  // banner
-  const banner = document.getElementById('cff-banner');
-  if(off && off>0){
-    banner.classList.add('ok');
-    banner.innerHTML =
-      `CFF OFF_MISSION transfer detected: <strong>${money(off)}</strong> added to this recovery pool.<br>`+
-      `<span class="small">Context: ${ctx && ctx.source ? ctx.source+' · ' : ''}${ctx && ctx.time ? ctx.time : 'local run'}</span>`;
-  }else{
-    banner.classList.remove('ok');
-    banner.textContent =
-      'No CFF OFF_MISSION transfer detected. Run CFF and click “Send to CIRI (local only)” if you want funding misuse included.';
+  // 🔗 Inject OFF_MISSION total from CFF, if present
+  const cff = readCffHandoff();
+  const cff_extra = cff ? cff.total : 0;
+  if(cff_extra > 0){
+    total += cff_extra;
   }
 
-  // echo inputs
-  inputsHead.innerHTML = '<tr>'+headers.map(h=>`<th>${h}</th>`).join('')+'</tr>';
-  inputsBody.innerHTML = '<tr>'+dataRow.map(v=>`<td>${v}</td>`).join('')+'</tr>';
+  total = Math.max(0,total);
+  const ciri_index = 1 - Math.exp(- total / Math.max(1,K_CIRI_V2));
+  const roi_per_case = cases_avoided>0 ? total / cases_avoided : 0;
 
-  sourceLabel.textContent = 'Source: '+sourceTag;
-
-  lastScenario = {
-    source: sourceTag,
-    inputs: Object.fromEntries(headers.map((h,i)=>[h,dataRow[i]])),
-    outputs:{
-      total_base: totalBase,
-      cff_off_mission: off||0,
-      total_with_cff: totalPlusCff,
-      ciri_index: index,
-      roi_per_case: roi
+  return {
+    inputs:{
+      cases_avoided,avg_cost_per_case,jail_days_avoided,cost_per_jail_day,
+      fees_canceled_total,policy_corrections,avg_enforcement_cost_savings,
+      households_restored,avg_monthly_market_spend,months_effective,
+      employment_probability,avg_monthly_wage,expected_lawsuits,avg_payout,
+      litigation_multiplier,transition_costs_one_time
     },
-    cff_context: ctx || null,
-    generated_at: new Date().toISOString()
+    components:{
+      direct_case,detention,fees,enforcement,market_access,employment,litigation,transition,
+      cff_extra
+    },
+    outputs:{
+      total_recovery:total,
+      ciri_index,
+      roi_per_case,
+      households_restored
+    }
   };
 }
 
-function loadRepo(){
-  fetch('ciri/inputs.csv',{cache:'no-store'})
-    .then(r=>{
-      if(!r.ok) throw new Error('fetch failed');
-      return r.text();
-    })
-    .then(t=>applyScenarioFromCsv(t,'Repo baseline (ciri/inputs.csv)'))
-    .catch(()=>alert('Could not load ciri/inputs.csv from repo.'));
+function renderBreakdown(components){
+  const body = document.getElementById('tbl-body');
+  const rows = [
+    ['Direct case cost avoidance','cases_avoided × avg_cost_per_case',components.direct_case],
+    ['Detention avoided','jail_days_avoided × cost_per_jail_day',components.detention],
+    ['Fees canceled','fees_canceled_total',components.fees],
+    ['Enforcement savings','policy_corrections × avg_enforcement_cost_savings',components.enforcement],
+    ['Market access uplift','households_restored × avg_monthly_market_spend × months_effective',components.market_access],
+    ['Employment uplift','households_restored × employment_probability × avg_monthly_wage × months_effective',components.employment],
+    ['Litigation avoided','expected_lawsuits × avg_payout × litigation_multiplier',components.litigation],
+    ['Transition costs (one-time)','− transition_costs_one_time',-components.transition],
+  ];
+  if(components.cff_extra>0){
+    rows.push(['OFF_MISSION federal funds (CFF)','OFF_MISSION total handed off from CFF',components.cff_extra]);
+  }
+  rows.push(['Total Recovery (CIRI v2)','Sum of components above',rows.reduce((s,r)=>s + Number(r[2]||0),0)]);
+
+  body.innerHTML = rows.map(r=>`
+    <tr>
+      <td>${r[0]}</td>
+      <td><code>${r[1]}</code></td>
+      <td>${money(r[2])}</td>
+    </tr>
+  `).join('');
 }
 
-// ---------- events ----------
-
-// repo button
-document.getElementById('btn-load-repo').addEventListener('click',loadRepo);
-
-// file input
-document.getElementById('file-input').addEventListener('change',e=>{
-  const f=e.target.files[0]; if(!f) return;
-  f.text().then(t=>applyScenarioFromCsv(t,`User upload: ${f.name}`));
-});
-
-// drag & drop
-const dz=document.getElementById('drop-zone');
-dz.addEventListener('dragover',e=>{
-  e.preventDefault(); dz.classList.add('dragover');
-});
-dz.addEventListener('dragleave',()=>dz.classList.remove('dragover'));
-dz.addEventListener('drop',e=>{
-  e.preventDefault(); dz.classList.remove('dragover');
-  const f=e.dataTransfer.files[0]; if(!f) return;
-  f.text().then(t=>applyScenarioFromCsv(t,`User drop: ${f.name}`));
-});
-
-// receipt download
-document.getElementById('btn-receipt').addEventListener('click',()=>{
-  if(!lastScenario){
-    alert('Run the engine at least once before downloading a receipt.');
-    return;
+function saveScenario(result,sourceLabel){
+  try{
+    const payload = {
+      generated_at:new Date().toISOString(),
+      source:sourceLabel,
+      inputs:result.inputs,
+      components:result.components,
+      outputs:result.outputs
+    };
+    localStorage.setItem(SCEN_KEY, JSON.stringify(payload));
+  }catch(e){
+    console.warn('Could not save CIRI scenario', e);
   }
-  const blob = new Blob([JSON.stringify(lastScenario,null,2)],{type:'application/json'});
-  const url  = URL.createObjectURL(blob);
-  const a    = document.createElement('a');
-  a.href = url;
-  a.download = 'ABE_CIRI_SCENARIO_V2.json';
-  a.click();
-  URL.revokeObjectURL(url);
-});
+}
 
-// auto-load repo on first visit for friendliness
-loadRepo();
+async function loadRepoInputs(){
+  const r = await fetch('/abe---flag/ciri/inputs.csv',{cache:'no-store'});
+  if(!r.ok) throw new Error('HTTP '+r.status);
+  const txt = await r.text();
+  return parseCsv(txt);
+}
+
+(function init(){
+  const btnDefault = document.getElementById('btn-default');
+  const btnFile    = document.getElementById('btn-file');
+  const drop       = document.getElementById('drop');
+  const fileInput  = document.getElementById('file');
+  const srcPill    = document.getElementById('src-pill');
+  const loadStatus = document.getElementById('load-status');
+  const kTotal = document.getElementById('k-total');
+  const kIdx   = document.getElementById('k-idx');
+  const kRoi   = document.getElementById('k-roi');
+  const kHh    = document.getElementById('k-hh');
+  const cffPill= document.getElementById('cff-pill');
+
+  function renderCffPill(){
+    const cff = readCffHandoff();
+    if(!cff){
+      cffPill.innerHTML = '<span class="tag">CFF handoff: none detected</span>';
+      return;
+    }
+    const share = cff.ctx && typeof cff.ctx.share==='number'
+      ? (cff.ctx.share*100).toFixed(1)+'%'
+      : null;
+    cffPill.innerHTML =
+      `<span class="tag">CFF handoff: ${money(cff.total)} OFF_MISSION</span>` +
+      (share ? ` <span class="tag">≈ ${share} of that bundle</span>` : '');
+  }
+
+  async function runWithInputs(obj, sourceLabel){
+    const result = computeCiriMetrics(obj);
+    const {components,outputs} = result;
+
+    kTotal.textContent = money(outputs.total_recovery);
+    kIdx.textContent   = outputs.ciri_index.toFixed(3);
+    kRoi.textContent   = money(outputs.roi_per_case);
+    kHh.textContent    = outputs.households_restored.toLocaleString();
+
+    renderBreakdown(components);
+    saveScenario(result, sourceLabel);
+    renderCffPill();
+  }
+
+  btnDefault.addEventListener('click', async ()=>{
+    try{
+      loadStatus.textContent = 'Loading repo baseline…';
+      const obj = await loadRepoInputs();
+      await runWithInputs(obj,'repo_inputs.csv');
+      srcPill.innerHTML = 'Source: <strong>Repo baseline</strong> (<code>ciri/inputs.csv</code>)';
+      loadStatus.textContent = 'Using repo baseline.';
+    }catch(e){
+      console.error(e);
+      loadStatus.textContent = 'Could not load ciri/inputs.csv';
+    }
+  });
+
+  btnFile.addEventListener('click', ()=>fileInput.click());
+
+  function handleFile(files){
+    if(!files || !files.length) return;
+    const f = files[0];
+    const reader = new FileReader();
+    reader.onload = async ev=>{
+      try{
+        loadStatus.textContent = 'Parsing uploaded CSV…';
+        const txt = String(ev.target.result||'');
+        const obj = parseCsv(txt);
+        await runWithInputs(obj,f.name);
+        srcPill.innerHTML = `Source: <strong>Uploaded</strong> (<code>${f.name}</code>)`;
+        loadStatus.textContent = `Using uploaded CSV: ${f.name}`;
+      }catch(e){
+        console.error(e);
+        loadStatus.textContent = 'Could not parse uploaded CSV. Check that the header matches the template.';
+      }
+    };
+    reader.onerror = ()=>{ loadStatus.textContent = 'Error reading file.'; };
+    reader.readAsText(f);
+  }
+
+  drop.addEventListener('click', ()=>fileInput.click());
+  drop.addEventListener('dragover', e=>{e.preventDefault();drop.classList.add('dragover');});
+  drop.addEventListener('dragleave', e=>{e.preventDefault();drop.classList.remove('dragover');});
+  drop.addEventListener('drop', e=>{
+    e.preventDefault();drop.classList.remove('dragover');
+    handleFile(e.dataTransfer.files);
+  });
+  fileInput.addEventListener('change', e=>handleFile(e.target.files));
+
+  // Initial run: repo baseline
+  (async ()=>{
+    try{
+      const obj = await loadRepoInputs();
+      await runWithInputs(obj,'repo_inputs.csv');
+      loadStatus.textContent = 'Using repo baseline.';
+    }catch(e){
+      console.error(e);
+      loadStatus.textContent = 'Could not load ciri/inputs.csv';
+    }
+  })();
+})();
 </script>
-
 </body>
 </html>
