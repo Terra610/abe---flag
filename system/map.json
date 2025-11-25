@@ -1,6 +1,6 @@
 {
   "version": "1.1",
-  "updated": "2025-11-16T00:00:00Z",
+  "updated": "2025-11-25T00:00:00Z",
   "project": "A.B.E. — American Butterfly Effect",
   "author": {
     "name": "Terra Shouse",
@@ -31,6 +31,23 @@
       "ui": "cdi/index.html"
     },
 
+    "cff": {
+      "name": "CFF",
+      "long_name": "Constitutional Funding Forensics",
+      "purpose": "Audits federal and state funding lines against their statutory authority to detect ON_MISSION, OFF_MISSION, and UNCLEAR spend.",
+      "inputs_file": "cff/inputs.csv",
+      "schema_file": "cff/schema.json",
+      "core_outputs": [
+        "on_mission_total",
+        "off_mission_total",
+        "unclear_total",
+        "off_mission_rate"
+      ],
+      "primary_output_field": "off_mission_total",
+      "status": "alpha",
+      "ui": "cff/index.html"
+    },
+
     "ciri": {
       "name": "CIRI",
       "long_name": "Constitutional Integrity ROI Engine",
@@ -59,7 +76,7 @@
       "name": "CIBS",
       "long_name": "Constitutional Integrity Baseline Schema",
       "purpose": "Allocates the Recovery Pool into public reinvestment categories with transparent percentages and auditability.",
-      "template_file": "cibs/bbudget_template.csv",
+      "template_file": "cibs/budget_template.csv",
       "auto_budget_file": "cibs/auto_budget.csv",
       "status": "mvp",
       "ui": "cibs/index.html"
@@ -68,42 +85,22 @@
     "cii": {
       "name": "CII",
       "long_name": "Community Investment Interface",
-      "purpose": "Publishes auditable project portfolios and KPIs tied to CIBS.",
+      "purpose": "Publishes auditable project portfolios (housing, clinics, food, mobility, workforce) and KPIs tied to CIBS.",
       "model_file": "cii/model.json",
       "portfolio_file": "cii/portfolio.csv",
       "status": "mvp",
       "ui": "cii/index.html"
     },
 
-    "cff": {
-      "name": "CFF",
-      "long_name": "Constitutional Funding Forensics",
-      "purpose": "Audits federal, state, and local funding; detects off-mission spending, statutory conflicts, and misappropriation.",
-      "inputs_file": "cff/inputs.csv",
-      "schema_file": "cff/schema.json",
-      "ui": "cff/index.html",
-      "status": "alpha"
-    },
-
-    "affe": {
-      "name": "AFFE",
-      "long_name": "Appropriation Fidelity & Funding Extraction",
-      "purpose": "Extracts structured appropriation and grant data from messy PDF/Excel/CSV reports; normalizes to A.B.E. funding schema.",
-      "schema_file": "affe/schema.json",
-      "template_file": "affe/template.json",
-      "parser_file": "affe/parser.js",
-      "ui": "affe/index.html",
-      "status": "alpha"
-    },
-
     "integration": {
       "name": "Integration Layer",
-      "purpose": "Verifies receipts, matches recipients, detects retaliation/suppression, and posts public attestations.",
+      "purpose": "Verifies receipts, matches recipients, detects retaliation/suppression, and posts public attestations with SHA-256 hashes.",
       "checks": [
         "receipt_verification",
         "recipient_match",
         "retaliation_zero",
-        "public_audit_attestation"
+        "public_audit_attestation",
+        "hash_chain_verification"
       ],
       "status": "alpha",
       "ui": "integration/index.html"
@@ -128,6 +125,19 @@
       ],
       "status": "public",
       "ui": "macro/index.html"
+    },
+
+    "affe": {
+      "name": "AFFE",
+      "long_name": "A.B.E. Frontdoor & Forensic Extractor",
+      "purpose": "Single intake for CSV/Excel/PDF that classifies data (funding, enforcement, cases) and routes it into CFF, CIRI, and Macro while keeping all processing local to the browser.",
+      "inputs": [
+        "user_uploaded_csv",
+        "user_uploaded_excel",
+        "user_uploaded_pdf"
+      ],
+      "status": "alpha",
+      "ui": "affe/index.html"
     }
   },
 
@@ -142,7 +152,6 @@
         "/abe---flag/cae/schema.json"
       ]
     },
-
     {
       "from": "cae/report.csv",
       "to": "cdi/divergence.csv",
@@ -152,39 +161,25 @@
         "/abe---flag/cdi/model.json"
       ]
     },
-
-    {
-      "from": "AFFE extracted appropriations",
-      "to": "cff/inputs.csv",
-      "control": "parser_normalization_against_schema",
-      "evidence": [
-        "/abe---flag/affe/index.html",
-        "/abe---flag/affe/parser.js",
-        "/abe---flag/affe/schema.json"
-      ]
-    },
-
     {
       "from": "cff/inputs.csv",
-      "to": "cff OFF_MISSION totals",
-      "control": "appropriation_to_statute_alignment_rules",
+      "to": "CFF OFF_MISSION / ON_MISSION totals",
+      "control": "line_level_classification_against_statutory_authority",
       "evidence": [
         "/abe---flag/cff/index.html",
-        "/abe---flag/cff/schema.json",
-        "/abe---flag/cff/inputs.csv"
+        "/abe---flag/cff/inputs.csv",
+        "/abe---flag/cff/schema.json"
       ]
     },
-
     {
-      "from": "cff OFF_MISSION total",
-      "to": "ciri/inputs.csv",
-      "control": "CFF_to_CIRI_transfer_documented_formula",
+      "from": "CFF OFF_MISSION totals",
+      "to": "ciri/inputs.csv (funding_misuse channels)",
+      "control": "mapped_into_recovery_channels_with_conservative_factors",
       "evidence": [
-        "/abe---flag/ciri/index.html",
-        "/abe---flag/ciri/inputs.csv"
+        "/abe---flag/ciri/calc.md",
+        "/abe---flag/ciri/index.html"
       ]
     },
-
     {
       "from": "ciri/inputs.csv",
       "to": "ciri/index.html KPIs",
@@ -195,17 +190,15 @@
         "/abe---flag/ciri/inputs.csv"
       ]
     },
-
     {
-      "from": "CDI divergence + local inputs",
+      "from": "CDI divergence + local inputs + CFF OFF_MISSION",
       "to": "CIRI total_recovery (Recovery Pool)",
       "control": "documented_formulas_SIRF_IRE_CEQ",
       "evidence": [
-        "/abe---flag/macro/model.json",
+        "/abe---flag/macro/model.html",
         "DOI:10.5281/zenodo.17586107"
       ]
     },
-
     {
       "from": "CIRI total_recovery",
       "to": "cibs/auto_budget.csv",
@@ -216,7 +209,6 @@
         "/abe---flag/cibs/budget_template.csv"
       ]
     },
-
     {
       "from": "cibs/auto_budget.csv",
       "to": "cii/portfolio.csv",
@@ -227,24 +219,32 @@
         "/abe---flag/cii/model.json"
       ]
     },
-
     {
       "from": "cii portfolio & disbursements",
       "to": "Integration checks",
       "control": "receipts_signed_hashes_retaliation_monitoring",
       "evidence": [
-        "/abe---flag/integration/index.html"
+        "/abe---flag/integration/index.html",
+        "/abe---flag/system/integrity.js"
       ]
     },
-
     {
       "from": "Integration checks",
       "to": "Public dashboard / publication",
-      "control": "public_audit_attestation",
+      "control": "public_audit_attestation_with_SHA256_chain",
       "evidence": [
         "/abe---flag/system/index.html",
         "CC BY-NC 4.0",
         "SHA256: to_be_added_for_released_artifacts"
+      ]
+    },
+    {
+      "from": "User uploads via AFFE (CSV / Excel / PDF)",
+      "to": "CFF / CIRI / Macro paths",
+      "control": "local_only_parsing_and_content_classification",
+      "evidence": [
+        "/abe---flag/affe/index.html",
+        "/abe---flag/README_start_here.md"
       ]
     }
   ],
@@ -252,16 +252,16 @@
   "links": {
     "site_root": "/abe---flag/",
     "doctrines": "/abe---flag/doctrine/index.html",
-    "cae": "/abe---flag/cae/index.html",
-    "cdi": "/abe---flag/cdi/index.html",
     "ciri": "/abe---flag/ciri/index.html",
     "cibs": "/abe---flag/cibs/index.html",
     "cii": "/abe---flag/cii/index.html",
+    "cdi": "/abe---flag/cdi/index.html",
+    "cae": "/abe---flag/cae/index.html",
     "cff": "/abe---flag/cff/index.html",
     "affe": "/abe---flag/affe/index.html",
     "integration": "/abe---flag/integration/index.html",
-    "macro": "/abe---flag/macro/index.html",
     "system": "/abe---flag/system/index.html",
+    "macro": "/abe---flag/macro/index.html",
     "doi": "https://doi.org/10.5281/zenodo.17586107",
     "license": "https://creativecommons.org/licenses/by-nc/4.0/"
   }
