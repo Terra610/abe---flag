@@ -1,6 +1,6 @@
 {
-  "version": "1.0",
-  "updated": "2025-11-14T00:00:00Z",
+  "version": "1.1",
+  "updated": "2025-11-16T00:00:00Z",
   "project": "A.B.E. — American Butterfly Effect",
   "author": {
     "name": "Terra Shouse",
@@ -59,7 +59,7 @@
       "name": "CIBS",
       "long_name": "Constitutional Integrity Baseline Schema",
       "purpose": "Allocates the Recovery Pool into public reinvestment categories with transparent percentages and auditability.",
-      "template_file": "cibs/budget_template.csv",
+      "template_file": "cibs/bbudget_template.csv",
       "auto_budget_file": "cibs/auto_budget.csv",
       "status": "mvp",
       "ui": "cibs/index.html"
@@ -68,11 +68,32 @@
     "cii": {
       "name": "CII",
       "long_name": "Community Investment Interface",
-      "purpose": "Publishes auditable project portfolios (housing, clinics, food, mobility, workforce) and KPIs tied to CIBS.",
+      "purpose": "Publishes auditable project portfolios and KPIs tied to CIBS.",
       "model_file": "cii/model.json",
       "portfolio_file": "cii/portfolio.csv",
       "status": "mvp",
       "ui": "cii/index.html"
+    },
+
+    "cff": {
+      "name": "CFF",
+      "long_name": "Constitutional Funding Forensics",
+      "purpose": "Audits federal, state, and local funding; detects off-mission spending, statutory conflicts, and misappropriation.",
+      "inputs_file": "cff/inputs.csv",
+      "schema_file": "cff/schema.json",
+      "ui": "cff/index.html",
+      "status": "alpha"
+    },
+
+    "affe": {
+      "name": "AFFE",
+      "long_name": "Appropriation Fidelity & Funding Extraction",
+      "purpose": "Extracts structured appropriation and grant data from messy PDF/Excel/CSV reports; normalizes to A.B.E. funding schema.",
+      "schema_file": "affe/schema.json",
+      "template_file": "affe/template.json",
+      "parser_file": "affe/parser.js",
+      "ui": "affe/index.html",
+      "status": "alpha"
     },
 
     "integration": {
@@ -121,6 +142,7 @@
         "/abe---flag/cae/schema.json"
       ]
     },
+
     {
       "from": "cae/report.csv",
       "to": "cdi/divergence.csv",
@@ -130,6 +152,39 @@
         "/abe---flag/cdi/model.json"
       ]
     },
+
+    {
+      "from": "AFFE extracted appropriations",
+      "to": "cff/inputs.csv",
+      "control": "parser_normalization_against_schema",
+      "evidence": [
+        "/abe---flag/affe/index.html",
+        "/abe---flag/affe/parser.js",
+        "/abe---flag/affe/schema.json"
+      ]
+    },
+
+    {
+      "from": "cff/inputs.csv",
+      "to": "cff OFF_MISSION totals",
+      "control": "appropriation_to_statute_alignment_rules",
+      "evidence": [
+        "/abe---flag/cff/index.html",
+        "/abe---flag/cff/schema.json",
+        "/abe---flag/cff/inputs.csv"
+      ]
+    },
+
+    {
+      "from": "cff OFF_MISSION total",
+      "to": "ciri/inputs.csv",
+      "control": "CFF_to_CIRI_transfer_documented_formula",
+      "evidence": [
+        "/abe---flag/ciri/index.html",
+        "/abe---flag/ciri/inputs.csv"
+      ]
+    },
+
     {
       "from": "ciri/inputs.csv",
       "to": "ciri/index.html KPIs",
@@ -140,15 +195,17 @@
         "/abe---flag/ciri/inputs.csv"
       ]
     },
+
     {
       "from": "CDI divergence + local inputs",
       "to": "CIRI total_recovery (Recovery Pool)",
       "control": "documented_formulas_SIRF_IRE_CEQ",
       "evidence": [
-        "/abe---flag/macro/model.html",
+        "/abe---flag/macro/model.json",
         "DOI:10.5281/zenodo.17586107"
       ]
     },
+
     {
       "from": "CIRI total_recovery",
       "to": "cibs/auto_budget.csv",
@@ -159,6 +216,7 @@
         "/abe---flag/cibs/budget_template.csv"
       ]
     },
+
     {
       "from": "cibs/auto_budget.csv",
       "to": "cii/portfolio.csv",
@@ -169,6 +227,7 @@
         "/abe---flag/cii/model.json"
       ]
     },
+
     {
       "from": "cii portfolio & disbursements",
       "to": "Integration checks",
@@ -177,6 +236,7 @@
         "/abe---flag/integration/index.html"
       ]
     },
+
     {
       "from": "Integration checks",
       "to": "Public dashboard / publication",
@@ -192,13 +252,16 @@
   "links": {
     "site_root": "/abe---flag/",
     "doctrines": "/abe---flag/doctrine/index.html",
+    "cae": "/abe---flag/cae/index.html",
+    "cdi": "/abe---flag/cdi/index.html",
     "ciri": "/abe---flag/ciri/index.html",
     "cibs": "/abe---flag/cibs/index.html",
     "cii": "/abe---flag/cii/index.html",
-    "cdi": "/abe---flag/cdi/index.html",
-    "cae": "/abe---flag/cae/index.html",
+    "cff": "/abe---flag/cff/index.html",
+    "affe": "/abe---flag/affe/index.html",
     "integration": "/abe---flag/integration/index.html",
     "macro": "/abe---flag/macro/index.html",
+    "system": "/abe---flag/system/index.html",
     "doi": "https://doi.org/10.5281/zenodo.17586107",
     "license": "https://creativecommons.org/licenses/by-nc/4.0/"
   }
