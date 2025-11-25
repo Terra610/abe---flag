@@ -3,575 +3,410 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>AFFE — Appropriation Fidelity & Funding Engine | A.B.E.</title>
-  <base href="/abe---flag/"/>
-  <!-- External libs (client-side only) -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" integrity="sha512-8pXbBAHhUuCivX23gIqsvG4fx0Zc8Co3skxzRCW2QHbh9+oizHfKMK1N2rY2F1QBiC62uK0VdlcH8X58lmQe4w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js" integrity="sha512-+cDXx8yp4I8/7QzrHrtxKwO4BMDU+pIxf717GSGXw3L12p0q9StusDEU8MWGwxTptERaCLllwvCyc9P6DsJ9gA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
+  <title>AFFE — A.B.E. Frontdoor & Forensic Extractor</title>
+  <base href="/abe---flag/">
   <style>
     :root{
-      --bg:#0b0d12;
-      --panel:#141820;
-      --panel2:#10141d;
-      --line:rgba(255,255,255,.08);
-      --brand:#5ddfff;
-      --accent:#ffa559;
-      --ok:#4bd28f;
-      --warn:#f9b34c;
-      --text:#e6e6e6;
-      --muted:#9fb0c6;
+      --bg:#0b0d12;--panel:#141820;--panel2:#0f131a;
+      --ink:#e6e6e6;--muted:#9fb3c8;
+      --line:rgba(255,255,255,.08);--brand:#5ddfff;
+      --accent:#ffa559;--ok:#4bd28f;--warn:#ffa559;
     }
     *{box-sizing:border-box}
     body{
-      margin:0;
-      background:var(--bg);
-      color:var(--text);
-      font:15px/1.6 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+      margin:0;background:var(--bg);color:var(--ink);
+      font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
     }
     a{color:#80bfff;text-decoration:none}
     a:hover{text-decoration:underline}
     header{
-      padding:20px 24px;
+      padding:24px 20px;
+      background:linear-gradient(90deg,#11151c,#1b1e25);
       border-bottom:1px solid var(--line);
-      background:linear-gradient(90deg,#0f1219,#171b24);
     }
-    .wrap{max-width:1100px;margin:0 auto}
-    header .row{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:16px;
-      flex-wrap:wrap;
-    }
-    h1{
-      margin:0;
-      font-size:1.5rem;
-      color:var(--brand);
-    }
-    .sub{color:var(--muted);font-size:.92rem;margin-top:4px}
-    .badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+    .wrap{max-width:1100px;margin:0 auto;padding:0 20px}
+    h1{margin:0 0 6px;font-size:1.5rem}
+    .sub{color:var(--muted);max-width:680px}
+    .badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
     .chip{
-      display:inline-flex;
-      align-items:center;
-      gap:6px;
-      border-radius:999px;
-      padding:2px 10px;
-      border:1px solid var(--line);
-      font-size:.8rem;
-      color:var(--muted);
-      background:rgba(255,255,255,.02);
+      display:inline-flex;align-items:center;gap:6px;
+      padding:6px 10px;border-radius:999px;
+      border:1px solid var(--line);color:var(--muted);font-size:.9rem;
     }
-    .chip strong{color:var(--brand);font-weight:600}
-    main{max-width:1100px;margin:22px auto 40px;padding:0 16px}
-    .grid{display:grid;gap:16px}
-    .grid-2{grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
+    main{max-width:1100px;margin:24px auto 44px;padding:0 20px}
+    .grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
     .card{
-      background:var(--panel);
-      border-radius:12px;
-      border:1px solid var(--line);
-      padding:16px 18px 18px;
+      background:var(--panel);border:1px solid var(--line);
+      border-radius:12px;padding:16px;
     }
-    h2{margin:0 0 .4rem;font-size:1.1rem}
-    p.muted{color:var(--muted);font-size:.9rem;margin:.1rem 0 .6rem}
-    .btn{
-      border-radius:8px;
-      border:1px solid var(--line);
-      background:#1b2230;
-      color:var(--text);
-      padding:.45rem .9rem;
-      font-size:.9rem;
-      cursor:pointer;
-    }
-    .btn:hover{background:#21293a}
-    .btn[disabled]{opacity:.4;cursor:not-allowed}
-    .btn-primary{
-      background:var(--brand);
-      color:#041019;
-      border-color:rgba(93,223,255,.5);
-      font-weight:600;
-    }
-    .btn-primary:hover{background:#7fe5ff}
-    .drop{
-      border:1px dashed var(--brand);
-      border-radius:10px;
-      padding:18px 14px;
-      margin-top:10px;
-      text-align:center;
-      background:rgba(93,223,255,.03);
-      font-size:.9rem;
-      color:var(--muted);
-      cursor:pointer;
-    }
-    .drop.dragover{
-      background:rgba(93,223,255,.08);
-      border-color:var(--accent);
-      color:var(--accent);
-    }
-    .file-pill{
-      margin-top:8px;
-      font-size:.85rem;
-      color:var(--muted);
-    }
-    .file-pill strong{color:var(--text)}
-    .note{font-size:.85rem;color:var(--muted);margin-top:6px}
-    .note.warn{color:var(--warn)}
-    .mapping{
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-      margin-top:8px;
-    }
-    .map-row{
-      display:grid;
-      grid-template-columns:minmax(180px,240px) minmax(0,1fr);
-      gap:8px;
-      align-items:center;
-    }
-    .map-label{font-size:.9rem;color:var(--text)}
-    .map-label small{display:block;color:var(--muted);font-size:.78rem}
-    .req{color:#ff7b7b;font-weight:700;margin-left:3px}
-    select{
-      width:100%;
-      border-radius:8px;
-      border:1px solid var(--line);
-      background:var(--panel2);
-      color:var(--text);
-      padding:.35rem .5rem;
-      font-size:.88rem;
-    }
-    table{
-      width:100%;
-      border-collapse:collapse;
-      font-size:.82rem;
-      margin-top:8px;
-    }
-    th,td{
-      border-bottom:1px solid var(--line);
-      padding:4px 6px;
-      text-align:left;
-      max-width:140px;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-    }
-    th{font-weight:600;color:var(--muted);background:var(--panel2)}
-    tbody tr:nth-child(even){background:#11141c}
-    .kpi-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:8px}
+    h2{margin:0 0 8px;font-size:1.1rem;color:var(--accent)}
+    h3{margin:0 0 6px;font-size:1rem}
+    .sm{font-size:.9rem;color:var(--muted)}
     .pill{
-      display:inline-flex;
-      align-items:center;
-      gap:6px;
-      border-radius:999px;
-      border:1px solid var(--line);
-      padding:2px 10px;
-      font-size:.8rem;
-      color:var(--muted);
-      background:rgba(255,255,255,.02);
+      display:inline-flex;align-items:center;gap:6px;
+      padding:4px 8px;border-radius:999px;
+      border:1px solid var(--line);font-size:.8rem;color:var(--muted);
     }
-    .status-ok{color:var(--ok)}
-    .status-warn{color:var(--warn)}
-    details{
-      margin-top:10px;
-      font-size:.85rem;
-      color:var(--muted);
-    }
-    details summary{cursor:pointer}
-    pre{
-      max-height:200px;
-      overflow:auto;
-      background:var(--panel2);
-      border-radius:8px;
-      padding:8px;
-      font-size:.78rem;
-      line-height:1.5;
-    }
-    footer{
-      margin:32px 0 18px;
+    .pill strong{color:var(--ink)}
+
+    /* Drop zone */
+    .drop-wrap{margin-top:10px}
+    .drop-zone{
+      border:2px dashed rgba(93,223,255,.6);
+      border-radius:12px;
+      padding:22px 16px;
+      background:rgba(15,19,26,.9);
       text-align:center;
-      font-size:.85rem;
-      color:var(--muted);
+      cursor:pointer;
+      transition:border-color .18s,background .18s,transform .18s;
     }
+    .drop-zone:hover{border-color:var(--brand);background:#141a24;transform:translateY(-1px)}
+    .drop-zone.dragover{border-color:#fff750;background:#161d28}
+    .drop-title{
+      font-weight:600;margin-bottom:4px;
+    }
+    .drop-sub{font-size:.9rem;color:var(--muted)}
+    .drop-sub code{font-size:.85rem}
+    .ghost-icon{
+      font-size:2.4rem;opacity:.75;margin-bottom:4px;
+    }
+    .btn{
+      display:inline-flex;align-items:center;justify-content:center;
+      padding:.45rem .9rem;border-radius:9px;
+      border:1px solid var(--line);background:#0f131a;
+      color:var(--ink);font-size:.9rem;cursor:pointer;
+      margin-top:8px;
+    }
+    .btn:hover{border-color:var(--brand)}
+    .btn[disabled]{opacity:.5;cursor:not-allowed}
+
+    /* File summary + routing */
+    .file-meta{margin-top:10px;font-size:.9rem;color:var(--muted)}
+    .file-meta ul{margin:4px 0 0;padding-left:18px}
+    .tag{
+      display:inline-block;margin-left:6px;margin-top:2px;
+      padding:1px 6px;border-radius:999px;font-size:.75rem;
+      border:1px solid var(--line);color:var(--muted);
+    }
+    .tag-funding{border-color:#5ddfff;color:#5ddfff}
+    .tag-impact{border-color:#ffa559;color:#ffa559}
+    .tag-unknown{border-color:#9fb3c8;color:#9fb3c8}
+
+    .route-grid{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));margin-top:10px}
+    .route-box{
+      background:var(--panel2,#0f131a);
+      border:1px solid var(--line);
+      border-radius:10px;padding:10px 12px;font-size:.9rem;
+    }
+    .route-box strong{display:block;margin-bottom:4px}
+
+    .log{
+      font-family:ui-monospace,Menlo,Consolas,monospace;
+      font-size:.8rem;background:#0b0f16;
+      border-radius:8px;border:1px solid var(--line);
+      padding:10px;margin-top:8px;white-space:pre-wrap;
+      max-height:180px;overflow:auto;
+    }
+
+    footer{
+      margin:32px 0 20px;text-align:center;
+      color:var(--muted);font-size:.9rem;
+    }
+
     @media (max-width:720px){
-      header{padding:16px}
+      header{padding:20px 12px}
       main{padding:0 12px}
-      .map-row{grid-template-columns:1fr}
     }
   </style>
 </head>
 <body>
 <header>
   <div class="wrap">
-    <div class="row">
-      <div>
-        <a href="index.html">← Return to Home</a>
-        <h1>⚖️ AFFE — Appropriation Fidelity & Funding Engine</h1>
-        <div class="sub">
-          Turn messy funding reports into clean, CFF-ready CSVs — locally, with no uploads.
-        </div>
-        <div class="badges">
-          <span class="chip"><strong>CFF</strong> pre-processor</span>
-          <span class="chip">Local only • Browser-run</span>
-          <a class="chip" href="cff/index.html">Open CFF</a>
-          <a class="chip" href="ciri/index.html">Open CIRI</a>
-        </div>
+    <div>
+      <a href="/abe---flag/index.html" class="chip">← Home</a>
+      <h1>AFFE — A.B.E. Frontdoor & Forensic Extractor</h1>
+      <div class="sub">
+        Drop your own documents into the A.B.E. engine — funding tables, case exports, or policy PDFs —
+        and keep every byte locked on your device while the system prepares them for CFF, CIRI, and the rest of the chain.
+      </div>
+      <div class="badges">
+        <span class="chip">Mode: Local-only · No upload</span>
+        <a class="chip" href="ciri/index.html">CIRI</a>
+        <a class="chip" href="cff/index.html">CFF</a>
+        <a class="chip" href="integration/index.html">Integration</a>
+        <a class="chip" href="macro/index.html">Macro</a>
       </div>
     </div>
   </div>
 </header>
 
-<main class="wrap">
-  <section class="grid grid-2">
-    <!-- Upload -->
-    <div class="card">
-      <h2>1. Drop a funding file</h2>
-      <p class="muted">
-        AFFE accepts <strong>CSV, Excel, or PDF</strong> reports and extracts line items in your browser.
-      </p>
-      <button id="btn-choose" class="btn">Choose file…</button>
-      <input id="file-input" type="file" accept=".csv,.txt,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/pdf" style="display:none"/>
+<main>
+  <!-- 1. What AFFE does -->
+  <section class="card">
+    <h2>What AFFE Does</h2>
+    <p class="sm">
+      AFFE is the intake valve for the American Butterfly Effect engine. It doesn’t phone home, doesn’t store,
+      and doesn’t upload. It just helps you turn your own evidence into clean, A.B.E.-ready data for:
+    </p>
+    <ul class="sm">
+      <li><strong>CFF</strong> — tracing whether funding is <code>ON_MISSION</code>, <code>OFF_MISSION</code>, or <code>UNCLEAR</code>.</li>
+      <li><strong>CIRI</strong> — converting harm and misuse into recovery dollars and risk indices.</li>
+      <li><strong>Macro</strong> — scaling your scenario up to see national impact.</li>
+    </ul>
+  </section>
 
-      <div id="drop-zone" class="drop">
-        <strong>Drop CSV, Excel, or PDF here</strong><br/>
-        <span class="note">No uploads. Parsing happens inside your device only.</span>
-      </div>
-
-      <div id="file-pill" class="file-pill">
-        No file loaded yet.
-      </div>
-
-      <div id="upload-note" class="note">
-        Tip: export your state / agency grant report as CSV or Excel for best results.
-      </div>
-
-      <details id="debug-detail">
-        <summary>Show extraction details</summary>
-        <pre id="debug-log">Waiting for file…</pre>
-      </details>
+  <!-- 2. Upload / drag-and-drop -->
+  <section class="card">
+    <h2>Upload Your Evidence (local only)</h2>
+    <div class="sm">
+      Start with whatever you actually have in the real world:
+      <ul>
+        <li>CSV / Excel exports (funding tables, arrests, case lists).</li>
+        <li>Agency PDFs (NOFOs, grant awards, budget justifications).</li>
+        <li>Court / docket exports in tabular form.</li>
+      </ul>
     </div>
 
-    <!-- Mapping -->
-    <div class="card">
-      <h2>2. Map columns to CFF schema</h2>
-      <p class="muted">
-        Tell AFFE which columns match the CFF template. Required fields are marked with <span class="req">*</span>.
-      </p>
-      <div id="mapping" class="mapping">
-        <!-- mapping rows injected here -->
+    <div class="drop-wrap">
+      <div id="drop-zone" class="drop-zone" tabindex="0">
+        <div class="ghost-icon">📥</div>
+        <div class="drop-title">Drop your county’s data here and watch the recovery number wake up.</div>
+        <div class="drop-sub">
+          Supported: <code>.csv</code>, <code>.xlsx</code>, <code>.xls</code>, <code>.pdf</code><br/>
+          <strong>All parsing happens in your browser. Nothing leaves your device.</strong>
+        </div>
+        <button id="btn-choose" class="btn" type="button">…or choose a file</button>
+        <input id="file-input" type="file" multiple
+               accept=".csv,.xlsx,.xls,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/pdf"
+               style="display:none">
       </div>
-      <div class="kpi-row">
-        <span class="pill">
-          <span id="status-rows">0 rows parsed</span>
-        </span>
-        <span class="pill">
-          <span id="status-required">0 / 0 required fields mapped</span>
-        </span>
+    </div>
+
+    <div id="file-meta" class="file-meta" style="display:none"></div>
+
+    <div id="routes" class="route-grid" style="display:none">
+      <div class="route-box">
+        <strong>CFF · Funding Forensics</strong>
+        <div class="sm">
+          Use for: grant tables, budget lines, NOFO-aligned spend.
+          <br/>Next step: export/reshape into <code>cff/inputs.csv</code>.
+        </div>
       </div>
-      <div id="map-warn" class="note warn" style="display:none">
-        Map all required fields and load at least one row to enable export.
+      <div class="route-box">
+        <strong>CIRI · Recovery & Risk</strong>
+        <div class="sm">
+          Use for: cases avoided, detention days, fees, enforcement cost, households impacted.
+          <br/>Next step: reshape into <code>ciri/inputs.csv</code>, or manually enter values.
+        </div>
+      </div>
+      <div class="route-box">
+        <strong>Macro · Scenario</strong>
+        <div class="sm">
+          Once CIRI is set, use Macro to scale your “one community” into 100, 1,000, or 10,000.
+          <br/>Next step: send <code>ABE_CIRI_SCENARIO_V2</code> into the cascade (coming next).
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:10px;display:flex;flex-wrap:wrap;gap:8px">
+      <button id="btn-export-scenario" class="btn" type="button" disabled>
+        Download ABE_CIRI_SCENARIO_V2 (stub)
+      </button>
+      <button id="btn-clear" class="btn" type="button" disabled>Clear files</button>
+    </div>
+
+    <div id="log" class="log" aria-label="Local processing log" style="display:none"></div>
+  </section>
+
+  <!-- 3. How to choose what to upload -->
+  <section class="card">
+    <h2>What Should I Upload First?</h2>
+    <div class="grid">
+      <div>
+        <h3>👮🏽 Enforcement / Justice</h3>
+        <p class="sm">
+          Use: CSVs of stops, arrests, citations, jail days, or probation violations.
+          <br/>Goal: quantify wrongful enforcement and detention to feed CIRI.
+        </p>
+      </div>
+      <div>
+        <h3>💸 Funding & Grants</h3>
+        <p class="sm">
+          Use: state budget lines, grant award tables, USAspending exports, Single Audit notes.
+          <br/>Goal: detect OFF_MISSION use for CFF and turn it into recovery in CIRI.
+        </p>
+      </div>
+      <div>
+        <h3>🏠 Human Impact</h3>
+        <p class="sm">
+          Use: counts of households displaced, licenses suspended, kids removed, jobs lost.
+          <br/>Goal: convert harm back into employment, stability, and spending power.
+        </p>
       </div>
     </div>
   </section>
 
-  <!-- Preview + Download -->
-  <section class="grid" style="margin-top:18px">
-    <div class="card">
-      <h2>3. Preview mapped output</h2>
-      <p class="muted">
-        This is what will be written into your <code>affe_output.csv</code> for CFF.
-      </p>
-      <div style="overflow:auto">
-        <table id="preview-table">
-          <thead></thead>
-          <tbody></tbody>
-        </table>
-      </div>
-      <div class="kpi-row">
-        <button id="btn-download" class="btn btn-primary" disabled>Download CFF-ready CSV</button>
-        <span id="status-download" class="note">
-          Waiting for valid mappings…
-        </span>
-      </div>
-    </div>
+  <!-- 4. Privacy & integrity -->
+  <section class="card">
+    <h2>Privacy & Chain-of-Custody</h2>
+    <p class="sm">
+      AFFE never sends your data anywhere. Files are read into memory in your browser, summarized for you,
+      and then discarded when you refresh or hit “Clear files.”
+      When you’re ready to move into <strong>CFF</strong>, <strong>CIRI</strong>, or <strong>Macro</strong>,
+      you decide what to keep as a CSV and what to delete.
+    </p>
   </section>
-
-  <footer>
-    A.B.E. · AFFE → CFF → CIRI chain · CC BY-NC 4.0 · Integrity only — never for sale.
-  </footer>
 </main>
 
-<script src="affe/parser.js"></script>
+<footer>
+  A.B.E. — American Butterfly Effect · AFFE v1 (intake shell) · CC BY-NC 4.0<br/>
+  Integrity only — never for sale.
+</footer>
+
 <script>
-  // ----------------- Template definition (must match CFF) -----------------
-  const AFFE_TEMPLATE_FIELDS = [
-    { key:'program_name', label:'Program name', required:true, help:'e.g., MCSAP, Medicaid, TANF, Highway Grants.' },
-    { key:'federal_authority_citation', label:'Federal authority citation', required:true, help:'e.g., 49 U.S.C. 31102, 42 U.S.C. §1396.' },
-    { key:'fiscal_year', label:'Fiscal year', required:true, help:'e.g., 2024, 2025.' },
-    { key:'state_or_jurisdiction', label:'State or jurisdiction', required:true, help:'e.g., Iowa, Texas, CA, tribal nation.' },
-    { key:'agency', label:'Agency', required:true, help:'Department or division spending the funds.' },
-    { key:'line_item_description', label:'Line item description', required:true, help:'Plain language use: “CMV inspections,” “General traffic patrol,” etc.' },
-    { key:'spend_category_code', label:'Spend category code', required:true, help:'Use ON_MISSION, OFF_MISSION, or UNCLEAR.' },
-    { key:'amount_usd', label:'Amount (USD)', required:true, help:'Dollar value of the line item.' },
-    { key:'notes', label:'Notes', required:false, help:'Citations, GAO/OIG references, internal IDs.' }
-  ];
+(function(){
+  const dz    = document.getElementById('drop-zone');
+  const fin   = document.getElementById('file-input');
+  const btnCh = document.getElementById('btn-choose');
+  const meta  = document.getElementById('file-meta');
+  const routes= document.getElementById('routes');
+  const logEl = document.getElementById('log');
+  const btnScenario = document.getElementById('btn-export-scenario');
+  const btnClear    = document.getElementById('btn-clear');
 
-  // ----------------- State -----------------
-  let affeSource = null;    // { columns:[], rows:[], sourceType:'' }
-  let affeMapping = {};     // fieldKey -> sourceColumnName (string)
+  let files = [];
 
-  // ----------------- Helpers -----------------
-  function logDebug(msg, obj){
-    const pre = document.getElementById('debug-log');
-    const time = new Date().toISOString().split('T')[1].replace('Z','');
-    pre.textContent += '\\n['+time+'] ' + msg;
-    if(obj){
-      pre.textContent += '\\n' + JSON.stringify(obj,null,2) + '\\n';
-    }
+  function log(msg){
+    if(!logEl) return;
+    logEl.style.display = 'block';
+    const ts = new Date().toISOString();
+    logEl.textContent += `[${ts}] ${msg}\n`;
+    logEl.scrollTop = logEl.scrollHeight;
   }
 
-  function setFileStatus(text){
-    document.getElementById('file-pill').innerHTML = text;
-  }
-
-  function autoGuessColumn(fieldKey, columns){
-    const key = fieldKey.toLowerCase();
-    const synonyms = {
-      program_name:['program','grant','funding_program'],
-      federal_authority_citation:['citation','authority','statute','usc','legal_basis'],
-      fiscal_year:['fy','fiscal_year','year'],
-      state_or_jurisdiction:['state','jurisdiction','province'],
-      agency:['agency','department','dept','division'],
-      line_item_description:['description','line_item','purpose','project','activity'],
-      spend_category_code:['category','spend_category','mission_code'],
-      amount_usd:['amount','total','value','obligated','expended','usd','dollars'],
-      notes:['notes','comment','remark','reference']
-    };
-    const list = synonyms[fieldKey] || [];
-    let best = '';
-    columns.forEach(col=>{
-      const norm = col.toLowerCase().replace(/[^a-z0-9]+/g,'_');
-      if(norm === key){ best = col; return; }
-      if(!best && list.some(s=>norm.includes(s))) best = col;
-    });
-    return best;
-  }
-
-  function buildMappingUI(columns){
-    const container = document.getElementById('mapping');
-    if(!columns || !columns.length){
-      container.innerHTML = '<div class="note">Load a file to map its columns into the CFF schema.</div>';
-      affeMapping = {};
-      updateStatusBadges();
-      updatePreview();
-      return;
-    }
-    let html = '';
-    AFFE_TEMPLATE_FIELDS.forEach(field=>{
-      const guess = autoGuessColumn(field.key, columns);
-      if(guess) affeMapping[field.key] = guess;
-      html += `
-        <div class="map-row">
-          <div class="map-label">
-            ${field.label}${field.required ? '<span class="req">*</span>' : ''}
-            <small>${field.help}</small>
-          </div>
-          <div>
-            <select data-field="${field.key}">
-              <option value="">— choose source column —</option>
-              ${columns.map(c=>`<option value="${c}" ${c===guess?'selected':''}>${c}</option>`).join('')}
-            </select>
-          </div>
-        </div>
-      `;
-    });
-    container.innerHTML = html;
-    // Attach listeners
-    container.querySelectorAll('select').forEach(sel=>{
-      sel.addEventListener('change',()=>{
-        const field = sel.getAttribute('data-field');
-        affeMapping[field] = sel.value || '';
-        updateStatusBadges();
-        updatePreview();
-      });
-    });
-    updateStatusBadges();
-    updatePreview();
-  }
-
-  function getMappedRows(){
-    if(!affeSource || !affeSource.rows) return [];
-    const rows = [];
-    const cols = affeSource.columns || [];
-    const mapping = affeMapping || {};
-    affeSource.rows.forEach(row=>{
-      const out = {};
-      let hasValue = false;
-      AFFE_TEMPLATE_FIELDS.forEach(field=>{
-        const srcCol = mapping[field.key] || '';
-        let v = '';
-        if(srcCol && row && Object.prototype.hasOwnProperty.call(row,srcCol)){
-          v = row[srcCol];
-        }
-        if(field.key === 'amount_usd'){
-          const num = parseFloat(String(v).replace(/[^0-9.\\-]/g,''));
-          v = Number.isFinite(num) ? num.toFixed(2) : '';
-        }
-        if(typeof v === 'number') v = String(v);
-        out[field.key] = (v ?? '').toString().trim();
-        if(out[field.key] !== '') hasValue = true;
-      });
-      if(hasValue) rows.push(out);
-    });
-    return rows;
-  }
-
-  function updatePreview(){
-    const table = document.getElementById('preview-table');
-    const thead = table.querySelector('thead');
-    const tbody = table.querySelector('tbody');
-    tbody.innerHTML = '';
-    if(!affeSource){
-      thead.innerHTML = '';
-      return;
-    }
-    // header
-    thead.innerHTML = '<tr>' + AFFE_TEMPLATE_FIELDS.map(f=>`<th>${f.key}</th>`).join('') + '</tr>';
-    const mapped = getMappedRows();
-    mapped.slice(0,10).forEach(row=>{
-      const tds = AFFE_TEMPLATE_FIELDS.map(f=>`<td title="${(row[f.key]||'').replace(/"/g,'&quot;')}">${row[f.key] || ''}</td>`).join('');
-      tbody.innerHTML += '<tr>'+tds+'</tr>';
-    });
-    if(!mapped.length){
-      tbody.innerHTML = '<tr><td colspan="'+AFFE_TEMPLATE_FIELDS.length+'">No mapped rows yet. Check your field mapping and file contents.</td></tr>';
-    }
-    updateDownloadState();
-  }
-
-  function updateStatusBadges(){
-    const rowsCount = affeSource && affeSource.rows ? affeSource.rows.length : 0;
-    document.getElementById('status-rows').textContent = rowsCount + ' rows parsed';
-    const required = AFFE_TEMPLATE_FIELDS.filter(f=>f.required).length;
-    let mapped = 0;
-    AFFE_TEMPLATE_FIELDS.forEach(f=>{
-      if(f.required && affeMapping[f.key]) mapped++;
-    });
-    document.getElementById('status-required').textContent =
-      mapped + ' / ' + required + ' required fields mapped';
-  }
-
-  function allRequiredMapped(){
-    return AFFE_TEMPLATE_FIELDS
-      .filter(f=>f.required)
-      .every(f=>affeMapping[f.key] && affeMapping[f.key].length);
-  }
-
-  function updateDownloadState(){
-    const btn = document.getElementById('btn-download');
-    const status = document.getElementById('status-download');
-    const warn = document.getElementById('map-warn');
-    const mapped = getMappedRows();
-    const ok = affeSource && mapped.length > 0 && allRequiredMapped();
-    btn.disabled = !ok;
-    if(ok){
-      status.textContent = 'Ready. Download will contain '+mapped.length+' mapped rows.';
-      warn.style.display = 'none';
-    }else{
-      status.textContent = 'Waiting for valid mappings…';
-      warn.style.display = 'block';
-    }
-  }
-
-  function toCsv(rows){
-    if(!rows.length) return '';
-    const cols = AFFE_TEMPLATE_FIELDS.map(f=>f.key);
-    const escape = v=>{
-      if(v == null) return '';
-      const s = String(v);
-      if(s.includes('"') || s.includes(',') || s.includes('\\n')){
-        return '"'+s.replace(/"/g,'""')+'"';
+  function classifyFile(f){
+    const name = f.name.toLowerCase();
+    const type = f.type || '';
+    if(name.endsWith('.csv') || name.endsWith('.xls') || name.endsWith('.xlsx')){
+      // crude heuristics: CFF vs CIRI-ish
+      if(name.includes('grant') || name.includes('budget') || name.includes('mcsap') || name.includes('fund')){
+        return 'funding';
       }
-      return s;
-    };
-    const lines = [];
-    lines.push(cols.join(','));
-    rows.forEach(row=>{
-      lines.push(cols.map(c=>escape(row[c] ?? '')).join(','));
-    });
-    return lines.join('\\n');
+      if(name.includes('case') || name.includes('jail') || name.includes('detention') || name.includes('ciri')){
+        return 'impact';
+      }
+      return 'unknown';
+    }
+    if(name.endsWith('.pdf')){
+      return 'unknown';
+    }
+    return 'unknown';
   }
 
-  function handleFile(file){
-    if(!file) return;
-    setFileStatus('Loading <strong>'+file.name+'</strong>…');
-    logDebug('Parsing file: '+file.name);
-    AFFEParser.parseFile(file).then(result=>{
-      affeSource = result;
-      affeMapping = {};
-      setFileStatus('Loaded <strong>'+file.name+'</strong> ('+result.sourceType+', '+result.rows.length+' rows)');
-      logDebug('Parse result', {columns:result.columns, rows:result.rows.length, sourceType:result.sourceType});
-      document.getElementById('debug-detail').open = false;
-      buildMappingUI(result.columns);
-      updatePreview();
-    }).catch(err=>{
-      console.error(err);
-      setFileStatus('<span class="status-warn">Could not read file. See debug log.</span>');
-      logDebug('Error parsing file: '+err.message);
-      affeSource = null;
-      affeMapping = {};
-      buildMappingUI([]);
-    });
+  function tagFor(kind){
+    if(kind === 'funding') return '<span class="tag tag-funding">likely CFF input</span>';
+    if(kind === 'impact')  return '<span class="tag tag-impact">likely CIRI input</span>';
+    return '<span class="tag tag-unknown">needs manual review</span>';
   }
 
-  // ----------------- Wire up UI -----------------
-  (function init(){
-    const drop = document.getElementById('drop-zone');
-    const fileInput = document.getElementById('file-input');
-    const chooseBtn = document.getElementById('btn-choose');
+  function renderSummary(){
+    if(!files.length){
+      meta.style.display = 'none';
+      routes.style.display = 'none';
+      btnScenario.disabled = true;
+      btnClear.disabled = true;
+      logEl.style.display = 'none';
+      logEl.textContent = '';
+      return;
+    }
+    btnScenario.disabled = false; // still stub, but UI shows "ready"
+    btnClear.disabled = false;
 
-    chooseBtn.addEventListener('click',()=>fileInput.click());
-    fileInput.addEventListener('change',e=>{
-      const f = e.target.files && e.target.files[0];
-      if(f) handleFile(f);
-    });
+    const rows = files.map(f=>{
+      const kind = classifyFile(f);
+      const sizeKB = (f.size/1024).toFixed(1);
+      return `<li>${f.name} — ${sizeKB} KB${tagFor(kind)}</li>`;
+    }).join('');
 
-    ['dragenter','dragover'].forEach(ev=>{
-      drop.addEventListener(ev,e=>{
-        e.preventDefault();
-        e.stopPropagation();
-        drop.classList.add('dragover');
-      });
-    });
-    ['dragleave','drop'].forEach(ev=>{
-      drop.addEventListener(ev,e=>{
-        e.preventDefault();
-        e.stopPropagation();
-        drop.classList.remove('dragover');
-      });
-    });
-    drop.addEventListener('drop',e=>{
-      const f = e.dataTransfer.files && e.dataTransfer.files[0];
-      if(f) handleFile(f);
-    });
-    drop.addEventListener('click',()=>fileInput.click());
+    meta.innerHTML = `
+      <div><strong>Files staged for local analysis:</strong></div>
+      <ul>${rows}</ul>
+      <div class="sm" style="margin-top:4px">
+        AFFE does not upload or save these files. They live only in your browser session until you clear or refresh.
+      </div>
+    `;
+    meta.style.display = 'block';
+    routes.style.display = 'grid';
+  }
 
-    document.getElementById('btn-download').addEventListener('click',()=>{
-      const rows = getMappedRows();
-      if(!rows.length) return;
-      const csv = toCsv(rows);
-      const blob = new Blob([csv],{type:'text/csv'});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'affe_output_for_cff.csv';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    });
+  function handleFiles(list){
+    const incoming = Array.from(list || []);
+    if(!incoming.length) return;
+    log(`Received ${incoming.length} file(s) via ${event && event.type || 'input'}.`);
+    files = files.concat(incoming);
+    renderSummary();
+  }
 
-    // initial empty mapping UI
-    buildMappingUI([]);
-  })();
+  // Drag & drop wiring
+  ['dragenter','dragover'].forEach(ev=>{
+    dz.addEventListener(ev, e=>{
+      e.preventDefault();
+      e.stopPropagation();
+      dz.classList.add('dragover');
+    });
+  });
+  ['dragleave','drop'].forEach(ev=>{
+    dz.addEventListener(ev, e=>{
+      e.preventDefault();
+      e.stopPropagation();
+      if(ev === 'drop'){
+        const dt = e.dataTransfer;
+        if(dt && dt.files) handleFiles(dt.files);
+      }
+      dz.classList.remove('dragover');
+    });
+  });
+  dz.addEventListener('click', ()=> fin.click());
+  btnCh.addEventListener('click', ()=> fin.click());
+  dz.addEventListener('keydown', e=>{
+    if(e.key === 'Enter' || e.key === ' '){
+      e.preventDefault();
+      fin.click();
+    }
+  });
+  fin.addEventListener('change', e=>{
+    handleFiles(e.target.files || []);
+    fin.value = '';
+  });
+
+  // Stub: export scenario (no real wiring yet)
+  btnScenario.addEventListener('click', ()=>{
+    if(!files.length) return;
+    const now = new Date().toISOString();
+    const rows = [
+      ['scenario_id','generated_at','file_count','note'],
+      ['ABE_CIRI_SCENARIO_V2', now, String(files.length),
+       'Stub scenario export from AFFE — next step is to map into CFF/CIRI templates.']
+    ];
+    const csv = rows.map(r=>r.join(',')).join('\n');
+    const blob = new Blob([csv],{type:'text/csv'});
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href = url;
+    a.download = 'ABE_CIRI_SCENARIO_V2_stub.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+    log('Exported stub ABE_CIRI_SCENARIO_V2 CSV.');
+  });
+
+  btnClear.addEventListener('click', ()=>{
+    files = [];
+    renderSummary();
+    log('Cleared staged files.');
+  });
+
+  log('AFFE intake shell ready. Waiting for files…');
+})();
 </script>
 </body>
-</html>
+      </html>
