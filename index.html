@@ -1,248 +1,383 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Integration Layer — Public KPIs & Integrity | A.B.E.</title>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>The American Butterfly Effect (A.B.E.) — System Hub</title>
+<base href="/abe---flag/">
 
-  <!-- Critical: forces all links to resolve from repo root -->
-  <base href="/abe---flag/" />
-
-  <style>
-    :root {
-      --bg:#0b0d12;
-      --panel:#141820;
-      --panel2:#10141b;
-      --line:rgba(255,255,255,.08);
-      --brand:#4ac2ff;
-      --muted:#8aa0b8;
-    }
-    * { box-sizing:border-box }
-    body {
-      margin:0;
-      background:var(--bg);
-      color:white;
-      font-family:system-ui, sans-serif;
-    }
-    header {
-      padding:24px 20px;
-      background:linear-gradient(to bottom,#0d1117,#0b0d12);
-      border-bottom:1px solid var(--line);
-    }
-    main {
-      max-width:1100px;
-      margin:22px auto;
-      padding:0 16px;
-    }
-    h1 { margin:0 0 .5rem; font-size:2rem }
-    h2 { margin:0 0 1rem; font-size:1.4rem }
-    h3 { margin:.4rem 0; font-size:1.2rem }
-    p.muted { color:var(--muted); margin:.2rem 0 1rem }
-
-    .pill-row {
-      display:flex;
-      flex-wrap:wrap;
-      gap:10px;
-      margin:18px 0 28px;
-    }
-    .pill {
-      display:inline-flex;
-      align-items:center;
-      padding:8px 18px;
-      border-radius:999px;
-      background:var(--panel2);
-      border:1px solid var(--line);
-      color:white;
-      text-decoration:none;
-      font-size:.95rem;
-    }
-    .pill:hover {
-      border-color:var(--brand);
-      text-decoration:none;
-    }
-
-    .card {
-      background:var(--panel);
-      border:1px solid var(--line);
-      padding:18px 20px;
-      margin:20px 0;
-      border-radius:10px;
-    }
-
-    .big-number {
-      font-size:2rem;
-      font-weight:700;
-      margin:4px 0;
-    }
-
-    .ok {
-      display:inline-block;
-      background:#0f772e;
-      padding:3px 10px;
-      border-radius:6px;
-      font-size:.85rem;
-    }
-
-    .sha-block {
-      font-family:monospace;
-      background:var(--panel2);
-      border:1px solid var(--line);
-      padding:6px 10px;
-      border-radius:6px;
-      margin-top:8px;
-      word-break:break-all;
-      font-size:.8rem;
-    }
-  </style>
+<style>
+:root{
+  --bg:#0b0d12; --panel:#141820; --panel2:#0f131a; --ink:#e6e6e6; --muted:#9fb3c8;
+  --line:rgba(255,255,255,.08); --brand:#5ddfff; --accent:#fff750; --ok:#4bd28f; --warn:#ffa559
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+a{color:#80bfff;text-decoration:none} a:hover{text-decoration:underline}
+header{padding:28px 20px;background:linear-gradient(90deg,#11151c,#1b1e25);border-bottom:1px solid var(--line)}
+.wrap{max-width:1100px;margin:0 auto;padding:0 20px}
+h1{margin:0 0 6px}
+.sub{color:var(--muted)}
+.badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.badges a,.chip{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border:1px solid var(--line);border-radius:999px;color:var(--muted);background:rgba(0,0,0,.1)}
+.grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px}
+.tile{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:14px}
+.kpi{display:flex;gap:14px;flex-wrap:wrap}
+.kpi .tile{flex:1 1 220px}
+.num{font-weight:700;font-size:1.25rem}
+small{color:var(--muted)}
+.table{width:100%;border-collapse:collapse;margin-top:8px}
+.table th,.table td{border:1px solid var(--line);padding:10px 12px;text-align:left}
+.table th{background:var(--panel2)}
+.status{display:inline-block;padding:2px 10px;border-radius:999px;border:1px solid var(--line);font-size:.85rem}
+.ok{color:var(--ok);border-color:rgba(75,210,143,.35)}
+.warn{color:var(--warn);border-color:rgba(255,165,89,.35)}
+footer{margin:40px 0 24px;text-align:center;color:var(--muted);font-size:.9rem}
+hr{border:none;border-top:1px solid var(--line);margin:18px 0}
+@media (max-width:720px){.kpi .tile{flex:1 1 100%}}
+</style>
 </head>
-
 <body>
-
 <header>
-  <a href="index.html" style="color:var(--brand);text-decoration:none;">← Home</a>
-  <h1>Integration Layer — Public KPIs & Integrity</h1>
-  <p class="muted">Live signals from the A.B.E. pipeline (CFF → CIRI → CIBS), plus one-click integrity verification.</p>
-
-  <div class="pill-row">
-    <a class="pill" href="cff/index.html">CFF</a>
-    <a class="pill" href="ciri/index.html">CIRI</a>
-    <a class="pill" href="cibs/index.html">CIBS</a>
-    <a class="pill" href="macro/index.html">Macro</a>
-    <a class="pill" href="system/index.html">System Map</a>
+  <div class="wrap">
+    <h1>🦋 The American Butterfly Effect (A.B.E.)</h1>
+    <div class="sub" id="version-line">
+      Constitutional & economic restoration framework — public, auditable, non-commercial.
+    </div>
+    <div class="badges">
+      <a href="https://doi.org/10.5281/zenodo.17586107" title="DOI: 10.5281/zenodo.17586107">
+        <img src="https://zenodo.org/badge/DOI/10.5281/zenodo.17586107.svg" alt="DOI badge" height="18"/>
+      </a>
+      <span class="chip">License: CC BY-NC 4.0</span>
+      <a class="chip" href="doctrine/index.html">Doctrine Library</a>
+      <a class="chip" href="system/index.html">System Map</a>
+      <a class="chip" href="macro/index.html">Macro Model</a>
+      <a class="chip" href="START_HERE.md">Start Here (README)</a>
+    </div>
   </div>
 </header>
 
-<main>
-
-  <!-- ====================== PUBLIC CIBS ====================== -->
+<main class="wrap" style="margin:24px auto 44px">
+  <!-- System Overview -->
   <div class="card">
-    <h2>Public Allocation (CIBS)</h2>
-    <div class="big-number" id="pub-cibs">$0</div>
-    <p class="muted">Sum of <code>/cibs/auto_budget.csv</code> (current published plan).</p>
+    <h2 style="margin:0 0 8px;color:var(--accent)">What A.B.E. Does</h2>
+    <p style="margin:.25rem 0 0">
+      A.B.E. converts <em>constitutional alignment</em> into <em>measurable, auditable economics</em>:
+      <strong>CAE</strong> (law & grants alignment) → <strong>CDI</strong> (divergence signal) →
+      <strong>CFF</strong> (funding forensics) → <strong>CIRI</strong> (recovery value) →
+      <strong>CIBS</strong> (budget) → <strong>CII</strong> (projects) →
+      <strong>Integration</strong> (receipts & attestations) →
+      <strong>AFFE</strong> (federal funding equivalence).
+    </p>
   </div>
 
-  <!-- ====================== CIRI ====================== -->
+  <!-- Live KPIs -->
   <div class="card">
-    <h2>Base Recovery (CIRI only)</h2>
-    <div class="big-number" id="pub-ciri">$0</div>
-    <p class="muted">Baseline model using <code>ciri/inputs.csv</code>.</p>
+    <h3 style="margin:0 0 8px">Live KPIs (from repo CSVs)</h3>
+    <div class="kpi">
+      <div class="tile">
+        <div>Modeled Recovery (CIRI)</div>
+        <div id="k-ciri" class="num">—</div>
+        <small>Computed from <code>/ciri/inputs.csv</code></small>
+      </div>
+      <div class="tile">
+        <div>CIRI Index</div>
+        <div id="k-ciri-idx" class="num">—</div>
+        <small>\( 1 - e^{-R_T/K} \) with K-scale</small>
+      </div>
+      <div class="tile">
+        <div>Public Allocation (CIBS)</div>
+        <div id="k-cibs" class="num">—</div>
+        <small>Sum of <code>/cibs/auto_budget.csv</code></small>
+      </div>
+      <div class="tile">
+        <div>ROI per Case</div>
+        <div id="k-roi" class="num">—</div>
+        <small>\( R_T/\max(1,cases\_avoided) \)</small>
+      </div>
+    </div>
   </div>
 
-  <!-- ====================== CFF ====================== -->
-  <div class="card">
-    <h2>OFF_MISSION (CFF)</h2>
-    <div class="big-number" id="pub-cff">$0</div>
-    <p class="muted">Direct handoff to CIRI on this device.</p>
+  <!-- Subsystems -->
+  <div class="grid">
+    <div class="card">
+      <h3>CAE — Constitutional Alignment Engine</h3>
+      <p>Parses Constitution, statutes, regs & grant conditions; anchors what “on-mission” actually means.</p>
+      <table class="table">
+        <tbody>
+          <tr><th>UI</th><td><a href="cae/index.html">cae/index.html</a></td></tr>
+          <tr><th>Schema</th><td id="s-cae" class="status warn">Checking…</td></tr>
+          <tr><th>Model</th><td><a href="cae/model.json">model.json</a></td></tr>
+          <tr><th>Report</th><td><a href="cae/report.csv">report.csv</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h3>CDI — Constitutional Divergence Index</h3>
+      <p>Normalizes misalignment into a 0–1 signal by domain/jurisdiction.</p>
+      <table class="table">
+        <tbody>
+          <tr><th>UI</th><td><a href="cdi/index.html">cdi/index.html</a></td></tr>
+          <tr><th>Schema</th><td id="s-cdi" class="status warn">Checking…</td></tr>
+          <tr><th>Model</th><td><a href="cdi/model.json">model.json</a></td></tr>
+          <tr><th>Data</th><td><a href="cdi/divergence.csv">divergence.csv</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h3>CFF — Constitutional Funding Forensics</h3>
+      <p>Checks whether federal dollars are used on-mission or diverted into unconstitutional overreach.</p>
+      <table class="table">
+        <tbody>
+          <tr><th>UI</th><td><a href="cff/index.html">cff/index.html</a></td></tr>
+          <tr><th>Schema</th><td id="s-cff" class="status warn">Checking…</td></tr>
+          <tr><th>Inputs</th><td><a href="cff/inputs.csv">inputs.csv</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h3>CIRI — Integrity ROI Engine</h3>
+      <p>Turns divergence + local inputs into recovery dollars and indices.</p>
+      <table class="table">
+        <tbody>
+          <tr><th>UI</th><td><a href="ciri/index.html">ciri/index.html</a></td></tr>
+          <tr><th>Schema</th><td id="s-ciri" class="status warn">Checking…</td></tr>
+          <tr><th>Inputs</th><td><a href="ciri/inputs.csv">inputs.csv</a></td></tr>
+          <tr><th>Spec</th><td><a href="ciri/calc.md">calc.md</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h3>CIBS — Constitutional Investment & Budget System</h3>
+      <p>Allocates the Recovery Pool into public reinvestment buckets.</p>
+      <table class="table">
+        <tbody>
+          <tr><th>UI</th><td><a href="cibs/index.html">cibs/index.html</a></td></tr>
+          <tr><th>Schema</th><td id="s-cibs" class="status warn">Checking…</td></tr>
+          <tr><th>Template</th><td><a href="cibs/budget_template.csv">budget_template.csv</a></td></tr>
+          <tr><th>Auto Budget</th><td><a href="cibs/auto_budget.csv">auto_budget.csv</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h3>CII — Community Investment Interface</h3>
+      <p>Publishes auditable portfolios (housing, clinics, food, mobility, workforce).</p>
+      <table class="table">
+        <tbody>
+          <tr><th>UI</th><td><a href="cii/index.html">cii/index.html</a></td></tr>
+          <tr><th>Schema</th><td id="s-cii" class="status warn">Checking…</td></tr>
+          <tr><th>Model</th><td><a href="cii/model.json">model.json</a></td></tr>
+          <tr><th>Portfolio</th><td><a href="cii/portfolio.csv">portfolio.csv</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h3>Integration Layer</h3>
+      <p>Receipts, recipient match, retaliation-zero, and public attestations.</p>
+      <table class="table">
+        <tbody>
+          <tr><th>UI</th><td><a href="integration/index.html">integration/index.html</a></td></tr>
+          <tr><th>Schema</th><td id="s-integration" class="status warn">Checking…</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h3>AFFE — Federal Funding Equivalence Engine</h3>
+      <p>Maps “what your jurisdiction actually got” vs “what equivalent constitutional use would deliver.”</p>
+      <table class="table">
+        <tbody>
+          <tr><th>UI</th><td><a href="affe/index.html">affe/index.html</a></td></tr>
+          <tr><th>Schema</th><td id="s-affe" class="status warn">Checking…</td></tr>
+          <tr><th>Inputs</th><td><a href="affe/inputs.csv">inputs.csv</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h3>System Map</h3>
+      <p>Canonical chain-of-custody & evidence ledger for A.B.E.</p>
+      <table class="table">
+        <tbody>
+          <tr><th>UI</th><td><a href="system/index.html">system/index.html</a></td></tr>
+          <tr><th>Map</th><td><a href="system/map.json">map.json</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h3>Macro — Cascade Model</h3>
+      <p>Top-down impact summary; optional artifacts & downloads.</p>
+      <table class="table">
+        <tbody>
+          <tr><th>UI</th><td><a href="macro/index.html">macro/index.html</a></td></tr>
+          <tr><th>Model</th><td><a href="macro/model.json">model.json</a></td></tr>
+          <tr><th>Downloads</th><td><a href="macro/macro_cascade.csv">macro_cascade.csv</a></td></tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 
-  <!-- ====================== INTEGRITY BEACON ====================== -->
+  <!-- Schema Status Summary -->
   <div class="card">
-    <h2>Integrity Beacon</h2>
-    <p class="muted">Runs local checks: file presence, schema plausibility, recomputed KPIs, and SHA-256 hashes.</p>
-    <button id="verify" class="pill" style="cursor:pointer;">Verify Now</button>
-
-    <div id="beacon-results" style="margin-top:18px;"></div>
+    <h3 style="margin:0 0 8px">Schema Status Summary</h3>
+    <div class="grid" id="schema-grid">
+      <!-- Filled by script -->
+    </div>
+    <small>Green = schema file found and non-empty; Orange = missing or empty.</small>
   </div>
 
 </main>
 
+<footer>
+  CC BY-NC 4.0 · DOI <a href="https://doi.org/10.5281/zenodo.17586107">10.5281/zenodo.17586107</a><br/>
+  <em>Integrity only — never for sale.</em>
+</footer>
+
 <script>
-/* --------------------------------------------
-   LOAD CSV helpers
--------------------------------------------- */
-async function csv(url){
-  const res = await fetch(url);
-  const text = await res.text();
-  const rows = text.trim().split(/\r?\n/).map(r=>r.split(','));
-  const header = rows[0];
-  const data = rows.slice(1).map(r => Object.fromEntries(r.map((v,i)=>[header[i], v])));
-  return data;
+// ---------- helpers ----------
+const money = n => {
+  const v = Number(n);
+  if (!isFinite(v)) return '—';
+  try {
+    return new Intl.NumberFormat(undefined,{
+      style:'currency',
+      currency:'USD',
+      maximumFractionDigits:0
+    }).format(v);
+  } catch {
+    return '$'+Math.round(v).toLocaleString();
+  }
+};
+const pct = x => (x*100).toFixed(2)+'%';
+
+function setStatus(id, ok){
+  const el = document.getElementById(id);
+  if(!el) return;
+  el.textContent = ok ? 'Schema present' : 'Missing';
+  el.classList.remove('warn','ok');
+  el.classList.add(ok ? 'ok' : 'warn');
 }
 
-/* --------------------------------------------
-   Populate public KPIs
--------------------------------------------- */
-(async()=>{
-  // CIBS budget sum
-  try {
-    const b = await csv('cibs/auto_budget.csv');
-    const sum = b.reduce((a,x)=>a + (parseFloat(x.amount)||0), 0);
-    document.getElementById('pub-cibs').textContent =
-      sum.toLocaleString('en-US', {style:'currency',currency:'USD'});
-  } catch(_){}
-
-  // CIRI base recovery
-  try {
-    const d = (await csv('ciri/inputs.csv'))[0];
-    const direct = parseFloat(d.avg_cost_per_case)*parseFloat(d.cases_avoided);
-    const detention = parseFloat(d.jail_days_avoided)*parseFloat(d.cost_per_jail_day);
-    const enf = parseFloat(d.avg_enforcement_cost_savings);
-    const total = direct + detention + enf;
-    document.getElementById('pub-ciri').textContent =
-      total.toLocaleString('en-US', {style:'currency',currency:'USD'});
-  } catch(_){}
-
-  // CFF OFF_MISSION
-  try {
-    const d = (await csv('cff/inputs.csv'))[0];
-    const off = parseFloat(d.OFF_MISSION||0);
-    document.getElementById('pub-cff').textContent =
-      off.toLocaleString('en-US', {style:'currency',currency:'USD'});
-  } catch(_){}
+// ---------- version line from system/map.json ----------
+(async ()=>{
+  try{
+    const r = await fetch('system/map.json',{cache:'no-store'});
+    if(!r.ok) throw 0;
+    const j = await r.json();
+    const v = j.version || '—';
+    const u = j.updated || '';
+    const el = document.getElementById('version-line');
+    if(el){
+      el.textContent = `Constitutional & economic restoration framework — v${v} · updated ${u}`;
+    }
+  }catch(_){}
 })();
 
-/* --------------------------------------------
-   Integrity Beacon
--------------------------------------------- */
-document.getElementById('verify').onclick = async ()=>{
-  const out = document.getElementById('beacon-results');
-  out.innerHTML = "<p class='muted'>Checking files…</p>";
+// ---------- live KPIs ----------
+(async ()=>{
+  // CIBS total
+  try{
+    const r = await fetch('cibs/auto_budget.csv',{cache:'no-store'});
+    const t = await r.text();
+    const lines = t.trim().split(/\r?\n/).slice(1);
+    const total = lines.reduce((s,line)=>{
+      const v = Number(line.split(',')[1]); return s + (isFinite(v)?v:0);
+    },0);
+    document.getElementById('k-cibs').textContent = money(total);
+  }catch(_){}
 
-  const files = [
-    {label:"CIRI (ciri/inputs.csv)", path:"ciri/inputs.csv"},
-    {label:"CIBS (cibs/auto_budget.csv)", path:"cibs/auto_budget.csv"},
-    {label:"CFF (cff/inputs.csv)", path:"cff/inputs.csv"},
-    {label:"CDI (cdi/divergence.csv)", path:"cdi/divergence.csv"},
-    {label:"CAE (cae/model.json)", path:"cae/model.json"}
+  // CIRI compute (aligned with ciri/index.html v2)
+  try{
+    const r = await fetch('ciri/inputs.csv',{cache:'no-store'});
+    const t = await r.text();
+    const [h,d] = t.trim().split(/\r?\n/);
+    const keys = h.split(',').map(s=>s.trim());
+    const vals = d.split(',').map(x=>Number(x));
+    const o = Object.fromEntries(keys.map((k,i)=>[k,vals[i]]));
+
+    const c=o.cases_avoided, C=o.avg_cost_per_case, D=o.jail_days_avoided, J=o.cost_per_jail_day,
+          F=o.fees_canceled_total, P=o.policy_corrections, E=o.avg_enforcement_cost_savings,
+          H=o.households_restored, M=o.avg_monthly_market_spend, m=o.months_effective,
+          pe=o.employment_probability, W=o.avg_monthly_wage, L=o.expected_lawsuits,
+          A=o.avg_payout, lam=o.litigation_multiplier, T=o.transition_costs_one_time;
+
+    const direct   = c*C;
+    const detention= D*J;
+    const fees     = F;
+    const enforce  = P*E;
+    const market   = H*M*m;
+    const employ   = c*pe*W*(m/12);
+    const litig    = L*A*lam;
+
+    const total = Math.max(0, direct + detention + fees + enforce + market + employ + litig - T);
+    const K = 1_000_000_000;
+    const ciri = 1 - Math.exp(- total / K);
+    const roi  = total / Math.max(1,c);
+
+    document.getElementById('k-ciri').textContent     = money(total);
+    document.getElementById('k-ciri-idx').textContent = ciri.toFixed(2);
+    document.getElementById('k-roi').textContent      = money(roi);
+  }catch(_){}
+})();
+
+// ---------- schema checks ----------
+(async ()=>{
+  const targets = [
+    {key:'CAE',  id:'s-cae',  path:'cae/schema.json'},
+    {key:'CDI',  id:'s-cdi',  path:'cdi/schema.json'},
+    {key:'CFF',  id:'s-cff',  path:'cff/schema.json'},
+    {key:'CIRI', id:'s-ciri', path:'ciri/schema.json'},
+    {key:'CIBS', id:'s-cibs', path:'cibs/schema.json'},
+    {key:'CII',  id:'s-cii',  path:'cii/schema.json'},
+    {key:'Integration', id:'s-integration', path:'integration/schema.json'},
+    {key:'AFFE', id:'s-affe', path:'affe/schema.json'}
   ];
 
-  const html = [];
-
-  for(const f of files){
+  for(const t of targets){
     try{
-      const res = await fetch(f.path);
-      if(!res.ok) throw 0;
-      const text = await res.text();
-
-      // SHA-256
-      const hash = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
-      const hex = [...new Uint8Array(hash)].map(b=>b.toString(16).padStart(2,"0")).join("");
-
-      html.push(`
-        <div class="card">
-          <div><strong>${f.label}</strong> <span class="ok">OK</span></div>
-          <div class="sha-block">${hex}</div>
-        </div>
-      `);
+      const r = await fetch(t.path,{cache:'no-store'});
+      const ok = r.ok && (await r.text()).trim().length>0;
+      setStatus(t.id, ok);
     }catch(_){
-      html.push(`
-        <div class="card">
-          <div><strong>${f.label}</strong> <span style="background:#773f2e;padding:3px 10px;border-radius:6px;font-size:.85rem;">Missing</span></div>
-        </div>
-      `);
+      setStatus(t.id,false);
     }
   }
 
-  // Certificate
-  html.push(`
-    <div style="margin-top:20px;">
-      <a href="integration/certificate.json" download class="pill">Download Audit Certificate (JSON)</a>
-    </div>
-  `);
+  // Summary grid
+  const grid = document.getElementById('schema-grid');
+  if(grid){
+    grid.innerHTML = targets.map(t=>{
+      const tagId = `sum-${t.id}`;
+      return `
+      <div class="tile">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <strong>${t.key}</strong>
+          <span id="${tagId}" class="status warn">Checking…</span>
+        </div>
+        <small><code>${t.path}</code></small>
+      </div>`;
+    }).join('');
 
-  out.innerHTML = html.join("");
-};
+    // Fill summary statuses
+    for(const t of targets){
+      const el = document.getElementById(`sum-${t.id}`);
+      const src = document.getElementById(t.id);
+      if(el && src){
+        el.textContent = src.textContent;
+        el.classList.remove('ok','warn');
+        el.classList.add(src.classList.contains('ok') ? 'ok' : 'warn');
+      }
+    }
+  }
+})();
 </script>
-
 </body>
-</html>
+      </html>
