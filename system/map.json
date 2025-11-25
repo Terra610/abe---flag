@@ -24,28 +24,13 @@
       "name": "CDI",
       "long_name": "Constitutional Divergence Index",
       "purpose": "Converts CAE findings into normalized 0–1 divergence signals by domain and jurisdiction.",
-      "inputs": ["cae/report.csv"],
+      "inputs": [
+        "cae/report.csv"
+      ],
       "model_file": "cdi/model.json",
       "data_file": "cdi/divergence.csv",
       "status": "alpha",
       "ui": "cdi/index.html"
-    },
-
-    "cff": {
-      "name": "CFF",
-      "long_name": "Constitutional Funding Forensics",
-      "purpose": "Audits federal and state funding lines against their statutory authority to detect ON_MISSION, OFF_MISSION, and UNCLEAR spend.",
-      "inputs_file": "cff/inputs.csv",
-      "schema_file": "cff/schema.json",
-      "core_outputs": [
-        "on_mission_total",
-        "off_mission_total",
-        "unclear_total",
-        "off_mission_rate"
-      ],
-      "primary_output_field": "off_mission_total",
-      "status": "alpha",
-      "ui": "cff/index.html"
     },
 
     "ciri": {
@@ -92,15 +77,32 @@
       "ui": "cii/index.html"
     },
 
+    "cff": {
+      "name": "CFF",
+      "long_name": "Constitutional Funding Forensics",
+      "purpose": "Parses federal and state grant spending against statutory purpose; classifies each line item as ON_MISSION, OFF_MISSION, or UNCLEAR and computes OFF_MISSION totals.",
+      "inputs_file": "cff/inputs.csv",
+      "schema_file": "cff/schema.json",
+      "status": "alpha",
+      "ui": "cff/index.html"
+    },
+
+    "affe": {
+      "name": "AFFE",
+      "long_name": "A.B.E. Funding Forensics Engine",
+      "purpose": "Helps users stage funding PDFs, spreadsheets, and CSVs into a CFF-ready format, tagging each line with program, authority, and mission alignment.",
+      "status": "alpha",
+      "ui": "affe/index.html"
+    },
+
     "integration": {
       "name": "Integration Layer",
-      "purpose": "Verifies receipts, matches recipients, detects retaliation/suppression, and posts public attestations with SHA-256 hashes.",
+      "purpose": "Verifies receipts, matches recipients, detects retaliation/suppression, and posts public attestations.",
       "checks": [
         "receipt_verification",
         "recipient_match",
         "retaliation_zero",
-        "public_audit_attestation",
-        "hash_chain_verification"
+        "public_audit_attestation"
       ],
       "status": "alpha",
       "ui": "integration/index.html"
@@ -125,19 +127,6 @@
       ],
       "status": "public",
       "ui": "macro/index.html"
-    },
-
-    "affe": {
-      "name": "AFFE",
-      "long_name": "A.B.E. Frontdoor & Forensic Extractor",
-      "purpose": "Single intake for CSV/Excel/PDF that classifies data (funding, enforcement, cases) and routes it into CFF, CIRI, and Macro while keeping all processing local to the browser.",
-      "inputs": [
-        "user_uploaded_csv",
-        "user_uploaded_excel",
-        "user_uploaded_pdf"
-      ],
-      "status": "alpha",
-      "ui": "affe/index.html"
     }
   },
 
@@ -162,22 +151,23 @@
       ]
     },
     {
-      "from": "cff/inputs.csv",
-      "to": "CFF OFF_MISSION / ON_MISSION totals",
-      "control": "line_level_classification_against_statutory_authority",
+      "from": "User grant/funding uploads (CSVs, PDFs, spreadsheets)",
+      "to": "cff/inputs.csv",
+      "control": "classified_ON_OFF_UNCLEAR_with_statutory_citations",
       "evidence": [
+        "/abe---flag/affe/index.html",
         "/abe---flag/cff/index.html",
         "/abe---flag/cff/inputs.csv",
         "/abe---flag/cff/schema.json"
       ]
     },
     {
-      "from": "CFF OFF_MISSION totals",
-      "to": "ciri/inputs.csv (funding_misuse channels)",
-      "control": "mapped_into_recovery_channels_with_conservative_factors",
+      "from": "cff/inputs.csv OFF_MISSION total",
+      "to": "ciri/inputs.csv funding_misuse_recovery line",
+      "control": "OFF_MISSION_sum_mapped_into_CIRI_recovery_pool",
       "evidence": [
-        "/abe---flag/ciri/calc.md",
-        "/abe---flag/ciri/index.html"
+        "/abe---flag/ciri/index.html",
+        "/abe---flag/cff/index.html"
       ]
     },
     {
@@ -191,7 +181,7 @@
       ]
     },
     {
-      "from": "CDI divergence + local inputs + CFF OFF_MISSION",
+      "from": "CDI divergence + local inputs",
       "to": "CIRI total_recovery (Recovery Pool)",
       "control": "documented_formulas_SIRF_IRE_CEQ",
       "evidence": [
@@ -224,27 +214,17 @@
       "to": "Integration checks",
       "control": "receipts_signed_hashes_retaliation_monitoring",
       "evidence": [
-        "/abe---flag/integration/index.html",
-        "/abe---flag/system/integrity.js"
+        "/abe---flag/integration/index.html"
       ]
     },
     {
       "from": "Integration checks",
       "to": "Public dashboard / publication",
-      "control": "public_audit_attestation_with_SHA256_chain",
+      "control": "public_audit_attestation",
       "evidence": [
         "/abe---flag/system/index.html",
         "CC BY-NC 4.0",
         "SHA256: to_be_added_for_released_artifacts"
-      ]
-    },
-    {
-      "from": "User uploads via AFFE (CSV / Excel / PDF)",
-      "to": "CFF / CIRI / Macro paths",
-      "control": "local_only_parsing_and_content_classification",
-      "evidence": [
-        "/abe---flag/affe/index.html",
-        "/abe---flag/README_start_here.md"
       ]
     }
   ],
@@ -260,7 +240,6 @@
     "cff": "/abe---flag/cff/index.html",
     "affe": "/abe---flag/affe/index.html",
     "integration": "/abe---flag/integration/index.html",
-    "system": "/abe---flag/system/index.html",
     "macro": "/abe---flag/macro/index.html",
     "doi": "https://doi.org/10.5281/zenodo.17586107",
     "license": "https://creativecommons.org/licenses/by-nc/4.0/"
