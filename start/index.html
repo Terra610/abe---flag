@@ -67,7 +67,7 @@ footer{margin:34px 0 20px;text-align:center;color:var(--muted);font-size:.85rem}
     <p class="small">
       Under the hood: CAE (law alignment) → CDI (divergence score) →
       CIRI (recovery value) → CIBS (budget) → CII (projects) →
-      Integration (public receipts).
+      CFF/AFFE (funding forensics) → Integration (public receipts).
     </p>
     <div class="callout small">
       All math is transparent. All formulas are documented. Every calculator can
@@ -106,6 +106,22 @@ footer{margin:34px 0 20px;text-align:center;color:var(--muted);font-size:.85rem}
         <p class="small">
           These pages read shared CSV / JSON files and show how each dollar is allocated
           and which projects it supports.
+        </p>
+      </div>
+
+      <div class="tile">
+        <h3>🧾 I want to follow the money</h3>
+        <p class="small">
+          You want to see whether <strong>federal funds are being used the way Congress actually said</strong> —
+          or quietly diverted off-mission into things they were never meant to pay for.
+        </p>
+        <p class="small"><strong>Go here:</strong> CFF + AFFE.</p>
+        <a class="btn" href="/abe---flag/cff/index.html">Open CFF — Funding Forensics</a>
+        <a class="btn" href="/abe---flag/affe/index.html" style="margin-left:.3rem">Open AFFE — Explorer (preview)</a>
+        <p class="small">
+          CFF reads a simple funding CSV with <code class="code">ON_MISSION / OFF_MISSION / UNCLEAR</code>
+          flags and shows how much money is aligned vs misused. AFFE will grow into a deeper explorer as
+          more public datasets and statutes are wired in.
         </p>
       </div>
 
@@ -159,18 +175,25 @@ footer{margin:34px 0 20px;text-align:center;color:var(--muted);font-size:.85rem}
     </div>
   </section>
 
-  <!-- 4. Where this is going (Funding module mention) -->
+  <!-- 4. Funding + what’s coming next -->
   <section>
-    <h2>What’s coming next</h2>
+    <h2>Funding & what’s coming next</h2>
     <p class="small">
-      The next public module will let you upload <strong>funding / grant</strong> data
-      and see where federal program rules, state statutes, and real-world practice diverge.
-      That will plug straight into CAE, CDI, and CIRI to quantify misuse and recovery.
+      <strong>CFF — Constitutional Funding Forensics</strong> is now live. It lets you upload
+      structured funding / grant CSVs and see, line by line, how much spend is
+      <code class="code">ON_MISSION</code> (within statutory scope),
+      <code class="code">OFF_MISSION</code> (outside authority), or
+      <code class="code">UNCLEAR</code> (needs deeper audit).
     </p>
     <p class="small">
-      When that’s live, it will appear here as:
-      <code class="code">Funding Alignment Audit</code> → “Upload your funding CSV,
-      see where practice breaks the rules, and export an audit-ready report.”
+      The next evolution, <strong>AFFE — American Funding & Fidelity Explorer</strong>, will help you
+      connect those funding patterns back into CAE, CDI, and CIRI so you can quantify
+      misuse, recovery, and risk in one go — from “this grant is off-mission” to
+      “here’s the dollar value and the constitutional fix.”
+    </p>
+    <p class="small">
+      As new modules and data pipelines come online, they’ll show up here with
+      clear links and “what this does in human language” before you ever touch a CSV.
     </p>
   </section>
 </main>
