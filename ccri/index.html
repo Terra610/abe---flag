@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>CCRI — Consumer Credit Risk Integrity | A.B.E.</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <base href="/abe---flag/">
+  <link rel="stylesheet" href="abe-patch/assets/abe-patch.css" />
+</head>
+<body class="abe-page">
+
+  <header class="abe-header">
+    <h1>CCRI — Consumer Credit Risk Integrity</h1>
+    <p class="tagline">
+      Measuring how credit, banking, and auto lending are shaped by lawful data — or poisoned by unlawful transportation overreach.
+    </p>
+    <nav class="chip-row">
+      <a class="chip" href="index.html">ABE Home</a>
+      <a class="chip" href="ciri/index.html">CIRI</a>
+      <a class="chip" href="cff/index.html">CFF</a>
+      <a class="chip" href="cibs/index.html">CIBS</a>
+      <a class="chip" href="affe/index.html">AFFE</a>
+      <a class="chip chip-alt" href="system/index.html">System Map</a>
+    </nav>
+  </header>
+
+  <main class="abe-main">
+
+    <section class="card">
+      <h2>What CCRI Does</h2>
+      <p>
+        CCRI evaluates how lenders, dealers, and underwriters use data when deciding who gets access to
+        credit and vehicles. It flags when:
+      </p>
+      <ul>
+        <li>DMV or DOT data is used for non–DOT-regulated citizens.</li>
+        <li>License status or traffic enforcement is treated as a gatekeeper for basic economic mobility.</li>
+        <li>State-created barriers are silently driving private credit decisions.</li>
+      </ul>
+      <p>
+        CCRI never scores people. It scores the <strong>systems</strong> and <strong>rules</strong>
+        that stand between people and lawful access to credit, transportation, and work.
+      </p>
+    </section>
+
+    <section class="card">
+      <h2>Inputs</h2>
+      <p>
+        CCRI reads scenarios defined in <code>ccri/inputs.json</code>. Each scenario represents a specific lender,
+        dealership, or underwriting policy set and describes:
+      </p>
+      <ul>
+        <li>Which data sources are used (credit bureaus, DMV, DOT, background vendors).</li>
+        <li>Whether license status is required to apply, test drive, or fund a loan.</li>
+        <li>How many applicants are denied based on DMV or license-related criteria.</li>
+        <li>Whether there is any appeal or human review path.</li>
+      </ul>
+      <p>
+        The engine then calls the shared A.B.E. constitutional layer to determine where those practices diverge
+        from federal law and the Constitution.
+      </p>
+      <p>
+        <a class="btn" href="ccri/inputs.json" download>Download inputs.json</a>
+        <a class="btn btn-ghost" href="ccri/README.md">Read CCRI documentation</a>
+      </p>
+    </section>
+
+    <section class="card">
+      <h2>Outputs & Linkage</h2>
+      <p>
+        CCRI produces scores and metrics that are consumed by other A.B.E. modules:
+      </p>
+      <ul>
+        <li><strong>CIRI</strong>: rights and enforcement divergence tied to credit and mobility barriers.</li>
+        <li><strong>CFF</strong>: financial exposure where unlawful data is embedded in underwriting models.</li>
+        <li><strong>CIBS</strong>: how many households and how much GDP can be unlocked by correcting the rules.</li>
+        <li><strong>AFFE</strong>: long-term stability, default reductions, and community-level recovery.</li>
+      </ul>
+      <p>
+        Together, these modules show how correcting credit and lending practices can restore both
+        constitutional fidelity and economic opportunity.
+      </p>
+    </section>
+
+  </main>
+
+  <footer class="abe-footer">
+    <p>A.B.E. — American Butterfly Effect · CCRI module</p>
+  </footer>
+
+</body>
+</html>
