@@ -1,0 +1,101 @@
+{
+  "version": "1.0",
+  "updated": "2025-11-27",
+  "module": "CCRI",
+  "federal_authority": [
+    {
+      "title": "Fair Credit Reporting Act (FCRA)",
+      "citation": "15 U.S.C. §1681 et seq.",
+      "scope": "Governs accuracy, permissible purpose, and use of consumer data.",
+      "relevance_to_ccri": [
+        "DMV/DOT enforcement data is not a permissible credit purpose.",
+        "Unlawful state enforcement cannot enter a consumer report.",
+        "Adverse action notices must state true reasons for denial.",
+        "Data must be relevant, timely, and non-discriminatory."
+      ]
+    },
+    {
+      "title": "Equal Credit Opportunity Act (ECOA)",
+      "citation": "15 U.S.C. §1691 et seq.",
+      "scope": "Prohibits discrimination in any aspect of credit.",
+      "relevance_to_ccri": [
+        "DMV-based denials yield unlawful disparate impact.",
+        "License status cannot be used as a proxy for protected classes.",
+        "Gating access to credit violates equal treatment guarantees."
+      ]
+    },
+    {
+      "title": "Truth in Lending Act (TILA)",
+      "citation": "15 U.S.C. §1601 et seq.",
+      "scope": "Requires clear disclosure of APR, finance charges, OTD pricing.",
+      "relevance_to_ccri": [
+        "DMV-based risk pricing violates disclosure requirements.",
+        "Hidden risk algorithms break APR accuracy.",
+        "OTD pricing must reflect true, lawful costs."
+      ]
+    },
+    {
+      "title": "RESPA — Real Estate Settlement Procedures Act",
+      "citation": "12 U.S.C. §2601 et seq.",
+      "scope": "Governs mortgage servicing, escrow, foreclosure practices.",
+      "relevance_to_ccri": [
+        "Foreclosure actions must follow federal sequencing.",
+        "Improper DMV-based classification can taint servicing decisions."
+      ]
+    },
+    {
+      "title": "FTC Holder Rule",
+      "citation": "16 C.F.R. §433",
+      "scope": "Lenders inherit liability for dealer misrepresentation.",
+      "relevance_to_ccri": [
+        "Illegal dealer gatekeeping = lender liability.",
+        "False 'license required by law' claims violate federal rules."
+      ]
+    },
+    {
+      "title": "FTC UDAP (Unfair or Deceptive Acts or Practices)",
+      "citation": "15 U.S.C. §45",
+      "scope": "Prohibits unfair/deceptive practices in commerce.",
+      "relevance_to_ccri": [
+        "Inflated fees and fake requirements violate UDAP.",
+        "DMV-based coercion is an unfair practice."
+      ]
+    },
+    {
+      "title": "Fair Debt Collection Practices Act (FDCPA)",
+      "citation": "15 U.S.C. §1692",
+      "scope": "Regulates debt collection and repossession.",
+      "relevance_to_ccri": [
+        "Wrongful repossession based on unlawful DMV data is illegal.",
+        "Collection cannot rely on unconstitutional state actions."
+      ]
+    },
+    {
+      "title": "Servicemembers Civil Relief Act (SCRA)",
+      "citation": "50 U.S.C. §3901 et seq.",
+      "scope": "Protects active duty service members in credit and repossession.",
+      "relevance_to_ccri": [
+        "DMV-based denials may violate SCRA protections.",
+        "Repossession requires additional federal safeguards."
+      ]
+    },
+    {
+      "title": "DOT/FMCSA Statutes",
+      "citation": "49 U.S.C. §31100 et seq.",
+      "scope": "Regulates commercial motor vehicles, not general citizens.",
+      "relevance_to_ccri": [
+        "DMV/DOT enforcement cannot be used on noncommercial applicants.",
+        "CCRI must detect unlawful blending of CMV and civilian populations."
+      ]
+    },
+    {
+      "title": "Federal Preemption & Supremacy",
+      "citation": "U.S. Constitution, Art. VI",
+      "scope": "Federal law overrides state laws and administrative practices.",
+      "relevance_to_ccri": [
+        "State-created licensing barriers cannot supersede federal credit law.",
+        "DMV-based credit rules violate supremacy when contradictory."
+      ]
+    }
+  ]
+}
