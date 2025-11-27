@@ -1,0 +1,73 @@
+{
+  "version": "1.0",
+  "module": "CCRI",
+  "scenarios": [
+    {
+      "id": "example_auto_lender_midwest_01",
+      "jurisdiction": "Iowa",
+      "institution_type": "auto_finance",
+      "institution_name": "Example Regional Auto Finance Co.",
+      "loan_types": ["auto_purchase", "auto_refinance"],
+
+      "uses_ssn_for": [
+        "identity_match_credit_bureau",
+        "income_verification_tax_docs"
+      ],
+
+      "data_sources_used": {
+        "credit_bureau": true,
+        "paystubs_or_w2": true,
+        "bank_statements": true,
+        "dmv_records": true,
+        "dot_or_fmcsa_records": false,
+        "third_party_background_vendors": true
+      },
+
+      "dmv_usage_details": {
+        "pulled_for_identity_only": false,
+        "used_in_underwriting_decisions": true,
+        "used_for_pricing_or_interest_rate": true,
+        "fields_used": [
+          "license_status",
+          "suspension_flags",
+          "traffic_violations",
+          "prior_dui_notations"
+        ]
+      },
+
+      "dot_or_fmcsa_usage_details": {
+        "is_dot_regulated_population": false,
+        "pulls_cdl_or_safety_record": false,
+        "notes": "Institution is not restricted to CDL holders but uses DMV violations that originate from FMCSA-aligned enforcement practices."
+      },
+
+      "license_requirements": {
+        "requires_valid_license_to_apply": true,
+        "requires_valid_license_to_fund_loan": true,
+        "requires_valid_license_to_test_drive": true,
+        "exceptions_available": false
+      },
+
+      "population_impact": {
+        "applications_per_year": 15000,
+        "denial_rate_overall": 0.42,
+        "denial_rate_for_suspended_or_no_license": 0.78,
+        "estimated_noncommercial_applicants_affected": 5000
+      },
+
+      "denial_reasons_top": [
+        "no_valid_license",
+        "suspended_or_revoked_license",
+        "recent_dmv_violations",
+        "insufficient_credit_history",
+        "high_dti"
+      ],
+
+      "appeal_process": {
+        "has_appeal_mechanism": false,
+        "human_review_available": false,
+        "notes": "Denials are system-generated and final. No documented procedure for contesting DMV-based eligibility rules."
+      }
+    }
+  ]
+}
