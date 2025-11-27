@@ -1,332 +1,134 @@
-# 🦋 The American Butterfly Effect (A.B.E.)
-**Constitutional & Economic Restoration Engine — Public, Auditable, Non-Commercial**
+# 🦋 Welcome to The American Butterfly Effect (A.B.E.)
+**A constitutional and economic restoration engine — free, public, auditable, and impossible to monopolize.**
 
-A.B.E. is a full-stack system built to do one thing with absolute clarity:  
-**show what happens — economically, legally, and structurally — when a government follows the Constitution, and what it costs when it doesn’t.**
+If you’re here, it’s probably because something in the system feels off —  
+whether it’s unlawful detention, misapplied statutes, impossible fines, civil-rights bleed, funding games, or watching your community lose money and opportunity for no good reason.
 
-This project turns constitutional fidelity into measurable prosperity using a modular set of public, client-side tools:
+A.B.E. exists to show the truth in numbers:
+**what overreach costs, what fidelity restores, and how communities rise when the Constitution is actually followed.**
 
-- **CAE** — Constitutional Alignment Engine  
-- **CDI** — Constitutional Divergence Index  
-- **CIRI** — Constitutional Integrity ROI Engine  
-- **CIBS** — Reinvestment/budget allocator  
-- **CII** — Community investment portfolio builder  
-- **Macro Model** — Nation-scale projections  
-- **Integration Layer** — Receipts, verification, and hashing  
-- **System Map** — Chain-of-custody for the entire engine
-
-Everything is **browser-only**, **open**, and **non-commercial**.  
-No servers. No data harvesting. No surveillance. No gatekeeping.
+Everything runs **locally in your browser**.  
+No tracking. No data harvesting. No server.  
+Your uploads never leave your device.
 
 ---
 
-# ✨ What Problem This Solves  
-America loses billions each year from one root failure:  
-**misalignment between government actions and constitutional limits.**
+# 🌐 What A.B.E. Actually *Is*
+A.B.E. is a modular, public-good engine that turns constitutional alignment into economic clarity.
 
-Most people feel the harm (unlawful detention, fees, overreach, civil-rights bleed-out).  
-A.B.E. is the first open framework that:
+It’s made of:
 
-- exposes the systemic error,
-- attaches a measurable dollar value to it,
-- shows the repair value if fidelity is restored.
+- **CAE** — Constitutional Alignment Engine (legal scope & authority)
+- **CDI** — Divergence Index (0–1 signal of misalignment)
+- **CIRI** — Constitutional Integrity ROI Engine (recovery dollars from correction)
+- **CIBS** — Integrity Baseline Schema (how recovery becomes a public budget)
+- **CII** — Community Investment Interface (projects your community can actually buy)
+- **CFF** — Constitutional Funding Forensics (on-mission vs off-mission federal spend)
+- **AFFE** — American Funding & Fidelity Explorer (deep dive into funding patterns)
+- **CCRI** — Consumer Credit Risk Integrity (how credit systems use lawful vs unlawful data)
+- **Macro** — Macroeconomic Cascade (nation-scale projections)
+- **Integration** — Audit receipts & SHA-256 hashing
+- **System Map** — Chain-of-custody of the entire engine
 
-This is constitutional economics — not theory, not vibes — **math with receipts**.
-
----
-
-# 🔥 Constitutional Purpose  
-The Constitution isn’t an abstract philosophy. It’s the operating system of the country.  
-When agencies or states wander off-script — especially by applying commercial codes to private citizens — **the divergence becomes measurable harm.**
-
-A.B.E. quantifies that harm and shows the recovery unlocked when government returns to its lawful boundaries.
-
-This is not anti-government.  
-This is *pro-Constitution, pro-people, pro-integrity* governance.
+This is not theory.  
+This is receipts.
 
 ---
 
-# 📂 Project Structure  
-Each module folder includes its own README explaining:
+# 🔥 Why This Matters
+When the government acts outside constitutional limits — even by a little — the fallout is not small.  
+It spreads across:
 
-- What it does  
-- How it works  
-- How to use it  
-- Privacy behavior  
-- Inputs/outputs  
-- How it fits into A.B.E.’s chain  
-- Constitutional purpose  
+- detention  
+- fees & fines  
+- employment  
+- health  
+- housing  
+- credit & vehicles  
+- local spending  
+- courts  
+- civil rights
 
-Modules live in:
-2. **CDI — Constitutional Divergence Index**  
-   Measures where practice diverges from that scope: overreach, misuse, ultra vires behavior.
+A.B.E. shows the **cost of divergence** and the **value of fixing it**.
 
-3. **CIRI — Constitutional Integrity ROI Engine**  
-   Converts those divergences into **money**:
-   - wrongful cases avoided  
-   - jail days avoided  
-   - unconstitutional fees canceled  
-   - employment & income restored  
-   - lawsuits and payouts avoided  
-   - transition costs accounted for
+That gives communities, attorneys, policymakers, oversight teams, lenders, and citizens something they’ve never had before:
 
-4. **CIBS — Constitutional Investment & Budget System**  
-   Takes the recovery pool and maps it into **public budgets**: housing, health, food, transit, education, etc.
-
-5. **CII — Community Investment Interface**  
-   Turns those budgets into **concrete portfolios**:
-   - specific projects  
-   - costs  
-   - people served  
-   - jobs created
-
-6. **Integration Layer**  
-   Publishes **public-facing KPIs**, integrity checks, and an **audit certificate** so anyone can verify that:
-   - the numbers came from the published files  
-   - nothing was silently changed  
-   - the whole stack is internally consistent
-
-7. **Macro Model**  
-   Scales a *single restored community* to 100, 1,000, or 10,000 communities, using conservative multipliers, to show national-scale impact.
-
-Think of it like an **MRI + ledger** for constitutional fidelity:
-- It shows where the system is **misaligned**.
-- It prices the **harm and the recovery**.
-- It shows how to **reinvest the recovery** into real people and communities.
+> **A measurable, court-ready, data-grounded way to prove what constitutional overreach really costs — and what fidelity returns.**
 
 ---
 
-## 2. Why CC BY-NC 4.0 (and why it matters)
+# 🧠 How to Use A.B.E. (5-Minute Guide)
 
-This project is licensed under:
+## 1. **If you’re dealing with detention, tickets, or court abuse → start with CIRI**
 
-> **Creative Commons Attribution–NonCommercial 4.0 International (CC BY-NC 4.0)**
+Go here:  
+`/ciri/index.html`
 
-That’s not an aesthetic choice; it’s a **guardrail**:
+On the page:
 
-- A.B.E. is designed to expose **massive, recurring constitutional and economic misalignment**.
-- If this engine were purely proprietary and closed, a single actor could:
-  - quietly use it,
-  - corner the informational advantage,
-  - and treat constitutional restoration as a **private arbitrage strategy**.
+1. Download `inputs.csv` (the template).
+2. Fill it with your case or county/state data  
+   (cases avoided, jail days, fees, threatened lawsuits, household impact, etc.).
+3. Upload it back into the CIRI page.
+4. Review the live breakdown and download your **Constitutional Recovery Receipt**  
+   (plus a scenario CSV like `ABE_CIRI_SCENARIO_V2.csv`).
 
-CC BY-NC draws a hard line:
+CIRI calculates:
 
-- ✅ **Yes**:  
-  - Governments  
-  - Public-interest orgs  
-  - Researchers  
-  - Communities  
-  - Journalists  
-  **…can use, adapt, and extend A.B.E. for non-commercial purposes**, with attribution.
+- total recovery  
+- CIRI index  
+- ROI per case  
+- breakdown of direct, detention, enforcement, market, employment, litigation, transition
 
-- ❌ **No**:  
-  - You cannot wrap A.B.E. as a closed SaaS product  
-  - You cannot turn it into a monopoly engine to extract rents from the same people it’s meant to protect  
-  - You cannot sell it back to the public while hiding the logic
-
-In plain language:
-
-> A.B.E. is meant to break monopolies of information and power — not create a new one.
+All of it runs **locally in your browser**.
 
 ---
 
-## 3. Privacy & Data Model
+## 2. **If you want to see where the recovered dollars go → CIBS + CII**
 
-This repo is hosted on **GitHub Pages** (static files only).  
-There is **no backend server**, no secret API, no hidden ingestion of your files.
+- **CIBS** (`/cibs/index.html`) takes the CIRI recovery pool and allocates it into:
+  - housing
+  - clinics
+  - food & nutrition
+  - mobility & transit
+  - workforce & education
+  - justice repair
+- **CII** (`/cii/index.html`) turns those allocations into auditable project portfolios:
+  - project lists
+  - per-category totals
+  - a view you can hand to a mayor, council, or community board
 
-### How CIRI handles your data
-
-On the CIRI page:
-
-- If you use the **built-in `inputs.csv`**, you’re just running the demo scenario that’s stored in this repo.
-- If you **upload your own CSV**:
-  - The file is read **locally by your browser**.
-  - The numbers are computed **locally**.
-  - Your file is **never sent to Terra, GitHub, or any server**.
-  - You can **download a report** (CSV) you can keep or print for court.
-
-Optionally, CIRI stores a **tiny summary** (no raw file) in your browser’s `localStorage` as:
-
-```text
-ABE_CIRI_SCENARIO_V22. **CIBS** — Converts that recovery into transparent, public reinvestment (housing, education, justice, etc.).  
-3. **System Map** — Defines and monitors lawful data and fund flow; any deviation is traceable.  
-4. **Integration Layer** — Detects tampering, suppression, or retaliation across systems.  
-5. **CII (Citizen Impact Index)** — Quantifies local prosperity and social benefit post-alignment.  
-6. **Doctrines** — Anchor all metrics in constitutional fidelity and civic ethics.
-
-> The result: a **closed-loop constitutional economy** — measurable, auditable, and incorruptible.
+You’re not just seeing “big numbers.”  
+You’re seeing **what your community could actually build.**
 
 ---
 
-## 🧮 Key Formula Models
+## 3. **If you care about credit access, vehicles, and banking barriers → CCRI**
 
-| Symbol | Formula | Meaning |
-|---------|----------|----------|
-| **SIRF** | ΔI = (ΣL × Cf) / Rt | *Shouse Integrity Recovery Function* — measures total recoverable impact per constitutional fidelity factor |
-| **IRE** | Rv = (Hₐ − Hₙ) × Eₜ | *Integrity Restoration Equation* — economic restoration from harm avoided or corrected |
-| **CEQ** | η = (Eₐ / Eₘ) × 100 | *Civic Efficiency Quotient* — percentage of lawful efficiency regained in governance |
-| **SIY** | Y = (Rv × Cf) / P | *Shouse Integrity Yield* — per capita recovery efficiency |
-| **CDI** | δ = (ΣD / ΣC) × 100 | *Constitutional Divergence Index* — measures deviation from constitutional norms |
+Go here:  
+`/ccri/index.html`
 
----
+CCRI looks at **systems**, not people. It evaluates:
 
-## 🧩 Acronyms
+- which data sources a lender or dealer uses (credit bureau, DMV, DOT, background vendors)
+- whether license status is used as a gatekeeper for credit
+- how many non-commercial applicants get denied because of DMV/DOT-driven rules
+- whether there’s any appeal or human review path
 
-| Term | Meaning |
-|------|----------|
-| **ABE** | American Butterfly Effect — lawful economic reform model |
-| **CRRA** | Civil Rights Restoration Act — embedded reform driver |
-| **CIRI** | Constitutional Integrity and Recovery Index |
-| **CIBS** | Constitutional Investment and Budget System |
-| **CII** | Citizen Impact Index |
-| **SIY** | Shouse Integrity Yield |
-| **SIRF** | Shouse Integrity Recovery Function |
-| **IRE** | Integrity Restoration Equation |
-| **CEQ** | Civic Efficiency Quotient |
-| **CDI** | Constitutional Divergence Index |
-| **Suprema Lex Terrae** | “The supreme law of the land” — the U.S. Constitution as economic authority |
+You define scenarios in `ccri/inputs.json` and CCRI:
+
+- scores **data integrity**, **constitutional alignment**, **access fairness**, and **economic impact**
+- flags DMV/DOT misuse and license gating for non-commercial citizens
+- produces an integrity score and narrative you can plug back into CIRI and CFF
+
+It never scores people.  
+It scores **practices** and **policies**.
 
 ---
 
-## ⚖️ License
-This project and all related materials are shared under the  
-**Creative Commons Attribution–NonCommercial 4.0 International License (CC BY-NC 4.0).**
+## 4. **If you want to follow the money → CFF + AFFE**
 
-> _“No money requested. No publicity requested. Integrity only.”_
+- **CFF** (`/cff/index.html`) reads a funding CSV (like your MCSAP, Medicaid, TANF, ARPA, Title I, etc.) with:
 
----
-
-## 🧠 Maintainer
-**Author:** Terra Dawn Shouse  
-**Project:** The American Butterfly Effect (A.B.E.)  
-**Focus:** Constitutional, economic, and community restoration through truth and transparency.
-
-**Project URL:** [https://terra610.github.io/abe---flag/](https://terra610.github.io/abe---flag/)  
-**DOI:** [10.5281/zenodo.17586107](https://doi.org/10.5281/zenodo.17586107)
-
----
-
-## 🚀 Quick Start
-To explore locally:
-
-```bash
-# Clone the repo
-git clone https://github.com/Terra610/abe---flag.git
-cd abe---flag
-
-# Open the main site in your browser
-open index.html
-
----
-
-### Archival Record
-This release is permanently archived and citable via Zenodo:
-
-**DOI:** [10.5281/zenodo.17586107](https://doi.org/10.5281/zenodo.17586107)  
-**License:** CC BY-NC 4.0  
-**Archived at:** CERN’s Open Science Repository (Zenodo)
-
-Please cite as:
-> Shouse, T. D. (2025). *A.B.E. Core Model — SIRF + IRE + CEQ: Measuring Civic Recovery Through Constitutional Integrity* (Version 1.0.0). Zenodo. https://doi.org/10.5281/zenodo.17586107
-
----
-
-🕊️ *Integrity is not a slogan — it’s a system.*
-Together, these create a **lawful economic ecosystem** where recovery, reinvestment, and justice are tracked mathematically, not politically.
-
----
-
-## 🧱 Repository Structure
-This repository is organized into modular components that form the **American Butterfly Effect (A.B.E.)** constitutional recovery system.
-
----
-
-## 🧭 How It Works
-
-1. **CIRI** — Calculates *constitutional economic loss and recovery value* (prevented harm, overreach, or misallocation).  
-2. **CIBS** — Converts that recovery into transparent, public reinvestment (housing, education, justice, etc.).  
-3. **System Map** — Defines and monitors lawful data and fund flow; any deviation is traceable.  
-4. **Integration Layer** — Detects tampering, suppression, or retaliation across systems.  
-5. **CII (Citizen Impact Index)** — Quantifies local prosperity and social benefit post-alignment.  
-6. **Doctrines** — Anchor all metrics in constitutional fidelity and civic ethics.
-
-> The result: a **closed-loop constitutional economy** — measurable, auditable, and incorruptible.
-
----
-
-## 🧮 Key Formula Models
-
-| Symbol | Formula | Meaning |
-|---------|----------|----------|
-| **SIRF** | ΔI = (ΣL × Cf) / Rt | *Shouse Integrity Recovery Function* — measures total recoverable impact per constitutional fidelity factor |
-| **IRE** | Rv = (Hₐ − Hₙ) × Eₜ | *Integrity Restoration Equation* — economic restoration from harm avoided or corrected |
-| **CEQ** | η = (Eₐ / Eₘ) × 100 | *Civic Efficiency Quotient* — percentage of lawful efficiency regained in governance |
-| **SIY** | Y = (Rv × Cf) / P | *Shouse Integrity Yield* — per capita recovery efficiency |
-| **CDI** | δ = (ΣD / ΣC) × 100 | *Constitutional Divergence Index* — measures deviation from constitutional norms |
-
----
-
-## 🧩 Acronyms
-
-| Term | Meaning |
-|------|----------|
-| **ABE** | American Butterfly Effect — lawful economic reform model |
-| **CRRA** | Civil Rights Restoration Act — embedded reform driver |
-| **CIRI** | Constitutional Integrity and Recovery Index |
-| **CIBS** | Constitutional Investment and Budget System |
-| **CII** | Citizen Impact Index |
-| **SIY** | Shouse Integrity Yield |
-| **SIRF** | Shouse Integrity Recovery Function |
-| **IRE** | Integrity Restoration Equation |
-| **CEQ** | Civic Efficiency Quotient |
-| **CDI** | Constitutional Divergence Index |
-| **Suprema Lex Terrae** | “The supreme law of the land” — the U.S. Constitution as economic authority |
-
----
-
-## ⚖️ License
-This project and all related materials are shared under the  
-**Creative Commons Attribution–NonCommercial 4.0 International License (CC BY-NC 4.0).**
-
-> _“No money requested. No publicity requested. Integrity only.”_
-
----
-
-## 🧠 Maintainer
-**Author:** Terra Dawn Shouse  
-**Project:** The American Butterfly Effect (A.B.E.)  
-**Focus:** Constitutional, economic, and community restoration through truth and transparency.
-
-**Project URL:** [https://terra610.github.io/abe---flag/](https://terra610.github.io/abe---flag/)  
-**DOI:** [10.5281/zenodo.17586107](https://doi.org/10.5281/zenodo.17586107)
-
----
-
-## 🚀 Quick Start
-To explore locally:
-
-```bash
-# Clone the repo
-git clone https://github.com/Terra610/abe---flag.git
-cd abe---flag
-
-# Open the main site in your browser
-open index.html
-
----
-
-### Archival Record
-This release is permanently archived and citable via Zenodo:
-
-**DOI:** [10.5281/zenodo.17586107](https://doi.org/10.5281/zenodo.17586107)  
-**License:** CC BY-NC 4.0  
-**Archived at:** CERN’s Open Science Repository (Zenodo)
-
-Please cite as:
-> Shouse, T. D. (2025). *A.B.E. Core Model — SIRF + IRE + CEQ: Measuring Civic Recovery Through Constitutional Integrity* (Version 1.0.0). Zenodo. https://doi.org/10.5281/zenodo.17586107
-
----
-
-🕊️ *Integrity is not a slogan — it’s a system.*
+  ```text
+  ON_MISSION / OFF_MISSION / UNCLEAR
