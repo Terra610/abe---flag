@@ -1,40 +1,186 @@
 {
   "version": "1.0",
   "module": "CCRI",
-  "name": "Consumer Credit Risk Integrity",
-  "description": "Evaluates how consumer credit and auto lending systems use DMV / DOT data and license status, and how that impacts lawful access to credit and mobility.",
+  "updated": "2025-11-27T00:00:00Z",
+
+  "authority": {
+    "name": "A.B.E. — Consumer Credit Risk Integrity (CCRI)",
+    "license": "CC BY-NC 4.0"
+  },
+
   "inputs": {
     "file": "ccri/inputs.json",
     "schema": "ccri/schema.json",
     "entity": "scenario",
-    "id_field": "id"
+    "id_field": "id",
+    "description": "Each scenario describes one institution or policy set and how DMV / DOT / license data is used in credit decisions."
   },
+
   "metrics": [
     {
       "key": "dmv_gate_rate",
       "label": "DMV-gated applicants (share)",
-      "description": "Share of applicants whose approval depends on DMV / license status rules.",
-      "formula": "denial_rate_for_suspended_or_no_license || 0",
-      "source_fields": [
-        "population_impact.denial_rate_for_suspended_or_no_license"
-      ]
+      "description": "Share of applicants whose approval depends on DMV / license-status rules, usually drawn from population_impact.denial_rate_for_suspended_or_no_license."
     },
     {
       "key": "noncommercial_affected",
       "label": "Noncommercial applicants affected",
-      "description": "Estimated count of noncommercial applicants impacted by DMV-based gates.",
-      "formula": "estimated_noncommercial_applicants_affected || 0",
-      "source_fields": [
-        "population_impact.estimated_noncommercial_applicants_affected"
-      ]
+      "description": "Estimated count of noncommercial applicants impacted by DMV-based gates, from population_impact.estimated_noncommercial_applicants_affected."
     },
     {
       "key": "dot_misuse_flag",
       "label": "DOT / FMCSA misuse flag",
-      "description": "Flags scenarios where DOT / FMCSA-style enforcement data touches non–DOT-regulated populations.",
-      "formula": "(!dot_or_fmcsa_usage_details.is_dot_regulated_population && (data_sources_used.dmv_records || data_sources_used.dot_or_fmcsa_records)) ? 1 : 0",
-      "source_fields": [
-        "dot_or_fmcsa_usage_details.is_dot_regulated_population",
+      "description": "Indicator for scenarios where DOT / FMCSA-style enforcement or MCSAP signals are touching non–DOT-regulated populations."
+    },
+    {
+      "key": "appeal_barrier_flag",
+      "label": "No appeal / human review flag",
+      "description": "Indicator for systems where algorithmic denials based on DMV / license data cannot be meaningfully challenged."
+    },
+    {
+      "key": "ccri_system_integrity_index",
+      "label": "CCRI System Integrity Index",
+      "description": "0–1 style index summarizing how independent the credit system is from DMV / DOT overreach and whether appeal safeguards exist."
+    }
+  ],
+
+  "dimensions": {
+    "data_integrity": {
+      "weight": 0.30,
+      "description": "How strictly the institution limits itself to lawful, relevant, and minimally intrusive data sources."
+    },
+    "constitutional_alignment": {
+      "weight": 0.35,
+      "description": "Whether underwriting rules respect federal supremacy, the right to travel, and limits on state police power."
+    },
+    "access_fairness": {
+      "weight": 0.20,
+      "description": "Whether similarly situated applicants are treated alike, without unlawful DMV/DOT-based discrimination."
+    },
+    "economic_impact": {
+      "weight": 0.15,
+      "description": "Estimated effect on employment, earnings, and community-level GDP when barriers are in place."
+    }
+  },
+
+  "institution_types": [
+    {
+      "key": "bank",
+      "name": "Bank",
+      "notes": "Traditional depository institution offering auto and personal loans."
+    },
+    {
+      "key": "credit_union",
+      "name": "Credit Union",
+      "notes": "Member-owned lender, often with community or employer fields of membership."
+    },
+    {
+      "key": "auto_finance",
+      "name": "Auto Finance Company",
+      "notes": "Specialized auto lender including subprime and near-prime lenders."
+    },
+    {
+      "key": "dealership",
+      "name": "Dealership / Buy-Here-Pay-Here",
+      "notes": "Dealer-originated financing, including on-lot payment models."
+    },
+    {
+      "key": "captive_finance",
+      "name": "Captive Auto Finance",
+      "notes": "Manufacturer-owned finance arm (OEM-branded finance)."
+    },
+    {
+      "key": "fintech",
+      "name": "Fintech / Online Lender",
+      "notes": "App- or web-based lender using algorithmic or alternative credit models."
+    },
+    {
+      "key": "other",
+      "name": "Other / Mixed",
+      "notes": "Catch-all type for blended or atypical institutions."
+    }
+  ],
+
+  "dmv_prohibited_uses": [
+    {
+      "key": "underwriting_for_noncommercial",
+      "description": "Using DMV records to deny or price credit for non–DOT-regulated citizens.",
+      "severity": 1.0
+    },
+    {
+      "key": "license_gatekeeping_for_loans",
+      "description": "Requiring a valid state license as a condition to apply or fund a loan, where the purpose is non-commercial travel.",
+      "severity": 0.9
+    },
+    {
+      "key": "traffic_violation_scoring",
+      "description": "Transforming traffic citations into risk scores for non-commercial credit eligibility.",
+      "severity": 0.8
+    },
+    {
+      "key": "implicit_mcsap_dependency",
+      "description": "Importing enforcement outcomes from MCSAP/FMCSR regimes into consumer credit models.",
+      "severity": 0.9
+    }
+  ],
+
+  "dot_prohibited_contexts": [
+    {
+      "key": "non_dot_population",
+      "description": "Applying rules intended for DOT-regulated safety-sensitive positions to general consumers.",
+      "severity": 1.0
+    },
+    {
+      "key": "cdl_as_general_risk_flag",
+      "description": "Treating CDL or FMCSA safety records as general-purpose risk flags outside of commercial driving work.",
+      "severity": 0.85
+    }
+  ],
+
+  "scoring_rules": {
+    "base_score": 100,
+    "penalties": {
+      "uses_dmv_in_underwriting": 25,
+      "uses_dmv_for_pricing": 20,
+      "requires_valid_license_to_apply": 15,
+      "requires_valid_license_to_fund": 15,
+      "requires_valid_license_to_test_drive": 10,
+      "denial_rate_high_for_no_license": 20,
+      "no_appeal_process": 10,
+      "uses_dot_or_fmcsa_records_for_consumers": 30
+    },
+    "thresholds": {
+      "high_risk": 40,
+      "moderate_risk": 70,
+      "low_risk": 85
+    }
+  },
+
+  "narrative_templates": {
+    "high_risk": "This institution shows severe dependency on unlawful DMV/DOT data for non-commercial credit decisions. CCRI classifies it as HIGH RISK for constitutional and consumer harm.",
+    "moderate_risk": "This institution exhibits mixed practices. Some data uses and gating rules diverge from constitutional and federal boundaries. CCRI classifies it as MODERATE RISK and a candidate for targeted policy corrections.",
+    "low_risk": "This institution relies primarily on lawful and relevant financial data. DMV/DOT contamination is low or absent. CCRI classifies it as LOW RISK, with remaining improvements focused on transparency and appeals."
+  },
+
+  "downstream_links": [
+    {
+      "target": "ciri",
+      "purpose": "Convert CCRI divergence and population counts into recoverable economic value (mobility, work access, household income)."
+    },
+    {
+      "target": "cff",
+      "purpose": "Quantify financial and legal exposure where unlawful DMV / DOT signals are embedded in underwriting models."
+    },
+    {
+      "target": "cibs",
+      "purpose": "Translate CCRI corrections into budget categories (mobility, credit access, workforce) for reinvestment."
+    },
+    {
+      "target": "affe",
+      "purpose": "Model long-term stability, default reductions, and community recovery once credit rules are realigned."
+    }
+  ]
+}        "dot_or_fmcsa_usage_details.is_dot_regulated_population",
         "data_sources_used.dmv_records",
         "data_sources_used.dot_or_fmcsa_records"
       ]
