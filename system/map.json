@@ -1,5 +1,5 @@
 {
-  "version": "1.2",
+  "version": "1.3",
   "updated": "2025-11-27T00:00:00Z",
   "project": "A.B.E. — American Butterfly Effect",
   "author": {
@@ -75,6 +75,35 @@
       "ui": "cii/index.html"
     },
 
+    "cff": {
+      "name": "CFF",
+      "long_name": "Constitutional Funding Forensics",
+      "purpose": "Reads structured funding / grant CSVs and classifies each line item as ON_MISSION, OFF_MISSION, or UNCLEAR against its statutory authority.",
+      "inputs_file": "cff/inputs.csv",
+      "schema_file": "cff/schema.json",
+      "status": "alpha",
+      "ui": "cff/index.html"
+    },
+
+    "affe": {
+      "name": "AFFE",
+      "long_name": "American Funding & Fidelity Explorer",
+      "purpose": "Explores how federal funding streams, statutes, and state practices connect, highlighting where off-mission spending drives constitutional and economic risk.",
+      "status": "preview",
+      "ui": "affe/index.html"
+    },
+
+    "ccri": {
+      "name": "CCRI",
+      "long_name": "Consumer Credit Risk Integrity",
+      "purpose": "Evaluates how lenders, dealers, and underwriters use lawful vs unlawful data (DMV/DOT vs financials) in credit and auto-lending decisions, and quantifies resulting harm.",
+      "inputs_file": "ccri/inputs.json",
+      "schema_file": "ccri/schema.json",
+      "model_file": "ccri/model.json",
+      "status": "draft",
+      "ui": "ccri/index.html"
+    },
+
     "integration": {
       "name": "Integration Layer",
       "purpose": "Verifies receipts, matches recipients, detects retaliation/suppression, and posts public attestations.",
@@ -107,36 +136,6 @@
       ],
       "status": "public",
       "ui": "macro/index.html"
-    },
-
-    "cff": {
-      "name": "CFF",
-      "long_name": "Constitutional Funding Forensics",
-      "purpose": "Compares federal program authorities to actual state/local spend and classifies dollars as ON_MISSION, OFF_MISSION, or UNCLEAR.",
-      "schema_file": "cff/schema.json",
-      "inputs_file": "cff/inputs.csv",
-      "status": "mvp",
-      "ui": "cff/index.html"
-    },
-
-    "affe": {
-      "name": "AFFE",
-      "long_name": "Automated Forensic File Extractor",
-      "purpose": "Local-only helper that parses user PDFs/CSVs into clean A.B.E. scenario files without sending data to any server.",
-      "schema_file": "affe/schema.json",
-      "status": "alpha",
-      "ui": "affe/index.html"
-    },
-
-    "ccri": {
-      "name": "CCRI",
-      "long_name": "Consumer Credit Risk Integrity",
-      "purpose": "Evaluates how lending and underwriting systems depend on DMV/DOT data for noncommercial citizens and scores the constitutional risk.",
-      "model_file": "ccri/model.json",
-      "schema_file": "ccri/schema.json",
-      "inputs_file": "ccri/inputs.json",
-      "status": "alpha",
-      "ui": "ccri/index.html"
     }
   },
 
@@ -161,6 +160,15 @@
       ]
     },
     {
+      "from": "CDI divergence + local inputs",
+      "to": "CIRI total_recovery (Recovery Pool)",
+      "control": "documented_formulas_SIRF_IRE_CEQ",
+      "evidence": [
+        "/abe---flag/macro/model.html",
+        "DOI:10.5281/zenodo.17586107"
+      ]
+    },
+    {
       "from": "ciri/inputs.csv",
       "to": "ciri/index.html KPIs",
       "control": "reproducible_browser_math_and_CLI_parity",
@@ -168,15 +176,6 @@
         "/abe---flag/ciri/index.html",
         "/abe---flag/ciri/calc.md",
         "/abe---flag/ciri/inputs.csv"
-      ]
-    },
-    {
-      "from": "CDI divergence + local inputs",
-      "to": "CIRI total_recovery (Recovery Pool)",
-      "control": "documented_formulas_SIRF_IRE_CEQ",
-      "evidence": [
-        "/abe---flag/macro/model.html",
-        "DOI:10.5281/zenodo.17586107"
       ]
     },
     {
@@ -200,6 +199,44 @@
       ]
     },
     {
+      "from": "cff/inputs.csv",
+      "to": "cff/index.html KPIs",
+      "control": "funding_classification_on_off_mission_unclear",
+      "evidence": [
+        "/abe---flag/cff/index.html",
+        "/abe---flag/cff/inputs.csv",
+        "/abe---flag/cff/schema.json"
+      ]
+    },
+    {
+      "from": "CFF OFF_MISSION_total",
+      "to": "CIRI local_inputs (funding_misuse_channel)",
+      "control": "mapped_off_mission_spend_to_recovery_channels",
+      "evidence": [
+        "/abe---flag/ciri/index.html",
+        "/abe---flag/ciri/calc.md"
+      ]
+    },
+    {
+      "from": "ccri/inputs.json",
+      "to": "ccri/index.html scenarios",
+      "control": "schema_validated_inputs_json",
+      "evidence": [
+        "/abe---flag/ccri/index.html",
+        "/abe---flag/ccri/schema.json",
+        "/abe---flag/ccri/model.json"
+      ]
+    },
+    {
+      "from": "CCRI systemic_scores",
+      "to": "CIRI local_inputs (credit_barrier_harm)",
+      "control": "documented_mapping_of_denials_and_barriers_to_economic_harm",
+      "evidence": [
+        "/abe---flag/ciri/index.html",
+        "/abe---flag/ciri/calc.md"
+      ]
+    },
+    {
       "from": "cii portfolio & disbursements",
       "to": "Integration checks",
       "control": "receipts_signed_hashes_retaliation_monitoring",
@@ -208,7 +245,7 @@
       ]
     },
     {
-      "from": "Integration checks",
+      "from": "CFF/AFFE patterns + Integration checks",
       "to": "Public dashboard / publication",
       "control": "public_audit_attestation",
       "evidence": [
@@ -216,94 +253,24 @@
         "CC BY-NC 4.0",
         "SHA256: to_be_added_for_released_artifacts"
       ]
-    },
-
-    {
-      "from": "cff/inputs.csv",
-      "to": "CFF ON_MISSION / OFF_MISSION / UNCLEAR totals",
-      "control": "categorization_ON_MISSION_OFF_MISSION_UNCLEAR",
-      "evidence": [
-        "/abe---flag/cff/index.html",
-        "/abe---flag/cff/inputs.csv",
-        "/abe---flag/cff/schema.json"
-      ]
-    },
-    {
-      "from": "CFF OFF_MISSION totals",
-      "to": "ciri/inputs.csv (funding_misalignment block)",
-      "control": "CFF_OFF_MISSION_mapped_into_CIRI_decay_terms",
-      "evidence": [
-        "/abe---flag/ciri/index.html",
-        "/abe---flag/ciri/inputs.csv",
-        "/abe---flag/ciri/calc.md"
-      ]
-    },
-
-    {
-      "from": "ccri/inputs.json",
-      "to": "CCRI metrics & scores",
-      "control": "schema_validated_scenarios_applied_to_CCRI_model",
-      "evidence": [
-        "/abe---flag/ccri/index.html",
-        "/abe---flag/ccri/inputs.json",
-        "/abe---flag/ccri/schema.json",
-        "/abe---flag/ccri/model.json"
-      ]
-    },
-    {
-      "from": "CCRI metrics (dmv_gate_rate, noncommercial_affected, ccri_system_integrity_index)",
-      "to": "ciri/inputs.csv (mobility_access block)",
-      "control": "CCRI_signals_translated_to_CIRI_population_and_loss_terms",
-      "evidence": [
-        "/abe---flag/ciri/index.html",
-        "/abe---flag/ciri/inputs.csv",
-        "/abe---flag/ciri/calc.md"
-      ]
-    },
-    {
-      "from": "CCRI + CFF findings",
-      "to": "CIBS + CII mobility & credit access categories",
-      "control": "joint_allocation_rules_for_mobility_credit_repair",
-      "evidence": [
-        "/abe---flag/cibs/index.html",
-        "/abe---flag/cii/index.html"
-      ]
-    },
-
-    {
-      "from": "User PDFs / CSVs / exports",
-      "to": "AFFE parsed scenario files (CIRI/CFF/CCRI-ready CSV/JSON)",
-      "control": "local_only_parsing_no_upload_SHA256_anchored",
-      "evidence": [
-        "/abe---flag/affe/index.html"
-      ]
-    },
-    {
-      "from": "AFFE parsed scenario files",
-      "to": "ciri/inputs.csv, cff/inputs.csv, ccri/inputs.json (user-local copies)",
-      "control": "user_confirms_mapped_fields_before_running_engines",
-      "evidence": [
-        "/abe---flag/affe/index.html",
-        "/abe---flag/ciri/index.html",
-        "/abe---flag/cff/index.html",
-        "/abe---flag/ccri/index.html"
-      ]
     }
   ],
 
   "links": {
     "site_root": "/abe---flag/",
+    "start_here": "/abe---flag/start/index.html",
     "doctrines": "/abe---flag/doctrine/index.html",
     "ciri": "/abe---flag/ciri/index.html",
     "cibs": "/abe---flag/cibs/index.html",
     "cii": "/abe---flag/cii/index.html",
-    "cdi": "/abe---flag/cdi/index.html",
-    "cae": "/abe---flag/cae/index.html",
     "cff": "/abe---flag/cff/index.html",
     "affe": "/abe---flag/affe/index.html",
     "ccri": "/abe---flag/ccri/index.html",
+    "cdi": "/abe---flag/cdi/index.html",
+    "cae": "/abe---flag/cae/index.html",
     "integration": "/abe---flag/integration/index.html",
     "macro": "/abe---flag/macro/index.html",
+    "system": "/abe---flag/system/index.html",
     "doi": "https://doi.org/10.5281/zenodo.17586107",
     "license": "https://creativecommons.org/licenses/by-nc/4.0/"
   }
