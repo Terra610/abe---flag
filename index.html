@@ -19,7 +19,7 @@ header{padding:28px 20px;background:linear-gradient(90deg,#11151c,#1b1e25);borde
 h1{margin:0 0 6px}
 .sub{color:var(--muted)}
 .badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
-.badges a,.chip{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border:1px solid var(--line);border-radius:999px;color:var(--muted);background:rgba(0,0,0,.1)}
+.badges a,.chip{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border:1px solid var(--line);border-radius:999px;color:var(--muted)}
 .grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
 .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px}
 .tile{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:14px}
@@ -50,10 +50,10 @@ hr{border:none;border-top:1px solid var(--line);margin:18px 0}
         <img src="https://zenodo.org/badge/DOI/10.5281/zenodo.17586107.svg" alt="DOI badge" height="18"/>
       </a>
       <span class="chip">License: CC BY-NC 4.0</span>
+      <a class="chip" href="start/index.html">Start Here</a>
       <a class="chip" href="doctrine/index.html">Doctrine Library</a>
       <a class="chip" href="system/index.html">System Map</a>
       <a class="chip" href="macro/index.html">Macro Model</a>
-      <a class="chip" href="START_HERE.md">Start Here (README)</a>
     </div>
   </div>
 </header>
@@ -64,17 +64,20 @@ hr{border:none;border-top:1px solid var(--line);margin:18px 0}
     <h2 style="margin:0 0 8px;color:var(--accent)">What A.B.E. Does</h2>
     <p style="margin:.25rem 0 0">
       A.B.E. converts <em>constitutional alignment</em> into <em>measurable, auditable economics</em>:
-      <strong>CAE</strong> (law & grants alignment) → <strong>CDI</strong> (divergence signal) →
-      <strong>CFF</strong> (funding forensics) → <strong>CIRI</strong> (recovery value) →
-      <strong>CIBS</strong> (budget) → <strong>CII</strong> (projects) →
-      <strong>Integration</strong> (receipts & attestations) →
-      <strong>AFFE</strong> (federal funding equivalence).
+      <strong>CAE</strong> (law parsing) →
+      <strong>CDI</strong> (divergence signal) →
+      <strong>CIRI</strong> (recovery value) →
+      <strong>CIBS</strong> (budget) →
+      <strong>CII</strong> (projects) →
+      <strong>CFF/AFFE</strong> (funding forensics) →
+      <strong>CCRI</strong> (credit integrity) →
+      <strong>Integration</strong> (receipts & attestations).
     </p>
   </div>
 
   <!-- Live KPIs -->
   <div class="card">
-    <h3 style="margin:0 0 8px">Live KPIs (from repo CSVs)</h3>
+    <h3 style="margin:0 0 8px">Live KPIs</h3>
     <div class="kpi">
       <div class="tile">
         <div>Modeled Recovery (CIRI)</div>
@@ -103,7 +106,7 @@ hr{border:none;border-top:1px solid var(--line);margin:18px 0}
   <div class="grid">
     <div class="card">
       <h3>CAE — Constitutional Alignment Engine</h3>
-      <p>Parses Constitution, statutes, regs & grant conditions; anchors what “on-mission” actually means.</p>
+      <p>Parses the Constitution & positive law; flags misalignment with citations.</p>
       <table class="table">
         <tbody>
           <tr><th>UI</th><td><a href="cae/index.html">cae/index.html</a></td></tr>
@@ -116,25 +119,13 @@ hr{border:none;border-top:1px solid var(--line);margin:18px 0}
 
     <div class="card">
       <h3>CDI — Constitutional Divergence Index</h3>
-      <p>Normalizes misalignment into a 0–1 signal by domain/jurisdiction.</p>
+      <p>Normalizes CAE findings into a 0–1 signal by domain/jurisdiction.</p>
       <table class="table">
         <tbody>
           <tr><th>UI</th><td><a href="cdi/index.html">cdi/index.html</a></td></tr>
           <tr><th>Schema</th><td id="s-cdi" class="status warn">Checking…</td></tr>
           <tr><th>Model</th><td><a href="cdi/model.json">model.json</a></td></tr>
           <tr><th>Data</th><td><a href="cdi/divergence.csv">divergence.csv</a></td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="card">
-      <h3>CFF — Constitutional Funding Forensics</h3>
-      <p>Checks whether federal dollars are used on-mission or diverted into unconstitutional overreach.</p>
-      <table class="table">
-        <tbody>
-          <tr><th>UI</th><td><a href="cff/index.html">cff/index.html</a></td></tr>
-          <tr><th>Schema</th><td id="s-cff" class="status warn">Checking…</td></tr>
-          <tr><th>Inputs</th><td><a href="cff/inputs.csv">inputs.csv</a></td></tr>
         </tbody>
       </table>
     </div>
@@ -153,7 +144,7 @@ hr{border:none;border-top:1px solid var(--line);margin:18px 0}
     </div>
 
     <div class="card">
-      <h3>CIBS — Constitutional Investment & Budget System</h3>
+      <h3>CIBS — Integrity Baseline Schema</h3>
       <p>Allocates the Recovery Pool into public reinvestment buckets.</p>
       <table class="table">
         <tbody>
@@ -179,24 +170,48 @@ hr{border:none;border-top:1px solid var(--line);margin:18px 0}
     </div>
 
     <div class="card">
-      <h3>Integration Layer</h3>
-      <p>Receipts, recipient match, retaliation-zero, and public attestations.</p>
+      <h3>CFF — Constitutional Funding Forensics</h3>
+      <p>Classifies funding lines as ON_MISSION, OFF_MISSION, or UNCLEAR against statutory authority.</p>
       <table class="table">
         <tbody>
-          <tr><th>UI</th><td><a href="integration/index.html">integration/index.html</a></td></tr>
-          <tr><th>Schema</th><td id="s-integration" class="status warn">Checking…</td></tr>
+          <tr><th>UI</th><td><a href="cff/index.html">cff/index.html</a></td></tr>
+          <tr><th>Schema</th><td id="s-cff" class="status warn">Checking…</td></tr>
+          <tr><th>Inputs</th><td><a href="cff/inputs.csv">inputs.csv</a></td></tr>
         </tbody>
       </table>
     </div>
 
     <div class="card">
-      <h3>AFFE — Federal Funding Equivalence Engine</h3>
-      <p>Maps “what your jurisdiction actually got” vs “what equivalent constitutional use would deliver.”</p>
+      <h3>AFFE — Funding & Fidelity Explorer</h3>
+      <p>Explores funding patterns and how off-mission spend connects back to harm and recovery.</p>
       <table class="table">
         <tbody>
           <tr><th>UI</th><td><a href="affe/index.html">affe/index.html</a></td></tr>
-          <tr><th>Schema</th><td id="s-affe" class="status warn">Checking…</td></tr>
-          <tr><th>Inputs</th><td><a href="affe/inputs.csv">inputs.csv</a></td></tr>
+          <tr><th>Status</th><td><span class="status warn">Preview</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h3>CCRI — Consumer Credit Risk Integrity</h3>
+      <p>Evaluates how lenders and dealers use lawful vs unlawful data in credit and auto-lending decisions.</p>
+      <table class="table">
+        <tbody>
+          <tr><th>UI</th><td><a href="ccri/index.html">ccri/index.html</a></td></tr>
+          <tr><th>Schema</th><td id="s-ccri" class="status warn">Checking…</td></tr>
+          <tr><th>Inputs</th><td><a href="ccri/inputs.json">inputs.json</a></td></tr>
+          <tr><th>Model</th><td><a href="ccri/model.json">model.json</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h3>Integration Layer</h3>
+      <p>Receipts, recipient match, retaliation zero, and public attestations.</p>
+      <table class="table">
+        <tbody>
+          <tr><th>UI</th><td><a href="integration/index.html">integration/index.html</a></td></tr>
+          <tr><th>Schema</th><td id="s-integration" class="status warn">Checking…</td></tr>
         </tbody>
       </table>
     </div>
@@ -246,17 +261,9 @@ hr{border:none;border-top:1px solid var(--line);margin:18px 0}
 const money = n => {
   const v = Number(n);
   if (!isFinite(v)) return '—';
-  try {
-    return new Intl.NumberFormat(undefined,{
-      style:'currency',
-      currency:'USD',
-      maximumFractionDigits:0
-    }).format(v);
-  } catch {
-    return '$'+Math.round(v).toLocaleString();
-  }
+  try { return new Intl.NumberFormat(undefined,{style:'currency',currency:'USD',maximumFractionDigits:0}).format(v); }
+  catch { return '$'+Math.round(v).toLocaleString(); }
 };
-const pct = x => (x*100).toFixed(2)+'%';
 
 function setStatus(id, ok){
   const el = document.getElementById(id);
@@ -294,7 +301,7 @@ function setStatus(id, ok){
     document.getElementById('k-cibs').textContent = money(total);
   }catch(_){}
 
-  // CIRI compute (aligned with ciri/index.html v2)
+  // CIRI compute
   try{
     const r = await fetch('ciri/inputs.csv',{cache:'no-store'});
     const t = await r.text();
@@ -309,22 +316,20 @@ function setStatus(id, ok){
           pe=o.employment_probability, W=o.avg_monthly_wage, L=o.expected_lawsuits,
           A=o.avg_payout, lam=o.litigation_multiplier, T=o.transition_costs_one_time;
 
-    const direct   = c*C;
-    const detention= D*J;
-    const fees     = F;
-    const enforce  = P*E;
-    const market   = H*M*m;
-    const employ   = c*pe*W*(m/12);
-    const litig    = L*A*lam;
-
-    const total = Math.max(0, direct + detention + fees + enforce + market + employ + litig - T);
-    const K = 1_000_000_000;
+    const direct = c*C + F;
+    const detention = D*J;
+    const enforce = P*E;
+    const market = H*M*m;
+    const employ = (H*pe)*W*m;
+    const litig = L*A*lam;
+    const total = direct + detention + enforce + market + employ + litig - T;
+    const K = 2_000_000_000;
     const ciri = 1 - Math.exp(- total / K);
-    const roi  = total / Math.max(1,c);
+    const roi = total / Math.max(1,c);
 
-    document.getElementById('k-ciri').textContent     = money(total);
-    document.getElementById('k-ciri-idx').textContent = ciri.toFixed(2);
-    document.getElementById('k-roi').textContent      = money(roi);
+    document.getElementById('k-ciri').textContent = money(total);
+    document.getElementById('k-ciri-idx').textContent = (ciri).toFixed(2);
+    document.getElementById('k-roi').textContent = money(roi);
   }catch(_){}
 })();
 
@@ -333,20 +338,24 @@ function setStatus(id, ok){
   const targets = [
     {key:'CAE',  id:'s-cae',  path:'cae/schema.json'},
     {key:'CDI',  id:'s-cdi',  path:'cdi/schema.json'},
-    {key:'CFF',  id:'s-cff',  path:'cff/schema.json'},
     {key:'CIRI', id:'s-ciri', path:'ciri/schema.json'},
     {key:'CIBS', id:'s-cibs', path:'cibs/schema.json'},
     {key:'CII',  id:'s-cii',  path:'cii/schema.json'},
-    {key:'Integration', id:'s-integration', path:'integration/schema.json'},
-    {key:'AFFE', id:'s-affe', path:'affe/schema.json'}
+    {key:'CFF',  id:'s-cff',  path:'cff/schema.json'},
+    {key:'CCRI', id:'s-ccri', path:'ccri/schema.json'},
+    {key:'Integration',id:'s-integration',path:'integration/schema.json'}
   ];
+
+  const presence = {};
 
   for(const t of targets){
     try{
       const r = await fetch(t.path,{cache:'no-store'});
       const ok = r.ok && (await r.text()).trim().length>0;
+      presence[t.id] = ok;
       setStatus(t.id, ok);
     }catch(_){
+      presence[t.id] = false;
       setStatus(t.id,false);
     }
   }
@@ -356,28 +365,20 @@ function setStatus(id, ok){
   if(grid){
     grid.innerHTML = targets.map(t=>{
       const tagId = `sum-${t.id}`;
+      const ok = presence[t.id];
+      const cls = ok ? 'status ok' : 'status warn';
+      const label = ok ? 'Schema present' : 'Missing';
       return `
       <div class="tile">
         <div style="display:flex;justify-content:space-between;align-items:center">
           <strong>${t.key}</strong>
-          <span id="${tagId}" class="status warn">Checking…</span>
+          <span id="${tagId}" class="${cls}">${label}</span>
         </div>
         <small><code>${t.path}</code></small>
       </div>`;
     }).join('');
-
-    // Fill summary statuses
-    for(const t of targets){
-      const el = document.getElementById(`sum-${t.id}`);
-      const src = document.getElementById(t.id);
-      if(el && src){
-        el.textContent = src.textContent;
-        el.classList.remove('ok','warn');
-        el.classList.add(src.classList.contains('ok') ? 'ok' : 'warn');
-      }
-    }
   }
 })();
 </script>
 </body>
-      </html>
+</html>
