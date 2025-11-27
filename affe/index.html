@@ -1,412 +1,361 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>AFFE — A.B.E. Frontdoor & Forensic Extractor</title>
+  <meta charset="UTF-8" />
+  <title>AFFE — American Funding & Fidelity Explorer | A.B.E.</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <base href="/abe---flag/">
+  <link rel="stylesheet" href="abe-patch/assets/abe-patch.css" />
   <style>
-    :root{
-      --bg:#0b0d12;--panel:#141820;--panel2:#0f131a;
-      --ink:#e6e6e6;--muted:#9fb3c8;
-      --line:rgba(255,255,255,.08);--brand:#5ddfff;
-      --accent:#ffa559;--ok:#4bd28f;--warn:#ffa559;
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0;background:var(--bg);color:var(--ink);
-      font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
-    }
-    a{color:#80bfff;text-decoration:none}
-    a:hover{text-decoration:underline}
-    header{
-      padding:24px 20px;
-      background:linear-gradient(90deg,#11151c,#1b1e25);
-      border-bottom:1px solid var(--line);
-    }
-    .wrap{max-width:1100px;margin:0 auto;padding:0 20px}
-    h1{margin:0 0 6px;font-size:1.5rem}
-    .sub{color:var(--muted);max-width:680px}
-    .badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
-    .chip{
-      display:inline-flex;align-items:center;gap:6px;
-      padding:6px 10px;border-radius:999px;
-      border:1px solid var(--line);color:var(--muted);font-size:.9rem;
-    }
-    main{max-width:1100px;margin:24px auto 44px;padding:0 20px}
-    .grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
-    .card{
-      background:var(--panel);border:1px solid var(--line);
-      border-radius:12px;padding:16px;
-    }
-    h2{margin:0 0 8px;font-size:1.1rem;color:var(--accent)}
-    h3{margin:0 0 6px;font-size:1rem}
-    .sm{font-size:.9rem;color:var(--muted)}
-    .pill{
-      display:inline-flex;align-items:center;gap:6px;
-      padding:4px 8px;border-radius:999px;
-      border:1px solid var(--line);font-size:.8rem;color:var(--muted);
-    }
-    .pill strong{color:var(--ink)}
-
-    /* Drop zone */
-    .drop-wrap{margin-top:10px}
-    .drop-zone{
-      border:2px dashed rgba(93,223,255,.6);
+    .affe-layout{max-width:1100px;margin:0 auto;padding:1.2rem 1rem 3rem}
+    .affe-grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
+    .dropzone{
+      border:1px dashed var(--abe-border-soft,#444);
       border-radius:12px;
-      padding:22px 16px;
-      background:rgba(15,19,26,.9);
+      padding:1.1rem 1rem;
       text-align:center;
+      background:rgba(15,19,26,.7);
       cursor:pointer;
-      transition:border-color .18s,background .18s,transform .18s;
     }
-    .drop-zone:hover{border-color:var(--brand);background:#141a24;transform:translateY(-1px)}
-    .drop-zone.dragover{border-color:#fff750;background:#161d28}
-    .drop-title{
-      font-weight:600;margin-bottom:4px;
+    .dropzone.dragover{border-style:solid}
+    .affe-metrics-table{
+      width:100%;border-collapse:collapse;font-size:.9rem;
+      margin-top:.4rem;
     }
-    .drop-sub{font-size:.9rem;color:var(--muted)}
-    .drop-sub code{font-size:.85rem}
-    .ghost-icon{
-      font-size:2.4rem;opacity:.75;margin-bottom:4px;
+    .affe-metrics-table th,.affe-metrics-table td{
+      border:1px solid rgba(255,255,255,.08);
+      padding:.4rem .55rem;
+      text-align:left;
     }
-    .btn{
-      display:inline-flex;align-items:center;justify-content:center;
-      padding:.45rem .9rem;border-radius:9px;
-      border:1px solid var(--line);background:#0f131a;
-      color:var(--ink);font-size:.9rem;cursor:pointer;
-      margin-top:8px;
-    }
-    .btn:hover{border-color:var(--brand)}
-    .btn[disabled]{opacity:.5;cursor:not-allowed}
-
-    /* File summary + routing */
-    .file-meta{margin-top:10px;font-size:.9rem;color:var(--muted)}
-    .file-meta ul{margin:4px 0 0;padding-left:18px}
-    .tag{
-      display:inline-block;margin-left:6px;margin-top:2px;
-      padding:1px 6px;border-radius:999px;font-size:.75rem;
-      border:1px solid var(--line);color:var(--muted);
-    }
-    .tag-funding{border-color:#5ddfff;color:#5ddfff}
-    .tag-impact{border-color:#ffa559;color:#ffa559}
-    .tag-unknown{border-color:#9fb3c8;color:#9fb3c8}
-
-    .route-grid{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));margin-top:10px}
-    .route-box{
-      background:var(--panel2,#0f131a);
-      border:1px solid var(--line);
-      border-radius:10px;padding:10px 12px;font-size:.9rem;
-    }
-    .route-box strong{display:block;margin-bottom:4px}
-
-    .log{
-      font-family:ui-monospace,Menlo,Consolas,monospace;
-      font-size:.8rem;background:#0b0f16;
-      border-radius:8px;border:1px solid var(--line);
-      padding:10px;margin-top:8px;white-space:pre-wrap;
-      max-height:180px;overflow:auto;
-    }
-
-    footer{
-      margin:32px 0 20px;text-align:center;
-      color:var(--muted);font-size:.9rem;
-    }
-
-    @media (max-width:720px){
-      header{padding:20px 12px}
-      main{padding:0 12px}
-    }
+    .affe-metrics-table th{background:rgba(255,255,255,.04)}
+    .affe-note{font-size:.85rem;color:#9fb3c8;margin-top:.3rem}
+    .affe-tag{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.85rem}
   </style>
 </head>
-<body>
-<header>
-  <div class="wrap">
-    <div>
-      <a href="/abe---flag/index.html" class="chip">← Home</a>
-      <h1>AFFE — A.B.E. Frontdoor & Forensic Extractor</h1>
-      <div class="sub">
-        Drop your own documents into the A.B.E. engine — funding tables, case exports, or policy PDFs —
-        and keep every byte locked on your device while the system prepares them for CFF, CIRI, and the rest of the chain.
-      </div>
-      <div class="badges">
-        <span class="chip">Mode: Local-only · No upload</span>
-        <a class="chip" href="ciri/index.html">CIRI</a>
-        <a class="chip" href="cff/index.html">CFF</a>
-        <a class="chip" href="integration/index.html">Integration</a>
-        <a class="chip" href="macro/index.html">Macro</a>
-      </div>
-    </div>
-  </div>
+<body class="abe-page">
+
+<header class="abe-header">
+  <h1>AFFE — American Funding & Fidelity Explorer</h1>
+  <p class="tagline">
+    Turns messy CSVs into a clean CIRI-ready template so you can quantify constitutional and economic harm in one shot.
+  </p>
+  <nav class="chip-row">
+    <a class="chip" href="index.html">ABE Home</a>
+    <a class="chip" href="ciri/index.html">CIRI</a>
+    <a class="chip" href="cff/index.html">CFF</a>
+    <a class="chip" href="cibs/index.html">CIBS</a>
+    <a class="chip" href="ccri/index.html">CCRI</a>
+    <a class="chip chip-alt" href="system/index.html">System Map</a>
+  </nav>
 </header>
 
-<main>
-  <!-- 1. What AFFE does -->
+<main class="abe-main affe-layout">
+
+  <!-- What AFFE does -->
   <section class="card">
-    <h2>What AFFE Does</h2>
-    <p class="sm">
-      AFFE is the intake valve for the American Butterfly Effect engine. It doesn’t phone home, doesn’t store,
-      and doesn’t upload. It just helps you turn your own evidence into clean, A.B.E.-ready data for:
+    <h2>What AFFE Does (v1)</h2>
+    <p>
+      This version of AFFE focuses on one job:
+      <strong>take raw CSV evidence and give you a ready-to-run CIRI template</strong>.
     </p>
-    <ul class="sm">
-      <li><strong>CFF</strong> — tracing whether funding is <code>ON_MISSION</code>, <code>OFF_MISSION</code>, or <code>UNCLEAR</code>.</li>
-      <li><strong>CIRI</strong> — converting harm and misuse into recovery dollars and risk indices.</li>
-      <li><strong>Macro</strong> — scaling your scenario up to see national impact.</li>
+    <p>
+      You drop in enforcement / detention / fee / income CSVs. AFFE runs simple,
+      transparent rules in your browser to estimate:
+    </p>
+    <ul>
+      <li>Total people / cases affected</li>
+      <li>Total detention / jail days</li>
+      <li>Total fees and fines that should be canceled</li>
+      <li>Lost wages or income exposure (if present in your data)</li>
     </ul>
-  </section>
-
-  <!-- 2. Upload / drag-and-drop -->
-  <section class="card">
-    <h2>Upload Your Evidence (local only)</h2>
-    <div class="sm">
-      Start with whatever you actually have in the real world:
-      <ul>
-        <li>CSV / Excel exports (funding tables, arrests, case lists).</li>
-        <li>Agency PDFs (NOFOs, grant awards, budget justifications).</li>
-        <li>Court / docket exports in tabular form.</li>
-      </ul>
-    </div>
-
-    <div class="drop-wrap">
-      <div id="drop-zone" class="drop-zone" tabindex="0">
-        <div class="ghost-icon">📥</div>
-        <div class="drop-title">Drop your county’s data here and watch the recovery number wake up.</div>
-        <div class="drop-sub">
-          Supported: <code>.csv</code>, <code>.xlsx</code>, <code>.xls</code>, <code>.pdf</code><br/>
-          <strong>All parsing happens in your browser. Nothing leaves your device.</strong>
-        </div>
-        <button id="btn-choose" class="btn" type="button">…or choose a file</button>
-        <input id="file-input" type="file" multiple
-               accept=".csv,.xlsx,.xls,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/pdf"
-               style="display:none">
-      </div>
-    </div>
-
-    <div id="file-meta" class="file-meta" style="display:none"></div>
-
-    <div id="routes" class="route-grid" style="display:none">
-      <div class="route-box">
-        <strong>CFF · Funding Forensics</strong>
-        <div class="sm">
-          Use for: grant tables, budget lines, NOFO-aligned spend.
-          <br/>Next step: export/reshape into <code>cff/inputs.csv</code>.
-        </div>
-      </div>
-      <div class="route-box">
-        <strong>CIRI · Recovery & Risk</strong>
-        <div class="sm">
-          Use for: cases avoided, detention days, fees, enforcement cost, households impacted.
-          <br/>Next step: reshape into <code>ciri/inputs.csv</code>, or manually enter values.
-        </div>
-      </div>
-      <div class="route-box">
-        <strong>Macro · Scenario</strong>
-        <div class="sm">
-          Once CIRI is set, use Macro to scale your “one community” into 100, 1,000, or 10,000.
-          <br/>Next step: send <code>ABE_CIRI_SCENARIO_V2</code> into the cascade (coming next).
-        </div>
-      </div>
-    </div>
-
-    <div style="margin-top:10px;display:flex;flex-wrap:wrap;gap:8px">
-      <button id="btn-export-scenario" class="btn" type="button" disabled>
-        Download ABE_CIRI_SCENARIO_V2 (stub)
-      </button>
-      <button id="btn-clear" class="btn" type="button" disabled>Clear files</button>
-    </div>
-
-    <div id="log" class="log" aria-label="Local processing log" style="display:none"></div>
-  </section>
-
-  <!-- 3. How to choose what to upload -->
-  <section class="card">
-    <h2>What Should I Upload First?</h2>
-    <div class="grid">
-      <div>
-        <h3>👮🏽 Enforcement / Justice</h3>
-        <p class="sm">
-          Use: CSVs of stops, arrests, citations, jail days, or probation violations.
-          <br/>Goal: quantify wrongful enforcement and detention to feed CIRI.
-        </p>
-      </div>
-      <div>
-        <h3>💸 Funding & Grants</h3>
-        <p class="sm">
-          Use: state budget lines, grant award tables, USAspending exports, Single Audit notes.
-          <br/>Goal: detect OFF_MISSION use for CFF and turn it into recovery in CIRI.
-        </p>
-      </div>
-      <div>
-        <h3>🏠 Human Impact</h3>
-        <p class="sm">
-          Use: counts of households displaced, licenses suspended, kids removed, jobs lost.
-          <br/>Goal: convert harm back into employment, stability, and spending power.
-        </p>
-      </div>
-    </div>
-  </section>
-
-  <!-- 4. Privacy & integrity -->
-  <section class="card">
-    <h2>Privacy & Chain-of-Custody</h2>
-    <p class="sm">
-      AFFE never sends your data anywhere. Files are read into memory in your browser, summarized for you,
-      and then discarded when you refresh or hit “Clear files.”
-      When you’re ready to move into <strong>CFF</strong>, <strong>CIRI</strong>, or <strong>Macro</strong>,
-      you decide what to keep as a CSV and what to delete.
+    <p>
+      Then it builds <code class="affe-tag">AFFE_CIRI_TEMPLATE.csv</code> with the
+      exact header CIRI expects. You can tweak numbers manually before you upload
+      it into CIRI.
+    </p>
+    <p class="affe-note">
+      Future versions will add multi-file policy alignment, statute crosswalks, and deeper pattern analysis —
+      but this already lets you turn <em>“I have data”</em> into <em>“here’s the recovery value.”</em>
     </p>
   </section>
+
+  <section class="card">
+    <h2>1. Upload your CSV evidence</h2>
+    <div id="dropzone" class="dropzone">
+      <strong>Drop CSV files here</strong><br/>
+      <span class="affe-note">or click to choose files from your device</span><br/>
+      <input id="file-input" type="file" accept=".csv,text/csv" multiple style="display:none"/>
+    </div>
+    <p class="affe-note">
+      AFFE runs entirely in your browser. Files are never uploaded to any server.
+      For now, only <strong>CSV</strong> is supported in this parser.
+    </p>
+    <div id="file-list" class="affe-note"></div>
+  </section>
+
+  <section class="card">
+    <h2>2. Review the inferred CIRI metrics</h2>
+    <p class="affe-note">
+      AFFE scans your CSV headers for common fields like
+      <span class="affe-tag">jail_days</span>,
+      <span class="affe-tag">detention_days</span>,
+      <span class="affe-tag">fees</span>,
+      <span class="affe-tag">fines</span>,
+      <span class="affe-tag">lost_wages</span>, etc.
+      You can override any value before downloading.
+    </p>
+    <table class="affe-metrics-table">
+      <thead>
+        <tr>
+          <th>CIRI field</th>
+          <th>Meaning</th>
+          <th>Estimated from your CSVs</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code class="affe-tag">cases_avoided</code></td>
+          <td>Number of people / cases in this scenario</td>
+          <td><input id="m-cases" type="number" min="0" step="1" value="0"/></td>
+        </tr>
+        <tr>
+          <td><code class="affe-tag">jail_days_avoided</code></td>
+          <td>Total detention / jail days that should not have happened</td>
+          <td><input id="m-jail-days" type="number" min="0" step="1" value="0"/></td>
+        </tr>
+        <tr>
+          <td><code class="affe-tag">fees_canceled_total</code></td>
+          <td>Sum of unconstitutional fees, fines, surcharges, costs</td>
+          <td><input id="m-fees" type="number" min="0" step="1" value="0"/></td>
+        </tr>
+        <tr>
+          <td><code class="affe-tag">lost_wage_months_equivalent</code></td>
+          <td>Approximate months of wages lost (optional helper)</td>
+          <td><input id="m-wage-months" type="number" min="0" step="0.1" value="0"/></td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="affe-note">
+      When you download the CIRI template, these values are mapped into the standard
+      <code class="affe-tag">ciri/inputs.csv</code> structure. You can still adjust the final CSV before
+      running it in CIRI.
+    </p>
+  </section>
+
+  <section class="card">
+    <h2>3. Download CIRI-ready CSV</h2>
+    <p class="affe-note">
+      This button creates <code class="affe-tag">AFFE_CIRI_TEMPLATE.csv</code> with the same columns that
+      your CIRI calculator expects (including reasonable defaults for fields we can't infer).
+    </p>
+    <button id="btn-download" class="btn" disabled>Download AFFE_CIRI_TEMPLATE.csv</button>
+    <p id="status" class="affe-note"></p>
+    <p class="affe-note">
+      Next step: go to <a href="ciri/index.html">CIRI</a> and upload the template as your inputs file,
+      then download your <strong>Constitutional Recovery Receipt</strong>.
+    </p>
+  </section>
+
 </main>
 
-<footer>
-  A.B.E. — American Butterfly Effect · AFFE v1 (intake shell) · CC BY-NC 4.0<br/>
-  Integrity only — never for sale.
+<footer class="abe-footer">
+  <p>A.B.E. — American Butterfly Effect · AFFE module (v1 CSV-to-CIRI bridge)</p>
 </footer>
 
 <script>
 (function(){
-  const dz    = document.getElementById('drop-zone');
-  const fin   = document.getElementById('file-input');
-  const btnCh = document.getElementById('btn-choose');
-  const meta  = document.getElementById('file-meta');
-  const routes= document.getElementById('routes');
-  const logEl = document.getElementById('log');
-  const btnScenario = document.getElementById('btn-export-scenario');
-  const btnClear    = document.getElementById('btn-clear');
+  const dropzone = document.getElementById('dropzone');
+  const input    = document.getElementById('file-input');
+  const fileList = document.getElementById('file-list');
+  const statusEl = document.getElementById('status');
+  const btnDl    = document.getElementById('btn-download');
 
-  let files = [];
+  const mCases  = document.getElementById('m-cases');
+  const mJail   = document.getElementById('m-jail-days');
+  const mFees   = document.getElementById('m-fees');
+  const mWageMo = document.getElementById('m-wage-months');
 
-  function log(msg){
-    if(!logEl) return;
-    logEl.style.display = 'block';
-    const ts = new Date().toISOString();
-    logEl.textContent += `[${ts}] ${msg}\n`;
-    logEl.scrollTop = logEl.scrollHeight;
+  let hasData = false;
+
+  function parseCSV(text){
+    const lines = text.split(/\r?\n/).filter(l=>l.trim().length>0);
+    if(lines.length < 2) return [];
+    const headers = lines[0].split(',').map(h=>h.trim().toLowerCase());
+    return lines.slice(1).map(line=>{
+      const cells = line.split(',');
+      const row = {};
+      headers.forEach((h,i)=> row[h] = cells[i] ?? '');
+      return row;
+    });
   }
 
-  function classifyFile(f){
-    const name = f.name.toLowerCase();
-    const type = f.type || '';
-    if(name.endsWith('.csv') || name.endsWith('.xls') || name.endsWith('.xlsx')){
-      // crude heuristics: CFF vs CIRI-ish
-      if(name.includes('grant') || name.includes('budget') || name.includes('mcsap') || name.includes('fund')){
-        return 'funding';
+  function inferMetrics(rows){
+    let cases = 0;
+    let jailDays = 0;
+    let fees = 0;
+    let lostWages = 0;
+
+    const num = v => {
+      const n = Number((v||'').toString().replace(/[^0-9.\-]/g,'')); 
+      return isFinite(n) ? n : 0;
+    };
+
+    const detectField = (row, keys) => {
+      for(const k in row){
+        const lk = k.toLowerCase();
+        if(keys.some(key=> lk.includes(key))) return num(row[k]);
       }
-      if(name.includes('case') || name.includes('jail') || name.includes('detention') || name.includes('ciri')){
-        return 'impact';
-      }
-      return 'unknown';
-    }
-    if(name.endsWith('.pdf')){
-      return 'unknown';
-    }
-    return 'unknown';
+      return 0;
+    };
+
+    rows.forEach(row=>{
+      cases += 1;
+      jailDays  += detectField(row,['jail','detention','days_in_custody','days_held']);
+      fees      += detectField(row,['fee','fine','surcharge','court_cost','assessment']);
+      lostWages += detectField(row,['lost_wages','lost-income','income_loss','earnings_lost']);
+    });
+
+    return {cases,jailDays,fees,lostWages};
   }
 
-  function tagFor(kind){
-    if(kind === 'funding') return '<span class="tag tag-funding">likely CFF input</span>';
-    if(kind === 'impact')  return '<span class="tag tag-impact">likely CIRI input</span>';
-    return '<span class="tag tag-unknown">needs manual review</span>';
+  function updateStatus(msg){
+    statusEl.textContent = msg || '';
   }
 
-  function renderSummary(){
+  function handleFiles(fileListObj){
+    const files = Array.from(fileListObj || []);
     if(!files.length){
-      meta.style.display = 'none';
-      routes.style.display = 'none';
-      btnScenario.disabled = true;
-      btnClear.disabled = true;
-      logEl.style.display = 'none';
-      logEl.textContent = '';
+      updateStatus('No files selected yet.');
       return;
     }
-    btnScenario.disabled = false; // still stub, but UI shows "ready"
-    btnClear.disabled = false;
+    fileList.textContent = files.map(f=>f.name).join(', ');
 
-    const rows = files.map(f=>{
-      const kind = classifyFile(f);
-      const sizeKB = (f.size/1024).toFixed(1);
-      return `<li>${f.name} — ${sizeKB} KB${tagFor(kind)}</li>`;
-    }).join('');
+    let allRows = [];
+    let remaining = files.length;
 
-    meta.innerHTML = `
-      <div><strong>Files staged for local analysis:</strong></div>
-      <ul>${rows}</ul>
-      <div class="sm" style="margin-top:4px">
-        AFFE does not upload or save these files. They live only in your browser session until you clear or refresh.
-      </div>
-    `;
-    meta.style.display = 'block';
-    routes.style.display = 'grid';
+    files.forEach(file=>{
+      const reader = new FileReader();
+      reader.onload = e=>{
+        try{
+          const text = String(e.target.result || '');
+          const rows = parseCSV(text);
+          allRows = allRows.concat(rows);
+        }catch(err){
+          console.warn('AFFE parse error', err);
+        }finally{
+          remaining--;
+          if(remaining===0){
+            if(allRows.length===0){
+              updateStatus('No usable rows found. You can still enter values manually.');
+              btnDl.disabled = false;
+              hasData = true;
+              return;
+            }
+            const m = inferMetrics(allRows);
+            mCases.value  = m.cases;
+            mJail.value   = m.jailDays;
+            mFees.value   = m.fees.toFixed(0);
+            // rough: convert lost wages into months by dividing by 1 month of $3,000 if no better info
+            const months = m.lostWages > 0 ? (m.lostWages / 3000) : 0;
+            mWageMo.value = months.toFixed(1);
+            updateStatus('Metrics inferred. Review and adjust if needed, then download the template.');
+            btnDl.disabled = false;
+            hasData = true;
+          }
+        }
+      };
+      reader.readAsText(file);
+    });
   }
 
-  function handleFiles(list){
-    const incoming = Array.from(list || []);
-    if(!incoming.length) return;
-    log(`Received ${incoming.length} file(s) via ${event && event.type || 'input'}.`);
-    files = files.concat(incoming);
-    renderSummary();
-  }
+  dropzone.addEventListener('click', ()=> input.click());
+  dropzone.addEventListener('dragover', e=>{
+    e.preventDefault();
+    dropzone.classList.add('dragover');
+  });
+  dropzone.addEventListener('dragleave', e=>{
+    e.preventDefault();
+    dropzone.classList.remove('dragover');
+  });
+  dropzone.addEventListener('drop', e=>{
+    e.preventDefault();
+    dropzone.classList.remove('dragover');
+    handleFiles(e.dataTransfer.files);
+  });
+  input.addEventListener('change', ()=> handleFiles(input.files));
 
-  // Drag & drop wiring
-  ['dragenter','dragover'].forEach(ev=>{
-    dz.addEventListener(ev, e=>{
-      e.preventDefault();
-      e.stopPropagation();
-      dz.classList.add('dragover');
-    });
-  });
-  ['dragleave','drop'].forEach(ev=>{
-    dz.addEventListener(ev, e=>{
-      e.preventDefault();
-      e.stopPropagation();
-      if(ev === 'drop'){
-        const dt = e.dataTransfer;
-        if(dt && dt.files) handleFiles(dt.files);
-      }
-      dz.classList.remove('dragover');
-    });
-  });
-  dz.addEventListener('click', ()=> fin.click());
-  btnCh.addEventListener('click', ()=> fin.click());
-  dz.addEventListener('keydown', e=>{
-    if(e.key === 'Enter' || e.key === ' '){
-      e.preventDefault();
-      fin.click();
-    }
-  });
-  fin.addEventListener('change', e=>{
-    handleFiles(e.target.files || []);
-    fin.value = '';
-  });
+  btnDl.addEventListener('click', ()=>{
+    const cases = Number(mCases.value)||0;
+    const jail  = Number(mJail.value)||0;
+    const fees  = Number(mFees.value)||0;
+    const wageMonths = Number(mWageMo.value)||0;
 
-  // Stub: export scenario (no real wiring yet)
-  btnScenario.addEventListener('click', ()=>{
-    if(!files.length) return;
-    const now = new Date().toISOString();
-    const rows = [
-      ['scenario_id','generated_at','file_count','note'],
-      ['ABE_CIRI_SCENARIO_V2', now, String(files.length),
-       'Stub scenario export from AFFE — next step is to map into CFF/CIRI templates.']
+    // CIRI header as used in your engine
+    const header = [
+      'cases_avoided',
+      'avg_cost_per_case',
+      'jail_days_avoided',
+      'cost_per_jail_day',
+      'fees_canceled_total',
+      'policy_corrections',
+      'avg_enforcement_cost_savings',
+      'households_restored',
+      'avg_monthly_market_spend',
+      'months_effective',
+      'employment_probability',
+      'avg_monthly_wage',
+      'expected_lawsuits',
+      'avg_payout',
+      'litigation_multiplier',
+      'transition_costs_one_time'
     ];
-    const csv = rows.map(r=>r.join(',')).join('\n');
+
+    // Conservative defaults; user can change in CIRI or by editing the CSV
+    const avgCaseCost   = 5000;   // placeholder
+    const costPerDay    = 120;    // placeholder jail-day cost
+    const policyCorr    = 0;
+    const enforceSave   = 0;
+    const households    = Math.max(1, Math.round(cases/1.5));
+    const monthlySpend  = 600;    // placeholder avg market spend
+    const monthsEff     = wageMonths > 0 ? wageMonths : 12;
+    const empProb       = 0.55;
+    const avgWage       = 2200;
+    const expLawsuits   = 0;
+    const avgPayout     = 0;
+    const litMult       = 1.0;
+    const transition    = 0;
+
+    const row = [
+      cases,
+      avgCaseCost,
+      jail,
+      costPerDay,
+      fees,
+      policyCorr,
+      enforceSave,
+      households,
+      monthlySpend,
+      monthsEff,
+      empProb,
+      avgWage,
+      expLawsuits,
+      avgPayout,
+      litMult,
+      transition
+    ];
+
+    const csv = [header.join(','), row.join(',')].join('\n');
     const blob = new Blob([csv],{type:'text/csv'});
     const url  = URL.createObjectURL(blob);
     const a    = document.createElement('a');
     a.href = url;
-    a.download = 'ABE_CIRI_SCENARIO_V2_stub.csv';
+    a.download = 'AFFE_CIRI_TEMPLATE.csv';
     a.click();
     URL.revokeObjectURL(url);
-    log('Exported stub ABE_CIRI_SCENARIO_V2 CSV.');
+    updateStatus('Template downloaded. Next: open CIRI and upload this file as your inputs CSV.');
   });
 
-  btnClear.addEventListener('click', ()=>{
-    files = [];
-    renderSummary();
-    log('Cleared staged files.');
-  });
-
-  log('AFFE intake shell ready. Waiting for files…');
 })();
 </script>
 </body>
-      </html>
+</html>
