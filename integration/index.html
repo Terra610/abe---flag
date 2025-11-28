@@ -1,224 +1,151 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Integration — A.B.E. Public KPIs & Integrity</title>
 <base href="/abe---flag/">
+<link rel="stylesheet" href="abe-patch/assets/abe-patch.css">
 <style>
-:root{
-  --bg:#0b0d12;--panel:#141820;--panel2:#0f131a;--ink:#e6e6e6;--muted:#9fb3c8;
-  --line:rgba(255,255,255,.08);--brand:#5ddfff;--warn:#ffa559;--ok:#4bd28f;--bad:#ff6b6b
-}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 system-ui}
-a{color:#80bfff;text-decoration:none}
-a:hover{text-decoration:underline}
-header{
-  padding:24px 20px;
-  background:linear-gradient(90deg,#11151c,#1b1e25);
-  border-bottom:1px solid var(--line)
-}
-.wrap{max-width:1100px;margin:0 auto;padding:24px 20px}
-h1{margin:0 0 6px}
-.sub{color:var(--muted)}
-.grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
-.card{
-  background:var(--panel);border:1px solid var(--line);
-  border-radius:12px;padding:16px;margin:18px 0
-}
-.tile{
-  background:var(--panel2);border:1px solid var(--line);
-  border-radius:10px;padding:14px
-}
-.num{font-size:1.35rem;font-weight:700}
-small{color:var(--muted)}
-table{width:100%;border-collapse:collapse}
-th,td{border:1px solid var(--line);padding:10px 12px;text-align:left}
-th{background:var(--panel2)}
-footer{margin:36px 0 20px;color:var(--muted);text-align:center;font-size:.9rem}
-.badge{
-  display:inline-block;padding:2px 8px;border:1px solid var(--line);
-  border-radius:999px;color:var(--muted);font-size:.85rem
-}
-.btn{
-  display:inline-block;border:1px solid var(--line);
-  background:#0f131a;color:#e6e6e6;
-  padding:.55rem .9rem;border-radius:9px;
-  text-decoration:none;cursor:pointer
-}
-.btn:hover{border-color:var(--brand)}
-.status{
-  display:inline-block;padding:.1rem .5rem;border-radius:999px;
-  border:1px solid var(--line);font-size:.85rem
-}
-.s-ok{background:rgba(75,210,143,.12);color:var(--ok);border-color:rgba(75,210,143,.35)}
-.s-warn{background:rgba(255,165,89,.12);color:var(--warn);border-color:rgba(255,165,89,.35)}
-.s-bad{background:rgba(255,107,107,.12);color:var(--bad);border-color:rgba(255,107,107,.35)}
-.kright{float:right}
-pre.code{
-  white-space:pre-wrap;background:#0f131a;border:1px solid var(--line);
-  border-radius:10px;padding:12px;overflow:auto
-}
-.mono{font-family:ui-monospace,SFMono-Regular,Consolas,Monaco,monospace}
-.small{font-size:.85rem}
-.banner{
-  margin-top:8px;padding:8px 10px;border-radius:8px;
-  border:1px solid var(--line);font-size:.85rem
-}
-.banner-ok{border-color:rgba(75,210,143,.5);background:rgba(75,210,143,.08);color:var(--ok)}
-.banner-warn{border-color:rgba(255,165,89,.5);background:rgba(255,165,89,.08);color:var(--warn)}
-.nav{margin-top:8px;display:flex;flex-wrap:wrap;gap:8px}
+  .int-wrap{max-width:1100px;margin:0 auto;padding:1.4rem 1rem 3rem}
+  .int-grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+  .int-kpi-label{font-size:.9rem;color:#9fb3c8}
+  .int-kpi-num{font-size:1.35rem;font-weight:700}
+  .status-pill{display:inline-block;padding:.1rem .55rem;border-radius:999px;font-size:.8rem;border:1px solid rgba(255,255,255,.12)}
+  .s-ok{border-color:#4bd28f;color:#4bd28f}
+  .s-warn{border-color:#ffa559;color:#ffa559}
+  .s-bad{border-color:#ff6b6b;color:#ff6b6b}
+  .int-table{width:100%;border-collapse:collapse;font-size:.9rem;margin-top:.5rem}
+  .int-table th,.int-table td{border:1px solid rgba(255,255,255,.08);padding:.45rem .55rem;text-align:left}
+  .int-table th{background:rgba(255,255,255,.04)}
+  .mono{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.78rem}
+  .hash-cell{max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .small-note{font-size:.85rem;color:#9fb3c8;margin-top:.3rem}
 </style>
 </head>
-<body>
-<header>
-  <div class="wrap">
-    <a href="/abe---flag/index.html" class="badge">← Home</a>
+<body class="abe-page">
+<header class="abe-header">
+  <div class="int-wrap">
+    <a href="/abe---flag/index.html" class="chip">← Home</a>
     <h1>Integration Layer — Public KPIs & Integrity</h1>
-    <div class="sub">
-      Live signals from the A.B.E. pipeline (CFF → CIRI → CIBS), plus one-click integrity verification.
-    </div>
-    <div class="nav">
-      <a class="btn" href="../cff/index.html">CFF</a>
-      <a class="btn" href="../ciri/index.html">CIRI</a>
-      <a class="btn" href="../cibs/index.html">CIBS</a>
-      <a class="btn" href="../macro/index.html">Macro</a>
-      <a class="btn" href="../system/index.html">System Map</a>
-    </div>
+    <p class="tagline">
+      Live signals from the A.B.E. pipeline (CIRI → CIBS → CFF/AFFE) plus one-click SHA-256 audit for all published artifacts.
+    </p>
   </div>
 </header>
 
-<main class="wrap">
+<main class="abe-main int-wrap">
 
   <!-- Live KPIs -->
-  <div class="grid">
-    <div class="tile">
-      <div>Public Allocation (CIBS)</div>
-      <div id="kpi-cibs-total" class="num">—</div>
-      <small>Sum of <code>/cibs/auto_budget.csv</code> (current published plan).</small>
+  <section class="card">
+    <h2>Live KPIs</h2>
+    <div class="int-grid">
+      <div class="tile">
+        <div class="int-kpi-label">Public Allocation (CIBS)</div>
+        <div id="kpi-cibs-total" class="int-kpi-num">—</div>
+        <div class="small-note">Sum of <code>/cibs/auto_budget.csv</code> (current published plan)</div>
+      </div>
+      <div class="tile">
+        <div class="int-kpi-label">Modeled Recovery (CIRI)</div>
+        <div id="kpi-ciri-total" class="int-kpi-num">—</div>
+        <div class="small-note">Computed from <code>/ciri/inputs.csv</code> (engine estimate)</div>
+      </div>
+      <div class="tile">
+        <div class="int-kpi-label">CIRI Index</div>
+        <div id="kpi-ciri" class="int-kpi-num">—</div>
+        <div class="small-note">\( CIRI = 1 - e^{-R_T/K} \) with K-scale</div>
+      </div>
+      <div class="tile">
+        <div class="int-kpi-label">ROI per Case</div>
+        <div id="kpi-roi" class="int-kpi-num">—</div>
+        <div class="small-note">\( ROI_{case}=R_T/\max(1,cases) \)</div>
+      </div>
     </div>
-    <div class="tile">
-      <div>Base Recovery (CIRI only)</div>
-      <div id="kpi-ciri-total" class="num">—</div>
-      <small>Computed from <code>/ciri/inputs.csv</code> (engine estimate).</small>
-    </div>
-    <div class="tile">
-      <div>OFF_MISSION from CFF (local)</div>
-      <div id="kpi-cff-off" class="num">—</div>
-      <small>Read from <code>localStorage.ABE_CFF_OFF_MISSION_TOTAL</code>.</small>
-    </div>
-    <div class="tile">
-      <div>Total Recovery (CIRI + CFF)</div>
-      <div id="kpi-total-plus-cff" class="num">—</div>
-      <small>Base CIRI recovery plus CFF’s OFF_MISSION misuse.</small>
-    </div>
-    <div class="tile">
-      <div>CIRI Index</div>
-      <div id="kpi-ciri" class="num">—</div>
-      <small>\( CIRI = 1 - e^{-R_T/K} \) with K-scale.</small>
-    </div>
-    <div class="tile">
-      <div>ROI per Case</div>
-      <div id="kpi-roi" class="num">—</div>
-      <small>\( ROI_{case}=R_T/\max(1,cases) \).</small>
-    </div>
-  </div>
-  <div id="cff-context" class="banner banner-warn">
-    No CFF OFF_MISSION transfer detected yet. Run the CFF engine and click
-    “Send to CIRI (local only)” to link funding misuse into this view.
-  </div>
+  </section>
 
   <!-- Integrity Controls -->
-  <div class="card">
-    <h3 style="margin:0 0 .6rem">
-      Integrity Beacon
-      <span class="kright"><button id="btn-verify" class="btn">Verify Now</button></span>
-    </h3>
-    <small>
-      Runs local, dependency-free checks: file presence, schema plausibility, recomputed KPIs, and SHA-256 hashes.
-    </small>
-    <div id="beacons" class="grid" style="margin-top:10px">
-      <div class="tile"><div><strong>CIRI</strong> (<code>ciri/inputs.csv</code>)</div><div id="b-ciri" class="status">—</div></div>
-      <div class="tile"><div><strong>CIBS</strong> (<code>cibs/auto_budget.csv</code>)</div><div id="b-cibs" class="status">—</div></div>
-      <div class="tile"><div><strong>CFF</strong> (<code>cff/inputs.csv</code>)</div><div id="b-cff" class="status">—</div></div>
-      <div class="tile"><div><strong>CDI</strong> (<code>cdi/divergence.csv</code>)</div><div id="b-cdi" class="status">—</div></div>
-      <div class="tile"><div><strong>CAE</strong> (<code>cae/model.json</code>)</div><div id="b-cae" class="status">—</div></div>
+  <section class="card">
+    <h2>Integrity Beacon</h2>
+    <p class="small-note">
+      Runs local, dependency-free checks: file presence, basic plausibility, and SHA-256 hashes for every major module.
+      Nothing leaves your device.
+    </p>
+
+    <div class="int-grid" id="beacons">
+      <div class="tile"><div><strong>CIRI</strong> (<code>ciri/inputs.csv</code>)</div><div id="b-ciri" class="status-pill">—</div></div>
+      <div class="tile"><div><strong>CIBS</strong> (<code>cibs/auto_budget.csv</code>)</div><div id="b-cibs" class="status-pill">—</div></div>
+      <div class="tile"><div><strong>CDI</strong> (<code>cdi/divergence.csv</code>)</div><div id="b-cdi" class="status-pill">—</div></div>
+      <div class="tile"><div><strong>CAE</strong> (<code>cae/model.json</code>)</div><div id="b-cae" class="status-pill">—</div></div>
+      <div class="tile"><div><strong>CFF</strong> (<code>cff/inputs.csv</code>)</div><div id="b-cff" class="status-pill">—</div></div>
+      <div class="tile"><div><strong>AFFE</strong> (<code>affe/index.html</code>)</div><div id="b-affe" class="status-pill">—</div></div>
+      <div class="tile"><div><strong>CCRI</strong> (<code>ccri/inputs.json</code>)</div><div id="b-ccri" class="status-pill">—</div></div>
     </div>
+
     <div style="margin-top:10px">
+      <button id="btn-verify" class="btn">Verify Now</button>
       <button id="btn-download" class="btn" disabled>Download Audit Certificate (JSON)</button>
     </div>
-  </div>
+  </section>
 
   <!-- Detailed Results -->
-  <div class="card">
-    <h3 style="margin:0 0 .6rem">Verification Results</h3>
-    <table>
-      <thead><tr><th>Artifact</th><th>Checks</th><th>Status</th><th>SHA-256</th></tr></thead>
-      <tbody id="result-rows"></tbody>
+  <section class="card">
+    <h2>Verification Results</h2>
+    <table class="int-table">
+      <thead>
+        <tr>
+          <th>Artifact</th>
+          <th>Checks</th>
+          <th>Status</th>
+          <th>SHA-256</th>
+        </tr>
+      </thead>
+      <tbody id="result-rows">
+        <tr><td colspan="4">Click “Verify Now” to run the audit locally.</td></tr>
+      </tbody>
     </table>
-    <div id="result-meta" style="margin-top:10px" class="mono small"></div>
-    <h4 style="margin:16px 0 6px">Raw JSON</h4>
-    <pre id="raw" class="code mono" aria-label="Raw audit JSON">—</pre>
-  </div>
+    <div id="result-meta" class="mono small-note" style="margin-top:.5rem"></div>
 
-  <div class="card">
-    <h3 style="margin:0 0 .6rem">Audit Trail (sources)</h3>
-    <ul>
-      <li><a href="/abe---flag/cff/inputs.csv">/cff/inputs.csv</a> — OFF_MISSION funding inputs</li>
+    <h3 style="margin-top:1rem">Raw JSON</h3>
+    <pre id="raw" class="mono" style="white-space:pre-wrap;background:#0f131a;border-radius:8px;padding:.6rem;border:1px solid rgba(255,255,255,.08);max-height:260px;overflow:auto">—</pre>
+  </section>
+
+  <!-- Audit trail links -->
+  <section class="card">
+    <h2>Audit Trail (sources)</h2>
+    <ul class="small-note">
       <li><a href="/abe---flag/ciri/inputs.csv">/ciri/inputs.csv</a> — engine inputs</li>
       <li><a href="/abe---flag/cibs/auto_budget.csv">/cibs/auto_budget.csv</a> — public allocation</li>
       <li><a href="/abe---flag/cdi/divergence.csv">/cdi/divergence.csv</a> — divergence inputs</li>
       <li><a href="/abe---flag/cae/model.json">/cae/model.json</a> — alignment corpus map</li>
+      <li><a href="/abe---flag/cff/inputs.csv">/cff/inputs.csv</a> — funding forensics input</li>
+      <li><a href="/abe---flag/affe/index.html">/affe/index.html</a> — AFFE interface & logic</li>
+      <li><a href="/abe---flag/ccri/inputs.json">/ccri/inputs.json</a> — CCRI scenarios</li>
       <li><a href="/abe---flag/macro/model.html">/macro/model.html</a> — formal equations</li>
       <li><a href="https://doi.org/10.5281/zenodo.17586107">DOI 10.5281/zenodo.17586107</a> — permanent archive</li>
     </ul>
-  </div>
+  </section>
+
 </main>
 
-<footer>
-  CC BY-NC 4.0 · DOI <a href="https://doi.org/10.5281/zenodo.17586107">10.5281/zenodo.17586107</a> · Integrity only — never for sale.
+<footer class="abe-footer">
+  <p>
+    CC BY-NC 4.0 · DOI <a href="https://doi.org/10.5281/zenodo.17586107">10.5281/zenodo.17586107</a> · Integrity only — never for sale.
+  </p>
 </footer>
 
 <script src="/abe---flag/system/integrity.js"></script>
 <script>
-// ---------- helpers ----------
-const money = n => {
-  const v = Number(n);
-  if (!isFinite(v)) return '—';
-  try {
-    return new Intl.NumberFormat(undefined,{
-      style:'currency',currency:'USD',maximumFractionDigits:0
-    }).format(v);
-  } catch {
-    return '$'+Math.round(v).toLocaleString();
-  }
-};
+(function(){
+  const fmtMoney = n => {
+    const v = Number(n);
+    if(!isFinite(v)) return '—';
+    try{
+      return new Intl.NumberFormat(undefined,{style:'currency',currency:'USD',maximumFractionDigits:0}).format(v);
+    }catch(_){
+      return '$'+Math.round(v).toLocaleString();
+    }
+  };
 
-// CFF local read
-function readCff(){
-  let off = 0;
-  let ctx = null;
-  try{
-    const raw = localStorage.getItem('ABE_CFF_OFF_MISSION_TOTAL');
-    if(raw) off = Number(raw) || 0;
-    const meta = localStorage.getItem('ABE_CFF_CONTEXT');
-    if(meta) ctx = JSON.parse(meta);
-  }catch(_){}
-  return {off,ctx};
-}
-
-(async function init(){
-  const kCibs  = document.getElementById('kpi-cibs-total');
-  const kBase  = document.getElementById('kpi-ciri-total');
-  const kCff   = document.getElementById('kpi-cff-off');
-  const kTotal = document.getElementById('kpi-total-plus-cff');
-  const kIdx   = document.getElementById('kpi-ciri');
-  const kRoi   = document.getElementById('kpi-roi');
-  const cffBanner = document.getElementById('cff-context');
-
-  // ----- KPIs -----
-  async function loadKpis(){
+  async function loadKPIs(){
     // CIBS total
     try{
       const r = await fetch('/abe---flag/cibs/auto_budget.csv',{cache:'no-store'});
@@ -227,13 +154,10 @@ function readCff(){
       const total = lines.slice(1).reduce((s,line)=>{
         const v = Number(line.split(',')[1]); return s + (isFinite(v)?v:0);
       },0);
-      kCibs.textContent = money(total);
+      document.getElementById('kpi-cibs-total').textContent = fmtMoney(total);
     }catch(_){}
 
-    // CIRI base
-    let totalBase = NaN;
-    let idx = NaN;
-    let roi = NaN;
+    // CIRI derived
     try{
       const r = await fetch('/abe---flag/ciri/inputs.csv',{cache:'no-store'});
       const t = await r.text();
@@ -247,99 +171,103 @@ function readCff(){
             pe=o.employment_probability, W=o.avg_monthly_wage, L=o.expected_lawsuits,
             A=o.avg_payout, lam=o.litigation_multiplier, T=o.transition_costs_one_time;
 
-      const direct = c*C+F;
-      const detention = D*J;
-      const enforce = P*E;
-      const market = H*M*m;
-      const employ = (H*pe)*W*m;
-      const litig = L*A*lam;
-      totalBase = direct + detention + enforce + market + employ + litig - T;
+      const total = (c*C+F) + (D*J) + (P*E) + (H*M*m) + ((H*pe)*W*m) + (L*A*lam) - T;
       const K = 2_000_000_000;
-      idx = 1 - Math.exp(- totalBase / K);
-      roi = totalBase / Math.max(1,c);
-      kBase.textContent = money(totalBase);
-      kIdx.textContent = idx.toFixed(2);
-      kRoi.textContent = money(roi);
+      const CIRI = 1 - Math.exp(- total / K);
+      const ROI  = total / Math.max(1,c);
+
+      document.getElementById('kpi-ciri-total').textContent = fmtMoney(total);
+      document.getElementById('kpi-ciri').textContent       = CIRI.toFixed(2);
+      document.getElementById('kpi-roi').textContent        = fmtMoney(ROI);
     }catch(_){}
-
-    // CFF local + combined
-    const {off,ctx} = readCff();
-    if(off && off > 0){
-      kCff.textContent = money(off);
-      const totalPlus = (isFinite(totalBase)?totalBase:0) + off;
-      kTotal.textContent = money(totalPlus);
-      cffBanner.classList.remove('banner-warn');
-      cffBanner.classList.add('banner-ok');
-      cffBanner.innerHTML =
-        `CFF OFF_MISSION transfer detected: <strong>${money(off)}</strong> is being treated as part of the recovery pool here.<br>`+
-        `<span class="small">Context: ${
-          ctx && ctx.source ? ctx.source : 'local CFF run'
-        } · ${ctx && ctx.time ? ctx.time : 'timestamp stored locally'}</span>`;
-    }else{
-      kCff.textContent = '—';
-      const totalPlus = isFinite(totalBase)? totalBase : NaN;
-      kTotal.textContent = isFinite(totalPlus)? money(totalPlus) : '—';
-      cffBanner.classList.remove('banner-ok');
-      cffBanner.classList.add('banner-warn');
-      cffBanner.textContent =
-        'No CFF OFF_MISSION transfer detected yet. Run the CFF engine and click “Send to CIRI (local only)” to link funding misuse into this view.';
-    }
   }
-  loadKpis();
 
-  // ----- Integrity button -----
-  const btn = document.getElementById('btn-verify');
-  const dl  = document.getElementById('btn-download');
-  btn.addEventListener('click', async ()=>{
-    btn.disabled = true; btn.textContent = 'Verifying…';
-    const report = await window.runIntegrity({
-      base:'/abe---flag',
-      files:{
-        ciri:'/abe---flag/ciri/inputs.csv',
-        cibs:'/abe---flag/cibs/auto_budget.csv',
-        cff:'/abe---flag/cff/inputs.csv',
-        cdi:'/abe---flag/cdi/divergence.csv',
-        cae:'/abe---flag/cae/model.json'
-      }
-    });
+  loadKPIs();
 
-    const set = (id, s) => {
-      const el = document.getElementById(id);
-      el.className = 'status ' + (s==='ok'?'s-ok':s==='warn'?'s-warn':'s-bad');
-      el.textContent = s.toUpperCase();
-    };
-    set('b-ciri', report.modules.ciri.status);
-    set('b-cibs', report.modules.cibs.status);
-    if(report.modules.cff) set('b-cff', report.modules.cff.status);
-    set('b-cdi',  report.modules.cdi.status);
-    set('b-cae',  report.modules.cae.status);
+  const btnVerify = document.getElementById('btn-verify');
+  const btnDl     = document.getElementById('btn-download');
+  const rowsEl    = document.getElementById('result-rows');
+  const metaEl    = document.getElementById('result-meta');
+  const rawEl     = document.getElementById('raw');
 
-    const rows = [
-      ['ciri/inputs.csv',       report.modules.ciri.message, report.modules.ciri.status, report.modules.ciri.sha256],
-      ['cibs/auto_budget.csv',  report.modules.cibs.message, report.modules.cibs.status, report.modules.cibs.sha256],
-      ['cff/inputs.csv',        report.modules.cff ? report.modules.cff.message : 'included in hash set', report.modules.cff ? report.modules.cff.status : 'ok', report.modules.cff ? report.modules.cff.sha256 : '—'],
-      ['cdi/divergence.csv',    report.modules.cdi.message,  report.modules.cdi.status,  report.modules.cdi.sha256],
-      ['cae/model.json',        report.modules.cae.message,  report.modules.cae.status,  report.modules.cae.sha256],
-    ];
-    document.getElementById('result-rows').innerHTML =
-      rows.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2].toUpperCase()}</td><td class="mono">${r[3]}</td></tr>`).join('');
+  function setBeacon(id, status){
+    const el = document.getElementById(id);
+    if(!el) return;
+    el.className = 'status-pill';
+    if(status === 'ok')   el.classList.add('s-ok');
+    else if(status === 'warn') el.classList.add('s-warn');
+    else el.classList.add('s-bad');
+    el.textContent = status.toUpperCase();
+  }
 
-    document.getElementById('raw').textContent = JSON.stringify(report,null,2);
-    document.getElementById('result-meta').textContent =
-      `audit_id: ${report.audit_id} • generated_at: ${report.generated_at}`;
+  btnVerify.addEventListener('click', async ()=>{
+    btnVerify.disabled = true;
+    btnVerify.textContent = 'Verifying…';
 
-    dl.disabled = false;
-    dl.onclick = ()=>{
-      const blob = new Blob([JSON.stringify(report,null,2)],{type:'application/json'});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url; a.download = `abe_audit_${report.audit_id}.json`; a.click();
-      URL.revokeObjectURL(url);
-    };
+    try{
+      const report = await window.runIntegrity({
+        base: '/abe---flag'
+      });
 
-    btn.disabled = false; btn.textContent = 'Verify Now';
+      const m = report.modules;
+
+      setBeacon('b-ciri', m.ciri.status);
+      setBeacon('b-cibs', m.cibs.status);
+      setBeacon('b-cdi',  m.cdi.status);
+      setBeacon('b-cae',  m.cae.status);
+      setBeacon('b-cff',  m.cff.status);
+      setBeacon('b-affe', m.affe.status);
+      setBeacon('b-ccri', m.ccri.status);
+
+      const rowData = [
+        ['ciri/inputs.csv',        m.ciri],
+        ['cibs/auto_budget.csv',   m.cibs],
+        ['cdi/divergence.csv',     m.cdi],
+        ['cae/model.json',         m.cae],
+        ['cff/inputs.csv',         m.cff],
+        ['affe/index.html',        m.affe],
+        ['ccri/inputs.json',       m.ccri]
+      ];
+
+      rowsEl.innerHTML = rowData.map(([name,mod])=>{
+        const shortHash = mod.sha256 && mod.sha256.length > 20
+          ? mod.sha256.slice(0,20) + '…'
+          : (mod.sha256 || 'N/A');
+        const safeMsg = (mod.message || '').replace(/</g,'&lt;');
+        return `
+          <tr>
+            <td>${name}</td>
+            <td>${safeMsg}</td>
+            <td>${mod.status.toUpperCase()}</td>
+            <td class="mono hash-cell" title="${mod.sha256 || ''}">${shortHash}</td>
+          </tr>
+        `;
+      }).join('');
+
+      rawEl.textContent = JSON.stringify(report,null,2);
+      metaEl.textContent = `audit_id: ${report.audit_id} • generated_at: ${report.generated_at}`;
+
+      btnDl.disabled = false;
+      btnDl.onclick = ()=>{
+        const blob = new Blob([JSON.stringify(report,null,2)],{type:'application/json'});
+        const url  = URL.createObjectURL(blob);
+        const a    = document.createElement('a');
+        a.href = url;
+        a.download = `abe_audit_${report.audit_id}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+      };
+
+    }catch(err){
+      rowsEl.innerHTML = `<tr><td colspan="4">Integrity check failed: ${err.message}</td></tr>`;
+      rawEl.textContent = String(err);
+      metaEl.textContent = '';
+    }finally{
+      btnVerify.disabled = false;
+      btnVerify.textContent = 'Verify Now';
+    }
   });
 })();
 </script>
 </body>
-</html>
+      </html>
