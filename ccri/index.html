@@ -6,87 +6,278 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <base href="/abe---flag/">
   <link rel="stylesheet" href="abe-patch/assets/abe-patch.css" />
+  <style>
+    .ccri-wrap{max-width:1100px;margin:0 auto;padding:1.2rem 1rem 3rem}
+    .ccri-grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
+    .ccri-table{width:100%;border-collapse:collapse;font-size:.9rem;margin-top:.4rem}
+    .ccri-table th,.ccri-table td{
+      border:1px solid rgba(255,255,255,.08);
+      padding:.45rem .55rem;
+      text-align:left;
+    }
+    .ccri-table th{background:rgba(255,255,255,.04)}
+    .pill{
+      display:inline-block;padding:.1rem .55rem;border-radius:999px;
+      font-size:.8rem;border:1px solid rgba(255,255,255,.12)
+    }
+    .pill-low{border-color:#4bd28f;color:#4bd28f}
+    .pill-mod{border-color:#fff750;color:#fff750}
+    .pill-high{border-color:#ff6b6b;color:#ff6b6b}
+    .small-note{font-size:.85rem;color:#9fb3c8;margin-top:.25rem}
+  </style>
 </head>
 <body class="abe-page">
 
-  <header class="abe-header">
-    <h1>CCRI — Consumer Credit Risk Integrity</h1>
-    <p class="tagline">
-      Measuring how credit, banking, and auto lending are shaped by lawful data — or poisoned by unlawful transportation overreach.
+<header class="abe-header">
+  <h1>CCRI — Consumer Credit Risk Integrity</h1>
+  <p class="tagline">
+    Measures how credit, banking, and auto lending are shaped by lawful data — or poisoned by unlawful transportation overreach.
+  </p>
+  <nav class="chip-row">
+    <a class="chip" href="index.html">ABE Home</a>
+    <a class="chip" href="ciri/index.html">CIRI</a>
+    <a class="chip" href="cff/index.html">CFF</a>
+    <a class="chip" href="cibs/index.html">CIBS</a>
+    <a class="chip" href="affe/index.html">AFFE</a>
+    <a class="chip chip-alt" href="system/index.html">System Map</a>
+  </nav>
+</header>
+
+<main class="abe-main ccri-wrap">
+
+  <section class="card">
+    <h2>What CCRI Does</h2>
+    <p>
+      CCRI evaluates how lenders, dealers, and underwriters use data when deciding who gets access to
+      credit and vehicles. It flags when:
     </p>
-    <nav class="chip-row">
-      <a class="chip" href="index.html">ABE Home</a>
-      <a class="chip" href="ciri/index.html">CIRI</a>
-      <a class="chip" href="cff/index.html">CFF</a>
-      <a class="chip" href="cibs/index.html">CIBS</a>
-      <a class="chip" href="affe/index.html">AFFE</a>
-      <a class="chip chip-alt" href="system/index.html">System Map</a>
-    </nav>
-  </header>
+    <ul>
+      <li>DMV or DOT data is used for non–DOT-regulated citizens,</li>
+      <li>license status is a gatekeeper for basic economic mobility, or</li>
+      <li>state-created barriers quietly drive private credit decisions.</li>
+    </ul>
+    <p>
+      CCRI never scores <em>people</em>. It scores the <strong>systems and rules</strong> that
+      stand between people and lawful access to credit, transportation, and work.
+    </p>
+  </section>
 
-  <main class="abe-main">
+  <section class="card">
+    <h2>Inputs</h2>
+    <p>
+      CCRI reads scenarios defined in <code>ccri/inputs.json</code>.
+      Each scenario represents a specific lender, dealership, or underwriting policy set.
+    </p>
+    <p class="small-note">
+      You can edit <code>ccri/inputs.json</code> directly in the repo, then refresh this page to see new results.
+    </p>
+    <p>
+      <a class="btn" href="ccri/inputs.json" download>Download inputs.json</a>
+      <a class="btn btn-ghost" href="ccri/README.md">Read CCRI documentation</a>
+    </p>
+  </section>
 
-    <section class="card">
-      <h2>What CCRI Does</h2>
-      <p>
-        CCRI evaluates how lenders, dealers, and underwriters use data when deciding who gets access to
-        credit and vehicles. It flags when:
-      </p>
-      <ul>
-        <li>DMV or DOT data is used for non–DOT-regulated citizens.</li>
-        <li>License status or traffic enforcement is treated as a gatekeeper for basic economic mobility.</li>
-        <li>State-created barriers are silently driving private credit decisions.</li>
-      </ul>
-      <p>
-        CCRI never scores people. It scores the <strong>systems</strong> and <strong>rules</strong>
-        that stand between people and lawful access to credit, transportation, and work.
-      </p>
-    </section>
+  <section class="card">
+    <h2>Scores & Risk Tiers</h2>
+    <p class="small-note">
+      Scores are computed client-side using <code>ccri/model.json</code>. Nothing leaves your browser.
+    </p>
+    <table class="ccri-table" id="results-table">
+      <thead>
+        <tr>
+          <th>Scenario</th>
+          <th>Jurisdiction</th>
+          <th>Institution</th>
+          <th>Score (0–100)</th>
+          <th>Risk Tier</th>
+          <th>DMV/DOT Dependence</th>
+        </tr>
+      </thead>
+      <tbody id="results-body">
+        <tr><td colspan="6">Loading model…</td></tr>
+      </tbody>
+    </table>
+    <p class="small-note" id="results-summary"></p>
+    <button id="btn-export" class="btn" disabled>Download CCRI_results.csv</button>
+  </section>
 
-    <section class="card">
-      <h2>Inputs</h2>
-      <p>
-        CCRI reads scenarios defined in <code>ccri/inputs.json</code>. Each scenario represents a specific lender,
-        dealership, or underwriting policy set and describes:
-      </p>
-      <ul>
-        <li>Which data sources are used (credit bureaus, DMV, DOT, background vendors).</li>
-        <li>Whether license status is required to apply, test drive, or fund a loan.</li>
-        <li>How many applicants are denied based on DMV or license-related criteria.</li>
-        <li>Whether there is any appeal or human review path.</li>
-      </ul>
-      <p>
-        The engine then calls the shared A.B.E. constitutional layer to determine where those practices diverge
-        from federal law and the Constitution.
-      </p>
-      <p>
-        <a class="btn" href="ccri/inputs.json" download>Download inputs.json</a>
-        <a class="btn btn-ghost" href="ccri/README.md">Read CCRI documentation</a>
-      </p>
-    </section>
+</main>
 
-    <section class="card">
-      <h2>Outputs & Linkage</h2>
-      <p>
-        CCRI produces scores and metrics that are consumed by other A.B.E. modules:
-      </p>
-      <ul>
-        <li><strong>CIRI</strong>: rights and enforcement divergence tied to credit and mobility barriers.</li>
-        <li><strong>CFF</strong>: financial exposure where unlawful data is embedded in underwriting models.</li>
-        <li><strong>CIBS</strong>: how many households and how much GDP can be unlocked by correcting the rules.</li>
-        <li><strong>AFFE</strong>: long-term stability, default reductions, and community-level recovery.</li>
-      </ul>
-      <p>
-        Together, these modules show how correcting credit and lending practices can restore both
-        constitutional fidelity and economic opportunity.
-      </p>
-    </section>
+<footer class="abe-footer">
+  <p>A.B.E. — American Butterfly Effect · CCRI module (local-only scoring)</p>
+</footer>
 
-  </main>
+<script>
+(async function(){
+  const bodyEl   = document.getElementById('results-body');
+  const sumEl    = document.getElementById('results-summary');
+  const btnExport= document.getElementById('btn-export');
 
-  <footer class="abe-footer">
-    <p>A.B.E. — American Butterfly Effect · CCRI module</p>
-  </footer>
+  async function loadJSON(path){
+    const r = await fetch(path,{cache:'no-store'});
+    if(!r.ok) throw new Error('Failed to load '+path);
+    return r.json();
+  }
 
+  function tierFromScore(score, thresholds){
+    if(score <= thresholds.high_risk)   return 'HIGH';
+    if(score <= thresholds.moderate_risk) return 'MODERATE';
+    if(score <= thresholds.low_risk)    return 'LOW';
+    return 'LOW';
+  }
+
+  function pillClass(tier){
+    if(tier==='HIGH') return 'pill pill-high';
+    if(tier==='MODERATE') return 'pill pill-mod';
+    return 'pill pill-low';
+  }
+
+  try{
+    const model = await loadJSON('ccri/model.json');
+    const inp   = await loadJSON('ccri/inputs.json');
+
+    const penalties  = model.scoring_rules.penalties;
+    const thresholds = model.scoring_rules.thresholds;
+    const base       = model.scoring_rules.base_score ?? 100;
+
+    const scenarios = inp.scenarios || [];
+    if(!scenarios.length){
+      bodyEl.innerHTML = '<tr><td colspan="6">No scenarios defined in ccri/inputs.json.</td></tr>';
+      return;
+    }
+
+    const results = scenarios.map(s=>{
+      let score = base;
+      let dmvDependence = 0;
+
+      const ds = s.data_sources_used || {};
+      const dmv = s.dmv_usage_details || {};
+      const dot = s.dot_or_fmcsa_usage_details || {};
+      const lic = s.license_requirements || {};
+      const pop = s.population_impact || {};
+      const ap  = s.appeal_process || {};
+
+      // Penalty logic (mirrors your model.json intent)
+      if(ds.dmv_records && dmv.used_in_underwriting_decisions){
+        score -= penalties.uses_dmv_in_underwriting || 0;
+        dmvDependence += 2;
+      }
+      if(ds.dmv_records && dmv.used_for_pricing_or_interest_rate){
+        score -= penalties.uses_dmv_for_pricing || 0;
+        dmvDependence += 1;
+      }
+      if(lic.requires_valid_license_to_apply){
+        score -= penalties.requires_valid_license_to_apply || 0;
+        dmvDependence += 1;
+      }
+      if(lic.requires_valid_license_to_fund_loan){
+        score -= penalties.requires_valid_license_to_fund || 0;
+        dmvDependence += 1;
+      }
+      if(lic.requires_valid_license_to_test_drive){
+        score -= penalties.requires_valid_license_to_test_drive || 0;
+      }
+
+      const drOverall = pop.denial_rate_overall ?? 0;
+      const drNoLic   = pop.denial_rate_for_suspended_or_no_license ?? 0;
+      if(drNoLic > drOverall + 0.15){
+        score -= penalties.denial_rate_high_for_no_license || 0;
+        dmvDependence += 1;
+      }
+
+      if(ap.has_appeal_mechanism === false || ap.human_review_available === false){
+        score -= penalties.no_appeal_process || 0;
+      }
+
+      if(ds.dot_or_fmcsa_records && dot.is_dot_regulated_population === false){
+        score -= penalties.uses_dot_or_fmcsa_records_for_consumers || 0;
+        dmvDependence += 2;
+      }
+
+      if(score < 0) score = 0;
+      if(score > 100) score = 100;
+
+      const tier = tierFromScore(score, thresholds);
+      const cei  = 1 - (score/100); // Constitutional Exposure Index
+
+      // very rough “economic linkage” hints (not wired into CIRI automatically, but ready)
+      const apps = pop.applications_per_year || 0;
+      const affected = pop.estimated_noncommercial_applicants_affected || Math.round(apps * (drNoLic || drOverall));
+      const avgHarm = 2500; // placeholder per-application harm
+      const recoveryHint = cei * affected * avgHarm;
+
+      return {
+        id: s.id,
+        jurisdiction: s.jurisdiction || '',
+        institution: s.institution_name || s.institution_type || '',
+        score, tier, dmvDependence,
+        exposure_index: cei,
+        applications: apps,
+        affected,
+        recovery_hint_usd: recoveryHint
+      };
+    });
+
+    // Render table
+    bodyEl.innerHTML = results.map(r=>`
+      <tr>
+        <td>${r.id}</td>
+        <td>${r.jurisdiction}</td>
+        <td>${r.institution}</td>
+        <td>${r.score.toFixed(0)}</td>
+        <td><span class="${pillClass(r.tier)}">${r.tier}</span></td>
+        <td>${r.dmvDependence === 0 ? 'Low' : r.dmvDependence === 1 ? 'Medium' : 'High'}</td>
+      </tr>
+    `).join('');
+
+    const high = results.filter(r=>r.tier==='HIGH').length;
+    const mod  = results.filter(r=>r.tier==='MODERATE').length;
+    const low  = results.filter(r=>r.tier==='LOW').length;
+    sumEl.textContent =
+      `Scenarios scored: ${results.length} · HIGH: ${high} · MODERATE: ${mod} · LOW: ${low}. ` +
+      `Use the CSV export for deeper linkage into CIRI/CFF if needed.`;
+
+    // store for other modules if we want to read later
+    try{
+      localStorage.setItem('ABE_CCRI_LAST_RESULTS', JSON.stringify(results));
+    }catch(_){}
+
+    btnExport.disabled = false;
+    btnExport.onclick = ()=>{
+      const head = [
+        'id','jurisdiction','institution',
+        'score','tier','dmv_dependence',
+        'exposure_index','applications_per_year',
+        'estimated_affected_noncommercial','recovery_hint_usd'
+      ];
+      const body = results.map(r=>[
+        r.id,
+        r.jurisdiction,
+        `"${r.institution.replace(/"/g,'""')}"`,
+        r.score.toFixed(0),
+        r.tier,
+        r.dmvDependence,
+        r.exposure_index.toFixed(4),
+        r.applications,
+        r.affected,
+        Math.round(r.recovery_hint_usd)
+      ].join(','));
+      const csv = [head.join(',')].concat(body).join('\n');
+      const blob = new Blob([csv],{type:'text/csv'});
+      const url  = URL.createObjectURL(blob);
+      const a    = document.createElement('a');
+      a.href = url;
+      a.download = 'CCRI_results.csv';
+      a.click();
+      URL.revokeObjectURL(url);
+    };
+
+  }catch(err){
+    console.error(err);
+    bodyEl.innerHTML = `<tr><td colspan="6">Error loading model or inputs: ${err.message}</td></tr>`;
+    sumEl.textContent = 'Check that ccri/model.json and ccri/inputs.json exist and are valid JSON.';
+  }
+})();
+</script>
 </body>
 </html>
