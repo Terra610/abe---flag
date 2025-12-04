@@ -1,0 +1,89 @@
+{
+  "version": "1.0",
+  "updated": "2025-11-29T00:00:00Z",
+  "module": "CDA",
+  "authority": {
+    "name": "A.B.E. — Constitutional Divergence Analyzer",
+    "license": "CC BY-NC 4.0"
+  },
+  "dimensions": {
+    "scope_alignment": {
+      "weight": 0.36,
+      "description": "Whether the rule is being applied within its lawful commercial/non-commercial scope."
+    },
+    "preemption_fidelity": {
+      "weight": 0.33,
+      "description": "Whether state practice respects federal supremacy and preemption boundaries."
+    },
+    "funding_integrity": {
+      "weight": 0.18,
+      "description": "Whether federal funding (e.g., MCSAP) is used within statutory and regulatory conditions."
+    },
+    "rights_and_process": {
+      "weight": 0.13,
+      "description": "Whether application respects right to travel, due process, and equal treatment."
+    }
+  },
+  "flag_definitions": {
+    "scope_noncommercial_treated_as_commercial": {
+      "dimension": "scope_alignment",
+      "severity": 1.0,
+      "description": "State is treating non-commercial citizens as if they were commercial/DOT-regulated."
+    },
+    "preemption_conflict": {
+      "dimension": "preemption_fidelity",
+      "severity": 1.0,
+      "description": "State rule conflicts with or expands beyond federal commercial scope under 49 U.S.C./49 CFR."
+    },
+    "preemption_field": {
+      "dimension": "preemption_fidelity",
+      "severity": 0.9,
+      "description": "State appears to legislate in a field already occupied by Congress (field preemption)."
+    },
+    "ultra_vires_enforcement": {
+      "dimension": "scope_alignment",
+      "severity": 0.9,
+      "description": "Agency conduct goes beyond what its enabling statutes actually authorize."
+    },
+    "mcsap_off_mission": {
+      "dimension": "funding_integrity",
+      "severity": 0.9,
+      "description": "MCSAP or similar commercial enforcement funding is used for non-commercial activity."
+    },
+    "funding_conditions_ignored": {
+      "dimension": "funding_integrity",
+      "severity": 0.8,
+      "description": "Practice contradicts federal funding conditions or FMCSR adoption requirements."
+    },
+    "funding_nontransparent": {
+      "dimension": "funding_integrity",
+      "severity": 0.4,
+      "description": "Funding source and statutory authority are not transparent to affected people."
+    },
+    "right_to_travel_burdened": {
+      "dimension": "rights_and_process",
+      "severity": 0.85,
+      "description": "Practice burdens the right to travel for people not engaged in commerce."
+    },
+    "due_process_defects": {
+      "dimension": "rights_and_process",
+      "severity": 0.8,
+      "description": "Gaps in notice, hearing, or appeal before rights are restricted."
+    },
+    "selective_application": {
+      "dimension": "rights_and_process",
+      "severity": 0.5,
+      "description": "Rule is applied selectively or arbitrarily across similar cases."
+    }
+  },
+  "scoring": {
+    "method": "weighted_flag_sum_clipped_0_1",
+    "notes": "Client-side CDA UI uses a simple sum of flag-based weights, clipped to [0,1]. That value is suitable as an input to CDI and CIRI.",
+    "dimension_weights": {
+      "scope_alignment": 0.36,
+      "preemption_fidelity": 0.33,
+      "funding_integrity": 0.18,
+      "rights_and_process": 0.13
+    }
+  }
+}
