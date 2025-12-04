@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CDA_scenario_v1",
+  "description": "Schema for CDA (Constitutional Divergence Analyzer) scenario JSON.",
+  "type": "object",
+  "required": ["version", "module", "statute_name", "level", "population", "flags", "divergence_score"],
+  "additionalProperties": false,
+  "properties": {
+    "version": {
+      "type": "string",
+      "const": "1.0"
+    },
+    "module": {
+      "type": "string",
+      "const": "CDA"
+    },
+    "statute_name": {
+      "type": "string",
+      "description": "Human-readable name or label for the statute or policy."
+    },
+    "jurisdiction": {
+      "type": "string",
+      "description": "State, local, or federal jurisdiction label (e.g., 'Iowa', 'Federal')."
+    },
+    "level": {
+      "type": "string",
+      "enum": ["state", "federal"],
+      "description": "Whether this scenario is a state/local rule or a federal rule."
+    },
+    "population": {
+      "type": "string",
+      "enum": ["non_commercial", "commercial", "mixed"],
+      "description": "Primary population being impacted by this practice."
+    },
+    "citations": {
+      "type": "array",
+      "description": "Optional list of specific code or CFR citations.",
+      "items": { "type": "string" }
+    },
+    "funding_streams": {
+      "type": "array",
+      "description": "Optional list of related funding streams (MCSAP, highway grants, etc.).",
+      "items": { "type": "string" }
+    },
+    "flags": {
+      "type": "object",
+      "description": "Normalized divergence flags used by CDI/CIRI.",
+      "additionalProperties": false,
+      "properties": {
+        "scope_noncommercial_treated_as_commercial": { "type": "boolean" },
+        "preemption_conflict": { "type": "boolean" },
+        "preemption_field": { "type": "boolean" },
+        "ultra_vires_enforcement": { "type": "boolean" },
+        "mcsap_off_mission": { "type": "boolean" },
+        "funding_conditions_ignored": { "type": "boolean" },
+        "funding_nontransparent": { "type": "boolean" },
+        "right_to_travel_burdened": { "type": "boolean" },
+        "due_process_defects": { "type": "boolean" },
+        "selective_application": { "type": "boolean" }
+      }
+    },
+    "divergence_score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Suggested 0–1 divergence score derived from flags."
+    },
+    "notes": {
+      "type": "string",
+      "description": "Optional freeform notes about this scenario."
+    }
+  }
+}
