@@ -1,0 +1,62 @@
+{
+  "version": "1.0",
+  "updated": "2025-11-28T00:00:00Z",
+  "module": "Intake",
+  "authority": {
+    "name": "A.B.E. — Intake · Document + OCR Bridge",
+    "license": "CC BY-NC 4.0"
+  },
+  "doc_types": [
+    {
+      "key": "traffic_ticket",
+      "label": "Traffic / citation ticket",
+      "notes": "Photos or scans of traffic tickets, citations, and related court papers."
+    },
+    {
+      "key": "cps_case",
+      "label": "CPS / child welfare",
+      "notes": "Case files, notices, plans, and correspondence from CPS or equivalent agencies."
+    },
+    {
+      "key": "policy_memo",
+      "label": "Policy / memo",
+      "notes": "Internal policy memos, directives, enforcement guidance, or regulatory FAQs."
+    },
+    {
+      "key": "loan_contract",
+      "label": "Loan or credit contract",
+      "notes": "Retail installment contracts, auto loans, bank finance agreements, etc."
+    },
+    {
+      "key": "generic_case_text",
+      "label": "Plain text description",
+      "notes": "Free-form description of a situation when no formal document is available."
+    }
+  ],
+  "targets": [
+    {
+      "key": "CIRI",
+      "label": "CIRI — Integrity ROI Engine",
+      "description": "Builds a one-row CIRI inputs.csv for economic harm / recovery."
+    },
+    {
+      "key": "CDA",
+      "label": "CDA — Constitutional Divergence Analyzer",
+      "description": "Creates a structured JSON scenario with alleged divergence flags."
+    },
+    {
+      "key": "CFF",
+      "label": "CFF — Constitutional Funding Forensics",
+      "description": "Adds rows to a funding CSV if the document reveals ON/OFF-mission spending."
+    },
+    {
+      "key": "CCRI",
+      "label": "CCRI — Consumer Credit Risk Integrity",
+      "description": "Creates a CCRI scenario describing how data and licensing are used in credit decisions."
+    }
+  ],
+  "defaults": {
+    "ciri_scale_K": 2000000000,
+    "currency": "USD"
+  }
+}
