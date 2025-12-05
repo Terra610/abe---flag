@@ -168,6 +168,16 @@
       ]
     },
     {
+      "from": "cdi/divergence.csv",
+      "to": "cda/model.json findings",
+      "control": "interpretation_of_divergence_against_constitutional_doctrine",
+      "evidence": [
+        "/abe---flag/cda/index.html",
+        "/abe---flag/cda/model.json",
+        "/abe---flag/cda/schema.json"
+      ]
+    },
+    {
       "from": "ciri/inputs.csv",
       "to": "ciri/index.html KPIs",
       "control": "reproducible_browser_math_and_CLI_parity",
