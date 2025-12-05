@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <title>Intake + OCR → CIRI | A.B.E.</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <base href="/abe---flag/">
+  <link rel="stylesheet" href="abe-patch/assets/abe-patch.css"/>
+</head>
+<body class="abe-page">
+<header class="abe-header">
+  <h1>Intake — OCR to CIRI</h1>
+  <p class="tagline">
+    Upload a document or image once. We’ll read it locally, build a CIRI-ready CSV, and pass it into the engine.
+  </p>
+</header>
+
+<main class="abe-main">
+  <section class="card">
+    <h2>Step 1 — Upload your document or image</h2>
+    <input type="file" id="file-input" accept="image/*,.png,.jpg,.jpeg"/>
+    <p id="ocr-status" class="cda-small"></p>
+    <textarea id="ocr-text" class="cda-textarea" placeholder="OCR text will appear here..." readonly></textarea>
+  </section>
+
+  <section class="card">
+    <h2>Step 2 — Review extracted CIRI inputs</h2>
+    <p class="cda-small">
+      We’ll try to guess some key values. You can adjust them before running CIRI.
+    </p>
+    <div id="ciri-form">
+      <label>Cases avoided
+        <input id="f-cases-avoided" type="number" min="0" step="1">
+      </label>
+      <label>Jail days avoided
+        <input id="f-jail-days-avoided" type="number" min="0" step="1">
+      </label>
+      <label>Total fees canceled (USD)
+        <input id="f-fees-canceled" type="number" min="0" step="0.01">
+      </label>
+      <!-- add any other core CIRI fields you want here -->
+    </div>
+    <button id="btn-build-csv" class="btn">Generate CIRI CSV + Send to CIRI</button>
+    <button id="btn-download-csv" class="btn btn-ghost" disabled>Download CSV</button>
+  </section>
+</main>
+
+<footer class="abe-footer">
+  <p>A.B.E. — Intake + OCR Bridge · CC BY-NC 4.0 · All processing local, never uploaded.</p>
+</footer>
+
+<!-- Tesseract.js from CDN -->
+<script src="https://unpkg.com/tesseract.js@5.0.0/dist/tesseract.min.js"></script>
+<script src="system/integrity.js"></script> <!-- if you want hashing here too -->
+<script src="intake.js"></script> <!-- Your JS logic -->
+</body>
+</html>
