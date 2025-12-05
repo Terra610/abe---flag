@@ -1,0 +1,87 @@
+{
+  "version": "1.0",
+  "updated": "2025-12-05T00:00:00Z",
+  "module": "AFFE",
+  "authority": {
+    "name": "A.B.E. — American Funding & Fidelity Explorer (AFFE)",
+    "license": "CC BY-NC 4.0",
+    "notes": "AFFE reads structured funding data (usually from CFF) and highlights patterns of on-mission vs off-mission use, statutory drift, and preemption risk."
+  },
+  "expected_inputs": {
+    "source": "cff/inputs.csv or compatible CSV",
+    "description": "AFFE expects a CSV similar to CFF, with at least program_name, federal_authority_citation, fiscal_year, state_or_jurisdiction, agency, line_item_description, spend_category_code, amount_usd.",
+    "required_columns": [
+      "program_name",
+      "federal_authority_citation",
+      "fiscal_year",
+      "state_or_jurisdiction",
+      "agency",
+      "line_item_description",
+      "spend_category_code",
+      "amount_usd"
+    ],
+    "spend_category_code_values": [
+      "ON_MISSION",
+      "OFF_MISSION",
+      "UNCLEAR"
+    ]
+  },
+  "dimensions": {
+    "funding_alignment": {
+      "weight": 0.35,
+      "description": "How much of total spend is clearly within statutory scope and program purpose."
+    },
+    "statutory_clarity": {
+      "weight": 0.20,
+      "description": "How clearly each line item can be tied back to explicit statutory authority."
+    },
+    "preemption_risk": {
+      "weight": 0.25,
+      "description": "Risk that state-level practice or spending conflicts with controlling federal law or conditions on federal funds."
+    },
+    "equity_impact": {
+      "weight": 0.20,
+      "description": "Whether off-mission spend tends to land hardest on vulnerable populations (e.g., over-enforcement vs. public-facing safety)."
+    }
+  },
+  "aggregate_metrics": {
+    "totals": {
+      "on_mission_amount_field": "ON_MISSION",
+      "off_mission_amount_field": "OFF_MISSION",
+      "unclear_amount_field": "UNCLEAR"
+    },
+    "ratios": {
+      "off_mission_share": "OFF_MISSION / (ON_MISSION + OFF_MISSION + UNCLEAR)",
+      "unclear_share": "UNCLEAR / (ON_MISSION + OFF_MISSION + UNCLEAR)"
+    }
+  },
+  "scoring_rules": {
+    "base_score": 100,
+    "penalties": {
+      "off_mission_share_gt_10pct": 10,
+      "off_mission_share_gt_25pct": 20,
+      "off_mission_share_gt_40pct": 35,
+      "unclear_share_gt_15pct": 10,
+      "unclear_share_gt_30pct": 20,
+      "preemption_flag_present": 15
+    },
+    "thresholds": {
+      "high_risk": 40,
+      "moderate_risk": 70,
+      "low_risk": 85
+    }
+  },
+  "narrative_templates": {
+    "high_risk": "This portfolio shows a high share of OFF_MISSION or UNCLEAR spend, combined with potential preemption conflicts. AFFE classifies it as HIGH RISK for constitutional and statutory misalignment.",
+    "moderate_risk": "This portfolio mixes strong on-mission use with notable OFF_MISSION or UNCLEAR lines that need deeper audit. AFFE classifies it as MODERATE RISK.",
+    "low_risk": "This portfolio is dominated by ON_MISSION spending with relatively low OFF_MISSION and UNCLEAR usage. AFFE classifies it as LOW RISK, with remaining work focused on documentation and clarity."
+  },
+  "linkage": {
+    "downstream_modules": [
+      "CIRI",
+      "CFF",
+      "Integration"
+    ],
+    "notes": "AFFE is a visual and analytical companion to CFF; CFF handles line-level categorization, AFFE shows patterns, proportions, and risk bands."
+  }
+}
