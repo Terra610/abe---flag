@@ -1,203 +1,145 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>Intake — Document + OCR Bridge | A.B.E.</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <base href="/abe---flag/">
-  <link rel="stylesheet" href="abe-patch/assets/abe-patch.css" />
+  <link rel="stylesheet" href="abe-patch/assets/abe-patch.css"/>
+  <style>
+    :root{
+      --bg:#05070d;--panel:#111522;--panel2:#0b0f19;
+      --ink:#e8edf7;--muted:#9ba5bb;--accent:#5ddfff;
+      --line:rgba(255,255,255,.08);--ok:#32d88f;--warn:#ffba5c;--bad:#ff6b6b;
+    }
+    body{background:var(--bg);color:var(--ink);margin:0;font:15px/1.6 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+    a{color:var(--accent);text-decoration:none}
+    a:hover{text-decoration:underline}
+    .wrap{max-width:1100px;margin:0 auto;padding:1.5rem 1rem 3rem}
+    .row{display:flex;flex-wrap:wrap;gap:1rem;align-items:center}
+    .stack{display:flex;flex-direction:column;gap:.5rem}
+    .pill{display:inline-flex;align-items:center;gap:.25rem;padding:.15rem .6rem;border-radius:999px;
+          font-size:.8rem;border:1px solid var(--line);color:var(--muted)}
+    .pill-ok{border-color:var(--ok);color:var(--ok)}
+    .pill-warn{border-color:var(--warn);color:var(--warn)}
+    .pill-bad{border-color:var(--bad);color:var(--bad)}
+    .field-label{font-size:.85rem;color:var(--muted)}
+    input[type="file"]{font-size:.9rem}
+    select,textarea,input[type="text"]{
+      background:var(--panel2);border-radius:8px;border:1px solid var(--line);
+      color:var(--ink);padding:.45rem .55rem;font-size:.9rem
+    }
+    textarea{width:100%;min-height:180px;resize:vertical}
+    .targets label{margin-right:.75rem;font-size:.86rem}
+    .mono{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.85rem}
+    #status{font-size:.86rem;color:var(--muted);margin-top:.35rem;white-space:pre-wrap}
+    #extracted-preview{background:var(--panel2);border-radius:8px;border:1px solid var(--line);
+      padding:.5rem .6rem;font-size:.85rem;max-height:200px;overflow:auto}
+  </style>
 </head>
 <body class="abe-page">
 
 <header class="abe-header">
-  <h1>Intake — Document + OCR Bridge</h1>
-  <p class="tagline">
-    Front door for tickets, scans, PDFs, and case write-ups. Everything runs locally in your browser —
-    no servers, no tracking, no uploads to anyone.
-  </p>
-  <nav class="chip-row">
-    <a class="chip" href="index.html">ABE Home</a>
-    <a class="chip" href="start/index.html">Start Here</a>
-    <a class="chip" href="ciri/index.html">CIRI</a>
-    <a class="chip" href="cda/index.html">CDA</a>
-    <a class="chip" href="cff/index.html">CFF</a>
-    <a class="chip" href="ccri/index.html">CCRI</a>
-    <a class="chip" href="cibs/index.html">CIBS</a>
-    <a class="chip" href="integration/index.html">Integration</a>
-    <a class="chip chip-alt" href="system/index.html">System Map</a>
-  </nav>
+  <div class="wrap">
+    <a class="chip" href="/abe---flag/index.html">← A.B.E. Home</a>
+    <h1>Intake — Document + OCR Bridge</h1>
+    <p class="tagline">
+      Front door for real people: upload a ticket, CPS letter, loan contract, or memo — Intake turns it into
+      clean text and an <code>intake_artifact.json</code> that CIRI, CDA, CFF, and CCRI can use.
+      Everything runs locally in your browser.
+    </p>
+  </div>
 </header>
 
 <main class="abe-main">
+  <div class="wrap">
 
-  <!-- What this does -->
-  <section class="card">
-    <h2>What Intake Does</h2>
-    <p>
-      Most people don’t start with a CSV — they start with a <strong>ticket, letter, PDF, or contract</strong>.
-      Intake turns that one document into structured data that the rest of A.B.E. can understand.
-    </p>
-    <ul>
-      <li>Reads text from images and PDFs using in-browser OCR (Tesseract.js).</li>
-      <li>Lets you edit/confirm the important fields in plain language.</li>
-      <li>Builds:
-        <strong>Intake artifact JSON</strong> + optional
-        <strong>CIRI-ready CSV</strong> (and later CDA / CFF / CCRI stubs).
-      </li>
-    </ul>
-    <p class="small-note">
-      All processing happens locally. Your file never leaves your device. You decide what to keep,
-      what to delete, and what (if anything) to publish.
-    </p>
-  </section>
-
-  <!-- Upload + document type -->
-  <section class="card">
-    <h2>1. Upload your document</h2>
-    <p>
-      You can upload: ticket photos, CPS letters, policy memos, loan contracts, or a simple
-      text file describing what happened.
-    </p>
-
-    <div class="field-row">
-      <label for="file" class="field-label">Choose file</label>
-      <input id="file" type="file" accept=".png,.jpg,.jpeg,.pdf,.txt,.doc,.docx,.rtf,.html,.htm" />
-    </div>
-
-    <div class="field-row" style="margin-top:0.75rem;">
-      <label for="doc-type" class="field-label">What kind of document is this?</label>
-      <select id="doc-type">
-        <option value="traffic_ticket">Traffic ticket / citation</option>
-        <option value="cps_case">CPS / child welfare notice</option>
-        <option value="policy_memo">Policy memo / internal directive</option>
-        <option value="loan_contract">Loan or finance contract</option>
-        <option value="generic_case_text">General case write-up</option>
-      </select>
-    </div>
-
-    <p class="small-note">
-      Intake will tune its field suggestions based on this type (e.g., ticket number, code sections,
-      agency, amounts, lender, APR, etc.).
-    </p>
-  </section>
-
-  <!-- Preview + extracted fields -->
-  <section class="card">
-    <h2>2. Review text & key fields</h2>
-    <p>
-      Intake uses OCR when needed, then normalizes the text. You can correct anything before creating
-      engine-ready files.
-    </p>
-
-    <div class="grid-2">
-      <div>
-        <h3>Normalized Text</h3>
-        <p class="small-note">
-          This is what the engine will actually read. You can edit freely.
-        </p>
-        <textarea id="text-normalized" rows="16" class="mono"
-          placeholder="Text will appear here after OCR / extraction…"></textarea>
-      </div>
-
-      <div>
-        <h3>Extracted Fields (editable)</h3>
-        <p class="small-note">
-          These are starter fields. You can change or clear anything that isn’t accurate.
-        </p>
-
-        <div id="extracted-fields">
-          <!-- intake.js will populate this with simple key/value rows -->
+    <!-- 1. Upload + doc type -->
+    <section class="card">
+      <h2>1. Upload your document</h2>
+      <div class="stack">
+        <div class="row">
+          <div class="stack" style="flex:2">
+            <label class="field-label">File (image, PDF, or text)</label>
+            <input type="file" id="file-input" accept=".pdf,image/*,.txt,.md,.rtf"/>
+          </div>
+          <div class="stack" style="min-width:220px">
+            <label class="field-label">Document type</label>
+            <select id="doc-type">
+              <option value="traffic_ticket">Traffic / citation ticket</option>
+              <option value="cps_case">CPS / child welfare</option>
+              <option value="loan_contract">Loan / credit contract</option>
+              <option value="policy_memo">Policy / memo / directive</option>
+              <option value="generic_case_text">Generic case description</option>
+            </select>
+          </div>
         </div>
 
-        <p class="small-note">
-          Example fields for a ticket:
-          <code>incident_date</code>,
-          <code>agency</code>,
-          <code>code_section</code>,
-          <code>fine_amount</code>,
-          <code>jail_days</code>.
-        </p>
+        <div class="row targets">
+          <span class="field-label">Which engines should this feed?</span>
+          <label><input type="checkbox" id="target-ciri" checked> CIRI</label>
+          <label><input type="checkbox" id="target-cda" checked> CDA</label>
+          <label><input type="checkbox" id="target-cff"> CFF</label>
+          <label><input type="checkbox" id="target-ccri"> CCRI</label>
+        </div>
+
+        <div class="row">
+          <button class="btn" id="btn-ocr">Run OCR / Extract Text</button>
+          <span id="ocr-status" class="pill">waiting for file…</span>
+        </div>
+        <div id="status" class="mono"></div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- Run + downloads -->
-  <section class="card">
-    <h2>3. Build engine-ready files</h2>
-    <p>
-      When you’re ready, click <strong>Process Document</strong>. Intake will:
-    </p>
-    <ul>
-      <li>Create a <strong>hash-locked Intake artifact</strong>
-        (<code>intake_artifact.json</code> style) with your normalized text + fields.</li>
-      <li>Optionally generate a single-row <strong>CIRI inputs CSV</strong> you can
-        upload straight into the CIRI calculator.</li>
-      <li>Mark which modules this scenario is connected to (CIRI, CDA, CFF, CCRI).</li>
-    </ul>
+    <!-- 2. Normalized text -->
+    <section class="card">
+      <h2>2. Review and edit the text</h2>
+      <p class="small-note">
+        Intake will auto-fill this from your document. You can edit it before generating the artifact.
+        This text is what downstream engines “see.”
+      </p>
+      <textarea id="normalized-text" placeholder="When you run OCR, the cleaned text will appear here…"></textarea>
+    </section>
 
-    <button id="btn-run-intake" class="btn">
-      Process Document
-    </button>
-
-    <div style="margin-top:1rem;">
-      <button id="btn-download-intake" class="btn btn-ghost" disabled>
-        Download Intake Artifact (JSON)
-      </button>
-
-      <button id="btn-download-ciri" class="btn btn-ghost" disabled style="margin-left:.5rem;">
-        Download CIRI CSV
-      </button>
-
-      <div id="status"
-           class="small-note mono"
-           style="margin-top:.75rem; white-space:pre-wrap;">
-        Ready. Choose a file and document type to begin.
+    <!-- 3. Extracted field preview -->
+    <section class="card">
+      <h2>3. Quick extracted-field preview</h2>
+      <p class="small-note">
+        This is a human-readable preview of the structured data Intake will embed into
+        <code>intake_artifact.json</code>. Engines like CDA, CFF, and CCRI can use this to auto-build scenarios later.
+      </p>
+      <div id="extracted-preview" class="mono small-note">
+        No artifact yet. Run OCR, then click “Generate A.B.E. Artifact”.
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- How it connects -->
-  <section class="card">
-    <h2>Where this goes in the A.B.E. engine</h2>
-    <ul class="small-note">
-      <li>
-        <strong>CIRI</strong> — Intake can emit a minimal
-        <code>ciri/inputs.csv</code> row so you can run harm + recovery
-        without touching a spreadsheet.
-      </li>
-      <li>
-        <strong>CDA</strong> — Text + fields can be turned into a
-        <em>divergence scenario</em> (how the statute or practice drifts from
-        controlling law).
-      </li>
-      <li>
-        <strong>CFF / AFFE</strong> — Funding or grant language in the doc can be
-        tagged as <code>ON_MISSION / OFF_MISSION / UNCLEAR</code>.
-      </li>
-      <li>
-        <strong>CCRI</strong> — Loan / credit docs can become CCRI scenarios
-        (how underwriting uses DMV / DOT or other unlawful data).
-      </li>
-    </ul>
-    <p class="small-note">
-      Integration will later hash the Intake artifact and any generated CSV/JSON outputs
-      and issue a <strong>SHA-256 audit receipt</strong>.
-    </p>
-  </section>
+    <!-- 4. Generate artifact -->
+    <section class="card">
+      <h2>4. Generate A.B.E. artifact</h2>
+      <p class="small-note">
+        This will create a single <code>intake_artifact.json</code> file containing:
+        hashed original file, normalized text, extracted fields, targets, and hashes for any helper files
+        (e.g., a CIRI-ready CSV row). Everything is local — you decide what to share.
+      </p>
+      <div class="row">
+        <button class="btn" id="btn-generate-artifact">Generate A.B.E. Artifact</button>
+        <button class="btn btn-ghost" id="btn-download-ciri" disabled>Download CIRI CSV (from this doc)</button>
+        <span id="artifact-status" class="pill pill-warn">no artifact yet</span>
+      </div>
+    </section>
 
+  </div>
 </main>
 
 <footer class="abe-footer">
   <p>
-    A.B.E. — American Butterfly Effect · Intake module ·
-    CC BY-NC 4.0 · DOI
-    <a href="https://doi.org/10.5281/zenodo.17586107">10.5281/zenodo.17586107</a><br />
-    Integrity only — never for sale.
+    A.B.E. Intake · CC BY-NC 4.0 · Integrity only — never for sale.
   </p>
 </footer>
 
-<!-- OCR + Intake logic -->
+<!-- OCR + PDF libs (browser-only, no tracking) -->
 <script src="https://unpkg.com/tesseract.js@5.0.3/dist/tesseract.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="intake.js"></script>
 </body>
 </html>
