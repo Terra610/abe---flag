@@ -1,213 +1,152 @@
 // intake/intake.js
-// In-browser document intake + OCR bridge for A.B.E.
-// Handles: images, PDFs (multi-page), and plain text.
-// Produces: intake_artifact.json + optional single-row CIRI CSV.
-//
-// All processing is local to the browser. No network calls.
+// Runs entirely in-browser. No network calls with user data.
+// Uses PDF.js for text PDFs and Tesseract.js for images/scanned pages.
 
 (function () {
-  const fileInput      = document.getElementById('file-input');
-  const docTypeSelect  = document.getElementById('doc-type');
-  const btnOcr         = document.getElementById('btn-ocr');
-  const ocrStatusEl    = document.getElementById('ocr-status');
-  const statusEl       = document.getElementById('status');
-  const textArea       = document.getElementById('normalized-text');
-  const previewEl      = document.getElementById('extracted-preview');
-  const btnArtifact    = document.getElementById('btn-generate-artifact');
-  const btnCiriCsv     = document.getElementById('btn-download-ciri');
-  const artifactStatus = document.getElementById('artifact-status');
+  const $ = id => document.getElementById(id);
 
-  const targetCiri = document.getElementById('target-ciri');
-  const targetCda  = document.getElementById('target-cda');
-  const targetCff  = document.getElementById('target-cff');
-  const targetCcri = document.getElementById('target-ccri');
+  const fileInput      = $('file-input');
+  const textInput      = $('text-input');
+  const docTypeSelect  = $('doc-type');
+  const tCIRI          = $('t-ciri');
+  const tCDA           = $('t-cda');
+  const tCFF           = $('t-cff');
+  const tCCRI          = $('t-ccri');
+  const btnRun         = $('run-intake');
+  const statusEl       = $('intake-status');
+  const normTextEl     = $('norm-text');
+  const fieldsEl       = $('fields-preview');
+  const btnDlIntake    = $('dl-intake-json');
+  const btnDlCiri      = $('dl-ciri-csv');
 
-  let lastArtifact = null;
-  let lastCiriCsv  = null;
+  let latestArtifact = null;
+  let latestCiriCsv  = null;
 
-  // -------- helpers --------
+  // ---------- helpers ----------
 
-  const setStatus = (msg) => {
-    statusEl.textContent = msg || '';
-  };
+  function setStatus(text, kind) {
+    statusEl.textContent = `Status: ${text}`;
+    statusEl.className = 'intake-status';
+    if (kind === 'ok')   statusEl.classList.add('pill','pill-ok');
+    if (kind === 'warn') statusEl.classList.add('pill','pill-warn');
+    if (kind === 'bad')  statusEl.classList.add('pill','pill-bad');
+  }
 
-  const setPill = (el, state, text) => {
-    el.className = 'pill';
-    if (state === 'ok') el.classList.add('pill-ok');
-    else if (state === 'warn') el.classList.add('pill-warn');
-    else if (state === 'bad') el.classList.add('pill-bad');
-    if (text) el.textContent = text;
-  };
+  function normalizeText(str) {
+    if (!str) return '';
+    return str
+      .replace(/\r\n/g, '\n')
+      .replace(/\t/g, ' ')
+      .replace(/ +/g, ' ')
+      .replace(/\n{3,}/g, '\n\n')
+      .trim();
+  }
 
-  const readFileAsArrayBuffer = (file) =>
-    new Promise((resolve, reject) => {
-      const r = new FileReader();
-      r.onload = () => resolve(r.result);
-      r.onerror = reject;
-      r.readAsArrayBuffer(file);
-    });
-
-  const readFileAsText = (file) =>
-    new Promise((resolve, reject) => {
-      const r = new FileReader();
-      r.onload = () => resolve(r.result);
-      r.onerror = reject;
-      r.readAsText(file);
-    });
-
-  const bufferToHex = (buffer) => {
-    const bytes = new Uint8Array(buffer);
-    return Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join('');
-  };
+  async function hashArrayBuffer(buf) {
+    const hash = await crypto.subtle.digest('SHA-256', buf);
+    const bytes = new Uint8Array(hash);
+    return Array.from(bytes).map(b => b.toString(16).padStart(2,'0')).join('');
+  }
 
   async function hashFile(file) {
-    const buf = await readFileAsArrayBuffer(file);
-    const digest = await crypto.subtle.digest('SHA-256', buf);
-    return bufferToHex(digest);
+    const buf = await file.arrayBuffer();
+    return hashArrayBuffer(buf);
   }
 
-  // -------- OCR engines --------
+  // ---------- PDF text extraction (PDF.js) ----------
 
-  async function ocrImageFile(file) {
-    setStatus('Running Tesseract OCR on image… this may take a moment.');
-    const { data } = await Tesseract.recognize(file, 'eng', {
-      logger: m => {
-        if (m.status && m.progress != null) {
-          setStatus(`OCR: ${m.status} (${Math.round(m.progress * 100)}%)`);
-        }
-      }
-    });
-    return data.text || '';
-  }
+  async function extractTextFromPdfFile(file) {
+    const buf = await file.arrayBuffer();
+    const uint8 = new Uint8Array(buf);
 
-  async function extractPdfTextDirect(arrayBuffer) {
-    // Try PDF text layer first (fast for digital PDFs).
-    const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
+    // pdfjsLib is provided by the script tag in index.html
+    const loadingTask = window['pdfjsLib'].getDocument({ data: uint8 });
     const pdf = await loadingTask.promise;
-    let full = '';
+
+    let allText = '';
     for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
       const page = await pdf.getPage(pageNum);
       const content = await page.getTextContent();
-      const strings = content.items.map(i => i.str).join(' ');
-      if (strings.trim()) {
-        full += `\n\n--- Page ${pageNum} ---\n` + strings;
-      }
+      const strings = content.items.map(it => it.str);
+      allText += strings.join(' ') + '\n\n';
     }
-    return full.trim();
+    return allText;
   }
 
-  async function ocrPdfPages(arrayBuffer) {
-    // Fallback OCR for scanned PDFs: render each page to canvas and OCR via Tesseract.
-    const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
-    const pdf = await loadingTask.promise;
-    let full = '';
-    for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
-      const page = await pdf.getPage(pageNum);
-      const viewport = page.getViewport({ scale: 2.0 });
-      const canvas = document.createElement('canvas');
-      const ctx = canvas.getContext('2d');
-      canvas.width = viewport.width;
-      canvas.height = viewport.height;
+  // ---------- image OCR (Tesseract.js) ----------
 
-      setStatus(`Rendering PDF page ${pageNum}/${pdf.numPages} for OCR…`);
-      await page.render({ canvasContext: ctx, viewport }).promise;
-
-      setStatus(`Running OCR on page ${pageNum}/${pdf.numPages}…`);
-      const dataUrl = canvas.toDataURL('image/png');
-      const { data } = await Tesseract.recognize(dataUrl, 'eng');
-      full += `\n\n--- Page ${pageNum} (OCR) ---\n` + (data.text || '');
+  async function ocrImageFile(file) {
+    const { Tesseract } = window;
+    if (!Tesseract || !Tesseract.recognize) {
+      throw new Error('Tesseract.js not available');
     }
-    return full.trim();
+    const result = await Tesseract.recognize(file, 'eng');
+    return result.data && result.data.text ? result.data.text : '';
+  }
+
+  // ---------- generic text extraction ----------
+
+  function extractPlainTextFile(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onerror = () => reject(new Error('Could not read file as text'));
+      reader.onload  = () => resolve(String(reader.result || ''));
+      reader.readAsText(file);
+    });
   }
 
   async function extractTextFromFile(file) {
-    if (!file) throw new Error('No file selected.');
-
     const type = (file.type || '').toLowerCase();
-    const name = file.name.toLowerCase();
 
     if (type.startsWith('image/')) {
-      setPill(ocrStatusEl, 'warn', 'OCR: image');
       return ocrImageFile(file);
     }
 
-    if (type === 'application/pdf' || name.endsWith('.pdf')) {
-      setPill(ocrStatusEl, 'warn', 'OCR: PDF (multi-page)');
-      const buf = await readFileAsArrayBuffer(file);
-
-      // Try fast text layer first
-      let txt = '';
-      try {
-        txt = await extractPdfTextDirect(buf);
-      } catch (e) {
-        console.warn('PDF text-layer extraction failed, falling back to OCR:', e);
-      }
-      if (txt && txt.length > 80) {
-        setStatus('PDF text layer extracted successfully (digital PDF).');
-        return txt;
-      }
-      // Fallback to full OCR per page
-      return ocrPdfPages(buf);
+    if (type === 'application/pdf') {
+      return extractTextFromPdfFile(file);
     }
 
-    if (type.startsWith('text/') || name.endsWith('.txt') || name.endsWith('.md')) {
-      setPill(ocrStatusEl, 'ok', 'Text file (no OCR)');
-      setStatus('Reading plain text file (no OCR needed).');
-      return readFileAsText(file);
-    }
-
-    // Last resort: try reading as text anyway
-    setPill(ocrStatusEl, 'warn', 'Unknown type, trying text read.');
-    return readFileAsText(file);
+    // fallback: try text read
+    return extractPlainTextFile(file);
   }
 
-  // -------- field extraction (lightweight, doc-type aware) --------
+  // ---------- tiny heuristic extraction ----------
 
-  function basicExtract(docType, text) {
-    const sample = text.slice(0, 600);
-    const length = text.length;
+  function basicFieldGuess(normalizedText, docType) {
+    const text = normalizedText || '';
+    const fields = {};
 
-    const common = {
-      doc_type: docType,
-      text_length: length,
-      sample: sample
-    };
+    // Very light, safe hints. User is still in control.
+    // Dollars
+    const moneyMatches = text.match(/\$?\s?[\d,]+(\.\d{1,2})?/g) || [];
+    fields.approx_dollar_values_found = moneyMatches.slice(0, 10);
 
+    // Dates
+    const dateMatches = text.match(/\b\d{1,2}\/\d{1,2}\/\d{2,4}\b/g) || [];
+    fields.approx_dates_found = dateMatches.slice(0, 10);
+
+    // For traffic tickets, try to guess a citation / code reference
     if (docType === 'traffic_ticket') {
-      const dateMatch = text.match(/\b(20\d{2}[-/]\d{1,2}[-/]\d{1,2})\b/);
-      const citationMatch = text.match(/\b(Case\s*No\.?|Citation\s*No\.?|Ticket)\s*[:#]?\s*([A-Z0-9-]+)/i);
-      return {
-        ...common,
-        probable_violation_date: dateMatch ? dateMatch[1] : null,
-        probable_citation_id: citationMatch ? citationMatch[2] : null
-      };
+      const codeMatch = text.match(/\b\d{3,4}\.\d{1,3}[A-Za-z0-9\-]*/);
+      if (codeMatch) fields.possible_code_section = codeMatch[0];
     }
 
+    // For loan contracts, try to spot APR / interest mentions
     if (docType === 'loan_contract') {
-      const amountMatch = text.match(/\$\s?([\d,]+(?:\.\d{2})?)/);
-      const aprMatch = text.match(/\b(\d{1,2}\.\d{1,2})\s*%?\s*APR\b/i);
-      return {
-        ...common,
-        probable_amount: amountMatch ? amountMatch[1] : null,
-        probable_apr_percent: aprMatch ? aprMatch[1] : null
-      };
+      const apr = text.match(/\b\d{1,2}\.\d{1,2}%|\b\d{1,2}%\b/);
+      if (apr) fields.possible_apr = apr[0];
     }
 
-    if (docType === 'cps_case') {
-      const caseMatch = text.match(/\b(Case\s*No\.?|Case\s*#)\s*[:#]?\s*([A-Z0-9-]+)/i);
-      return {
-        ...common,
-        probable_case_id: caseMatch ? caseMatch[2] : null
-      };
-    }
+    fields.preview_snippet = text.slice(0, 800);
 
-    return common;
+    return fields;
   }
 
-  // Single-row CIRI CSV helper (minimal, user-editable later)
-  function buildCiriCsvFromText(text) {
-    // Use very conservative defaults; this is more “starter row” than truth.
-    const headers = [
+  // ---------- CIRI CSV starter row ----------
+
+  function buildCiriCsvRow(normalizedText) {
+    // Header matches the fields used in integration.js
+    const header = [
       'cases_avoided',
       'avg_cost_per_case',
       'jail_days_avoided',
@@ -223,188 +162,177 @@
       'expected_lawsuits',
       'avg_payout',
       'litigation_multiplier',
-      'transition_costs_one_time'
+      'transition_costs_one_time',
+      'notes'
     ];
 
-    // Very rough guess: 1 case; user will update in CIRI proper.
-    const row = [
-      1,          // cases_avoided
-      800,        // avg_cost_per_case
-      1,          // jail_days_avoided
-      100,        // cost_per_jail_day
-      0,          // fees_canceled_total
-      0,          // policy_corrections
-      0,          // avg_enforcement_cost_savings
-      1,          // households_restored
-      600,        // avg_monthly_market_spend
-      12,         // months_effective
-      0.4,        // employment_probability
-      2400,       // avg_monthly_wage
-      0,          // expected_lawsuits
-      0,          // avg_payout
-      1.0,        // litigation_multiplier
-      0           // transition_costs_one_time
-    ];
+    // We keep the numbers zeroed by default to avoid guessing wrong.
+    const row = new Array(header.length).fill(0);
 
-    return headers.join(',') + '\n' + row.join(',');
+    // Put the first 200 chars of text into notes so the user knows
+    // which scenario this row came from.
+    row[row.length - 1] = JSON.stringify(
+      (normalizedText || '').slice(0, 200).replace(/\s+/g, ' ')
+    );
+
+    return header.join(',') + '\n' + row.join(',');
   }
 
-  async function hashString(str) {
-    const enc = new TextEncoder().encode(str);
-    const digest = await crypto.subtle.digest('SHA-256', enc);
-    return bufferToHex(digest);
-  }
+  // ---------- main intake runner ----------
 
-  // -------- main button handlers --------
-
-  btnOcr.addEventListener('click', async () => {
-    const file = fileInput.files && fileInput.files[0];
-    if (!file) {
-      alert('Choose a file first.');
-      return;
-    }
-    setPill(ocrStatusEl, 'warn', 'processing…');
-    setStatus('Starting OCR / text extraction…');
-
+  async function runIntake() {
     try {
-      const text = (await extractTextFromFile(file)) || '';
-      const cleaned = text.replace(/\r\n/g, '\n').trim();
-      textArea.value = cleaned;
-      setPill(ocrStatusEl, 'ok', 'text ready');
-      setStatus(`Extracted ~${cleaned.length} characters of text.`);
-      previewEl.textContent = 'Run “Generate A.B.E. Artifact” to see structured preview.';
-      lastArtifact = null;
-      lastCiriCsv = null;
-      artifactStatus.textContent = 'no artifact yet';
-      artifactStatus.className = 'pill pill-warn';
-      btnCiriCsv.disabled = true;
-    } catch (err) {
-      console.error(err);
-      setPill(ocrStatusEl, 'bad', 'error');
-      setStatus('Error during OCR: ' + err.message);
-    }
-  });
+      btnRun.disabled = true;
+      setStatus('running OCR + parsing (local only)…', 'warn');
+      latestArtifact = null;
+      latestCiriCsv  = null;
+      btnDlIntake.disabled = true;
+      btnDlCiri.disabled   = true;
 
-  btnArtifact.addEventListener('click', async () => {
-    const file = fileInput.files && fileInput.files[0];
-    if (!file) {
-      alert('Choose a file and run OCR first.');
-      return;
-    }
-
-    const normalized = (textArea.value || '').trim();
-    if (!normalized) {
-      alert('Run OCR or paste text into the box before generating the artifact.');
-      return;
-    }
-
-    try {
-      artifactStatus.textContent = 'building…';
-      artifactStatus.className = 'pill pill-warn';
-
+      const files = Array.from(fileInput.files || []);
+      const pasted = textInput.value || '';
       const docType = docTypeSelect.value;
-      const originalHash = await hashFile(file);
-      const textHash = await hashString(normalized);
-      const extracted = basicExtract(docType, normalized);
+
+      if (!files.length && !pasted.trim()) {
+        setStatus('please add at least one file or some pasted text', 'bad');
+        return;
+      }
 
       const targets = [];
-      if (targetCiri.checked) targets.push('CIRI');
-      if (targetCda.checked)  targets.push('CDA');
-      if (targetCff.checked)  targets.push('CFF');
-      if (targetCcri.checked) targets.push('CCRI');
+      if (tCIRI.checked) targets.push('CIRI');
+      if (tCDA.checked)  targets.push('CDA');
+      if (tCFF.checked)  targets.push('CFF');
+      if (tCCRI.checked) targets.push('CCRI');
 
-      // Optional CIRI CSV (always generated if targetCiri checked)
-      let ciriMeta = null;
-      if (targetCiri.checked) {
-        const csv = buildCiriCsvFromText(normalized);
-        lastCiriCsv = csv;
-        const csvHash = await hashString(csv);
-        ciriMeta = {
+      // extract text from all files
+      let combinedText = '';
+      let primaryFileName = '';
+      let primaryFileHash = null;
+
+      if (files.length) {
+        primaryFileName = files[0].name;
+        primaryFileHash = await hashFile(files[0]);
+
+        for (const f of files) {
+          const t = await extractTextFromFile(f);
+          if (t) {
+            combinedText += '\n\n' + t;
+          }
+        }
+      }
+
+      combinedText += '\n\n' + (pasted || '');
+      const normalized = normalizeText(combinedText);
+
+      if (!normalized) {
+        setStatus('Intake could not find readable text in these inputs.', 'bad');
+        normTextEl.textContent = '— (no text extracted)';
+        fieldsEl.textContent   = '{}';
+        return;
+      }
+
+      // very small heuristic preview
+      const extractedFields = basicFieldGuess(normalized, docType);
+
+      // prepare artifacts
+      const now = new Date().toISOString();
+
+      const artifact = {
+        version: '1.0',
+        module: 'Intake',
+        doc_type: docType,
+        original_file_name: primaryFileName || '(text-only intake)',
+        original_file_hash: primaryFileHash || ''.padEnd(64, '0'),
+        ocr_used: !!files.length,
+        text_raw: normalized,
+        text_normalized: normalized,
+        extracted_fields: extractedFields,
+        targets,
+        generated_outputs: {
+          ciri: null,
+          cda: null,
+          cff: null,
+          ccri: null
+        },
+        created_at: now,
+        notes: ''
+      };
+
+      // build CIRI CSV starter row if target checked
+      if (targets.includes('CIRI')) {
+        const csv = buildCiriCsvRow(normalized);
+        latestCiriCsv = csv;
+
+        const encoder = new TextEncoder();
+        const hash = await hashArrayBuffer(encoder.encode(csv));
+
+        artifact.generated_outputs.ciri = {
           present: true,
           row_count: 1,
           csv_inline: csv,
-          hash: csvHash
+          hash
         };
-        btnCiriCsv.disabled = false;
       } else {
-        lastCiriCsv = null;
-        btnCiriCsv.disabled = true;
-        ciriMeta = { present: false };
+        artifact.generated_outputs.ciri = { present: false };
       }
 
-      const artifact = {
-        version: "1.0",
-        module: "Intake",
-        doc_type: docType,
-        original_file_name: file.name,
-        original_file_hash: originalHash,
-        ocr_used: !(file.type.startsWith('text/') || file.name.toLowerCase().endsWith('.txt')),
-        text_raw: null, // we only keep normalized to keep size down
-        text_normalized: normalized,
-        extracted_fields: extracted,
-        targets,
-        generated_outputs: {
-          ciri: ciriMeta,
-          cda: { present: targetCda.checked, scenario: null, hash: "" },
-          cff: { present: targetCff.checked, row_count: 0, csv_inline: "", hash: "" },
-          ccri:{ present: targetCcri.checked, scenario: null, hash: "" }
-        },
-        created_at: new Date().toISOString(),
-        notes: "Generated locally by A.B.E. Intake. No server received this document or text."
-      };
+      // Stubs for other modules (just marking that we didn’t create anything yet)
+      artifact.generated_outputs.cda  = { present: targets.includes('CDA')  ? false : false };
+      artifact.generated_outputs.cff  = { present: targets.includes('CFF')  ? false : false };
+      artifact.generated_outputs.ccri = { present: targets.includes('CCRI') ? false : false };
 
-      lastArtifact = artifact;
+      latestArtifact = artifact;
 
-      // Pretty preview
-      previewEl.textContent = JSON.stringify({
-        doc_type: artifact.doc_type,
-        original_file_name: artifact.original_file_name,
-        original_file_hash: artifact.original_file_hash,
-        targets: artifact.targets,
-        extracted_fields: artifact.extracted_fields,
-        generated_outputs: {
-          ciri: artifact.generated_outputs.ciri && { present: artifact.generated_outputs.ciri.present },
-          cda: { present: artifact.generated_outputs.cda.present },
-          cff: { present: artifact.generated_outputs.cff.present },
-          ccri:{ present: artifact.generated_outputs.ccri.present }
-        }
-      }, null, 2);
+      // update UI
+      normTextEl.textContent = normalized;
+      fieldsEl.textContent   = JSON.stringify(extractedFields, null, 2);
 
-      // Trigger download of intake_artifact.json
-      const blob = new Blob([JSON.stringify(artifact, null, 2)], {
-        type: 'application/json'
-      });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `intake_artifact_${Date.now()}.json`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
+      setStatus('Intake complete — review text & download artifacts.', 'ok');
 
-      artifactStatus.textContent = 'artifact generated';
-      artifactStatus.className = 'pill pill-ok';
-      setStatus('Artifact generated and downloaded. You can attach it to Integration / CIRI runs.');
+      btnDlIntake.disabled = false;
+      btnDlCiri.disabled   = !latestCiriCsv;
+
     } catch (err) {
       console.error(err);
-      artifactStatus.textContent = 'error';
-      artifactStatus.className = 'pill pill-bad';
-      setStatus('Error generating artifact: ' + err.message);
+      setStatus('Intake failed: ' + (err.message || String(err)), 'bad');
+      normTextEl.textContent = '—';
+      fieldsEl.textContent   = '{}';
+    } finally {
+      btnRun.disabled = false;
     }
-  });
+  }
 
-  btnCiriCsv.addEventListener('click', () => {
-    if (!lastCiriCsv) return;
-    const blob = new Blob([lastCiriCsv], { type: 'text/csv' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
+  // ---------- download helpers ----------
+
+  function downloadTextFile(name, text, type) {
+    const blob = new Blob([text], { type: type || 'text/plain' });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
     a.href = url;
-    a.download = 'ABE_CIRI_FROM_INTAKE.csv';
+    a.download = name;
     document.body.appendChild(a);
     a.click();
-    document.body.removeChild(a);
+    a.remove();
     URL.revokeObjectURL(url);
+  }
+
+  // wire buttons
+  btnRun.addEventListener('click', () => {
+    runIntake();
+  });
+
+  btnDlIntake.addEventListener('click', () => {
+    if (!latestArtifact) return;
+    downloadTextFile(
+      `abe_intake_${Date.now()}.json`,
+      JSON.stringify(latestArtifact, null, 2),
+      'application/json'
+    );
+  });
+
+  btnDlCiri.addEventListener('click', () => {
+    if (!latestCiriCsv) return;
+    downloadTextFile(`ciri_intake_row_${Date.now()}.csv`, latestCiriCsv, 'text/csv');
   });
 
 })();
