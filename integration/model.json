@@ -1,0 +1,145 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ABE_IntegrationLayer_Model_v1",
+  "description": "Formal model for the ABE Integration Layer, which combines KPIs, module status, SHA-256 audit receipts, and constitutional divergence summaries into one coherent interface.",
+  "type": "object",
+  "required": [
+    "version",
+    "module",
+    "description",
+    "inputs",
+    "outputs",
+    "audit_fields",
+    "kpi_definitions",
+    "dependencies"
+  ],
+  "properties": {
+    "version": {
+      "type": "string",
+      "const": "1.0"
+    },
+
+    "module": {
+      "type": "string",
+      "const": "Integration"
+    },
+
+    "description": {
+      "type": "string",
+      "description": "Human-readable description of what Integration does.",
+      "const": "Aggregates all downstream ABE module outputs (CIRI, CIBS, CDI, CAE, CFF, AFFE, CCRI) and computes KPIs, integrity checks, and hash receipts in-browser."
+    },
+
+    "inputs": {
+      "type": "array",
+      "description": "Files Integration expects to read locally from the user’s device.",
+      "items": {
+        "type": "string",
+        "enum": [
+          "ciri/inputs.csv",
+          "cibs/auto_budget.csv",
+          "cdi/divergence.csv",
+          "cae/model.json",
+          "cff/inputs.csv",
+          "affe/index.html",
+          "ccri/inputs.json"
+        ]
+      }
+    },
+
+    "outputs": {
+      "type": "object",
+      "description": "Structured results Integration produces for display or export.",
+      "properties": {
+        "audit_report": {
+          "type": "object",
+          "description": "JSON object containing audit_id, generated_at, module statuses, and SHA-256 hashes."
+        },
+        "divergence_summary": {
+          "type": "string",
+          "description": "Plain-language constitutional + economic alignment summary."
+        },
+        "kpis": {
+          "type": "object",
+          "description": "KPI metrics calculated from module inputs.",
+          "properties": {
+            "ciri_total_recovery": { "type": "number" },
+            "ciri_signal": { "type": "number" },
+            "roi_per_case": { "type": "number" },
+            "cibs_total_allocation": { "type": "number" }
+          }
+        }
+      }
+    },
+
+    "audit_fields": {
+      "type": "object",
+      "description": "Fields included in the integrity / audit certificate.",
+      "properties": {
+        "audit_id": {
+          "type": "string",
+          "description": "A uniquely generated per-run identifier for audit receipts."
+        },
+        "generated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "modules": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "status": { "type": "string", "enum": ["ok", "warn", "bad"] },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              },
+              "message": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+
+    "kpi_definitions": {
+      "type": "object",
+      "description": "Mathematical definitions for KPIs rendered on the integration page.",
+      "properties": {
+        "ciri_total_recovery": {
+          "type": "string",
+          "const": "R_T = (c*C + F) + (D*J) + (P*E) + (H*M*m) + ((H*pe)*W*m) + (L*A*lam) - T"
+        },
+        "ciri_signal": {
+          "type": "string",
+          "const": "CIRI = 1 - exp(-R_T / K)"
+        },
+        "roi_per_case": {
+          "type": "string",
+          "const": "ROI = R_T / max(1, c)"
+        },
+        "cibs_total_allocation": {
+          "type": "string",
+          "const": "Sum of all values in auto_budget.csv"
+        }
+      }
+    },
+
+    "dependencies": {
+      "type": "array",
+      "description": "Upstream modules the Integration layer depends on.",
+      "items": {
+        "type": "string",
+        "enum": [
+          "CAE",
+          "CDA",
+          "CDI",
+          "CIRI",
+          "CIBS",
+          "CFF",
+          "AFFE",
+          "CCRI"
+        ]
+      }
+    }
+  }
+}
