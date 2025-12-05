@@ -3,163 +3,297 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Intake — Document + OCR Bridge | A.B.E.</title>
+  <title>Intake — Document & OCR Bridge | A.B.E.</title>
   <base href="/abe---flag/">
-  <link rel="stylesheet" href="abe-patch/assets/abe-patch.css"/>
-
-  <!-- Tesseract.js for in-browser OCR (no server, no upload) -->
-  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
-
+  <link rel="stylesheet" href="abe-patch/assets/abe-patch.css">
   <style>
-    .intake-wrap{max-width:1100px;margin:0 auto;padding:1.5rem 1rem 3rem}
-    .intake-grid{display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
-    .stack{display:flex;flex-direction:column;gap:.5rem}
-    .row{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center}
-    .pill{display:inline-block;padding:.15rem .6rem;border-radius:999px;font-size:.8rem;border:1px solid rgba(255,255,255,.15)}
-    .pill-ok{border-color:#4bd28f;color:#4bd28f}
-    .pill-warn{border-color:#ffa559;color:#ffa559}
-    .pill-bad{border-color:#ff6b6b;color:#ff6b6b}
-    .mono{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.8rem}
-    textarea{width:100%;min-height:120px;background:#05070d;color:#e6e6e6;border-radius:8px;border:1px solid rgba(255,255,255,.12);padding:.5rem}
-    input[type="file"]{max-width:100%}
-    select, input[type="checkbox"]{font:inherit}
-    .small-note{font-size:.85rem;color:#9fb3c8}
-    .btn-row{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.5rem}
-    .status-line{font-size:.85rem;margin-top:.3rem}
-    .status-line span.label{color:#9fb3c8}
-    .card h3{margin-top:.1rem;font-size:1rem}
+    :root{
+      --abe-bg:#05060b;
+      --abe-panel:#10131c;
+      --abe-panel-soft:#161a25;
+      --abe-ink:#edf2ff;
+      --abe-muted:#9fb3c8;
+      --abe-accent:#5ddfff;
+      --abe-pop:#fff750;
+      --abe-border:rgba(255,255,255,.08);
+    }
+    body.abe-page{
+      background:radial-gradient(circle at top,#111827 0,#05060b 55%,#020309 100%);
+      color:var(--abe-ink);
+    }
+    .intake-wrap{
+      max-width:1100px;
+      margin:0 auto;
+      padding:1.5rem 1rem 3rem;
+    }
+    .intake-header h1{
+      margin:0 0 .25rem;
+      font-size:1.9rem;
+    }
+    .intake-header .tagline{
+      max-width:700px;
+      color:var(--abe-muted);
+      font-size:.98rem;
+    }
+    .intake-grid{
+      display:grid;
+      gap:1.25rem;
+    }
+    @media(min-width:900px){
+      .intake-grid{
+        grid-template-columns:3fr 2fr;
+      }
+    }
+    .card-intake{
+      background:linear-gradient(135deg,var(--abe-panel),#0b101a);
+      border-radius:14px;
+      border:1px solid var(--abe-border);
+      padding:1rem 1.1rem 1.25rem;
+      box-shadow:0 18px 40px rgba(0,0,0,.45);
+    }
+    .card-intake h2{
+      margin:.1rem 0 .4rem;
+      font-size:1.15rem;
+    }
+    .card-intake h3{
+      margin:.2rem 0 .4rem;
+      font-size:1rem;
+    }
+    .sub{
+      color:var(--abe-muted);
+      font-size:.9rem;
+    }
+    label{
+      display:block;
+      font-size:.9rem;
+      color:var(--abe-muted);
+      margin:.75rem 0 .25rem;
+    }
+    input[type="file"]{
+      display:none;
+    }
+    .file-label{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:.45rem .9rem;
+      border-radius:999px;
+      border:1px solid var(--abe-pop);
+      background:transparent;
+      color:var(--abe-ink);
+      font-size:.9rem;
+      cursor:pointer;
+      gap:.45rem;
+    }
+    .file-label span{
+      opacity:.9;
+    }
+    .file-name{
+      display:inline-block;
+      margin-left:.4rem;
+      font-size:.85rem;
+      color:var(--abe-muted);
+      max-width:260px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      vertical-align:middle;
+    }
+    textarea{
+      width:100%;
+      min-height:120px;
+      background:#050712;
+      border-radius:10px;
+      border:1px solid var(--abe-border);
+      padding:.6rem .7rem;
+      color:var(--abe-ink);
+      font-family:ui-monospace,SFMono-Regular,Consolas,monospace;
+      font-size:.85rem;
+      resize:vertical;
+    }
+    select{
+      width:100%;
+      background:#050712;
+      border-radius:999px;
+      border:1px solid var(--abe-border);
+      color:var(--abe-ink);
+      padding:.4rem .7rem;
+      font-size:.9rem;
+    }
+    .targets{
+      margin-top:.4rem;
+      font-size:.88rem;
+      color:var(--abe-muted);
+    }
+    .targets label{
+      display:flex;
+      align-items:center;
+      gap:.35rem;
+      margin:.15rem 0;
+    }
+    .targets input[type="checkbox"]{
+      width:15px;
+      height:15px;
+    }
+    .btn-run{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      margin-top:.8rem;
+      padding:.45rem 1.05rem;
+      border-radius:999px;
+      border:1px solid var(--abe-pop);
+      background:transparent;
+      color:var(--abe-ink);
+      font-size:.9rem;
+      cursor:pointer;
+      gap:.4rem;
+      box-shadow:0 0 0 1px rgba(0,0,0,.5);
+    }
+    .btn-run:hover{
+      box-shadow:0 0 0 1px rgba(255,247,80,.4),0 0 18px rgba(255,247,80,.25);
+    }
+    .status-line{
+      margin-top:.6rem;
+      font-size:.85rem;
+      color:var(--abe-muted);
+    }
+    .status-ok{color:#4bd28f;}
+    .status-warn{color:#ffba5c;}
+    .status-err{color:#ff8585;}
+    pre{
+      margin:.4rem 0 .7rem;
+      background:#050712;
+      border-radius:10px;
+      border:1px solid var(--abe-border);
+      padding:.6rem .7rem;
+      font-family:ui-monospace,SFMono-Regular,Consolas,monospace;
+      font-size:.82rem;
+      color:var(--abe-ink);
+      max-height:260px;
+      overflow:auto;
+      white-space:pre-wrap;
+    }
+    .small-note{
+      font-size:.82rem;
+      color:var(--abe-muted);
+    }
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      padding:.1rem .55rem;
+      border-radius:999px;
+      border:1px solid var(--abe-border);
+      font-size:.78rem;
+      color:var(--abe-muted);
+      gap:.25rem;
+    }
+    .pill-local{
+      border-color:#4bd28f;
+      color:#4bd28f;
+    }
+    .download-btn{
+      margin-top:.5rem;
+      padding:.35rem .8rem;
+      border-radius:999px;
+      border:1px solid var(--abe-border);
+      background:#050712;
+      color:var(--abe-ink);
+      font-size:.85rem;
+      cursor:pointer;
+    }
+    .download-btn:disabled{
+      opacity:.5;
+      cursor:default;
+    }
   </style>
 </head>
-
 <body class="abe-page">
+
 <header class="abe-header">
-  <div class="intake-wrap">
-    <nav class="chip-row">
-      <a class="chip" href="/abe---flag/index.html">← A.B.E. Home</a>
-      <a class="chip" href="/abe---flag/start/index.html">Start Here</a>
-      <a class="chip" href="/abe---flag/learn/index.html">Learn</a>
-      <a class="chip" href="/abe---flag/integration/index.html">Integration</a>
-    </nav>
-    <h1>Intake — Document + OCR Bridge</h1>
+  <div class="intake-wrap intake-header">
+    <a href="/abe---flag/index.html" class="chip">← A.B.E. Home</a>
+    <h1>Intake — Document & OCR Bridge</h1>
     <p class="tagline">
-      Drop in tickets, CPS letters, PDFs, or loan contracts. Intake runs local OCR, pulls out key facts,
-      and builds clean data for CIRI, CDA, CFF, and CCRI — all in your browser.
-    </p>
-    <p class="small-note">
-      No accounts · No tracking · Files never leave your device. Outputs are downloadable
-      CSV/JSON you control, plus an <code>intake_artifact.json</code> with SHA-256 hashes.
+      Upload a ticket, CPS letter, policy memo, or contract and let A.B.E. turn it into
+      structured data for CIRI, CDA, CFF, and CCRI — all in your browser, never on a server.
     </p>
   </div>
 </header>
 
-<main class="abe-main intake-wrap">
+<main class="abe-main">
+  <div class="intake-wrap intake-grid">
 
-  <section class="card">
-    <h2>Step 1 — Tell Intake what you’re uploading</h2>
-    <div class="intake-grid">
-      <div>
-        <h3>1.1 · Select one or more files</h3>
-        <div class="stack">
-          <input type="file" id="file-input" multiple
-                 accept=".png,.jpg,.jpeg,.pdf,.txt,.csv,.json,.doc,.docx,.rtf,.html,.htm,image/*,application/pdf,text/plain">
-          <p class="small-note">
-            You can upload: ticket photos, scanned letters, PDFs, or simple text files.
-            For multi-page docs, choose one file per page — Intake will merge them.
-          </p>
-        </div>
+    <!-- LEFT: Steps 1–2 -->
+    <section class="card-intake">
+      <h2>Step 1 — Tell Intake what you’re uploading</h2>
+
+      <h3>1.1 · Select one or more files</h3>
+      <label class="file-label">
+        <span>📎 Choose files</span>
+        <input id="file-input" type="file" multiple>
+      </label>
+      <span id="file-name" class="file-name">No file chosen</span>
+      <p class="small-note">
+        You can upload ticket photos, scanned letters, PDFs, or simple text files.
+        For multi-page docs, choose one file per page — Intake will merge them.
+      </p>
+
+      <h3>1.2 · Or paste plain text</h3>
+      <textarea id="text-input" placeholder="Optional: paste the text of your ticket, CPS letter, contract, or policy memo here. If both files and text are provided, Intake will combine them."></textarea>
+      <p class="small-note">
+        Use this if your document is already text (email copy/paste, online docket, etc.).
+      </p>
+
+      <h3>1.3 · What kind of document is this?</h3>
+      <select id="doc-type">
+        <option value="traffic_ticket">Traffic / citation ticket</option>
+        <option value="cps_case">CPS / child welfare documents</option>
+        <option value="policy_memo" selected>Policy / memo / directive</option>
+        <option value="loan_contract">Loan / finance contract</option>
+        <option value="generic_case_text">Other / freeform case text</option>
+      </select>
+
+      <div class="targets">
+        <div>Send this intake to:</div>
+        <label><input id="target-ciri" type="checkbox" checked> CIRI (economic recovery)</label>
+        <label><input id="target-cda" type="checkbox"> CDA (divergence flags)</label>
+        <label><input id="target-cff" type="checkbox"> CFF (funding forensics)</label>
+        <label><input id="target-ccri" type="checkbox"> CCRI (credit risk integrity)</label>
       </div>
 
-      <div>
-        <h3>1.2 · Or paste plain text</h3>
-        <textarea id="text-input" placeholder="Optional: paste the text of your ticket, CPS letter, contract, or policy memo here. If both files and text are provided, Intake will combine them."></textarea>
-        <p class="small-note">
-          Use this if your document is already text (email copy/paste, online docket, etc.).
-        </p>
-      </div>
+      <button id="run-intake" class="btn-run">
+        <span>⚡ Run Intake & OCR</span>
+      </button>
+      <span id="status" class="status-line">Status: waiting to run…</span>
 
-      <div>
-        <h3>1.3 · What kind of document is this?</h3>
-        <div class="stack">
-          <select id="doc-type">
-            <option value="traffic_ticket">Traffic / detention ticket</option>
-            <option value="cps_case">CPS / child welfare case</option>
-            <option value="loan_contract">Loan / finance contract</option>
-            <option value="policy_memo">Policy / memo / directive</option>
-            <option value="generic_case_text">Generic case description</option>
-          </select>
-          <div>
-            <span class="small-note">Send this intake to:</span>
-            <div class="row small-note" style="margin-top:.35rem">
-              <label><input type="checkbox" id="t-ciri" checked> CIRI (economic recovery)</label>
-              <label><input type="checkbox" id="t-cda"> CDA (divergence flags)</label>
-              <label><input type="checkbox" id="t-cff"> CFF (funding forensics)</label>
-              <label><input type="checkbox" id="t-ccri"> CCRI (credit risk integrity)</label>
-            </div>
-          </div>
-          <div class="btn-row">
-            <button class="btn" id="btn-run">Run Intake & OCR</button>
-            <span id="run-status" class="small-note status-line">
-              <span class="label">Status:</span> Waiting for you to upload or paste something.
-            </span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+      <p class="small-note" style="margin-top:.6rem">
+        <span class="pill pill-local">Local-only</span>
+        &nbsp;Files and OCR never leave this browser tab. You can close it at any time and keep your downloads.
+      </p>
+    </section>
 
-  <section class="card">
-    <h2>Step 2 — Review text & extracted fields</h2>
-    <div class="intake-grid">
-      <div>
-        <h3>2.1 · Normalized text (what Intake sees)</h3>
-        <textarea id="text-normalized" class="mono" placeholder="Text will appear here after Intake runs…" readonly></textarea>
-        <p class="small-note">
-          This is the text after OCR and cleanup. If something critical is missing, you can go back,
-          adjust your upload, or paste missing content into Step 1.
-        </p>
-      </div>
-      <div>
-        <h3>2.2 · Extracted fields (you can edit)</h3>
-        <textarea id="fields-json" class="mono" placeholder="{ }"></textarea>
-        <p class="small-note">
-          Intake starts with a simple guess (jurisdiction, dates, rough labels). You can edit this JSON
-          before generating your artifact or CIRI CSV. It only has to be valid JSON — not perfect.
-        </p>
-        <p id="fields-status" class="small-note pill pill-warn" style="display:inline-block;margin-top:.25rem">
-          Waiting for Intake to run…
-        </p>
-      </div>
-      <div>
-        <h3>2.3 · Outputs this intake will create</h3>
-        <ul class="small-note" id="outputs-list">
-          <li>Intake artifact: <code>intake_artifact.json</code> (always)</li>
-          <li>CIRI single-row CSV: <code>ciri_case_autogenerated.csv</code> (if CIRI is checked)</li>
-          <li>CDA / CFF / CCRI structures: placeholders wired by hash (future-expansion ready)</li>
-        </ul>
-        <p class="small-note">
-          Everything stays local. When you click “Download…”, your browser just creates files from
-          what’s already in memory.
-        </p>
-      </div>
-    </div>
-  </section>
+    <!-- RIGHT: Step 2 + downloads -->
+    <section class="card-intake">
+      <h2>Step 2 — Review text & extracted fields</h2>
 
-  <section class="card">
-    <h2>Step 3 — Download your files</h2>
-    <div class="row btn-row">
-      <button class="btn" id="btn-download-artifact" disabled>Download Intake Artifact (JSON)</button>
-      <button class="btn" id="btn-download-ciri" disabled>Download CIRI CSV (single case)</button>
-      <span id="download-status" class="small-note status-line">
-        <span class="label">Status:</span> No artifact yet.
-      </span>
-    </div>
-    <p class="small-note">
-      You can take the CIRI CSV straight to <a href="/abe---flag/ciri/index.html">CIRI</a> and upload it as a
-      one-row scenario. The artifact JSON can be attached to motions, oversight memos, or shared with
-      trusted counsel as a cryptographic “receipt” of what you ran.
-    </p>
-  </section>
+      <h3>2.1 · Normalized text (what Intake sees)</h3>
+      <pre id="norm-text">Text will appear here after Intake runs…</pre>
 
+      <h3>2.2 · Extracted fields</h3>
+      <pre id="fields-json">{}</pre>
+
+      <h3>2.3 · Download intake artifact</h3>
+      <button id="download-artifact" class="download-btn" disabled>
+        ⬇ Download intake_artifact.json
+      </button>
+      <p class="small-note">
+        This JSON file can be attached to motions, research memos, or uploaded again later.
+        Integration will hash it and include it in the SHA-256 audit trail.
+      </p>
+    </section>
+
+  </div>
 </main>
 
 <footer class="abe-footer">
@@ -168,314 +302,22 @@
   </p>
 </footer>
 
+<script src="intake/intake.js"></script>
 <script>
-(function(){
-  const $ = id => document.getElementById(id);
-
-  const fileInput = $('file-input');
-  const textInput = $('text-input');
-  const docTypeEl = $('doc-type');
-  const tCiri = $('t-ciri');
-  const tCda = $('t-cda');
-  const tCff = $('t-cff');
-  const tCcri = $('t-ccri');
-
-  const btnRun = $('btn-run');
-  const runStatus = $('run-status');
-
-  const textNormEl = $('text-normalized');
-  const fieldsJsonEl = $('fields-json');
-  const fieldsStatusEl = $('fields-status');
-
-  const btnArtifact = $('btn-download-artifact');
-  const btnCiriCsv = $('btn-download-ciri');
-  const dlStatus = $('download-status');
-
-  let currentArtifact = null;
-  let currentCiriCsv = null;
-
-  function setStatus(el, text, type){
-    el.textContent = 'Status: ' + text;
-    if(el === fieldsStatusEl){
-      el.className = 'small-note pill ' + (type==='ok'?'pill-ok':type==='bad'?'pill-bad':'pill-warn');
-    }
-  }
-
-  function normalizeText(str){
-    if(!str) return '';
-    return str.replace(/\r\n/g,'\n')
-              .replace(/\t/g,' ')
-              .replace(/[ \u00A0]+/g,' ')
-              .replace(/\n{3,}/g,'\n\n')
-              .trim();
-  }
-
-  function toUtf8Bytes(str){
-    return new TextEncoder().encode(str);
-  }
-
-  async function sha256Hex(data){
-    const buf = data instanceof ArrayBuffer ? data : toUtf8Bytes(String(data)).buffer;
-    const hash = await crypto.subtle.digest('SHA-256', buf);
-    const bytes = new Uint8Array(hash);
-    return Array.from(bytes).map(b=>b.toString(16).padStart(2,'0')).join('');
-  }
-
-  function guessFields(docType, text){
-    const base = {
-      doc_type: docType,
-      length_chars: text.length,
-      length_lines: text.split(/\n/).length
-    };
-    const lower = text.toLowerCase();
-
-    if(docType === 'traffic_ticket'){
-      base.category = 'traffic_enforcement';
-      base.possible_jurisdiction = (text.match(/STATE OF\s+([A-Z]+)/) || [,''])[1] || null;
-      base.has_license_language = /license|licence|driver's license|driving while/i.test(text);
-      base.has_commercial_language = /commercial|cdl|for hire|motor carrier/i.test(text);
-    } else if(docType === 'cps_case'){
-      base.category = 'child_welfare';
-      base.has_termination_language = /termination of (parental )?rights/i.test(text);
-      base.has_safety_plan = /safety plan|case plan/i.test(text);
-    } else if(docType === 'loan_contract'){
-      base.category = 'credit_lending';
-      base.has_interest_rate = /%|\bAPR\b|\binterest rate\b/i.test(text);
-      base.has_collateral = /collateral|secured by/i.test(text);
-    } else if(docType === 'policy_memo'){
-      base.category = 'policy_memo';
-      base.has_mandatory_language = /\bshall\b|\bmust\b|\bare required to\b/i.test(text);
-    } else {
-      base.category = 'generic_case';
-    }
-    return base;
-  }
-
-  function downloadFile(name, content, type){
-    const blob = new Blob([content], {type:type || 'application/octet-stream'});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = name;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    URL.revokeObjectURL(url);
-  }
-
-  async function runIntake(){
-    btnRun.disabled = true;
-    btnRun.textContent = 'Running…';
-    setStatus(runStatus, 'Reading files / text…', 'warn');
-    setStatus(fieldsStatusEl, 'Waiting for OCR / parsing…', 'warn');
-    dlStatus.textContent = 'Status: No artifact yet.';
-    currentArtifact = null;
-    currentCiriCsv = null;
-    btnArtifact.disabled = true;
-    btnCiriCsv.disabled = true;
-
-    const files = Array.from(fileInput.files || []);
-    const pasted = textInput.value || '';
-    let combinedRawText = '';
-    let originalName = '(no_file_text_only)';
-    let originalFileHash = '0000000000000000000000000000000000000000000000000000000000000000';
-    let ocrUsed = false;
-
-    try{
-      if(files.length){
-        originalName = files.map(f=>f.name).join(' + ');
-        // hash over concatenated raw bytes for all files
-        const buffers = [];
-        for(const f of files){
-          const ab = await f.arrayBuffer();
-          buffers.push(new Uint8Array(ab));
-        }
-        const joined = new Uint8Array(buffers.reduce((s,b)=>s+b.length,0));
-        let offset = 0;
-        for(const b of buffers){
-          joined.set(b, offset); offset += b.length;
-        }
-        originalFileHash = await sha256Hex(joined.buffer);
-
-        // OCR each file if image/PDF, else read as text
-        let textPieces = [];
-        for(const f of files){
-          const type = (f.type || '').toLowerCase();
-          if(type.startsWith('image/') || type === 'application/pdf'){
-            ocrUsed = true;
-            setStatus(runStatus, 'Running OCR on '+f.name+'…', 'warn');
-            const dataUrl = await new Promise((resolve,reject)=>{
-              const fr = new FileReader();
-              fr.onload = () => resolve(fr.result);
-              fr.onerror = () => reject(fr.error || new Error('File read error'));
-              fr.readAsDataURL(f);
-            });
-            const res = await Tesseract.recognize(dataUrl,'eng');
-            textPieces.push(res.data.text || '');
-          } else {
-            const txt = await f.text();
-            textPieces.push(txt);
-          }
-        }
-        combinedRawText = textPieces.join('\n\n====\n\n');
-      }
-
-      if(pasted.trim()){
-        combinedRawText += (combinedRawText ? '\n\n==== Pasted Text ====\n\n' : '') + pasted;
-      }
-
-      combinedRawText = combinedRawText || '';
-      const normalized = normalizeText(combinedRawText || pasted);
-
-      textNormEl.value = normalized || '(no text detected)';
-      if(!normalized){
-        setStatus(runStatus, 'No text found. Try another file or paste content.', 'bad');
-        btnRun.disabled = false;
-        btnRun.textContent = 'Run Intake & OCR';
+  // tiny helper: show chosen file names
+  (function(){
+    const fileInput = document.getElementById('file-input');
+    const nameEl = document.getElementById('file-name');
+    if(!fileInput || !nameEl) return;
+    fileInput.addEventListener('change',()=>{
+      if(!fileInput.files || !fileInput.files.length){
+        nameEl.textContent = 'No file chosen';
         return;
       }
-
-      const docType = docTypeEl.value;
-      let fields = guessFields(docType, normalized);
-      fieldsJsonEl.value = JSON.stringify(fields, null, 2);
-      setStatus(fieldsStatusEl, 'Fields generated. You can edit them before download.', 'ok');
-
-      // Build targets array
-      const targets = [];
-      if(tCiri.checked) targets.push('CIRI');
-      if(tCda.checked)  targets.push('CDA');
-      if(tCff.checked)  targets.push('CFF');
-      if(tCcri.checked) targets.push('CCRI');
-
-      // Build CIRI CSV if requested
-      let ciriMeta = {present:false};
-      if(tCiri.checked){
-        // Single-case defaults; user can refine in CIRI later
-        const header = [
-          'cases_avoided',
-          'avg_cost_per_case',
-          'jail_days_avoided',
-          'cost_per_jail_day',
-          'fees_canceled_total',
-          'policy_corrections',
-          'avg_enforcement_cost_savings',
-          'households_restored',
-          'avg_monthly_market_spend',
-          'months_effective',
-          'employment_probability',
-          'avg_monthly_wage',
-          'expected_lawsuits',
-          'avg_payout',
-          'litigation_multiplier',
-          'transition_costs_one_time'
-        ].join(',');
-
-        const row = [
-          1,          // one case
-          950,        // avg cost per case
-          1,          // jail days avoided
-          98,         // cost per jail day
-          0,          // fees canceled
-          0,          // policy corrections
-          0,          // enforcement savings
-          1,          // households
-          500,        // monthly market spend
-          12,         // months effective
-          0.5,        // employment probability
-          2500,       // monthly wage
-          0,          // expected lawsuits
-          0,          // avg payout
-          1.0,        // litigation multiplier
-          0           // transition cost
-        ].join(',');
-
-        const csv = header + '\n' + row + '\n';
-        const csvHash = await sha256Hex(toUtf8Bytes(csv));
-
-        ciriMeta = {
-          present: true,
-          row_count: 1,
-          csv_inline: csv,
-          hash: csvHash
-        };
-        currentCiriCsv = csv;
-        btnCiriCsv.disabled = false;
-      } else {
-        currentCiriCsv = null;
-        btnCiriCsv.disabled = true;
-      }
-
-      // CDA, CFF, CCRI placeholders (hashes can be added when you generate real payloads)
-      const emptyHash = '0000000000000000000000000000000000000000000000000000000000000000';
-      const cdaMeta  = tCda.checked  ? {present:true, scenario:null, hash:emptyHash} : {present:false};
-      const cffMeta  = tCff.checked  ? {present:true, row_count:0, csv_inline:'', hash:emptyHash} : {present:false};
-      const ccriMeta = tCcri.checked ? {present:true, scenario:null, hash:emptyHash} : {present:false};
-
-      // parse edited fields JSON (if user changed it)
-      try{
-        const edited = fieldsJsonEl.value.trim();
-        if(edited){
-          fields = JSON.parse(edited);
-        }
-        setStatus(fieldsStatusEl, 'Fields validated as JSON.', 'ok');
-      }catch(e){
-        setStatus(fieldsStatusEl, 'Fields are not valid JSON. Using auto-generated version.', 'warn');
-      }
-
-      const artifact = {
-        version: "1.0",
-        module: "Intake",
-        doc_type: docType,
-        original_file_name: originalName,
-        original_file_hash: originalFileHash,
-        ocr_used: ocrUsed,
-        text_raw: combinedRawText,
-        text_normalized: normalized,
-        extracted_fields: fields,
-        targets: targets,
-        generated_outputs: {
-          ciri: ciriMeta,
-          cda:  cdaMeta,
-          cff:  cffMeta,
-          ccri: ccriMeta
-        },
-        created_at: new Date().toISOString(),
-        notes: "Automatically generated by A.B.E. Intake (local-only browser session)."
-      };
-
-      currentArtifact = artifact;
-      btnArtifact.disabled = false;
-
-      setStatus(runStatus, 'Intake complete. You can now download the artifact and any CSV outputs.', 'ok');
-      dlStatus.textContent = 'Status: Artifact is ready. Use the buttons above to download.';
-    }catch(err){
-      console.error(err);
-      setStatus(runStatus, 'Intake failed: ' + err.message, 'bad');
-      setStatus(fieldsStatusEl, 'No fields produced due to an error.', 'bad');
-      currentArtifact = null;
-      currentCiriCsv = null;
-      btnArtifact.disabled = true;
-      btnCiriCsv.disabled = true;
-      dlStatus.textContent = 'Status: No artifact (error).';
-    }finally{
-      btnRun.disabled = false;
-      btnRun.textContent = 'Run Intake & OCR';
-    }
-  }
-
-  btnRun.addEventListener('click', runIntake);
-
-  btnArtifact.addEventListener('click', ()=>{
-    if(!currentArtifact) return;
-    const json = JSON.stringify(currentArtifact, null, 2);
-    downloadFile('intake_artifact.json', json, 'application/json');
-  });
-
-  btnCiriCsv.addEventListener('click', ()=>{
-    if(!currentCiriCsv) return;
-    downloadFile('ciri_case_autogenerated.csv', currentCiriCsv, 'text/csv');
-  });
-})();
+      const names = Array.from(fileInput.files).map(f=>f.name);
+      nameEl.textContent = names.join(', ');
+    });
+  })();
 </script>
 </body>
 </html>
