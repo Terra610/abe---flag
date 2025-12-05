@@ -1,26 +1,27 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Integration — A.B.E. Public KPIs & Integrity</title>
-<base href="/abe---flag/">
-<link rel="stylesheet" href="abe-patch/assets/abe-patch.css">
-<style>
-  .int-wrap{max-width:1100px;margin:0 auto;padding:1.4rem 1rem 3rem}
-  .int-grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
-  .int-kpi-label{font-size:.9rem;color:#9fb3c8}
-  .int-kpi-num{font-size:1.35rem;font-weight:700}
-  .status-pill{display:inline-block;padding:.1rem .55rem;border-radius:999px;font-size:.8rem;border:1px solid rgba(255,255,255,.12)}
-  .s-ok{border-color:#4bd28f;color:#4bd28f}
-  .s-warn{border-color:#ffa559;color:#ffa559}
-  .s-bad{border-color:#ff6b6b;color:#ff6b6b}
-  .int-table{width:100%;border-collapse:collapse;font-size:.9rem;margin-top:.5rem}
-  .int-table th,.int-table td{border:1px solid rgba(255,255,255,.08);padding:.45rem .55rem;text-align:left}
-  .int-table th{background:rgba(255,255,255,.04)}
-  .mono{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.78rem}
-  .hash-cell{max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .small-note{font-size:.85rem;color:#9fb3c8;margin-top:.3rem}
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Integration — A.B.E. Public KPIs & Integrity</title>
+  <base href="/abe---flag/">
+  <link rel="stylesheet" href="abe-patch/assets/abe-patch.css">
+  <style>
+    .int-wrap{max-width:1100px;margin:0 auto;padding:1.4rem 1rem 3rem}
+    .int-grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+    .int-kpi-label{font-size:.9rem;color:#9fb3c8}
+    .int-kpi-num{font-size:1.35rem;font-weight:700}
+    .status-pill{display:inline-block;padding:.1rem .55rem;border-radius:999px;font-size:.8rem;border:1px solid rgba(255,255,255,.12)}
+    .s-ok{border-color:#4bd28f;color:#4bd28f}
+    .s-warn{border-color:#ffa559;color:#ffa559}
+    .s-bad{border-color:#ff6b6b;color:#ff6b6b}
+    .int-table{width:100%;border-collapse:collapse;font-size:.9rem;margin-top:.5rem}
+    .int-table th,.int-table td{border:1px solid rgba(255,255,255,.08);padding:.45rem .55rem;text-align:left}
+    .int-table th{background:rgba(255,255,255,.04)}
+    .mono{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.78rem}
+    .hash-cell{max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .small-note{font-size:.85rem;color:#9fb3c8;margin-top:.3rem}
+  </style>
 </head>
 <body class="abe-page">
 <header class="abe-header">
@@ -28,7 +29,7 @@
     <a href="/abe---flag/index.html" class="chip">← Home</a>
     <h1>Integration Layer — Public KPIs & Integrity</h1>
     <p class="tagline">
-      Live signals from the A.B.E. pipeline (CIRI → CIBS → CFF/AFFE) plus one-click SHA-256 audit for all published artifacts.
+      Live signals from the A.B.E. pipeline (CIRI → CIBS → CFF/AFFE/CCRI), plus one-click SHA-256 audit for all published artifacts.
     </p>
   </div>
 </header>
@@ -109,17 +110,17 @@
   </section>
 
   <!-- Plain-Language Constitutional Summary -->
-<section class="card">
-  <h2>Constitutional Summary</h2>
-  <p class="small">
-    This section will generate a plain-language explanation of whether your data,
-    case, or scenario aligns with federal authority, constitutional limits, and
-    the hierarchy of law.
-  </p>
-  <p id="divergence-summary" class="mono small" style="white-space:pre-wrap;color:#cdd;">
-    Click “Verify Inputs” to generate summary.
-  </p>
-</section>
+  <section class="card">
+    <h2>Constitutional Summary</h2>
+    <p class="small">
+      This section generates a plain-language explanation of whether your data,
+      case, or scenario aligns with federal authority, constitutional limits, and
+      the hierarchy of law.
+    </p>
+    <p id="divergence-summary" class="mono small" style="white-space:pre-wrap;color:#cdd;">
+      Click “Verify Now” to generate summary.
+    </p>
+  </section>
 
   <!-- Audit trail links -->
   <section class="card">
@@ -203,6 +204,7 @@
   const rowsEl    = document.getElementById('result-rows');
   const metaEl    = document.getElementById('result-meta');
   const rawEl     = document.getElementById('raw');
+  const summaryEl = document.getElementById('divergence-summary');
 
   function setBeacon(id, status){
     const el = document.getElementById(id);
@@ -261,6 +263,15 @@
       rawEl.textContent = JSON.stringify(report,null,2);
       metaEl.textContent = `audit_id: ${report.audit_id} • generated_at: ${report.generated_at}`;
 
+      // NEW: generate plain-language divergence summary
+      if (summaryEl) {
+        if (window.ABE_DIVERGENCE && typeof window.ABE_DIVERGENCE.generateSummary === 'function') {
+          summaryEl.textContent = window.ABE_DIVERGENCE.generateSummary(report);
+        } else {
+          summaryEl.textContent = 'Divergence engine is present, but no summary generator is available.';
+        }
+      }
+
       btnDl.disabled = false;
       btnDl.onclick = ()=>{
         const blob = new Blob([JSON.stringify(report,null,2)],{type:'application/json'});
@@ -276,6 +287,9 @@
       rowsEl.innerHTML = `<tr><td colspan="4">Integrity check failed: ${err.message}</td></tr>`;
       rawEl.textContent = String(err);
       metaEl.textContent = '';
+      if (summaryEl) {
+        summaryEl.textContent = 'Unable to generate constitutional summary because the integrity check failed.';
+      }
     }finally{
       btnVerify.disabled = false;
       btnVerify.textContent = 'Verify Now';
@@ -284,4 +298,4 @@
 })();
 </script>
 </body>
-      </html>
+  </html>
