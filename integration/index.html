@@ -75,6 +75,7 @@
       <div class="tile"><div><strong>CIRI</strong> (<code>ciri/inputs.csv</code>)</div><div id="b-ciri" class="status-pill">—</div></div>
       <div class="tile"><div><strong>CIBS</strong> (<code>cibs/auto_budget.csv</code>)</div><div id="b-cibs" class="status-pill">—</div></div>
       <div class="tile"><div><strong>CDI</strong> (<code>cdi/divergence.csv</code>)</div><div id="b-cdi" class="status-pill">—</div></div>
+      <div class="tile"><div><strong>CDA</strong> (<code>cda/model.json</code>)</div><div id="b-cda" class="status-pill">—</div></div>
       <div class="tile"><div><strong>CAE</strong> (<code>cae/model.json</code>)</div><div id="b-cae" class="status-pill">—</div></div>
       <div class="tile"><div><strong>CFF</strong> (<code>cff/inputs.csv</code>)</div><div id="b-cff" class="status-pill">—</div></div>
       <div class="tile"><div><strong>AFFE</strong> (<code>affe/index.html</code>)</div><div id="b-affe" class="status-pill">—</div></div>
@@ -129,6 +130,7 @@
       <li><a href="/abe---flag/ciri/inputs.csv">/ciri/inputs.csv</a> — engine inputs</li>
       <li><a href="/abe---flag/cibs/auto_budget.csv">/cibs/auto_budget.csv</a> — public allocation</li>
       <li><a href="/abe---flag/cdi/divergence.csv">/cdi/divergence.csv</a> — divergence inputs</li>
+      <li><a href="/abe---flag/cda/model.json">/cda/model.json</a> — CDA configuration</li>
       <li><a href="/abe---flag/cae/model.json">/cae/model.json</a> — alignment corpus map</li>
       <li><a href="/abe---flag/cff/inputs.csv">/cff/inputs.csv</a> — funding forensics input</li>
       <li><a href="/abe---flag/affe/index.html">/affe/index.html</a> — AFFE interface & logic</li>
@@ -230,6 +232,7 @@
       setBeacon('b-ciri', m.ciri.status);
       setBeacon('b-cibs', m.cibs.status);
       setBeacon('b-cdi',  m.cdi.status);
+      setBeacon('b-cda',  m.cda.status);
       setBeacon('b-cae',  m.cae.status);
       setBeacon('b-cff',  m.cff.status);
       setBeacon('b-affe', m.affe.status);
@@ -239,6 +242,7 @@
         ['ciri/inputs.csv',        m.ciri],
         ['cibs/auto_budget.csv',   m.cibs],
         ['cdi/divergence.csv',     m.cdi],
+        ['cda/model.json',         m.cda],
         ['cae/model.json',         m.cae],
         ['cff/inputs.csv',         m.cff],
         ['affe/index.html',        m.affe],
