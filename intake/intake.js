@@ -1,216 +1,151 @@
-// /intake/intake.js
-// Intake + OCR bridge for A.B.E.
-// Plain-language comments, client-side only. No uploads to any server.
+// intake/intake.js
+// In-browser document + OCR bridge for A.B.E.
+// Uses Tesseract.js (loaded from CDN in index.html) and Web Crypto.
+// This is descriptive only; not legal advice.
 
-// --- small helper: SHA-256 hash (hex) of an ArrayBuffer ---
-async function sha256Hex(buffer) {
-  const hash = await crypto.subtle.digest("SHA-256", buffer);
-  const bytes = new Uint8Array(hash);
-  return Array.from(bytes).map(b => b.toString(16).padStart(2, "0")).join("");
-}
+(function(){
+  const fileInput     = document.getElementById('file-input');
+  const fileStatusEl  = document.getElementById('file-status');
+  const textOutput    = document.getElementById('text-output');
+  const docTypeEl     = document.getElementById('doc-type');
+  const btnBuild      = document.getElementById('btn-build');
+  const btnDownload   = document.getElementById('btn-download');
+  const buildStatusEl = document.getElementById('build-status');
+  const previewEl     = document.getElementById('artifact-preview');
 
-// --- small helper: normalize text for display + extraction ---
-function normalizeText(str) {
-  if (!str) return "";
-  return str
-    .replace(/\r\n/g, "\n")
-    .replace(/\r/g, "\n")
-    .replace(/[ \t]+/g, " ")
-    .replace(/\n{3,}/g, "\n\n")
-    .trim();
-}
+  let currentFile   = null;
+  let currentHash   = null;
+  let lastArtifact  = null;
 
-// --- build the intake artifact object that matches intake/schema.json ---
-function buildArtifact({ docType, fileName, fileHash, ocrUsed, textRaw, textNorm, targets }) {
-  const now = new Date().toISOString();
-
-  return {
-    version: "1.0",
-    module: "Intake",
-    doc_type: docType,
-    original_file_name: fileName,
-    original_file_hash: fileHash,
-    ocr_used: ocrUsed,
-    text_raw: textRaw,
-    text_normalized: textNorm,
-    extracted_fields: {
-      // This is intentionally minimal for now; can be extended later.
-      approx_char_count: textNorm.length,
-      has_dollar_sign: /\$[0-9]/.test(textNorm),
-      has_date_pattern: /\b(20[0-9]{2}|19[0-9]{2})\b/.test(textNorm)
-    },
-    targets: targets,
-    generated_outputs: {
-      ciri: {
-        present: false
-      },
-      cda: {
-        present: false
-      },
-      cff: {
-        present: false
-      },
-      ccri: {
-        present: false
-      }
-    },
-    created_at: now,
-    notes: "Initial Intake artifact. Helper files (CIRI CSV, CDA scenario, CFF/CCRI stubs) can be added in later versions."
-  };
-}
-
-(function () {
-  const dropZone   = document.getElementById("drop-zone");
-  const fileInput  = document.getElementById("file-input");
-  const fileInfoEl = document.getElementById("file-info");
-  const docTypeEl  = document.getElementById("doc-type");
-  const statusEl   = document.getElementById("status-line");
-  const textEl     = document.getElementById("intake-text");
-  const fieldsEl   = document.getElementById("intake-fields");
-  const btnProcess = document.getElementById("btn-process");
-  const btnDlInt   = document.getElementById("btn-download-intake");
-
-  const targetCIRI = document.getElementById("target-ciri");
-  const targetCDA  = document.getElementById("target-cda");
-  const targetCFF  = document.getElementById("target-cff");
-  const targetCCRI = document.getElementById("target-ccri");
-
-  let currentFile = null;
-  let currentArtifact = null;
-
-  if (!dropZone || !fileInput) {
-    console.warn("Intake UI elements not found; aborting init.");
-    return;
+  // Helper: compute SHA-256 hex of an ArrayBuffer
+  async function sha256Hex(buffer){
+    if (!window.crypto || !crypto.subtle) {
+      return null; // older browser fallback
+    }
+    const hashBuf = await crypto.subtle.digest('SHA-256', buffer);
+    return Array.from(new Uint8Array(hashBuf))
+      .map(b => b.toString(16).padStart(2,'0'))
+      .join('');
   }
 
-  // --- wire drop zone ---
-  dropZone.addEventListener("click", () => fileInput.click());
+  // Handle file selection + OCR/text extraction
+  fileInput.addEventListener('change', async (e)=>{
+    const file = e.target.files[0];
+    currentFile = null;
+    currentHash = null;
 
-  dropZone.addEventListener("dragover", (e) => {
-    e.preventDefault();
-    dropZone.classList.add("dragover");
-  });
-
-  dropZone.addEventListener("dragleave", (e) => {
-    e.preventDefault();
-    dropZone.classList.remove("dragover");
-  });
-
-  dropZone.addEventListener("drop", (e) => {
-    e.preventDefault();
-    dropZone.classList.remove("dragover");
-    const f = e.dataTransfer.files && e.dataTransfer.files[0];
-    if (f) {
-      handleFileSelected(f);
-    }
-  });
-
-  fileInput.addEventListener("change", (e) => {
-    const f = e.target.files && e.target.files[0];
-    if (f) {
-      handleFileSelected(f);
-    }
-  });
-
-  function handleFileSelected(file) {
-    currentFile = file;
-    currentArtifact = null;
-    fileInfoEl.textContent = `Selected: ${file.name} (${file.type || "unknown type"}, ${file.size} bytes)`;
-    statusEl.textContent = "Ready to run Intake. Click “Run Intake (OCR + Normalize)”.";
-    textEl.textContent = "No text yet — run Intake first.";
-    fieldsEl.textContent = "{}";
-    btnDlInt.disabled = true;
-  }
-
-  // --- core Intake pipeline ---
-  btnProcess.addEventListener("click", async () => {
-    if (!currentFile) {
-      statusEl.textContent = "No file selected. Choose or drop a file first.";
+    if (!file) {
+      fileStatusEl.textContent = 'No file selected.';
+      textOutput.value = '';
+      previewEl.textContent = '{"status":"waiting for file…"}';
       return;
     }
 
-    statusEl.textContent = "Reading file and computing hash…";
-    btnProcess.disabled = true;
-    btnProcess.textContent = "Processing…";
-    currentArtifact = null;
-    btnDlInt.disabled = true;
+    fileStatusEl.textContent = `Selected: ${file.name} (${file.type || 'unknown type'})`;
+    buildStatusEl.textContent = '';
+    previewEl.textContent = '{"status":"processing file…"}';
+    btnDownload.disabled = true;
+    lastArtifact = null;
 
     try {
-      const arrayBuffer = await currentFile.arrayBuffer();
-      const fileHash = await sha256Hex(arrayBuffer);
+      const buf = await file.arrayBuffer();
+      currentHash = await sha256Hex(buf);
+      currentFile = file;
 
-      const mime = currentFile.type || "";
-      let textRaw = "";
-      let ocrUsed = false;
+      const type = (file.type || '').toLowerCase();
 
-      if (mime.startsWith("image/")) {
-        // OCR path
-        statusEl.textContent = "Running OCR on image (this can take a moment)…";
-        ocrUsed = true;
-        const res = await Tesseract.recognize(currentFile, "eng");
-        textRaw = res.data && res.data.text ? res.data.text : "";
-      } else if (mime.startsWith("text/")) {
-        // plain text
-        statusEl.textContent = "Reading text file…";
-        textRaw = await currentFile.text();
-      } else if (mime === "application/pdf") {
-        // simple placeholder for now
-        statusEl.textContent = "PDF detected. Text extraction is not implemented yet; please copy-paste text for now.";
-        textRaw = "[PDF detected — inline extraction not implemented in this version. You can copy-paste text into a .txt file and re-run Intake.]";
-      } else {
-        statusEl.textContent = "Unknown file type; treating as binary and not attempting OCR.";
-        textRaw = "[Unsupported file type for OCR in this version. Use an image, text, or PDF (with copy-paste workaround).]";
+      // 1) Plain-text-like files: read directly
+      if (type.startsWith('text/') || /\.txt$|\.md$|\.json$|\.csv$/i.test(file.name)){
+        const text = new TextDecoder().decode(buf);
+        textOutput.value = text;
+        previewEl.textContent = '{"status":"text file loaded; ready to build artifact."}';
+        return;
       }
 
-      const textNorm = normalizeText(textRaw);
-      textEl.textContent = textNorm || "(No readable text was produced from this document.)";
+      // 2) Images: run OCR via Tesseract
+      if (type.startsWith('image/')){
+        fileStatusEl.innerHTML = `Selected: ${file.name} <span class="pill warn">running OCR…</span>`;
+        const result = await Tesseract.recognize(file, 'eng');
+        const text = (result && result.data && result.data.text) ? result.data.text : '';
+        textOutput.value = text.trim();
+        fileStatusEl.innerHTML = `Selected: ${file.name} <span class="pill ok">OCR complete</span>`;
+        previewEl.textContent = '{"status":"OCR text ready; review and clean, then build artifact."}';
+        return;
+      }
 
-      const docType = docTypeEl.value || "generic_case_text";
+      // 3) Everything else (PDF etc.): try to decode as text, else fallback
+      try {
+        const text = new TextDecoder().decode(buf);
+        textOutput.value = text.trim();
+        previewEl.textContent = '{"status":"file loaded as text; check for gibberish before building."}';
+      } catch (_) {
+        textOutput.value = '';
+        previewEl.textContent = '{"status":"file type not directly supported; paste relevant text above and then build."}';
+      }
 
-      // Build targets from checkboxes
-      const targets = [];
-      if (targetCIRI.checked) targets.push("CIRI");
-      if (targetCDA.checked)  targets.push("CDA");
-      if (targetCFF.checked)  targets.push("CFF");
-      if (targetCCRI.checked) targets.push("CCRI");
-
-      const artifact = buildArtifact({
-        docType,
-        fileName: currentFile.name,
-        fileHash,
-        ocrUsed,
-        textRaw,
-        textNorm,
-        targets
-      });
-
-      currentArtifact = artifact;
-      fieldsEl.textContent = JSON.stringify(artifact.extracted_fields, null, 2);
-      btnDlInt.disabled = false;
-
-      statusEl.textContent = "Intake complete. You can now download intake_artifact.json.";
-      btnProcess.textContent = "Run Intake (OCR + Normalize)";
     } catch (err) {
-      console.error(err);
-      statusEl.textContent = "Intake failed: " + (err && err.message ? err.message : String(err));
-      btnProcess.textContent = "Run Intake (OCR + Normalize)";
-    } finally {
-      btnProcess.disabled = false;
+      fileStatusEl.textContent = 'Error reading file.';
+      previewEl.textContent = '{"error":"' + String(err && err.message || err) + '"}';
     }
   });
 
-  // --- download artifact ---
-  btnDlInt.addEventListener("click", () => {
-    if (!currentArtifact) return;
-    const blob = new Blob([JSON.stringify(currentArtifact, null, 2)], {
-      type: "application/json"
-    });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
+  // Build intake_artifact.json in memory
+  btnBuild.addEventListener('click', ()=>{
+    if (!currentFile) {
+      buildStatusEl.textContent = 'Please select a file first.';
+      return;
+    }
+    const normalized = textOutput.value.trim();
+    if (!normalized) {
+      buildStatusEl.textContent = 'Please ensure there is text in the box (OCR or pasted) before building.';
+      return;
+    }
+
+    const targets = [];
+    if (document.getElementById('tgt-ciri').checked) targets.push('CIRI');
+    if (document.getElementById('tgt-cda').checked)  targets.push('CDA');
+    if (document.getElementById('tgt-cff').checked)  targets.push('CFF');
+    if (document.getElementById('tgt-ccri').checked) targets.push('CCRI');
+
+    const artifact = {
+      version: "1.0",
+      module: "Intake",
+      doc_type: docTypeEl.value,
+      original_file_name: currentFile.name,
+      original_file_hash: currentHash || "sha256_not_available_in_this_browser",
+      ocr_used: !!(currentFile.type && currentFile.type.toLowerCase().startsWith('image/')),
+      text_raw: null, // future: store pre-normalized text here if you want
+      text_normalized: normalized,
+      extracted_fields: {},      // future: per-doc-type parsing
+      targets,
+      generated_outputs: {
+        ciri: { present: false },
+        cda:  { present: false },
+        cff:  { present: false },
+        ccri: { present: false }
+      },
+      created_at: new Date().toISOString(),
+      notes: "Intake artifact created locally in-browser. No server-side storage."
+    };
+
+    lastArtifact = artifact;
+    previewEl.textContent = JSON.stringify(artifact, null, 2);
+    buildStatusEl.textContent = 'Intake artifact built. Review and download.';
+    btnDownload.disabled = false;
+  });
+
+  // Download JSON artifact
+  btnDownload.addEventListener('click', ()=>{
+    if (!lastArtifact) return;
+    const blob = new Blob([JSON.stringify(lastArtifact,null,2)], {type:'application/json'});
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    const safeName = (lastArtifact.original_file_name || 'document')
+      .replace(/[^a-z0-9_.-]+/gi,'_');
     a.href = url;
-    const safeName = (currentArtifact.original_file_name || "document").replace(/[^a-z0-9_\-\.]+/gi, "_");
     a.download = `intake_artifact_${safeName}.json`;
     a.click();
     URL.revokeObjectURL(url);
   });
+
 })();
