@@ -3,148 +3,305 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Intake — Document + OCR Bridge | A.B.E.</title>
-  <base href="/abe---flag/">
-  <link rel="stylesheet" href="abe-patch/assets/abe-patch.css"/>
+  <title>Learn A.B.E. · Guided Engine Tips</title>
+
   <style>
-    .intake-wrap{max-width:1100px;margin:0 auto;padding:1.4rem 1rem 3rem}
-    .grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
-    .drop-zone{
-      border:2px dashed rgba(255,255,255,.25);
-      border-radius:10px;
-      padding:1.2rem;
-      text-align:center;
-      cursor:pointer;
-      background:rgba(10,14,22,.7);
+    :root { --bg:#0b0d12; --panel:#151923; --ink:#e6e8ee; --muted:#9aa4b2; --accent:#5ddfff; }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--ink);
+         font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial,sans-serif}
+
+    a{color:var(--accent);text-decoration:none}
+    a:hover{text-decoration:underline}
+
+    header{
+      padding:1.25rem 1rem;
+      border-bottom:1px solid #1f2430;
+      background:#0f131b;
+      position:sticky;top:0;z-index:10;
     }
-    .drop-zone.dragover{border-color:#5ddfff;background:rgba(20,28,45,.9)}
-    .small{font-size:.9rem;color:#9fb3c8}
-    .mono{font-family:ui-monospace,SFMono-Regular,Consolas,monospace}
-    .out-block{
-      background:#0f131a;
+    .wrap{max-width:1100px;margin:0 auto;padding:1.25rem}
+    h1{margin:.3rem 0;font-size:1.45rem;color:#aee8ff}
+    .crumb{font-size:.9rem;color:var(--muted)}
+
+    .grid{display:grid;gap:1.25rem;margin-top:1rem}
+    @media(min-width:900px){ .grid{grid-template-columns:1fr 1fr} }
+
+    .card{
+      background:var(--panel);
+      border:1px solid rgba(255,255,255,.06);
+      border-radius:12px;
+      padding:1rem;
+    }
+    .card h2{font-size:1.1rem;margin:.25rem 0 .6rem;color:#d4f5ff}
+    .sub{color:var(--muted);font-size:.92rem;margin:-.25rem 0 .75rem}
+
+    .row{display:flex;gap:.75rem;align-items:center;flex-wrap:wrap}
+    label{font-size:.87rem;color:#c3c8d4}
+
+    input[type="number"], input[type="range"]{
+      background:#0e121a;
+      border:1px solid #2a3040;
       border-radius:8px;
-      border:1px solid rgba(255,255,255,.08);
-      padding:.6rem .7rem;
-      font-size:.85rem;
-      max-height:260px;
-      overflow:auto;
-      white-space:pre-wrap;
+      color:var(--ink);
+      padding:.4rem .55rem;
     }
-    label span{font-size:.9rem;color:#9fb3c8}
-    .targets label{display:inline-flex;align-items:center;gap:.35rem;margin-right:.8rem;font-size:.9rem}
+    input[type="number"]{width:120px}
+    input[type="range"]{width:200px}
+
+    .pill{
+      display:inline-block;
+      padding:.2rem .6rem;
+      border-radius:999px;
+      font-size:.8rem;
+      border:1px solid rgba(255,255,255,.25);
+      margin-left:.5rem;
+    }
+    .ok{color:#7effb3;border-color:#7effb3}
+    .warn{color:#ffdba5;border-color:#ffdba5}
+
+    .kpi{display:grid;grid-template-columns:repeat(2,1fr);gap:.75rem;margin:.75rem 0}
+    .k{background:#0f141d;border:1px solid #212838;border-radius:10px;padding:.65rem}
+    .k .v{font-weight:700;font-size:1.05rem}
+    .muted{color:var(--muted);font-size:.82rem}
+
+    .hint{font-size:.85rem;color:#b6c2d1;margin-top:.5rem}
+
+    footer{margin:2.5rem 0 1rem;color:#7f8a99;font-size:.85rem;text-align:center}
   </style>
 </head>
-<body class="abe-page">
-<header class="abe-header">
-  <div class="intake-wrap">
-    <a href="/abe---flag/index.html" class="chip">← Home</a>
-    <h1>Intake — Document + OCR Bridge</h1>
-    <p class="tagline">
-      Turn tickets, CPS letters, loan contracts, and policy memos into structured files that CIRI, CDA, CFF, and CCRI can use — all in your browser.
-    </p>
-    <nav class="chip-row">
-      <span class="chip">No logins · No tracking · Local-only OCR</span>
-      <a class="chip" href="ciri/index.html">CIRI</a>
-      <a class="chip" href="cff/index.html">CFF</a>
-      <a class="chip" href="ccri/index.html">CCRI</a>
-      <a class="chip" href="system/index.html">System Map</a>
-    </nav>
+
+<body>
+<header>
+  <div class="wrap">
+    <div class="crumb"><a href="/abe---flag/index.html">← Return Home</a></div>
+    <h1>Learn A.B.E. · Guided Engine Tips</h1>
   </div>
 </header>
 
-<main class="abe-main intake-wrap">
+<main class="wrap">
 
-  <!-- What this does -->
-  <section class="card">
-    <h2>What Intake Does</h2>
-    <p class="small">
-      Most people don’t start with a spreadsheet. They start with a <strong>ticket, letter, or contract</strong>.
-      This page lets you upload that one document and turns it into:
-    </p>
-    <ul class="small">
-      <li>A hash-locked <code class="mono">intake_artifact.json</code> you can attach to motions or reports.</li>
-      <li>Optional helper files that other A.B.E. modules can use (CIRI CSV, CDA scenario, CFF/CCRI stubs).</li>
-      <li>A plain-text view so you can see what the OCR actually read.</li>
-    </ul>
-    <p class="small">
-      Everything runs locally. If you close this tab, your document goes with you — not to a server.
-    </p>
-  </section>
+  <p class="sub">
+    These interactive examples show — in simple, editable numbers — how the core A.B.E. engines compute results.
+    They mirror the figures in your public doctrine (<a href="/abe---flag/doctrine/abe.html">A Decent Proposal + CRRA + Rebuild</a>).
+  </p>
 
-  <section class="card">
-    <h2>1. Upload your document</h2>
-    <div class="grid">
-      <div>
-        <div id="drop-zone" class="drop-zone">
-          <strong>Drop a file here</strong><br/>
-          <span class="small">Images (tickets), PDFs, or text files. Click to browse.</span><br/><br/>
-          <input id="file-input" type="file" style="display:none" />
-        </div>
-        <p class="small" id="file-info">No file selected yet.</p>
+  <div class="grid">
+
+    <!-- ===========================
+         CIRI — TIP
+    ============================ -->
+    <section class="card" id="ciri">
+      <h2>1) CIRI — Integrity & Recovery Index</h2>
+      <div class="sub">Estimate recovery from avoiding unconstitutional cases & jail days.</div>
+
+      <div class="row">
+        <label>Cases avoided / yr</label>
+        <input type="number" id="cases" value="1200" min="0" step="50">
+        <input type="range"  id="casesR" value="1200" min="0" max="5000" step="50">
       </div>
-      <div>
-        <label for="doc-type">
-          <span>Document type</span><br/>
-          <select id="doc-type">
-            <option value="traffic_ticket">Traffic / citation ticket</option>
-            <option value="cps_case">CPS / child welfare document</option>
-            <option value="loan_contract">Loan / finance contract</option>
-            <option value="policy_memo">Policy / memo / directive</option>
-            <option value="generic_case_text">Generic case text</option>
-          </select>
-        </label>
-        <div class="targets" style="margin-top:.6rem">
-          <div class="small">Which modules should this feed?</div>
-          <label><input type="checkbox" id="target-ciri" checked> <span>CIRI</span></label>
-          <label><input type="checkbox" id="target-cda" checked> <span>CDA</span></label>
-          <label><input type="checkbox" id="target-cff"> <span>CFF</span></label>
-          <label><input type="checkbox" id="target-ccri"> <span>CCRI</span></label>
-        </div>
-        <button id="btn-process" class="btn" style="margin-top:.7rem">Run Intake (OCR + Normalize)</button>
-        <p class="small" id="status-line" style="margin-top:.35rem">Waiting for a file…</p>
+
+      <div class="row">
+        <label>Avg case cost</label>
+        <input type="number" id="costCase" value="950" min="0" step="25">
+        <input type="range"  id="costCaseR" value="950" min="0" max="5000" step="25">
       </div>
-    </div>
-  </section>
 
-  <section class="card">
-    <h2>2. Preview what the engine sees</h2>
-    <p class="small">
-      This is the text actually seen by the intake engine, after OCR and basic cleanup.
-      If it looks wrong, you can always rerun Intake with a clearer scan.
-    </p>
-    <pre id="intake-text" class="out-block mono">No text yet — run Intake first.</pre>
-  </section>
+      <div class="row">
+        <label>Jail days avoided</label>
+        <input type="number" id="days" value="3800" min="0" step="25">
+        <input type="range"  id="daysR" value="3800" min="0" max="20000" step="25">
+      </div>
 
-  <section class="card">
-    <h2>3. Intake artifact & downloads</h2>
-    <p class="small">
-      Once Intake runs, you can download a single JSON artifact that includes:
-      the hash of your original file, normalized text, targets, and metadata for any helper files.
-    </p>
-    <button id="btn-download-intake" class="btn" disabled>Download intake_artifact.json</button>
-    <p class="small" style="margin-top:.4rem">
-      This artifact is designed to be attached to motions, auditor packets, or oversight reports.
-      It proves what was uploaded and when, without exposing your original file.
-    </p>
-    <h3 style="margin-top:.8rem;font-size:1rem">Extracted fields (lightweight)</h3>
-    <p class="small">
-      Later versions will auto-detect things like citation number, dates, agencies, and dollar amounts.
-      For now, Intake keeps a minimal, human-readable summary of what you ran.
-    </p>
-    <pre id="intake-fields" class="out-block mono">{}</pre>
-  </section>
+      <div class="row">
+        <label>Cost per jail day</label>
+        <input type="number" id="costDay" value="98" min="0" step="2">
+        <input type="range"  id="costDayR" value="98" min="0" max="350" step="2">
+      </div>
+
+      <div class="kpi">
+        <div class="k"><div class="muted">Case Savings</div><div class="v" id="caseSavings">$0</div></div>
+        <div class="k"><div class="muted">Jail Savings</div><div class="v" id="jailSavings">$0</div></div>
+        <div class="k"><div class="muted">Total Recovery</div><div class="v" id="totalRecovery">$0</div></div>
+        <div class="k"><div class="muted">ROI / case</div><div class="v" id="roiPerCase">$0</div></div>
+      </div>
+
+      <p class="hint">
+        Full module: <a href="/abe---flag/ciri/index.html"><strong>CIRI Calculator</strong></a>
+        <span id="ciriDataStatus" class="pill warn">checking…</span>
+      </p>
+    </section>
+
+    <!-- ===========================
+         CIBS — TIP
+    ============================ -->
+    <section class="card" id="cibs">
+      <h2>2) CIBS — Community Budget</h2>
+      <div class="sub">Preview how recovered funds auto-allocate into community investment categories.</div>
+
+      <div class="row">
+        <label>Funds to allocate</label>
+        <input type="number" id="pool" value="1140000" min="0" step="10000">
+        <input type="range"  id="poolR" value="1140000" min="0" max="5000000" step="10000">
+      </div>
+
+      <div class="kpi" id="alloc"></div>
+
+      <p class="hint">
+        Full module: <a href="/abe---flag/cibs/index.html"><strong>CIBS Overview</strong></a>
+        <span id="cibsDataStatus" class="pill warn">checking…</span>
+      </p>
+    </section>
+
+    <!-- ===========================
+         MACRO — TIP
+    ============================ -->
+    <section class="card" id="macro">
+      <h2>3) Macro — National Cascade</h2>
+      <div class="sub">Project GDP & job gains from scaling restored-community effects across the nation.</div>
+
+      <div class="row">
+        <label>Recurring funds / yr</label>
+        <input type="number" id="recurring" value="142500000000" min="0" step="50000000">
+        <input type="range"  id="recurringR" value="142500000000" min="0" max="300000000000" step="50000000">
+      </div>
+
+      <div class="row">
+        <label>Multiplier (×)</label>
+        <input type="number" id="mult" value="1.5" min="1" max="3" step="0.1">
+        <input type="range"  id="multR" value="1.5" min="1" max="3" step="0.1">
+      </div>
+
+      <div class="row">
+        <label>Communities</label>
+        <input type="number" id="communities" value="100" min="1" step="1">
+        <input type="range"  id="communitiesR" value="100" min="1" max="10000" step="1">
+      </div>
+
+      <div class="kpi">
+        <div class="k"><div class="muted">GDP Uplift</div><div class="v" id="gdpUplift">$0</div></div>
+        <div class="k"><div class="muted">Per-Community GDP</div><div class="v" id="gdpPer">$0</div></div>
+        <div class="k"><div class="muted">Jobs (est.)</div><div class="v" id="jobs">0</div></div>
+        <div class="k"><div class="muted">Doc Range</div><div class="v" id="docCheck">—</div></div>
+      </div>
+
+      <p class="hint">
+        Full module: <a href="/abe---flag/macro/index.html"><strong>Macro Model</strong></a>
+        <span id="macroDataStatus" class="pill warn">checking…</span>
+      </p>
+    </section>
+
+  </div>
+
+  <footer>
+    CC BY-NC 4.0 · Integrity only — never for sale.
+  </footer>
 
 </main>
 
-<footer class="abe-footer">
-  <p>
-    CC BY-NC 4.0 · DOI <a href="https://doi.org/10.5281/zenodo.17586107">10.5281/zenodo.17586107</a> · Integrity only — never for sale.
-  </p>
-</footer>
+<script>
+  const $ = id => document.getElementById(id);
+  const money = n => "$" + Math.round(n).toLocaleString();
 
-<!-- OCR engine -->
-<script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
-<!-- Intake logic -->
-<script src="/abe---flag/intake/intake.js"></script>
+  // -------- CIRI --------
+  const linkR = (a,b)=>{ a.oninput=()=>b.value=a.value; b.oninput=()=>a.value=b.value; };
+
+  linkR($('cases'),$('casesR'));
+  linkR($('costCase'),$('costCaseR'));
+  linkR($('days'),$('daysR'));
+  linkR($('costDay'),$('costDayR'));
+
+  function renderCIRI(){
+    const cs = (+$('cases').value||0) * (+$('costCase').value||0);
+    const js = (+$('days').value||0)  * (+$('costDay').value||0);
+    const total = cs + js;
+
+    $('caseSavings').textContent = money(cs);
+    $('jailSavings').textContent = money(js);
+    $('totalRecovery').textContent = money(total);
+    $('roiPerCase').textContent  = money(total/Math.max(+$('cases').value||1,1));
+  }
+  document.querySelectorAll('#ciri input').forEach(i=>i.addEventListener('input',renderCIRI));
+  renderCIRI();
+
+  fetch('/abe---flag/ciri/inputs.csv')
+    .then(r=> r.ok ? $('ciriDataStatus').className='pill ok' : $('ciriDataStatus').className='pill warn')
+    .catch(()=> $('ciriDataStatus').className='pill warn');
+
+  // -------- CIBS --------
+  linkR($('pool'),$('poolR'));
+
+  let ratios = [
+    ['Community Safety', .30],
+    ['Youth Programs',   .12],
+    ['Veterans',         .08],
+    ['Local Services',   .20],
+    ['Digital Access',   .10],
+    ['Legal Defense',    .15],
+    ['Admin/Steward',    .05]
+  ];
+
+  function renderCIBS(){
+    const P = +$('pool').value||0;
+    const box = $('alloc');
+    box.innerHTML='';
+    ratios.forEach(([name,share])=>{
+      const div=document.createElement('div');
+      div.className='k';
+      div.innerHTML=`<div class="muted">${name} (${Math.round(share*100)}%)</div><div class="v">${money(P*share)}</div>`;
+      box.appendChild(div);
+    });
+  }
+
+  fetch('/abe---flag/cibs/auto_budget.csv')
+    .then(async r=>{
+      if(!r.ok) throw 0;
+      const text = await r.text();
+      const lines = text.trim().split(/\r?\n/).slice(1);
+      let sum = 0;
+      const raw = lines.map(l=>{
+        const [cat,val]=l.split(',');
+        const v = +val||0;
+        sum+=v;
+        return [cat.trim(),v];
+      });
+      if(sum>0){
+        ratios = raw.map(([n,v])=>[n,v/sum]);
+        $('cibsDataStatus').className='pill ok';
+      } else throw 0;
+    })
+    .catch(()=> $('cibsDataStatus').className='pill warn')
+    .finally(renderCIBS);
+
+  // -------- MACRO --------
+  linkR($('recurring'),$('recurringR'));
+  linkR($('mult'),$('multR'));
+  linkR($('communities'),$('communitiesR'));
+
+  function renderMacro(){
+    const R = +$('recurring').value||0;
+    const M = +$('mult').value||1;
+    const C = +$('communities').value||1;
+
+    const gdp = R*M;
+    $('gdpUplift').textContent = money(gdp);
+    $('gdpPer').textContent    = money(gdp/Math.max(C,1));
+    $('jobs').textContent      = Math.round(gdp/80000).toLocaleString();
+
+    const low  = 142500000000*1.5;
+    const high = 262500000000*1.5;
+
+    $('docCheck').innerHTML =
+      (gdp>=low && gdp<=high)
+      ? `<span class="pill ok">${money(low)} – ${money(high)}</span>`
+      : `<span class="pill warn">${money(low)} – ${money(high)}</span>`;
+  }
+  document.querySelectorAll('#macro input').forEach(i=>i.addEventListener('input',renderMacro));
+  renderMacro();
+
+  fetch('/abe---flag/macro/ABE_MacroCascadeModel.json')
+    .then(r=> $('macroDataStatus').className = r.ok ? 'pill ok' : 'pill warn')
+    .catch(()=> $('macroDataStatus').className='pill warn');
+</script>
 </body>
 </html>
