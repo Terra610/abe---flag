@@ -265,6 +265,9 @@
       }).join('');
 
       rawEl.textContent = JSON.stringify(report,null,2);
+      if (window.renderDivergenceSummary) {
+        window.renderDivergenceSummary(report);
+      }
       metaEl.textContent = `audit_id: ${report.audit_id} • generated_at: ${report.generated_at}`;
 
       // NEW: generate plain-language divergence summary
