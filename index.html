@@ -1,384 +1,293 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>The American Butterfly Effect (A.B.E.) — System Hub</title>
-<base href="/abe---flag/">
-
-<style>
-:root{
-  --bg:#0b0d12; --panel:#141820; --panel2:#0f131a; --ink:#e6e6e6; --muted:#9fb3c8;
-  --line:rgba(255,255,255,.08); --brand:#5ddfff; --accent:#fff750; --ok:#4bd28f; --warn:#ffa559
-}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
-a{color:#80bfff;text-decoration:none} a:hover{text-decoration:underline}
-header{padding:28px 20px;background:linear-gradient(90deg,#11151c,#1b1e25);border-bottom:1px solid var(--line)}
-.wrap{max-width:1100px;margin:0 auto;padding:0 20px}
-h1{margin:0 0 6px}
-.sub{color:var(--muted)}
-.badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
-.badges a,.chip{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border:1px solid var(--line);border-radius:999px;color:var(--muted)}
-.grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px}
-.tile{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:14px}
-.kpi{display:flex;gap:14px;flex-wrap:wrap}
-.kpi .tile{flex:1 1 220px}
-.num{font-weight:700;font-size:1.25rem}
-small{color:var(--muted)}
-.table{width:100%;border-collapse:collapse;margin-top:8px}
-.table th,.table td{border:1px solid var(--line);padding:10px 12px;text-align:left}
-.table th{background:var(--panel2)}
-.status{display:inline-block;padding:2px 10px;border-radius:999px;border:1px solid var(--line);font-size:.85rem}
-.ok{color:var(--ok);border-color:rgba(75,210,143,.35)}
-.warn{color:var(--warn);border-color:rgba(255,165,89,.35)}
-footer{margin:40px 0 24px;text-align:center;color:var(--muted);font-size:.9rem}
-hr{border:none;border-top:1px solid var(--line);margin:18px 0}
-@media (max-width:720px){.kpi .tile{flex:1 1 100%}}
-</style>
+  <meta charset="utf-8"/>
+  <title>A.B.E. — American Butterfly Effect · Engine Hub</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <base href="/abe---flag/">
+  <link rel="stylesheet" href="abe-patch/assets/abe-patch.css"/>
+  <style>
+    .abe-main-wrap{max-width:1100px;margin:0 auto;padding:1.5rem 1rem 3rem}
+    .grid{display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}
+    .card h2{margin-top:0}
+    .tagline-strong{font-weight:600}
+    .pill{display:inline-block;padding:.1rem .6rem;border-radius:999px;font-size:.8rem;border:1px solid rgba(255,255,255,.18);margin-right:.3rem;margin-top:.25rem}
+    .pill-alpha{border-color:#ffd36b;color:#ffd36b}
+    .pill-beta{border-color:#5ddfff;color:#5ddfff}
+    .pill-stable{border-color:#4bd28f;color:#4bd28f}
+    .pill-design{border-color:#9fb3c8;color:#9fb3c8}
+    .small{font-size:.9rem;color:#9fb3c8}
+  </style>
 </head>
-<body>
-<header>
-  <div class="wrap">
-    <h1>🦋 The American Butterfly Effect (A.B.E.)</h1>
-    <div class="sub" id="version-line">
-      Constitutional & economic restoration framework — public, auditable, non-commercial.
-    </div>
-    <div class="badges">
-      <a href="https://doi.org/10.5281/zenodo.17586107" title="DOI: 10.5281/zenodo.17586107">
-        <img src="https://zenodo.org/badge/DOI/10.5281/zenodo.17586107.svg" alt="DOI badge" height="18"/>
-      </a>
-      <span class="chip">License: CC BY-NC 4.0</span>
-      <a class="chip" href="start/index.html">Start Here</a>
-      <a class="chip" href="doctrine/index.html">Doctrine Library</a>
+<body class="abe-page">
+
+<header class="abe-header">
+  <div class="abe-main-wrap">
+    <h1>A.B.E. — American Butterfly Effect</h1>
+    <p class="tagline">
+      A constitutional prosperity engine.  
+      <span class="tagline-strong">From overreach → divergence → recovery → budgets → projects — with receipts.</span>
+    </p>
+    <nav class="chip-row">
+      <a class="chip chip-alt" href="start/index.html">Start Here</a>
+      <a class="chip" href="intake/index.html">Intake (Upload a Document)</a>
+      <a class="chip" href="integration/index.html">Integration / Audit</a>
       <a class="chip" href="system/index.html">System Map</a>
-      <a class="chip" href="macro/index.html">Macro Model</a>
-    </div>
+      <a class="chip" href="learn/index.html">Learn the Engine</a>
+      <a class="chip" href="doctrine/index.html">Doctrines</a>
+      <a class="chip" href="START_HERE.md">Repo README</a>
+    </nav>
   </div>
 </header>
 
-<main class="wrap" style="margin:24px auto 44px">
-  <!-- System Overview -->
-  <div class="card">
-    <h2 style="margin:0 0 8px;color:var(--accent)">What A.B.E. Does</h2>
-    <p style="margin:.25rem 0 0">
-      A.B.E. converts <em>constitutional alignment</em> into <em>measurable, auditable economics</em>:
-      <strong>CAE</strong> (law parsing) →
-      <strong>CDI</strong> (divergence signal) →
-      <strong>CIRI</strong> (recovery value) →
-      <strong>CIBS</strong> (budget) →
-      <strong>CII</strong> (projects) →
-      <strong>CFF/AFFE</strong> (funding forensics) →
-      <strong>CCRI</strong> (credit integrity) →
-      <strong>Integration</strong> (receipts & attestations).
+<main class="abe-main abe-main-wrap">
+
+  <!-- On-ramp -->
+  <section class="card">
+    <h2>Where do I start?</h2>
+    <p>
+      You do <strong>not</strong> need to be a lawyer or a data scientist to use A.B.E.
+      Pick the lane that matches what you have in your hands.
     </p>
-  </div>
-
-  <!-- Live KPIs -->
-  <div class="card">
-    <h3 style="margin:0 0 8px">Live KPIs</h3>
-    <div class="kpi">
-      <div class="tile">
-        <div>Modeled Recovery (CIRI)</div>
-        <div id="k-ciri" class="num">—</div>
-        <small>Computed from <code>/ciri/inputs.csv</code></small>
+    <div class="grid">
+      <div>
+        <h3>🧭 Guided path</h3>
+        <p class="small">
+          If you’re new or overwhelmed, let the guided flow route you:
+          it explains which module to use, in plain language.
+        </p>
+        <p>
+          <a class="btn" href="start/index.html">Open “Start Here”</a>
+        </p>
       </div>
-      <div class="tile">
-        <div>CIRI Index</div>
-        <div id="k-ciri-idx" class="num">—</div>
-        <small>\( 1 - e^{-R_T/K} \) with K-scale</small>
-      </div>
-      <div class="tile">
-        <div>Public Allocation (CIBS)</div>
-        <div id="k-cibs" class="num">—</div>
-        <small>Sum of <code>/cibs/auto_budget.csv</code></small>
-      </div>
-      <div class="tile">
-        <div>ROI per Case</div>
-        <div id="k-roi" class="num">—</div>
-        <small>\( R_T/\max(1,cases\_avoided) \)</small>
+      <div>
+        <h3>📄 I have documents, not CSVs</h3>
+        <p class="small">
+          Tickets, CPS letters, loan contracts, policy memos, emails.  
+          Intake reads them (with in-browser OCR) and builds clean data for the engines.
+        </p>
+        <p>
+          <a class="btn" href="intake/index.html">Open Intake — Document & OCR Bridge</a>
+        </p>
       </div>
     </div>
-  </div>
+  </section>
 
-  <!-- Subsystems -->
-  <div class="grid">
-    <div class="card">
-      <h3>CAE — Constitutional Alignment Engine</h3>
-      <p>Parses the Constitution & positive law; flags misalignment with citations.</p>
-      <table class="table">
-        <tbody>
-          <tr><th>UI</th><td><a href="cae/index.html">cae/index.html</a></td></tr>
-          <tr><th>Schema</th><td id="s-cae" class="status warn">Checking…</td></tr>
-          <tr><th>Model</th><td><a href="cae/model.json">model.json</a></td></tr>
-          <tr><th>Report</th><td><a href="cae/report.csv">report.csv</a></td></tr>
-        </tbody>
-      </table>
-    </div>
+  <!-- Core legal & divergence layer -->
+  <section class="card">
+    <h2>Core Legal & Divergence Layer</h2>
+    <p class="small">
+      These engines capture how statutes, regulations, and real-world practices line up with — or drift from — the Constitution.
+    </p>
+    <div class="grid">
 
-    <div class="card">
-      <h3>CDI — Constitutional Divergence Index</h3>
-      <p>Normalizes CAE findings into a 0–1 signal by domain/jurisdiction.</p>
-      <table class="table">
-        <tbody>
-          <tr><th>UI</th><td><a href="cdi/index.html">cdi/index.html</a></td></tr>
-          <tr><th>Schema</th><td id="s-cdi" class="status warn">Checking…</td></tr>
-          <tr><th>Model</th><td><a href="cdi/model.json">model.json</a></td></tr>
-          <tr><th>Data</th><td><a href="cdi/divergence.csv">divergence.csv</a></td></tr>
-        </tbody>
-      </table>
-    </div>
+      <div>
+        <h3>⚖️ CAE — Constitutional Alignment Engine</h3>
+        <p class="small">
+          Maps what the law actually authorizes (federal supremacy, scope, limits).
+          Feeds CDI and the rest of the pipeline.
+        </p>
+        <p class="small">
+          <span class="pill pill-planned">roadmap</span>
+          UI: <code>cae/index.html</code> · Model: <code>cae/model.json</code>
+        </p>
+      </div>
 
-    <div class="card">
-      <h3>CIRI — Integrity ROI Engine</h3>
-      <p>Turns divergence + local inputs into recovery dollars and indices.</p>
-      <table class="table">
-        <tbody>
-          <tr><th>UI</th><td><a href="ciri/index.html">ciri/index.html</a></td></tr>
-          <tr><th>Schema</th><td id="s-ciri" class="status warn">Checking…</td></tr>
-          <tr><th>Inputs</th><td><a href="ciri/inputs.csv">inputs.csv</a></td></tr>
-          <tr><th>Spec</th><td><a href="ciri/calc.md">calc.md</a></td></tr>
-        </tbody>
-      </table>
-    </div>
+      <div>
+        <h3>🧩 CDA — Constitutional Divergence Analyzer</h3>
+        <p class="small">
+          Turns real enforcement and policy behavior (stops, licensing, CPS actions, funding conditions)
+          into structured divergence flags and a 0–1 score consumable by CDI, CIRI, CFF, AFFE.
+        </p>
+        <p class="small">
+          <span class="pill pill-alpha">alpha</span>
+          <a href="cda/index.html">cda/index.html</a>
+        </p>
+      </div>
 
-    <div class="card">
-      <h3>CIBS — Integrity Baseline Schema</h3>
-      <p>Allocates the Recovery Pool into public reinvestment buckets.</p>
-      <table class="table">
-        <tbody>
-          <tr><th>UI</th><td><a href="cibs/index.html">cibs/index.html</a></td></tr>
-          <tr><th>Schema</th><td id="s-cibs" class="status warn">Checking…</td></tr>
-          <tr><th>Template</th><td><a href="cibs/budget_template.csv">budget_template.csv</a></td></tr>
-          <tr><th>Auto Budget</th><td><a href="cibs/auto_budget.csv">auto_budget.csv</a></td></tr>
-        </tbody>
-      </table>
-    </div>
+      <div>
+        <h3>📉 CDI — Constitutional Divergence Index</h3>
+        <p class="small">
+          Converts CAE/CDA findings into a single divergence signal and structured CSVs.
+        </p>
+        <p class="small">
+          <span class="pill pill-alpha">alpha</span>
+          <a href="cdi/index.html">cdi/index.html</a>
+        </p>
+      </div>
 
-    <div class="card">
-      <h3>CII — Community Investment Interface</h3>
-      <p>Publishes auditable portfolios (housing, clinics, food, mobility, workforce).</p>
-      <table class="table">
-        <tbody>
-          <tr><th>UI</th><td><a href="cii/index.html">cii/index.html</a></td></tr>
-          <tr><th>Schema</th><td id="s-cii" class="status warn">Checking…</td></tr>
-          <tr><th>Model</th><td><a href="cii/model.json">model.json</a></td></tr>
-          <tr><th>Portfolio</th><td><a href="cii/portfolio.csv">portfolio.csv</a></td></tr>
-        </tbody>
-      </table>
-    </div>
+      <div>
+        <h3>💥 CIRI — Integrity ROI Engine</h3>
+        <p class="small">
+          Quantifies economic harm and recovery when unconstitutional enforcement is corrected:
+          cases, jail days, fees, employment, spending, risk.
+        </p>
+        <p class="small">
+          <span class="pill pill-stable">stable</span>
+          <a href="ciri/index.html">ciri/index.html</a> · Data: <code>ciri/inputs.csv</code>
+        </p>
+      </div>
 
-    <div class="card">
-      <h3>CFF — Constitutional Funding Forensics</h3>
-      <p>Classifies funding lines as ON_MISSION, OFF_MISSION, or UNCLEAR against statutory authority.</p>
-      <table class="table">
-        <tbody>
-          <tr><th>UI</th><td><a href="cff/index.html">cff/index.html</a></td></tr>
-          <tr><th>Schema</th><td id="s-cff" class="status warn">Checking…</td></tr>
-          <tr><th>Inputs</th><td><a href="cff/inputs.csv">inputs.csv</a></td></tr>
-        </tbody>
-      </table>
     </div>
+  </section>
 
-    <div class="card">
-      <h3>AFFE — Funding & Fidelity Explorer</h3>
-      <p>Explores funding patterns and how off-mission spend connects back to harm and recovery.</p>
-      <table class="table">
-        <tbody>
-          <tr><th>UI</th><td><a href="affe/index.html">affe/index.html</a></td></tr>
-          <tr><th>Status</th><td><span class="status warn">Preview</span></td></tr>
-        </tbody>
-      </table>
-    </div>
+  <!-- Budget & projects layer -->
+  <section class="card">
+    <h2>Budgets, Projects & Macro Cascade</h2>
+    <p class="small">
+      Once value is recovered, these engines show what it can buy — locally and nationally.
+    </p>
+    <div class="grid">
 
-    <div class="card">
-      <h3>CCRI — Consumer Credit Risk Integrity</h3>
-      <p>Evaluates how lenders and dealers use lawful vs unlawful data in credit and auto-lending decisions.</p>
-      <table class="table">
-        <tbody>
-          <tr><th>UI</th><td><a href="ccri/index.html">ccri/index.html</a></td></tr>
-          <tr><th>Schema</th><td id="s-ccri" class="status warn">Checking…</td></tr>
-          <tr><th>Inputs</th><td><a href="ccri/inputs.json">inputs.json</a></td></tr>
-          <tr><th>Model</th><td><a href="ccri/model.json">model.json</a></td></tr>
-        </tbody>
-      </table>
-    </div>
+      <div>
+        <h3>🏛️ CIBS — Community Integrity Budget System</h3>
+        <p class="small">
+          Allocates recovered dollars into housing, clinics, food, mobility, defense, and more.
+        </p>
+        <p class="small">
+          <span class="pill pill-stable">stable</span>
+          <a href="cibs/index.html">cibs/index.html</a> · Data: <code>cibs/auto_budget.csv</code>
+        </p>
+      </div>
 
-    <div class="card">
-      <h3>Integration Layer</h3>
-      <p>Receipts, recipient match, retaliation zero, and public attestations.</p>
-      <table class="table">
-        <tbody>
-          <tr><th>UI</th><td><a href="integration/index.html">integration/index.html</a></td></tr>
-          <tr><th>Schema</th><td id="s-integration" class="status warn">Checking…</td></tr>
-        </tbody>
-      </table>
-    </div>
+      <div>
+        <h3>🏗️ CII — Constitutional Investment Index</h3>
+        <p class="small">
+          Turns budget lines into actual projects and portfolios your community can build.
+        </p>
+        <p class="small">
+          <span class="pill pill-beta">beta</span>
+          <a href="cii/index.html">cii/index.html</a>
+        </p>
+      </div>
 
-    <div class="card">
-      <h3>System Map</h3>
-      <p>Canonical chain-of-custody & evidence ledger for A.B.E.</p>
-      <table class="table">
-        <tbody>
-          <tr><th>UI</th><td><a href="system/index.html">system/index.html</a></td></tr>
-          <tr><th>Map</th><td><a href="system/map.json">map.json</a></td></tr>
-        </tbody>
-      </table>
-    </div>
+      <div>
+        <h3>🌎 Macro — National-Scale Cascade</h3>
+        <p class="small">
+          Scales “one restored community” across many communities:
+          GDP, wages, jobs, and recurring savings.
+        </p>
+        <p class="small">
+          <span class="pill pill-beta">beta</span>
+          <a href="macro/index.html">macro/index.html</a>
+        </p>
+      </div>
 
-    <div class="card">
-      <h3>Macro — Cascade Model</h3>
-      <p>Top-down impact summary; optional artifacts & downloads.</p>
-      <table class="table">
-        <tbody>
-          <tr><th>UI</th><td><a href="macro/index.html">macro/index.html</a></td></tr>
-          <tr><th>Model</th><td><a href="macro/model.json">model.json</a></td></tr>
-          <tr><th>Downloads</th><td><a href="macro/macro_cascade.csv">macro_cascade.csv</a></td></tr>
-        </tbody>
-      </table>
     </div>
-  </div>
+  </section>
 
-  <!-- Schema Status Summary -->
-  <div class="card">
-    <h3 style="margin:0 0 8px">Schema Status Summary</h3>
-    <div class="grid" id="schema-grid">
-      <!-- Filled by script -->
+  <!-- Funding & credit layer -->
+  <section class="card">
+    <h2>Funding & Credit Integrity</h2>
+    <p class="small">
+      These modules follow the money: how public funds and private credit rules track (or violate) lawful authority.
+    </p>
+    <div class="grid">
+
+      <div>
+        <h3>🧾 CFF — Constitutional Funding Forensics</h3>
+        <p class="small">
+          Reads structured grant / funding CSVs and classifies spend as
+          <code>ON_MISSION</code>, <code>OFF_MISSION</code>, or <code>UNCLEAR</code>
+          against statutory purpose.
+        </p>
+        <p class="small">
+          <span class="pill pill-beta">beta</span>
+          <a href="cff/index.html">cff/index.html</a>
+        </p>
+      </div>
+
+      <div>
+        <h3>🔍 AFFE — American Funding & Fidelity Explorer</h3>
+        <p class="small">
+          Deep explorer that links funding streams back into CAE/CDI/CIRI —
+          long-term stability, repayment, and community-level outcomes.
+        </p>
+        <p class="small">
+          <span class="pill pill-alpha">alpha</span>
+          <a href="affe/index.html">affe/index.html</a>
+        </p>
+      </div>
+
+      <div>
+        <h3>🏦 CCRI — Consumer Credit Risk Integrity</h3>
+        <p class="small">
+          Evaluates how lenders, dealers, and underwriters use data (DMV, DOT, bureaus) and
+          flags unlawful or preempted uses for non-commercial citizens.
+        </p>
+        <p class="small">
+          <span class="pill pill-alpha">alpha</span>
+          <a href="ccri/index.html">ccri/index.html</a> · Data: <code>ccri/inputs.json</code>
+        </p>
+      </div>
+
     </div>
-    <small>Green = schema file found and non-empty; Orange = missing or empty.</small>
-  </div>
+  </section>
+
+  <!-- Tools, learning, integrity -->
+  <section class="card">
+    <h2>Integrity, System Map & Learning</h2>
+    <div class="grid">
+
+      <div>
+        <h3>🛰️ Integration Layer</h3>
+        <p class="small">
+          Re-computes KPIs from shared inputs, hashes every artifact (SHA-256), and
+          generates local-only audit receipts with plain-language summaries.
+        </p>
+        <p class="small">
+          <span class="pill pill-beta">beta</span>
+          <a href="integration/index.html">integration/index.html</a>
+        </p>
+      </div>
+
+      <div>
+        <h3>🗺️ System Map</h3>
+        <p class="small">
+          JSON map of all modules, files, and pipelines (what feeds what).  
+          Source of truth for how A.B.E. fits together.
+        </p>
+        <p class="small">
+          <span class="pill pill-stable">stable</span>
+          <a href="system/index.html">system/index.html</a> · Map: <code>system/map.json</code>
+        </p>
+      </div>
+
+      <div>
+        <h3>📚 Learn — Guided Engine Tips</h3>
+        <p class="small">
+          Small interactive demos that show how CIRI, CIBS, and Macro math works —
+          matched to the public doctrine numbers.
+        </p>
+        <p class="small">
+          <span class="pill pill-beta">beta</span>
+          <a href="learn/index.html">learn/index.html</a>
+        </p>
+      </div>
+
+      <div>
+        <h3>📖 Doctrine Library</h3>
+        <p class="small">
+          The legal and economic backbone: constitutional fidelity, void ab initio,
+          CRRA, and how A.B.E. is grounded in existing law.
+        </p>
+        <p class="small">
+          <span class="pill pill-stable">stable</span>
+          <a href="doctrine/index.html">doctrine/index.html</a>
+        </p>
+      </div>
+
+    </div>
+  </section>
 
 </main>
 
-<footer>
-  CC BY-NC 4.0 · DOI <a href="https://doi.org/10.5281/zenodo.17586107">10.5281/zenodo.17586107</a><br/>
-  <em>Integrity only — never for sale.</em>
+<footer class="abe-footer">
+  <p>
+    CC BY-NC 4.0 · DOI <a href="https://doi.org/10.5281/zenodo.17586107">10.5281/zenodo.17586107</a><br/>
+    Integrity only — never for sale.
+  </p>
 </footer>
 
-<script>
-// ---------- helpers ----------
-const money = n => {
-  const v = Number(n);
-  if (!isFinite(v)) return '—';
-  try { return new Intl.NumberFormat(undefined,{style:'currency',currency:'USD',maximumFractionDigits:0}).format(v); }
-  catch { return '$'+Math.round(v).toLocaleString(); }
-};
-
-function setStatus(id, ok){
-  const el = document.getElementById(id);
-  if(!el) return;
-  el.textContent = ok ? 'Schema present' : 'Missing';
-  el.classList.remove('warn','ok');
-  el.classList.add(ok ? 'ok' : 'warn');
-}
-
-// ---------- version line from system/map.json ----------
-(async ()=>{
-  try{
-    const r = await fetch('system/map.json',{cache:'no-store'});
-    if(!r.ok) throw 0;
-    const j = await r.json();
-    const v = j.version || '—';
-    const u = j.updated || '';
-    const el = document.getElementById('version-line');
-    if(el){
-      el.textContent = `Constitutional & economic restoration framework — v${v} · updated ${u}`;
-    }
-  }catch(_){}
-})();
-
-// ---------- live KPIs ----------
-(async ()=>{
-  // CIBS total
-  try{
-    const r = await fetch('cibs/auto_budget.csv',{cache:'no-store'});
-    const t = await r.text();
-    const lines = t.trim().split(/\r?\n/).slice(1);
-    const total = lines.reduce((s,line)=>{
-      const v = Number(line.split(',')[1]); return s + (isFinite(v)?v:0);
-    },0);
-    document.getElementById('k-cibs').textContent = money(total);
-  }catch(_){}
-
-  // CIRI compute
-  try{
-    const r = await fetch('ciri/inputs.csv',{cache:'no-store'});
-    const t = await r.text();
-    const [h,d] = t.trim().split(/\r?\n/);
-    const keys = h.split(',').map(s=>s.trim());
-    const vals = d.split(',').map(x=>Number(x));
-    const o = Object.fromEntries(keys.map((k,i)=>[k,vals[i]]));
-
-    const c=o.cases_avoided, C=o.avg_cost_per_case, D=o.jail_days_avoided, J=o.cost_per_jail_day,
-          F=o.fees_canceled_total, P=o.policy_corrections, E=o.avg_enforcement_cost_savings,
-          H=o.households_restored, M=o.avg_monthly_market_spend, m=o.months_effective,
-          pe=o.employment_probability, W=o.avg_monthly_wage, L=o.expected_lawsuits,
-          A=o.avg_payout, lam=o.litigation_multiplier, T=o.transition_costs_one_time;
-
-    const direct = c*C + F;
-    const detention = D*J;
-    const enforce = P*E;
-    const market = H*M*m;
-    const employ = (H*pe)*W*m;
-    const litig = L*A*lam;
-    const total = direct + detention + enforce + market + employ + litig - T;
-    const K = 2_000_000_000;
-    const ciri = 1 - Math.exp(- total / K);
-    const roi = total / Math.max(1,c);
-
-    document.getElementById('k-ciri').textContent = money(total);
-    document.getElementById('k-ciri-idx').textContent = (ciri).toFixed(2);
-    document.getElementById('k-roi').textContent = money(roi);
-  }catch(_){}
-})();
-
-// ---------- schema checks ----------
-(async ()=>{
-  const targets = [
-    {key:'CAE',  id:'s-cae',  path:'cae/schema.json'},
-    {key:'CDI',  id:'s-cdi',  path:'cdi/schema.json'},
-    {key:'CIRI', id:'s-ciri', path:'ciri/schema.json'},
-    {key:'CIBS', id:'s-cibs', path:'cibs/schema.json'},
-    {key:'CII',  id:'s-cii',  path:'cii/schema.json'},
-    {key:'CFF',  id:'s-cff',  path:'cff/schema.json'},
-    {key:'CCRI', id:'s-ccri', path:'ccri/schema.json'},
-    {key:'Integration',id:'s-integration',path:'integration/schema.json'}
-  ];
-
-  const presence = {};
-
-  for(const t of targets){
-    try{
-      const r = await fetch(t.path,{cache:'no-store'});
-      const ok = r.ok && (await r.text()).trim().length>0;
-      presence[t.id] = ok;
-      setStatus(t.id, ok);
-    }catch(_){
-      presence[t.id] = false;
-      setStatus(t.id,false);
-    }
-  }
-
-  // Summary grid
-  const grid = document.getElementById('schema-grid');
-  if(grid){
-    grid.innerHTML = targets.map(t=>{
-      const tagId = `sum-${t.id}`;
-      const ok = presence[t.id];
-      const cls = ok ? 'status ok' : 'status warn';
-      const label = ok ? 'Schema present' : 'Missing';
-      return `
-      <div class="tile">
-        <div style="display:flex;justify-content:space-between;align-items:center">
-          <strong>${t.key}</strong>
-          <span id="${tagId}" class="${cls}">${label}</span>
-        </div>
-        <small><code>${t.path}</code></small>
-      </div>`;
-    }).join('');
-  }
-})();
-</script>
 </body>
 </html>
