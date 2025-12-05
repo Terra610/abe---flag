@@ -1,134 +1,327 @@
-# 🦋 Welcome to The American Butterfly Effect (A.B.E.)
-**A constitutional and economic restoration engine — free, public, auditable, and impossible to monopolize.**
-
-If you’re here, it’s probably because something in the system feels off —  
-whether it’s unlawful detention, misapplied statutes, impossible fines, civil-rights bleed, funding games, or watching your community lose money and opportunity for no good reason.
-
-A.B.E. exists to show the truth in numbers:
-**what overreach costs, what fidelity restores, and how communities rise when the Constitution is actually followed.**
-
-Everything runs **locally in your browser**.  
-No tracking. No data harvesting. No server.  
-Your uploads never leave your device.
+# 🦋 A.B.E. — American Butterfly Effect  
+**A constitutional prosperity engine — free, local-only, auditable, and impossible to monopolize.**  
+**License:** CC BY-NC 4.0 · Integrity only — never for sale.
 
 ---
 
-# 🌐 What A.B.E. Actually *Is*
-A.B.E. is a modular, public-good engine that turns constitutional alignment into economic clarity.
+## 🌐 What A.B.E. Actually Is
 
-It’s made of:
+A.B.E. turns *constitutional alignment* into *economic clarity*.
 
-- **CAE** — Constitutional Alignment Engine (legal scope & authority)
-- **CDI** — Divergence Index (0–1 signal of misalignment)
-- **CIRI** — Constitutional Integrity ROI Engine (recovery dollars from correction)
-- **CIBS** — Integrity Baseline Schema (how recovery becomes a public budget)
-- **CII** — Community Investment Interface (projects your community can actually buy)
-- **CFF** — Constitutional Funding Forensics (on-mission vs off-mission federal spend)
-- **AFFE** — American Funding & Fidelity Explorer (deep dive into funding patterns)
-- **CCRI** — Consumer Credit Risk Integrity (how credit systems use lawful vs unlawful data)
-- **Macro** — Macroeconomic Cascade (nation-scale projections)
-- **Integration** — Audit receipts & SHA-256 hashing
-- **System Map** — Chain-of-custody of the entire engine
+It measures:
 
-This is not theory.  
-This is receipts.
+- Whether a policy or enforcement action is **lawful**  
+- How far it **drifts** from controlling authority  
+- What that drift **costs** people, communities, and budgets  
+- What correcting it **restores**
+
+Everything runs in the browser:
+
+- No logins  
+- No tracking  
+- No central server  
+- Uploads never leave the user’s device
 
 ---
 
-# 🔥 Why This Matters
-When the government acts outside constitutional limits — even by a little — the fallout is not small.  
-It spreads across:
+## 🏛️ Engine Overview (2025)
 
-- detention  
-- fees & fines  
-- employment  
-- health  
-- housing  
-- credit & vehicles  
-- local spending  
-- courts  
-- civil rights
+A.B.E. is made of **12 public modules**.
 
-A.B.E. shows the **cost of divergence** and the **value of fixing it**.
+### 1. Document & Intake Layer
 
-That gives communities, attorneys, policymakers, oversight teams, lenders, and citizens something they’ve never had before:
-
-> **A measurable, court-ready, data-grounded way to prove what constitutional overreach really costs — and what fidelity returns.**
+- **Intake — Document Intake + OCR Bridge**  
+  - *What it does:*  
+    - Lets users upload tickets, CPS letters, loan contracts, memos, PDFs, and images  
+    - Runs OCR in-browser to read text  
+    - Helps extract key fields  
+    - Builds clean inputs for the rest of the engine  
+  - *Status:* `alpha`  
+  - *UI:* `/intake/index.html`
 
 ---
 
-# 🧠 How to Use A.B.E. (5-Minute Guide)
+### 2. Constitutional & Divergence Layer
 
-## 1. **If you’re dealing with detention, tickets, or court abuse → start with CIRI**
+- **CAE — Constitutional Alignment Engine**  
+  - Maps what the law actually authorizes  
+  - Federal supremacy, jurisdiction, statutory scope  
+  - *Status:* `roadmap`  
+  - *UI:* `/cae/index.html` (planned)
 
-Go here:  
-`/ciri/index.html`
+- **CDA — Constitutional Divergence Analyzer**  
+  - Turns real-world conduct (stops, licensing, CPS actions, funding rules)  
+    into structured divergence flags and a 0–1 divergence score  
+  - Feeds CDI, CIRI, CFF, AFFE, CCRI  
+  - *Status:* `alpha`  
+  - *UI:* `/cda/index.html`
 
-On the page:
-
-1. Download `inputs.csv` (the template).
-2. Fill it with your case or county/state data  
-   (cases avoided, jail days, fees, threatened lawsuits, household impact, etc.).
-3. Upload it back into the CIRI page.
-4. Review the live breakdown and download your **Constitutional Recovery Receipt**  
-   (plus a scenario CSV like `ABE_CIRI_SCENARIO_V2.csv`).
-
-CIRI calculates:
-
-- total recovery  
-- CIRI index  
-- ROI per case  
-- breakdown of direct, detention, enforcement, market, employment, litigation, transition
-
-All of it runs **locally in your browser**.
+- **CDI — Constitutional Divergence Index**  
+  - Computes a unified 0–1 drift signal from alignment to overreach  
+  - Consumed by downstream economic modules  
+  - *Status:* `alpha`  
+  - *UI:* `/cdi/index.html`
 
 ---
 
-## 2. **If you want to see where the recovered dollars go → CIBS + CII**
+### 3. Economic & Recovery Layer
 
-- **CIBS** (`/cibs/index.html`) takes the CIRI recovery pool and allocates it into:
-  - housing
-  - clinics
-  - food & nutrition
-  - mobility & transit
-  - workforce & education
-  - justice repair
-- **CII** (`/cii/index.html`) turns those allocations into auditable project portfolios:
-  - project lists
-  - per-category totals
-  - a view you can hand to a mayor, council, or community board
+- **CIRI — Constitutional Integrity ROI Engine**  
+  - Core recovery engine  
+  - Calculates harm & recovery from:  
+    - cases avoided  
+    - jail days avoided  
+    - fees/fines canceled  
+    - market access restored  
+    - employment & wage effects  
+    - litigation exposure  
+  - Exports receipts and scenario CSVs  
+  - *Status:* `stable`  
+  - *UI:* `/ciri/index.html`  
 
-You’re not just seeing “big numbers.”  
-You’re seeing **what your community could actually build.**
+- **CIBS — Community Integrity Budget System**  
+  - Allocates recovered value into public categories  
+    (housing, clinics, mobility, digital access, defense, etc.)  
+  - *Status:* `stable`  
+  - *UI:* `/cibs/index.html`
 
----
+- **CII — Community Investment Interface**  
+  - Turns budgets into auditable project portfolios  
+  - Shows what your community can actually “buy” with recovery dollars  
+  - *Status:* `beta`  
+  - *UI:* `/cii/index.html`
 
-## 3. **If you care about credit access, vehicles, and banking barriers → CCRI**
-
-Go here:  
-`/ccri/index.html`
-
-CCRI looks at **systems**, not people. It evaluates:
-
-- which data sources a lender or dealer uses (credit bureau, DMV, DOT, background vendors)
-- whether license status is used as a gatekeeper for credit
-- how many non-commercial applicants get denied because of DMV/DOT-driven rules
-- whether there’s any appeal or human review path
-
-You define scenarios in `ccri/inputs.json` and CCRI:
-
-- scores **data integrity**, **constitutional alignment**, **access fairness**, and **economic impact**
-- flags DMV/DOT misuse and license gating for non-commercial citizens
-- produces an integrity score and narrative you can plug back into CIRI and CFF
-
-It never scores people.  
-It scores **practices** and **policies**.
+- **Macro — Macroeconomic Cascade Model**  
+  - Scales a “restored community” across many communities  
+  - Projects GDP, wages, jobs, and local spending uplift  
+  - *Status:* `beta`  
+  - *UI:* `/macro/index.html`
 
 ---
 
-## 4. **If you want to follow the money → CFF + AFFE**
+### 4. Funding & Credit Integrity Layer
 
-- **CFF** (`/cff/index.html`) reads a funding CSV (like your MCSAP, Medicaid, TANF, ARPA, Title I, etc.) with:
+- **CFF — Constitutional Funding Forensics**  
+  - Classifies spending lines as:  
+    - `ON_MISSION` — within statutory authority  
+    - `OFF_MISSION` — outside authority / drift  
+    - `UNCLEAR` — needs audit / legal review  
+  - Uses simple CSV inputs with explicit flags  
+  - *Status:* `beta`  
+  - *UI:* `/cff/index.html`
 
-  ```text
-  ON_MISSION / OFF_MISSION / UNCLEAR
+- **AFFE — American Funding & Fidelity Explorer**  
+  - Deeper explorer that ties funding patterns into:  
+    - divergence  
+    - recovery  
+    - statutory authority  
+  - Built to handle multi-file, multi-program analyses  
+  - *Status:* `alpha`  
+  - *UI:* `/affe/index.html`
+
+- **CCRI — Consumer Credit Risk Integrity**  
+  - Audits how credit, banking, and auto lending use data  
+  - Flags unlawful or preempted uses of:  
+    - DMV / DOT records  
+    - FMCSA / MCSAP enforcement outcomes  
+    - bureau + underwriting models that lean on unconstitutional gates  
+  - Scores **systems**, not people  
+  - *Status:* `alpha`  
+  - *UI:* `/ccri/index.html`
+
+---
+
+### 5. System, Integrity, and Learning
+
+- **Integration Layer**  
+  - Re-hashes every major artifact with SHA-256  
+  - Runs local integrity checks for: CIRI, CIBS, CDI, CAE, CFF, AFFE, CCRI  
+  - Produces an `abe_audit_*.json` certificate for court / audit use  
+  - Uses `divergence.js` to generate plain-language summaries  
+    (descriptive only, not legal advice)  
+  - *Status:* `beta`  
+  - *UI:* `/integration/index.html`
+
+- **System Map**  
+  - Source-of-truth JSON for the entire engine:  
+    - modules  
+    - flows  
+    - evidence links  
+  - Used by the root homepage and Integration to stay in sync  
+  - *Status:* `stable`  
+  - *UI:* `/system/index.html`  
+  - *Map:* `/system/map.json`
+
+- **Learn — Guided Engine Tips**  
+  - Interactive “teach me” page for:  
+    - CIRI (recovery)  
+    - CIBS (budget)  
+    - Macro (national cascade)  
+  - Uses the same math and structure as the real engine  
+  - *Status:* `beta`  
+  - *UI:* `/learn/index.html`
+
+---
+
+## 🔍 Pipeline Overview
+
+The intended flow of data is:
+
+1. **Intake (OCR)**  
+   - User uploads real-world documents  
+   - Intake extracts text and key fields  
+   - Builds artifacts (CIRI CSV, CDA scenario, CFF CSV, CCRI JSON)
+
+2. **Constitutional Alignment & Divergence**  
+   - **CAE** maps lawful authority and scope  
+   - **CDA** encodes practices as divergence flags  
+   - **CDI** converts that into a 0–1 drift score
+
+3. **Economic Recovery & Budgets**  
+   - **CIRI** calculates total recoverable value  
+   - **CIBS** turns value into budget categories  
+   - **CII** turns budgets into project portfolios  
+   - **Macro** scales impact to regions / nation
+
+4. **Funding & Credit Integrity**  
+   - **CFF** checks whether federal funds are used on-mission  
+   - **AFFE** explores cross-program funding fidelity  
+   - **CCRI** audits credit and lending data practices
+
+5. **Audit & Public Proof**  
+   - **Integration** re-computes KPIs and SHA-256 hashes locally  
+   - Generates an audit JSON (`abe_audit_*.json`)  
+   - **System Map** documents how every number is produced
+
+Once a user’s data is in the engine, **all relevant modules can fire** off that shared truth.
+
+---
+
+## 🧬 Why This Exists
+
+Because when government or institutions drift from the Constitution, it’s not just a “technicality” — it’s:
+
+- lost wages  
+- unnecessary detention  
+- destroyed credit  
+- broken families  
+- hollowed-out communities  
+- misused public funds  
+
+A.B.E. exists to:
+
+- show the **drift**  
+- quantify the **harm**  
+- and map the **recovery path**
+
+> **No one is above the law.  
+> No one is beneath dignity.  
+> Prosperity begins with fidelity.**
+
+---
+
+## 🛡 Privacy & Integrity
+
+A.B.E. is built around **user sovereignty**:
+
+- 100% client-side  
+- No back-end database  
+- No cloud file storage  
+- No telemetry, tracking pixels, or analytics  
+- OCR and parsing happen locally in the browser  
+- SHA-256 hashes are computed on-device
+
+Users can:
+
+- upload documents  
+- generate CSV / JSON artifacts  
+- download audit receipts  
+- close the tab  
+
+…and nothing is retained by the engine.
+
+---
+
+## 🧭 How to Start (Human-Friendly)
+
+- **If you’re brand new:**  
+  - Open: `/start/index.html`  
+  - This explains each module in plain language and routes you to the right place.
+
+- **If you have documents (tickets, CPS, contracts):**  
+  - Open: `/intake/index.html`  
+  - Upload your file and let Intake help you build a CIRI/CDA/CFF/CCRI-ready artifact.
+
+- **If you want the full constitutional-to-economic picture:**  
+  - Open: `/integration/index.html`  
+  - Run the integrity check and read the plain-language summary.
+
+---
+
+## 📁 Repo Structure
+
+High-level layout:
+
+- `/index.html` — A.B.E. hub (all modules listed)  
+- `/START_HERE.md` — Plain-language engine overview  
+- `/start/` — Web “Start Here” page  
+- `/intake/` — Intake + OCR bridge  
+- `/cae/` — Constitutional alignment (planned)  
+- `/cda/` — Divergence analyzer  
+- `/cdi/` — Divergence index  
+- `/ciri/` — Recovery engine  
+- `/cibs/` — Budget system  
+- `/cii/` — Portfolio & projects  
+- `/macro/` — Macroeconomic cascade model  
+- `/cff/` — Funding forensics  
+- `/affe/` — Funding & fidelity explorer  
+- `/ccri/` — Credit-risk integrity model  
+- `/integration/` — SHA-256 audit & summary layer  
+- `/system/` — System map & integrity scripts  
+- `/learn/` — Teaching demos  
+- `/doctrine/` — Constitutional and economic doctrine library
+
+---
+
+## 🔓 License
+
+**Creative Commons CC BY-NC 4.0**
+
+You may:
+
+- share  
+- remix  
+- adapt  
+
+You may **not**:
+
+- sell  
+- privatize  
+- monopolize  
+- wrap this engine in a paywall
+
+Justice shouldn’t come with a price tag.
+
+---
+
+## 🦋 Final Word
+
+This engine is here for:
+
+- citizens  
+- families  
+- advocates  
+- auditors  
+- honest public servants  
+- economists
+- business owners
+- investors
+- policy makers
+- and everyone in between!
+
+If you came here looking for **truth you can prove**,  
+you’re in the right repo.
+
+🕊 Integrity only.  
+Never for sale.
+```
