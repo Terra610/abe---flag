@@ -1,0 +1,151 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ABE_IntakeSession_v1",
+  "description": "Schema for a single Intake + OCR session in the A.B.E. engine.",
+  "type": "object",
+  "required": [
+    "version",
+    "module",
+    "doc_type",
+    "original_file_name",
+    "original_file_hash",
+    "text_normalized",
+    "extracted_fields",
+    "targets",
+    "generated_outputs",
+    "created_at"
+  ],
+  "additionalProperties": false,
+
+  "properties": {
+    "version": {
+      "type": "string",
+      "const": "1.0"
+    },
+
+    "module": {
+      "type": "string",
+      "const": "Intake"
+    },
+
+    "doc_type": {
+      "type": "string",
+      "enum": [
+        "traffic_ticket",
+        "cps_case",
+        "policy_memo",
+        "loan_contract",
+        "generic_case_text"
+      ]
+    },
+
+    "original_file_name": {
+      "type": "string"
+    },
+
+    "original_file_hash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+
+    "ocr_used": {
+      "type": "boolean"
+    },
+
+    "text_raw": {
+      "type": ["string", "null"]
+    },
+
+    "text_normalized": {
+      "type": "string"
+    },
+
+    "extracted_fields": {
+      "type": "object",
+      "description": "Document-type-specific extracted values.",
+      "additionalProperties": true
+    },
+
+    "targets": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["CIRI", "CDA", "CFF", "CCRI"]
+      }
+    },
+
+    "generated_outputs": {
+      "type": "object",
+      "additionalProperties": false,
+
+      "properties": {
+        "ciri": {
+          "type": ["object", "null"],
+          "additionalProperties": false,
+          "properties": {
+            "present": { "type": "boolean" },
+            "row_count": { "type": "integer", "minimum": 0 },
+            "csv_inline": { "type": "string" },
+            "hash": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          },
+          "required": ["present"]
+        },
+
+        "cda": {
+          "type": ["object", "null"],
+          "additionalProperties": false,
+          "properties": {
+            "present": { "type": "boolean" },
+            "scenario": { "type": ["object", "null"] },
+            "hash": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          },
+          "required": ["present"]
+        },
+
+        "cff": {
+          "type": ["object", "null"],
+          "additionalProperties": false,
+          "properties": {
+            "present": { "type": "boolean" },
+            "row_count": { "type": "integer", "minimum": 0 },
+            "csv_inline": { "type": "string" },
+            "hash": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          },
+          "required": ["present"]
+        },
+
+        "ccri": {
+          "type": ["object", "null"],
+          "additionalProperties": false,
+          "properties": {
+            "present": { "type": "boolean" },
+            "scenario": { "type": ["object", "null"] },
+            "hash": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          },
+          "required": ["present"]
+        }
+      }
+    },
+
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+
+    "notes": {
+      "type": "string"
+    }
+  }
+}
