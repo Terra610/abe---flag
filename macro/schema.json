@@ -1,0 +1,114 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ABE_MacroModel_v1",
+  "description": "Schema for the MACRO mathematical model definitions used across the A.B.E. engine. Ensures all formal equations, variables, parameter bounds, and documentation comply with the ABE macro-model contract.",
+  "type": "object",
+  "required": [
+    "version",
+    "module",
+    "variables",
+    "parameters",
+    "equations",
+    "domains",
+    "created_at"
+  ],
+  "additionalProperties": false,
+
+  "properties": {
+    "version": {
+      "type": "string",
+      "const": "1.0"
+    },
+
+    "module": {
+      "type": "string",
+      "const": "MACRO"
+    },
+
+    "variables": {
+      "type": "array",
+      "description": "List of variables used in macro equations (e.g., RT, K, CIRI, divergence indexes).",
+      "items": {
+        "type": "object",
+        "required": ["name", "description", "symbol"],
+        "additionalProperties": false,
+        "properties": {
+          "name": { "type": "string" },
+          "symbol": { "type": "string" },
+          "description": { "type": "string" }
+        }
+      }
+    },
+
+    "parameters": {
+      "type": "array",
+      "description": "Numerical parameters used by CIRI, CDI, CAD, etc.",
+      "items": {
+        "type": "object",
+        "required": ["name", "symbol", "description", "default"],
+        "additionalProperties": false,
+        "properties": {
+          "name": { "type": "string" },
+          "symbol": { "type": "string" },
+          "description": { "type": "string" },
+          "default": { "type": "number" },
+          "min": { "type": ["number", "null"] },
+          "max": { "type": ["number", "null"] }
+        }
+      }
+    },
+
+    "equations": {
+      "type": "array",
+      "description": "Formal mathematical equations referenced by CDI, CIRI, CAE, CFF, etc.",
+      "items": {
+        "type": "object",
+        "required": ["id", "expression", "variables", "description"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string" },
+          "expression": { "type": "string" },
+          "variables": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "description": { "type": "string" }
+        }
+      }
+    },
+
+    "domains": {
+      "type": "object",
+      "description": "Value domains for equations (e.g., CIRI bounded 0–1).",
+      "additionalProperties": false,
+      "properties": {
+        "CIRI": {
+          "type": "object",
+          "required": ["min", "max"],
+          "properties": {
+            "min": { "type": "number", "const": 0 },
+            "max": { "type": "number", "const": 1 }
+          }
+        },
+        "CDI": {
+          "type": "object",
+          "required": ["min", "max"],
+          "properties": {
+            "min": { "type": "number", "const": 0 },
+            "max": { "type": "number", "const": 1 }
+          }
+        }
+      }
+    },
+
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+
+    "notes": {
+      "type": "string",
+      "description": "Optional free-form notes or derivation commentary."
+    }
+  }
+}
