@@ -1,12 +1,13 @@
 {
   "version": "1.4",
-  "updated": "2025-11-29T00:00:00Z",
+  "updated": "2025-12-02T00:00:00Z",
   "project": "A.B.E. — American Butterfly Effect",
   "author": {
     "name": "Terra Shouse",
     "contact": "terra610",
     "license": "CC BY-NC 4.0"
   },
+
   "modules": {
     "cae": {
       "name": "CAE",
@@ -18,25 +19,28 @@
       "status": "planned",
       "ui": "cae/index.html"
     },
+
     "cda": {
       "name": "CDA",
       "long_name": "Constitutional Divergence Analyzer",
       "purpose": "Turns statutes and enforcement practices into structured divergence flags and a 0–1 score consumable by CDI, CIRI, CFF, and AFFE.",
       "model_file": "cda/model.json",
       "schema_file": "cda/schema.json",
-      "ui": "cda/index.html",
-      "status": "alpha"
+      "status": "alpha",
+      "ui": "cda/index.html"
     },
+
     "cdi": {
       "name": "CDI",
       "long_name": "Constitutional Divergence Index",
       "purpose": "Converts CAE/CDA findings into normalized 0–1 divergence signals by domain and jurisdiction.",
-      "inputs": ["cae/report.csv", "cda/*.json"],
+      "inputs": ["cae/report.csv", "cda/scenarios.json"],
       "model_file": "cdi/model.json",
       "data_file": "cdi/divergence.csv",
       "status": "alpha",
       "ui": "cdi/index.html"
     },
+
     "ciri": {
       "name": "CIRI",
       "long_name": "Constitutional Integrity ROI Engine",
@@ -53,21 +57,24 @@
         "transition",
         "total_recovery",
         "CIRI",
+        "CII",
         "ROI_per_case"
       ],
       "primary_output_field": "total_recovery",
       "status": "mvp",
       "ui": "ciri/index.html"
     },
+
     "cibs": {
       "name": "CIBS",
-      "long_name": "Constitutional Integrity Baseline Schema",
+      "long_name": "Community Integrity Budget System",
       "purpose": "Allocates the Recovery Pool into public reinvestment categories with transparent percentages and auditability.",
       "template_file": "cibs/budget_template.csv",
       "auto_budget_file": "cibs/auto_budget.csv",
       "status": "mvp",
       "ui": "cibs/index.html"
     },
+
     "cii": {
       "name": "CII",
       "long_name": "Community Investment Interface",
@@ -77,46 +84,62 @@
       "status": "mvp",
       "ui": "cii/index.html"
     },
+
     "cff": {
       "name": "CFF",
       "long_name": "Constitutional Funding Forensics",
-      "purpose": "Classifies federal and state spending as ON_MISSION, OFF_MISSION, or UNCLEAR relative to statutory scope.",
+      "purpose": "Classifies line-item spending as ON_MISSION, OFF_MISSION, or UNCLEAR relative to statutory authority and program rules.",
       "inputs_file": "cff/inputs.csv",
       "schema_file": "cff/schema.json",
-      "ui": "cff/index.html",
-      "status": "alpha"
+      "model_file": "cff/model.json",
+      "status": "alpha",
+      "ui": "cff/index.html"
     },
+
     "affe": {
       "name": "AFFE",
       "long_name": "American Funding & Fidelity Explorer",
-      "purpose": "Explores multi-program funding patterns, ties them to CFF flags, and prepares structured inputs for CIRI and macro models.",
+      "purpose": "Explores funding patterns, off-mission drift, and long-run recovery scenarios across agencies and programs.",
       "model_file": "affe/model.json",
-      "schema_file": "affe/schema.json",
       "ui": "affe/index.html",
       "status": "preview"
     },
+
     "ccri": {
       "name": "CCRI",
       "long_name": "Consumer Credit Risk Integrity",
-      "purpose": "Evaluates how credit, banking, and auto lending practices rely on lawful vs unlawful data, especially DMV/DOT contamination.",
+      "purpose": "Evaluates how credit, banking, and auto lending use lawful vs. unlawful data (DMV/DOT spillover) and how that shapes access to vehicles and credit.",
       "inputs_file": "ccri/inputs.json",
       "schema_file": "ccri/schema.json",
       "model_file": "ccri/model.json",
-      "ui": "ccri/index.html",
-      "status": "alpha"
+      "status": "alpha",
+      "ui": "ccri/index.html"
     },
+
+    "intake": {
+      "name": "Intake",
+      "long_name": "Document Intake + OCR Bridge",
+      "purpose": "Turns user-uploaded documents (tickets, CPS files, loan contracts, policy memos) into normalized text and structured fields consumable by CIRI, CDA, CFF, and CCRI.",
+      "model_file": "intake/model.json",
+      "schema_file": "intake/schema.json",
+      "status": "design/alpha",
+      "ui": "intake/index.html"
+    },
+
     "integration": {
       "name": "Integration Layer",
-      "purpose": "Verifies receipts, matches recipients, detects retaliation/suppression, and posts public attestations.",
+      "purpose": "Verifies receipts, matches recipients, detects retaliation/suppression, and posts public attestations. Recomputes key KPIs and SHA-256 hashes for all major artifacts.",
       "checks": [
         "receipt_verification",
         "recipient_match",
         "retaliation_zero",
-        "public_audit_attestation"
+        "public_audit_attestation",
+        "hash_consistency"
       ],
       "status": "alpha",
       "ui": "integration/index.html"
     },
+
     "system": {
       "name": "System Map",
       "purpose": "Canonical chain-of-custody and evidence ledger for A.B.E.",
@@ -124,20 +147,82 @@
       "status": "mvp",
       "ui": "system/index.html"
     },
+
     "macro": {
       "name": "Macro",
       "long_name": "Macroeconomic Cascade",
-      "purpose": "Summarizes top-down impact; optional model artifacts and downloads.",
+      "purpose": "Summarizes top-down impact from many restored communities; optional model artifacts and downloads.",
       "model_file": "macro/model.json",
       "downloads": [
         "macro/macro_cascade.csv",
-        "macro/model.json"
+        "macro/ABE_MacroCascadeModel.json"
       ],
       "status": "public",
       "ui": "macro/index.html"
+    },
+
+    "learn": {
+      "name": "Learn",
+      "long_name": "Guided Engine Tips",
+      "purpose": "Interactive mini-examples that teach how CIRI, CIBS, and Macro work using doctrine-aligned numbers.",
+      "ui": "learn/index.html",
+      "status": "public"
     }
   },
+
   "flows": [
+    {
+      "from": "Uploaded document (PDF/image/text via Intake UI)",
+      "to": "intake/intake_artifact.json",
+      "control": "local_OCR_normalization_and_hashing",
+      "evidence": [
+        "/abe---flag/intake/index.html",
+        "/abe---flag/intake/model.json",
+        "/abe---flag/intake/schema.json"
+      ]
+    },
+    {
+      "from": "intake/intake_artifact.json",
+      "to": "ciri/inputs.csv",
+      "control": "field_mapping_into_CIRI_template",
+      "evidence": [
+        "/abe---flag/ciri/index.html",
+        "/abe---flag/ciri/calc.md",
+        "/abe---flag/ciri/inputs.csv"
+      ]
+    },
+    {
+      "from": "intake/intake_artifact.json",
+      "to": "cda/scenarios.json",
+      "control": "extracted_statutes_and_practices_projected_into_CDA",
+      "evidence": [
+        "/abe---flag/cda/index.html",
+        "/abe---flag/cda/model.json",
+        "/abe---flag/cda/schema.json"
+      ]
+    },
+    {
+      "from": "intake/intake_artifact.json",
+      "to": "cff/inputs.csv",
+      "control": "funding_line_items_classified_for_CFF_when_present",
+      "evidence": [
+        "/abe---flag/cff/index.html",
+        "/abe---flag/cff/model.json",
+        "/abe---flag/cff/schema.json",
+        "/abe---flag/cff/inputs.csv"
+      ]
+    },
+    {
+      "from": "intake/intake_artifact.json",
+      "to": "ccri/inputs.json",
+      "control": "credit_and_lending_fields_mapped_into_CCRI_scenarios",
+      "evidence": [
+        "/abe---flag/ccri/index.html",
+        "/abe---flag/ccri/model.json",
+        "/abe---flag/ccri/schema.json",
+        "/abe---flag/ccri/inputs.json"
+      ]
+    },
     {
       "from": "Public law & corpus (Constitution, US Code, CFR, state law, precedent)",
       "to": "cae/report.csv",
@@ -149,17 +234,15 @@
       ]
     },
     {
-      "from": "Statutes & enforcement patterns (per-jurisdiction scenarios)",
-      "to": "cda/*.json",
-      "control": "manual_flagging_with_documented_criteria",
+      "from": "Statutes + enforcement practices (from Intake, policy memos, tickets)",
+      "to": "cda/scenarios.json",
+      "control": "practice_vs_authority_divergence_encoded",
       "evidence": [
-        "/abe---flag/cda/index.html",
-        "/abe---flag/cda/model.json",
-        "/abe---flag/cda/schema.json"
+        "/abe---flag/cda/index.html"
       ]
     },
     {
-      "from": "cae/report.csv + cda/*.json",
+      "from": "cae/report.csv + cda/scenarios.json",
       "to": "cdi/divergence.csv",
       "control": "normalization_0_1_with_weights",
       "evidence": [
@@ -168,18 +251,8 @@
       ]
     },
     {
-      "from": "cdi/divergence.csv",
-      "to": "cda/model.json findings",
-      "control": "interpretation_of_divergence_against_constitutional_doctrine",
-      "evidence": [
-        "/abe---flag/cda/index.html",
-        "/abe---flag/cda/model.json",
-        "/abe---flag/cda/schema.json"
-      ]
-    },
-    {
       "from": "ciri/inputs.csv",
-      "to": "ciri/index.html KPIs",
+      "to": "CIRI KPIs on ciri/index.html",
       "control": "reproducible_browser_math_and_CLI_parity",
       "evidence": [
         "/abe---flag/ciri/index.html",
@@ -188,7 +261,7 @@
       ]
     },
     {
-      "from": "CDI divergence + local inputs + CDA flags",
+      "from": "CDI divergence + local inputs (including Intake-derived rows)",
       "to": "CIRI total_recovery (Recovery Pool)",
       "control": "documented_formulas_SIRF_IRE_CEQ",
       "evidence": [
@@ -217,37 +290,44 @@
       ]
     },
     {
-      "from": "CFF ON_MISSION/OFF_MISSION flags + AFFE explorer outputs",
-      "to": "CIRI + Macro",
-      "control": "funding_patterns_linked_to_recovery_formulas",
+      "from": "cff/inputs.csv",
+      "to": "AFFE explorer views",
+      "control": "ON_MISSION_OFF_MISSION_UNCLEAR_classification_applied",
       "evidence": [
-        "/abe---flag/cff/index.html",
-        "/abe---flag/cff/inputs.csv",
-        "/abe---flag/affe/index.html"
+        "/abe---flag/affe/index.html",
+        "/abe---flag/cff/index.html"
       ]
     },
     {
-      "from": "cii portfolio & disbursements",
+      "from": "cii portfolio & disbursements + CFF/AFFE outputs",
       "to": "Integration checks",
       "control": "receipts_signed_hashes_retaliation_monitoring",
       "evidence": [
-        "/abe---flag/integration/index.html"
+        "/abe---flag/integration/index.html",
+        "/abe---flag/system/integrity.js",
+        "/abe---flag/system/divergence.js"
       ]
     },
     {
       "from": "Integration checks",
       "to": "Public dashboard / publication",
-      "control": "public_audit_attestation",
+      "control": "public_audit_attestation_with_SHA256",
       "evidence": [
         "/abe---flag/system/index.html",
+        "/abe---flag/system/map.json",
         "CC BY-NC 4.0",
         "SHA256: to_be_added_for_released_artifacts"
       ]
     }
   ],
+
   "links": {
     "site_root": "/abe---flag/",
+    "home": "/abe---flag/index.html",
+    "start_here": "/abe---flag/start/index.html",
     "doctrines": "/abe---flag/doctrine/index.html",
+    "learn": "/abe---flag/learn/index.html",
+
     "ciri": "/abe---flag/ciri/index.html",
     "cibs": "/abe---flag/cibs/index.html",
     "cii": "/abe---flag/cii/index.html",
@@ -257,8 +337,11 @@
     "cff": "/abe---flag/cff/index.html",
     "affe": "/abe---flag/affe/index.html",
     "ccri": "/abe---flag/ccri/index.html",
+    "intake": "/abe---flag/intake/index.html",
     "integration": "/abe---flag/integration/index.html",
     "macro": "/abe---flag/macro/index.html",
+    "system": "/abe---flag/system/index.html",
+
     "doi": "https://doi.org/10.5281/zenodo.17586107",
     "license": "https://creativecommons.org/licenses/by-nc/4.0/"
   }
