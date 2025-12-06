@@ -1,292 +1,214 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <title>A.B.E. — American Butterfly Effect · Engine Hub</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <base href="/abe---flag/">
-  <link rel="stylesheet" href="abe-patch/assets/abe-patch.css"/>
-  <style>
-    .abe-main-wrap{max-width:1100px;margin:0 auto;padding:1.5rem 1rem 3rem}
-    .grid{display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}
-    .card h2{margin-top:0}
-    .tagline-strong{font-weight:600}
-    .pill{display:inline-block;padding:.1rem .6rem;border-radius:999px;font-size:.8rem;border:1px solid rgba(255,255,255,.18);margin-right:.3rem;margin-top:.25rem}
-    .pill-alpha{border-color:#ffd36b;color:#ffd36b}
-    .pill-beta{border-color:#5ddfff;color:#5ddfff}
-    .pill-stable{border-color:#4bd28f;color:#4bd28f}
-    .pill-design{border-color:#9fb3c8;color:#9fb3c8}
-    .small{font-size:.9rem;color:#9fb3c8}
-  </style>
-</head>
-<body class="abe-page">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A.B.E. — American Butterfly Effect</title>
 
-<header class="abe-header">
-  <div class="abe-main-wrap">
-    <h1>A.B.E. — American Butterfly Effect</h1>
-    <p class="tagline">
-      A constitutional prosperity engine.  
-      <span class="tagline-strong">From overreach → divergence → recovery → budgets → projects — with receipts.</span>
-    </p>
-    <nav class="chip-row">
-      <a class="chip chip-alt" href="start/index.html">Start Here</a>
-      <a class="chip" href="intake/index.html">Intake (Upload a Document)</a>
-      <a class="chip" href="integration/index.html">Integration / Audit</a>
-      <a class="chip" href="system/index.html">System Map</a>
-      <a class="chip" href="learn/index.html">Learn the Engine</a>
-      <a class="chip" href="doctrine/index.html">Doctrines</a>
-      <a class="chip" href="START_HERE.md">Repo README</a>
-    </nav>
-  </div>
+<style>
+  :root {
+    --bg: #0b0d12;
+    --panel: #151923;
+    --ink: #e6e8ee;
+    --muted: #8fa2b7;
+    --accent: #ffd857; /* yellow-gold accent */
+    --accentGlow: #ffe892;
+    --link: #5ddfff;
+  }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  }
+
+  header {
+    padding: 1.5rem 1rem;
+    text-align: center;
+    border-bottom: 1px solid rgba(255,255,255,.08);
+    background: #0f131b;
+  }
+  h1 {
+    margin: 0;
+    font-size: 1.9rem;
+    color: #bfeaff;
+  }
+  .tagline {
+    margin-top: .3rem;
+    font-size: 1rem;
+    color: var(--muted);
+  }
+
+  .wrap {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 1.25rem;
+  }
+
+  .grid {
+    display: grid;
+    gap: 1.25rem;
+  }
+  @media(min-width:900px){
+    .grid { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  .card {
+    background: var(--panel);
+    border: 1px solid rgba(255,255,255,.06);
+    padding: 1.2rem;
+    border-radius: 12px;
+  }
+  .card h2 {
+    margin-top: 0;
+    font-size: 1.2rem;
+    color: #cfefff;
+  }
+  .card p { color: var(--muted); font-size: .92rem; }
+
+  .btn {
+    display: inline-block;
+    padding: .55rem 1.1rem;
+    border-radius: 10px;
+    border: 1px solid var(--accent);
+    background: rgba(255,216,87,.12);
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 600;
+    box-shadow: 0 0 6px rgba(255,216,87,.4);
+    transition: all .18s ease;
+    font-size: .94rem;
+  }
+  .btn:hover {
+    background: rgba(255,216,87,.18);
+    box-shadow: 0 0 9px rgba(255,216,87,.6);
+  }
+
+  footer {
+    margin: 3rem 0 1.5rem;
+    text-align: center;
+    color: var(--muted);
+    font-size: .85rem;
+  }
+</style>
+</head>
+
+<body>
+<header>
+  <h1>A.B.E. — American Butterfly Effect</h1>
+  <p class="tagline">Constitution → Integrity → Recovery · All local · CC BY-NC 4.0</p>
 </header>
 
-<main class="abe-main abe-main-wrap">
+<main class="wrap">
 
-  <!-- On-ramp -->
-  <section class="card">
-    <h2>Where do I start?</h2>
-    <p>
-      You do <strong>not</strong> need to be a lawyer or a data scientist to use A.B.E.
-      Pick the lane that matches what you have in your hands.
-    </p>
-    <div class="grid">
-      <div>
-        <h3>🧭 Guided path</h3>
-        <p class="small">
-          If you’re new or overwhelmed, let the guided flow route you:
-          it explains which module to use, in plain language.
-        </p>
-        <p>
-          <a class="btn" href="start/index.html">Open “Start Here”</a>
-        </p>
-      </div>
-      <div>
-        <h3>📄 I have documents, not CSVs</h3>
-        <p class="small">
-          Tickets, CPS letters, loan contracts, policy memos, emails.  
-          Intake reads them (with in-browser OCR) and builds clean data for the engines.
-        </p>
-        <p>
-          <a class="btn" href="intake/index.html">Open Intake — Document & OCR Bridge</a>
-        </p>
-      </div>
-    </div>
-  </section>
+  <!-- PRIMARY ACTION -->
+  <div style="text-align:center;margin-bottom:2rem;">
+    <a href="/abe---flag/intake/index.html" class="btn" style="font-size:1.05rem;padding:.75rem 1.5rem;">
+      Start Here — Intake & OCR
+    </a>
+  </div>
 
-  <!-- Core legal & divergence layer -->
-  <section class="card">
-    <h2>Core Legal & Divergence Layer</h2>
-    <p class="small">
-      These engines capture how statutes, regulations, and real-world practices line up with — or drift from — the Constitution.
-    </p>
-    <div class="grid">
+  <!-- MODULE GRID -->
+  <div class="grid">
 
-      <div>
-        <h3>⚖️ CAE — Constitutional Alignment Engine</h3>
-        <p class="small">
-          Maps what the law actually authorizes (federal supremacy, scope, limits).
-          Feeds CDI and the rest of the pipeline.
-        </p>
-        <p class="small">
-          <span class="pill pill-planned">roadmap</span>
-          UI: <code>cae/index.html</code> · Model: <code>cae/model.json</code>
-        </p>
-      </div>
+    <!-- Intake -->
+    <section class="card">
+      <h2>Intake + OCR</h2>
+      <p>Upload any document <em>(PDF, image, memo, ticket, loan contract)</em>.  
+         OCR + normalization runs entirely in your browser. Produces CIRI/CDA/CFF/CCRI-ready data.</p>
+      <a class="btn" href="/abe---flag/intake/index.html">Open Intake</a>
+    </section>
 
-      <div>
-        <h3>🧩 CDA — Constitutional Divergence Analyzer</h3>
-        <p class="small">
-          Turns real enforcement and policy behavior (stops, licensing, CPS actions, funding conditions)
-          into structured divergence flags and a 0–1 score consumable by CDI, CIRI, CFF, AFFE.
-        </p>
-        <p class="small">
-          <span class="pill pill-alpha">alpha</span>
-          <a href="cda/index.html">cda/index.html</a>
-        </p>
-      </div>
+    <!-- CDA -->
+    <section class="card">
+      <h2>CDA — Divergence Analyzer</h2>
+      <p>Maps statutes, enforcement practices, and policies against controlling constitutional authority.</p>
+      <a class="btn" href="/abe---flag/cda/index.html">Open CDA</a>
+    </section>
 
-      <div>
-        <h3>📉 CDI — Constitutional Divergence Index</h3>
-        <p class="small">
-          Converts CAE/CDA findings into a single divergence signal and structured CSVs.
-        </p>
-        <p class="small">
-          <span class="pill pill-alpha">alpha</span>
-          <a href="cdi/index.html">cdi/index.html</a>
-        </p>
-      </div>
+    <!-- CIRI -->
+    <section class="card">
+      <h2>CIRI — Integrity & ROI</h2>
+      <p>Computes economic recovery from ending unconstitutional practices: cases, jail days, fees, employment.</p>
+      <a class="btn" href="/abe---flag/ciri/index.html">Open CIRI</a>
+    </section>
 
-      <div>
-        <h3>💥 CIRI — Integrity ROI Engine</h3>
-        <p class="small">
-          Quantifies economic harm and recovery when unconstitutional enforcement is corrected:
-          cases, jail days, fees, employment, spending, risk.
-        </p>
-        <p class="small">
-          <span class="pill pill-stable">stable</span>
-          <a href="ciri/index.html">ciri/index.html</a> · Data: <code>ciri/inputs.csv</code>
-        </p>
-      </div>
+    <!-- CIBS -->
+    <section class="card">
+      <h2>CIBS — Community Budget</h2>
+      <p>Allocates recovery funds automatically into audited community investment categories.</p>
+      <a class="btn" href="/abe---flag/cibs/index.html">Open CIBS</a>
+    </section>
 
-    </div>
-  </section>
+    <!-- CII -->
+    <section class="card">
+      <h2>CII — Project Portfolios</h2>
+      <p>Shows real programs funded by recovered value: housing, mobility, clinics, childcare.</p>
+      <a class="btn" href="/abe---flag/cii/index.html">Open CII</a>
+    </section>
 
-  <!-- Budget & projects layer -->
-  <section class="card">
-    <h2>Budgets, Projects & Macro Cascade</h2>
-    <p class="small">
-      Once value is recovered, these engines show what it can buy — locally and nationally.
-    </p>
-    <div class="grid">
+    <!-- CFF -->
+    <section class="card">
+      <h2>CFF — Funding Forensics</h2>
+      <p>Classifies line items as ON-MISSION / OFF-MISSION relative to the funding statute & federal programs.</p>
+      <a class="btn" href="/abe---flag/cff/index.html">Open CFF</a>
+    </section>
 
-      <div>
-        <h3>🏛️ CIBS — Community Integrity Budget System</h3>
-        <p class="small">
-          Allocates recovered dollars into housing, clinics, food, mobility, defense, and more.
-        </p>
-        <p class="small">
-          <span class="pill pill-stable">stable</span>
-          <a href="cibs/index.html">cibs/index.html</a> · Data: <code>cibs/auto_budget.csv</code>
-        </p>
-      </div>
+    <!-- AFFE -->
+    <section class="card">
+      <h2>AFFE — Funding & Fidelity Explorer</h2>
+      <p>Explore how funding changes when drift ends; visualize alignment and impact across agencies.</p>
+      <a class="btn" href="/abe---flag/affe/index.html">Open AFFE</a>
+    </section>
 
-      <div>
-        <h3>🏗️ CII — Constitutional Investment Index</h3>
-        <p class="small">
-          Turns budget lines into actual projects and portfolios your community can build.
-        </p>
-        <p class="small">
-          <span class="pill pill-beta">beta</span>
-          <a href="cii/index.html">cii/index.html</a>
-        </p>
-      </div>
+    <!-- CCRI -->
+    <section class="card">
+      <h2>CCRI — Credit Integrity</h2>
+      <p>Evaluates lending, auto finance, and DMV/DOT data spillover for constitutional and economic impact.</p>
+      <a class="btn" href="/abe---flag/ccri/index.html">Open CCRI</a>
+    </section>
 
-      <div>
-        <h3>🌎 Macro — National-Scale Cascade</h3>
-        <p class="small">
-          Scales “one restored community” across many communities:
-          GDP, wages, jobs, and recurring savings.
-        </p>
-        <p class="small">
-          <span class="pill pill-beta">beta</span>
-          <a href="macro/index.html">macro/index.html</a>
-        </p>
-      </div>
+    <!-- Learn -->
+    <section class="card">
+      <h2>Learn</h2>
+      <p>Small interactive examples that teach how CIRI, CIBS, and Macro work — based on doctrine values.</p>
+      <a class="btn" href="/abe---flag/learn/index.html">Learn A.B.E.</a>
+    </section>
 
-    </div>
-  </section>
+    <!-- Macro -->
+    <section class="card">
+      <h2>Macro Cascade</h2>
+      <p>National-scale modeling: what happens when multiple communities correct divergence at once.</p>
+      <a class="btn" href="/abe---flag/macro/index.html">Open Macro</a>
+    </section>
 
-  <!-- Funding & credit layer -->
-  <section class="card">
-    <h2>Funding & Credit Integrity</h2>
-    <p class="small">
-      These modules follow the money: how public funds and private credit rules track (or violate) lawful authority.
-    </p>
-    <div class="grid">
+    <!-- Integration -->
+    <section class="card">
+      <h2>Integration / Audit</h2>
+      <p>Runs SHA-256 integrity checks for every module. Produces a public audit certificate.</p>
+      <a class="btn" href="/abe---flag/integration/index.html">Open Audit Layer</a>
+    </section>
 
-      <div>
-        <h3>🧾 CFF — Constitutional Funding Forensics</h3>
-        <p class="small">
-          Reads structured grant / funding CSVs and classifies spend as
-          <code>ON_MISSION</code>, <code>OFF_MISSION</code>, or <code>UNCLEAR</code>
-          against statutory purpose.
-        </p>
-        <p class="small">
-          <span class="pill pill-beta">beta</span>
-          <a href="cff/index.html">cff/index.html</a>
-        </p>
-      </div>
+    <!-- Doctrines -->
+    <section class="card">
+      <h2>Doctrines & CRRA</h2>
+      <p>The constitutional backbone: supremacy, non-delegation, CRRA, ABE doctrine, and jurisdiction rules.</p>
+      <a class="btn" href="/abe---flag/doctrine/index.html">Open Doctrines</a>
+    </section>
 
-      <div>
-        <h3>🔍 AFFE — American Funding & Fidelity Explorer</h3>
-        <p class="small">
-          Deep explorer that links funding streams back into CAE/CDI/CIRI —
-          long-term stability, repayment, and community-level outcomes.
-        </p>
-        <p class="small">
-          <span class="pill pill-alpha">alpha</span>
-          <a href="affe/index.html">affe/index.html</a>
-        </p>
-      </div>
+    <!-- System -->
+    <section class="card">
+      <h2>System Map</h2>
+      <p>The canonical pipeline: Intake → CDA → CDI → CIRI → CIBS → CII → Integration.</p>
+      <a class="btn" href="/abe---flag/system/index.html">View System Map</a>
+    </section>
 
-      <div>
-        <h3>🏦 CCRI — Consumer Credit Risk Integrity</h3>
-        <p class="small">
-          Evaluates how lenders, dealers, and underwriters use data (DMV, DOT, bureaus) and
-          flags unlawful or preempted uses for non-commercial citizens.
-        </p>
-        <p class="small">
-          <span class="pill pill-alpha">alpha</span>
-          <a href="ccri/index.html">ccri/index.html</a> · Data: <code>ccri/inputs.json</code>
-        </p>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- Tools, learning, integrity -->
-  <section class="card">
-    <h2>Integrity, System Map & Learning</h2>
-    <div class="grid">
-
-      <div>
-        <h3>🛰️ Integration Layer</h3>
-        <p class="small">
-          Re-computes KPIs from shared inputs, hashes every artifact (SHA-256), and
-          generates local-only audit receipts with plain-language summaries.
-        </p>
-        <p class="small">
-          <span class="pill pill-beta">beta</span>
-          <a href="integration/index.html">integration/index.html</a>
-        </p>
-      </div>
-
-      <div>
-        <h3>🗺️ System Map</h3>
-        <p class="small">
-          JSON map of all modules, files, and pipelines (what feeds what).  
-          Source of truth for how A.B.E. fits together.
-        </p>
-        <p class="small">
-          <span class="pill pill-stable">stable</span>
-          <a href="system/index.html">system/index.html</a> · Map: <code>system/map.json</code>
-        </p>
-      </div>
-
-      <div>
-        <h3>📚 Learn — Guided Engine Tips</h3>
-        <p class="small">
-          Small interactive demos that show how CIRI, CIBS, and Macro math works —
-          matched to the public doctrine numbers.
-        </p>
-        <p class="small">
-          <span class="pill pill-beta">beta</span>
-          <a href="learn/index.html">learn/index.html</a>
-        </p>
-      </div>
-
-      <div>
-        <h3>📖 Doctrine Library</h3>
-        <p class="small">
-          The legal and economic backbone: constitutional fidelity, void ab initio,
-          CRRA, and how A.B.E. is grounded in existing law.
-        </p>
-        <p class="small">
-          <span class="pill pill-stable">stable</span>
-          <a href="doctrine/index.html">doctrine/index.html</a>
-        </p>
-      </div>
-
-    </div>
-  </section>
-
+  </div>
 </main>
 
-<footer class="abe-footer">
-  <p>
-    CC BY-NC 4.0 · DOI <a href="https://doi.org/10.5281/zenodo.17586107">10.5281/zenodo.17586107</a><br/>
-    Integrity only — never for sale.
-  </p>
+<footer>
+  CC BY-NC 4.0 · Integrity only — never for sale · DOI: 10.5281/zenodo.17586107
 </footer>
 
 </body>
