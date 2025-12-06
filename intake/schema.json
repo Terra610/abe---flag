@@ -20,16 +20,19 @@
   "properties": {
     "version": {
       "type": "string",
-      "const": "1.0"
+      "const": "1.0",
+      "description": "Intake artifact schema version."
     },
 
     "module": {
       "type": "string",
-      "const": "Intake"
+      "const": "Intake",
+      "description": "Must be exactly 'Intake' for all intake artifacts."
     },
 
     "doc_type": {
       "type": "string",
+      "description": "Declared or inferred type of document.",
       "enum": [
         "traffic_ticket",
         "cps_case",
@@ -40,34 +43,40 @@
     },
 
     "original_file_name": {
-      "type": "string"
+      "type": "string",
+      "description": "Name of the uploaded file as seen by the user/browser."
     },
 
     "original_file_hash": {
       "type": "string",
+      "description": "Hex-encoded SHA-256 hash of the original file.",
       "pattern": "^[a-f0-9]{64}$"
     },
 
     "ocr_used": {
-      "type": "boolean"
+      "type": "boolean",
+      "description": "Whether OCR was used (true for images, false for pure text uploads)."
     },
 
     "text_raw": {
-      "type": ["string", "null"]
+      "type": ["string", "null"],
+      "description": "Optional raw text as produced directly by OCR or text extraction."
     },
 
     "text_normalized": {
-      "type": "string"
+      "type": "string",
+      "description": "Normalized, cleaned text used for field extraction. Required even if same as text_raw."
     },
 
     "extracted_fields": {
       "type": "object",
-      "description": "Document-type-specific extracted values.",
+      "description": "Document-type-specific fields detected by the intake parser (may be edited by the user).",
       "additionalProperties": true
     },
 
     "targets": {
       "type": "array",
+      "description": "List of A.B.E. modules this intake session is configured to feed.",
       "items": {
         "type": "string",
         "enum": ["CIRI", "CDA", "CFF", "CCRI"]
@@ -76,18 +85,28 @@
 
     "generated_outputs": {
       "type": "object",
+      "description": "Metadata about files generated for downstream modules.",
       "additionalProperties": false,
 
       "properties": {
         "ciri": {
           "type": ["object", "null"],
+          "description": "Info about the generated CIRI CSV, if any.",
           "additionalProperties": false,
           "properties": {
             "present": { "type": "boolean" },
-            "row_count": { "type": "integer", "minimum": 0 },
-            "csv_inline": { "type": "string" },
+            "row_count": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Number of rows in the generated CIRI CSV (usually 1 for a single case/scenario)."
+            },
+            "csv_inline": {
+              "type": "string",
+              "description": "Optional inline CSV content for quick inspection or regeneration."
+            },
             "hash": {
               "type": "string",
+              "description": "Hex-encoded SHA-256 hash of the generated CIRI CSV.",
               "pattern": "^[a-f0-9]{64}$"
             }
           },
@@ -96,12 +115,17 @@
 
         "cda": {
           "type": ["object", "null"],
+          "description": "Info about the generated CDA JSON scenario, if any.",
           "additionalProperties": false,
           "properties": {
             "present": { "type": "boolean" },
-            "scenario": { "type": ["object", "null"] },
+            "scenario": {
+              "type": ["object", "null"],
+              "description": "Inline CDA scenario object (structure defined by cda/schema.json)."
+            },
             "hash": {
               "type": "string",
+              "description": "Hex-encoded SHA-256 hash of the generated CDA JSON.",
               "pattern": "^[a-f0-9]{64}$"
             }
           },
@@ -110,13 +134,22 @@
 
         "cff": {
           "type": ["object", "null"],
+          "description": "Info about the generated CFF CSV, if any.",
           "additionalProperties": false,
           "properties": {
             "present": { "type": "boolean" },
-            "row_count": { "type": "integer", "minimum": 0 },
-            "csv_inline": { "type": "string" },
+            "row_count": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Number of rows in the generated CFF CSV."
+            },
+            "csv_inline": {
+              "type": "string",
+              "description": "Optional inline CSV content for funding line items."
+            },
             "hash": {
               "type": "string",
+              "description": "Hex-encoded SHA-256 hash of the generated CFF CSV.",
               "pattern": "^[a-f0-9]{64}$"
             }
           },
@@ -125,12 +158,17 @@
 
         "ccri": {
           "type": ["object", "null"],
+          "description": "Info about the generated CCRI JSON scenario, if any.",
           "additionalProperties": false,
           "properties": {
             "present": { "type": "boolean" },
-            "scenario": { "type": ["object", "null"] },
+            "scenario": {
+              "type": ["object", "null"],
+              "description": "Inline CCRI scenario object (structure defined by ccri/schema.json)."
+            },
             "hash": {
               "type": "string",
+              "description": "Hex-encoded SHA-256 hash of the generated CCRI JSON.",
               "pattern": "^[a-f0-9]{64}$"
             }
           },
@@ -141,11 +179,13 @@
 
     "created_at": {
       "type": "string",
-      "format": "date-time"
+      "format": "date-time",
+      "description": "ISO-8601 timestamp when this intake artifact was created (local browser time)."
     },
 
     "notes": {
-      "type": "string"
+      "type": "string",
+      "description": "Optional notes about this intake session or how the document was interpreted."
     }
   }
 }
