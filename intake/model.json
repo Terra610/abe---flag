@@ -1,62 +1,201 @@
 {
   "version": "1.0",
-  "updated": "2025-11-28T00:00:00Z",
+  "updated": "2025-12-01T00:00:00Z",
   "module": "Intake",
   "authority": {
-    "name": "A.B.E. — Intake · Document + OCR Bridge",
+    "name": "A.B.E. — Document Intake + OCR Bridge",
     "license": "CC BY-NC 4.0"
   },
-  "doc_types": [
-    {
-      "key": "traffic_ticket",
+
+  "goals": [
+    "Allow users to upload a document once (image or text-based) and keep all processing local.",
+    "Use OCR (for images) and parsing to extract structured fields for A.B.E. modules like CIRI, CDA, CFF, and CCRI.",
+    "Produce a normalized, single-source JSON artifact describing the intake session, including hashes, so Integration can certify the chain-of-custody.",
+    "Generate helper CSV/JSON files (e.g., ciri/inputs.csv, ccri/inputs.json, cff/inputs.csv) from one intake event."
+  ],
+
+  "doc_types": {
+    "traffic_ticket": {
       "label": "Traffic / citation ticket",
-      "notes": "Photos or scans of traffic tickets, citations, and related court papers."
+      "examples": [
+        "Paper or scanned traffic tickets",
+        "PDF/printouts of moving violation citations"
+      ],
+      "targets": ["CIRI", "CDA", "CFF"],
+      "fields_of_interest": [
+        "ticket_number",
+        "issuing_agency",
+        "offense_description",
+        "statutes_cited",
+        "fine_amount",
+        "court_costs",
+        "due_date",
+        "license_reference",
+        "commercial_flag"
+      ]
     },
-    {
-      "key": "cps_case",
-      "label": "CPS / child welfare",
-      "notes": "Case files, notices, plans, and correspondence from CPS or equivalent agencies."
+    "cps_case": {
+      "label": "Child Protective Services case summary",
+      "examples": [
+        "CPS case notes",
+        "Service plans",
+        "removal/placement notices"
+      ],
+      "targets": ["CIRI", "CDA"],
+      "fields_of_interest": [
+        "case_id",
+        "agency_name",
+        "jurisdiction",
+        "children_affected",
+        "households_affected",
+        "placement_type",
+        "duration_days",
+        "court_orders_cited",
+        "costs_or_fees",
+        "employment_impact_notes"
+      ]
     },
-    {
-      "key": "policy_memo",
-      "label": "Policy / memo",
-      "notes": "Internal policy memos, directives, enforcement guidance, or regulatory FAQs."
+    "policy_memo": {
+      "label": "Policy / regulation memo",
+      "examples": [
+        "Internal policy memos",
+        "enforcement guidance documents",
+        "agency bulletins"
+      ],
+      "targets": ["CDA", "CFF", "AFFE"],
+      "fields_of_interest": [
+        "policy_name",
+        "issuing_entity",
+        "effective_date",
+        "jurisdiction",
+        "statutory_basis_cited",
+        "funding_programs_named",
+        "scope_description",
+        "affected_population_description"
+      ]
     },
-    {
-      "key": "loan_contract",
-      "label": "Loan or credit contract",
-      "notes": "Retail installment contracts, auto loans, bank finance agreements, etc."
+    "loan_contract": {
+      "label": "Loan / credit / finance contract",
+      "examples": [
+        "Auto loan agreements",
+        "consumer credit contracts",
+        "dealer finance forms"
+      ],
+      "targets": ["CCRI", "CIRI"],
+      "fields_of_interest": [
+        "lender_name",
+        "dealer_name",
+        "borrower_type",
+        "vehicle_or_asset_description",
+        "principal_amount",
+        "interest_rate",
+        "term_months",
+        "payment_amount",
+        "late_fee_terms",
+        "repossession_terms",
+        "dmv_dot_data_referenced",
+        "license_status_required"
+      ]
     },
-    {
-      "key": "generic_case_text",
-      "label": "Plain text description",
-      "notes": "Free-form description of a situation when no formal document is available."
+    "generic_case_text": {
+      "label": "Generic case / narrative text",
+      "examples": [
+        "Plain text descriptions of what happened",
+        "Email-style narratives",
+        "Mixed legal notes"
+      ],
+      "targets": ["CIRI", "CDA", "CCRI"],
+      "fields_of_interest": [
+        "jurisdiction",
+        "population_type",
+        "commercial_vs_noncommercial",
+        "estimate_cases_avoided",
+        "estimate_jail_days_avoided",
+        "estimate_fees_canceled",
+        "employment_impact_notes",
+        "mobility_impact_notes"
+      ]
     }
-  ],
-  "targets": [
-    {
-      "key": "CIRI",
-      "label": "CIRI — Integrity ROI Engine",
-      "description": "Builds a one-row CIRI inputs.csv for economic harm / recovery."
-    },
-    {
-      "key": "CDA",
-      "label": "CDA — Constitutional Divergence Analyzer",
-      "description": "Creates a structured JSON scenario with alleged divergence flags."
-    },
-    {
-      "key": "CFF",
-      "label": "CFF — Constitutional Funding Forensics",
-      "description": "Adds rows to a funding CSV if the document reveals ON/OFF-mission spending."
-    },
-    {
-      "key": "CCRI",
-      "label": "CCRI — Consumer Credit Risk Integrity",
-      "description": "Creates a CCRI scenario describing how data and licensing are used in credit decisions."
+  },
+
+  "pipelines": {
+    "common_steps": [
+      "read_file",
+      "compute_original_file_hash",
+      "ocr_if_image",
+      "normalize_text",
+      "optional_user_review",
+      "field_extraction",
+      "user_edit_extracted_fields",
+      "module_specific_outputs",
+      "build_intake_artifact"
+    ],
+    "module_outputs": {
+      "CIRI": {
+        "description": "Build a single-row CIRI-ready CSV.",
+        "output_type": "csv",
+        "schema_hint": "ciri/inputs_template.csv",
+        "fields_mapped": [
+          "cases_avoided",
+          "jail_days_avoided",
+          "fees_canceled_total",
+          "households_restored",
+          "employment_probability",
+          "wage_uplift_estimate"
+        ]
+      },
+      "CDA": {
+        "description": "Optional CDA scenario when statute/policy divergence is obvious.",
+        "output_type": "json",
+        "schema_hint": "cda/schema.json",
+        "fields_mapped": [
+          "statute_name",
+          "jurisdiction",
+          "citations",
+          "population",
+          "notes"
+        ]
+      },
+      "CFF": {
+        "description": "Optional CFF-ready line item when funding information is present.",
+        "output_type": "csv",
+        "schema_hint": "cff/inputs_template.csv",
+        "fields_mapped": [
+          "program_name",
+          "federal_authority_citation",
+          "state_or_jurisdiction",
+          "agency",
+          "line_item_description",
+          "amount_usd"
+        ]
+      },
+      "CCRI": {
+        "description": "Generate CCRI scenario inputs describing credit/loan practices.",
+        "output_type": "json",
+        "schema_hint": "ccri/inputs_example.json",
+        "fields_mapped": [
+          "institution_name",
+          "product_type",
+          "data_sources_used",
+          "dmv_dot_spillover_present",
+          "license_status_dependency",
+          "denial_patterns",
+          "appeal_process_description"
+        ]
+      }
     }
-  ],
-  "defaults": {
-    "ciri_scale_K": 2000000000,
-    "currency": "USD"
+  },
+
+  "hashing_and_audit": {
+    "strategy": "local_sha256",
+    "artifacts_hashed": [
+      "original_file",
+      "intake_artifact_json",
+      "generated_ciri_csv",
+      "generated_cda_json",
+      "generated_cff_csv",
+      "generated_ccri_json"
+    ],
+    "notes": "All hashes are computed in-browser using Web Crypto. No data leaves the device. Integration module can consume intake_artifact.json for chain-of-custody."
   }
 }
