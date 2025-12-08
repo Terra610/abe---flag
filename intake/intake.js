@@ -8,15 +8,27 @@
   const fileInput      = $('file-input');
   const textInput      = $('text-input');
   const docTypeSelect  = $('doc-type');
-  const tCIRI          = $('t-ciri');
-  const tCDA           = $('t-cda');
-  const tCFF           = $('t-cff');
-  const tCCRI          = $('t-ccri');
+
+  // NOTE: these IDs now match your HTML (target-ciri, target-cda, etc.)
+  const tCIRI          = $('target-ciri');
+  const tCDA           = $('target-cda');
+  const tCFF           = $('target-cff');
+  const tCCRI          = $('target-ccri');
+
   const btnRun         = $('run-intake');
-  const statusEl       = $('intake-status');
-  const normTextEl     = $('norm-text');
-  const fieldsEl       = $('fields-preview');
-  const btnDlIntake    = $('dl-intake-json');
+
+  // Your status span is id="status"
+  const statusEl       = $('status');
+
+  // Right-hand previews
+  const normTextEl     = $('norm-text');     // <pre id="norm-text">
+  const fieldsEl       = $('fields-json');   // <pre id="fields-json">
+
+  // Download button is id="download-artifact"
+  const btnDlIntake    = $('download-artifact');
+
+  // You don’t currently have a CIRI CSV download button in the HTML,
+  // so this may be null. We’ll guard against that.
   const btnDlCiri      = $('dl-ciri-csv');
 
   let latestArtifact = null;
@@ -25,11 +37,12 @@
   // ---------- helpers ----------
 
   function setStatus(text, kind) {
+    if (!statusEl) return;
     statusEl.textContent = `Status: ${text}`;
-    statusEl.className = 'intake-status';
-    if (kind === 'ok')   statusEl.classList.add('pill','pill-ok');
-    if (kind === 'warn') statusEl.classList.add('pill','pill-warn');
-    if (kind === 'bad')  statusEl.classList.add('pill','pill-bad');
+    statusEl.className = 'status-line';
+    if (kind === 'ok')   statusEl.classList.add('status-ok');
+    if (kind === 'warn') statusEl.classList.add('status-warn');
+    if (kind === 'bad')  statusEl.classList.add('status-err');
   }
 
   function normalizeText(str) {
@@ -56,10 +69,12 @@
   // ---------- PDF text extraction (PDF.js) ----------
 
   async function extractTextFromPdfFile(file) {
+    if (!window['pdfjsLib']) {
+      throw new Error('PDF.js not available (pdfjsLib not found)');
+    }
     const buf = await file.arrayBuffer();
     const uint8 = new Uint8Array(buf);
 
-    // pdfjsLib is provided by the script tag in index.html
     const loadingTask = window['pdfjsLib'].getDocument({ data: uint8 });
     const pdf = await loadingTask.promise;
 
@@ -76,11 +91,11 @@
   // ---------- image OCR (Tesseract.js) ----------
 
   async function ocrImageFile(file) {
-    const { Tesseract } = window;
-    if (!Tesseract || !Tesseract.recognize) {
+    const T = window.Tesseract;
+    if (!T || !T.recognize) {
       throw new Error('Tesseract.js not available');
     }
-    const result = await Tesseract.recognize(file, 'eng');
+    const result = await T.recognize(file, 'eng');
     return result.data && result.data.text ? result.data.text : '';
   }
 
@@ -116,7 +131,8 @@
     const text = normalizedText || '';
     const fields = {};
 
-    // Very light, safe hints. User is still in control.
+    // Very light hints. User is still in control.
+
     // Dollars
     const moneyMatches = text.match(/\$?\s?[\d,]+(\.\d{1,2})?/g) || [];
     fields.approx_dollar_values_found = moneyMatches.slice(0, 10);
@@ -145,7 +161,6 @@
   // ---------- CIRI CSV starter row ----------
 
   function buildCiriCsvRow(normalizedText) {
-    // Header matches the fields used in integration.js
     const header = [
       'cases_avoided',
       'avg_cost_per_case',
@@ -166,11 +181,8 @@
       'notes'
     ];
 
-    // We keep the numbers zeroed by default to avoid guessing wrong.
     const row = new Array(header.length).fill(0);
 
-    // Put the first 200 chars of text into notes so the user knows
-    // which scenario this row came from.
     row[row.length - 1] = JSON.stringify(
       (normalizedText || '').slice(0, 200).replace(/\s+/g, ' ')
     );
@@ -182,16 +194,16 @@
 
   async function runIntake() {
     try {
-      btnRun.disabled = true;
+      if (btnRun) btnRun.disabled = true;
       setStatus('running OCR + parsing (local only)…', 'warn');
       latestArtifact = null;
       latestCiriCsv  = null;
-      btnDlIntake.disabled = true;
-      btnDlCiri.disabled   = true;
+      if (btnDlIntake) btnDlIntake.disabled = true;
+      if (btnDlCiri)   btnDlCiri.disabled   = true;
 
-      const files = Array.from(fileInput.files || []);
-      const pasted = textInput.value || '';
-      const docType = docTypeSelect.value;
+      const files   = Array.from((fileInput && fileInput.files) || []);
+      const pasted  = textInput ? (textInput.value || '') : '';
+      const docType = docTypeSelect ? docTypeSelect.value : 'generic_case_text';
 
       if (!files.length && !pasted.trim()) {
         setStatus('please add at least one file or some pasted text', 'bad');
@@ -199,12 +211,11 @@
       }
 
       const targets = [];
-      if (tCIRI.checked) targets.push('CIRI');
-      if (tCDA.checked)  targets.push('CDA');
-      if (tCFF.checked)  targets.push('CFF');
-      if (tCCRI.checked) targets.push('CCRI');
+      if (tCIRI && tCIRI.checked) targets.push('CIRI');
+      if (tCDA  && tCDA.checked)  targets.push('CDA');
+      if (tCFF  && tCFF.checked)  targets.push('CFF');
+      if (tCCRI && tCCRI.checked) targets.push('CCRI');
 
-      // extract text from all files
       let combinedText = '';
       let primaryFileName = '';
       let primaryFileHash = null;
@@ -215,9 +226,7 @@
 
         for (const f of files) {
           const t = await extractTextFromFile(f);
-          if (t) {
-            combinedText += '\n\n' + t;
-          }
+          if (t) combinedText += '\n\n' + t;
         }
       }
 
@@ -226,15 +235,12 @@
 
       if (!normalized) {
         setStatus('Intake could not find readable text in these inputs.', 'bad');
-        normTextEl.textContent = '— (no text extracted)';
-        fieldsEl.textContent   = '{}';
+        if (normTextEl) normTextEl.textContent = '— (no text extracted)';
+        if (fieldsEl)   fieldsEl.textContent   = '{}';
         return;
       }
 
-      // very small heuristic preview
       const extractedFields = basicFieldGuess(normalized, docType);
-
-      // prepare artifacts
       const now = new Date().toISOString();
 
       const artifact = {
@@ -258,7 +264,6 @@
         notes: ''
       };
 
-      // build CIRI CSV starter row if target checked
       if (targets.includes('CIRI')) {
         const csv = buildCiriCsvRow(normalized);
         latestCiriCsv = csv;
@@ -276,29 +281,34 @@
         artifact.generated_outputs.ciri = { present: false };
       }
 
-      // Stubs for other modules (just marking that we didn’t create anything yet)
       artifact.generated_outputs.cda  = { present: targets.includes('CDA')  ? false : false };
       artifact.generated_outputs.cff  = { present: targets.includes('CFF')  ? false : false };
       artifact.generated_outputs.ccri = { present: targets.includes('CCRI') ? false : false };
 
       latestArtifact = artifact;
 
-      // update UI
-      normTextEl.textContent = normalized;
-      fieldsEl.textContent   = JSON.stringify(extractedFields, null, 2);
+      if (normTextEl) normTextEl.textContent = normalized;
+      if (fieldsEl)   fieldsEl.textContent   = JSON.stringify(extractedFields, null, 2);
 
       setStatus('Intake complete — review text & download artifacts.', 'ok');
 
-      btnDlIntake.disabled = false;
-      btnDlCiri.disabled   = !latestCiriCsv;
+      if (btnDlIntake) btnDlIntake.disabled = false;
+      if (btnDlCiri)   btnDlCiri.disabled   = !latestCiriCsv;
+
+      // store artifact so CIRI / others can pick it up automatically
+      try {
+        localStorage.setItem('abe_intake_artifact', JSON.stringify(artifact));
+      } catch (e) {
+        console.warn('Could not store intake artifact in localStorage:', e);
+      }
 
     } catch (err) {
       console.error(err);
       setStatus('Intake failed: ' + (err.message || String(err)), 'bad');
-      normTextEl.textContent = '—';
-      fieldsEl.textContent   = '{}';
+      if (normTextEl) normTextEl.textContent = '—';
+      if (fieldsEl)   fieldsEl.textContent   = '{}';
     } finally {
-      btnRun.disabled = false;
+      if (btnRun) btnRun.disabled = false;
     }
   }
 
@@ -316,23 +326,28 @@
     URL.revokeObjectURL(url);
   }
 
-  // wire buttons
-  btnRun.addEventListener('click', () => {
-    runIntake();
-  });
+  if (btnDlIntake) {
+    btnDlIntake.addEventListener('click', () => {
+      if (!latestArtifact) return;
+      downloadTextFile(
+        `abe_intake_${Date.now()}.json`,
+        JSON.stringify(latestArtifact, null, 2),
+        'application/json'
+      );
+    });
+  }
 
-  btnDlIntake.addEventListener('click', () => {
-    if (!latestArtifact) return;
-    downloadTextFile(
-      `abe_intake_${Date.now()}.json`,
-      JSON.stringify(latestArtifact, null, 2),
-      'application/json'
-    );
-  });
+  if (btnDlCiri) {
+    btnDlCiri.addEventListener('click', () => {
+      if (!latestCiriCsv) return;
+      downloadTextFile(`ciri_intake_row_${Date.now()}.csv`, latestCiriCsv, 'text/csv');
+    });
+  }
 
-  btnDlCiri.addEventListener('click', () => {
-    if (!latestCiriCsv) return;
-    downloadTextFile(`ciri_intake_row_${Date.now()}.csv`, latestCiriCsv, 'text/csv');
-  });
+  if (btnRun) {
+    btnRun.addEventListener('click', () => {
+      runIntake();
+    });
+  }
 
 })();
