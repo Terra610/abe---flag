@@ -96,6 +96,15 @@
       "ui": "cff/index.html"
     },
 
+    "law": {
+     "name": "Federal Authority Corpus",
+     "long_name": "Lawful Scope & Authority Map",
+     "purpose": "Defines constitutional and statutory boundaries (USC/CFR/funding) that CAE, CDA, CFF, and CIRI use to detect misalignment.",
+     "model_file": "law/law_schema.json",
+     "ui": "law/index.html",
+     "status": "seed"
+    },
+
     "affe": {
       "name": "AFFE",
       "long_name": "American Funding & Fidelity Explorer",
