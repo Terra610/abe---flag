@@ -302,6 +302,19 @@
   </p>
 </footer>
 
+  <!-- Tesseract.js for OCR (images, scanned pages) -->
+<script src="https://unpkg.com/tesseract.js@5.0.0/dist/tesseract.min.js"></script>
+
+<!-- OPTIONAL: PDF.js for extracting text from PDFs 
+     (Only needed if you want PDFs to work right now) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+<script>
+  // PDF.js 2.x needs the worker URL set explicitly
+  if (window['pdfjsLib']) {
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+  }
+</script>
+
 <script src="intake/intake.js"></script>
 <script>
   // tiny helper: show chosen file names
