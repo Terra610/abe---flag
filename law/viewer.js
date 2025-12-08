@@ -9,12 +9,18 @@
   // Each pack is a JSON file containing an array of authority nodes
   // that conform to law_schema.json.
   const LAW_PACKS = [
-    {
-      id: 'title_49_transport',
-      label: 'Title 49 — Transportation',
-      file: 'law/title_49_transport.json',
-      notes: 'FMCSA scope (commercial vs non-commercial), MCSAP funding, and related CFR parts.'
-    }
+  {
+    id: 'title_49_transport',
+    label: 'Title 49 — Transportation',
+    file: 'law/title_49_transport.json',
+    notes: 'Core FMCSA scope and related transport authority.'
+  },
+  {
+    id: 'title_49_mcsap_fmcsa',
+    label: 'Title 49 — MCSAP & FMCSA Preemption',
+    file: 'law/title_49_mcsap_fmcsa.json',
+    notes: 'MCSAP funding authority, FMCSA safety standards, and federal preemption nodes.'
+  }
     // e.g.,
     // { id: 'title_23_highway', label: 'Title 23 — Highway & Safety Funding', file: 'law/title_23_highway.json', notes: '23 USC 402, 154, etc.' }
     // { id: 'title_42_cps', label: 'Title 42 — Child Welfare / CPS', file: 'law/title_42_cps.json', notes: 'IV-E, 45 CFR 1355/1356, etc.' }
