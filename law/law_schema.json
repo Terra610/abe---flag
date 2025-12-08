@@ -1,0 +1,143 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ABE_LegalAuthorityNode_v1",
+  "description": "Schema for a single federal authority unit (statute, regulation, or funding authority) as used by CAE/CDA/CFF.",
+  "type": "object",
+  "required": ["id", "kind", "domain"],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Stable identifier for this node, e.g., '49usc_31136' or '49cfr_390_3'."
+    },
+    "kind": {
+      "type": "string",
+      "enum": ["constitution", "statute", "regulation", "funding"],
+      "description": "Type of authority represented."
+    },
+
+    "domain": {
+      "type": "string",
+      "description": "High-level domain this authority belongs to (transportation, credit_banking, child_welfare, healthcare, social_security, housing, criminal_justice, etc.)."
+    },
+
+    "usc_title": {
+      "type": ["integer", "null"],
+      "description": "USC Title number, if this is a statute or funding authority derived from USC."
+    },
+    "usc_section": {
+      "type": ["string", "null"],
+      "description": "USC section string, e.g., '31136' or '§31136'."
+    },
+    "usc_full_cite": {
+      "type": ["string", "null"],
+      "description": "Full human-readable cite, e.g., '49 U.S.C. § 31136'."
+    },
+
+    "cfr_title": {
+      "type": ["integer", "null"],
+      "description": "CFR Title number, if this is a regulation."
+    },
+    "cfr_part": {
+      "type": ["string", "null"],
+      "description": "CFR Part or Part + Subpart, e.g., '390' or '390.3'."
+    },
+    "cfr_full_cite": {
+      "type": ["string", "null"],
+      "description": "Full human-readable cite, e.g., '49 CFR 390.3'."
+    },
+
+    "constitution_ref": {
+      "type": ["string", "null"],
+      "description": "Reference into the Constitution when relevant, e.g., 'Art. I §8 cl.3 (Commerce Clause)'."
+    },
+
+    "population": {
+      "type": "array",
+      "description": "Primary populations this authority is meant to cover.",
+      "items": {
+        "type": "string"
+      }
+    },
+
+    "authority_granted": {
+      "type": "array",
+      "description": "Plain-language list of what this authority explicitly allows the government to do.",
+      "items": { "type": "string" }
+    },
+    "authority_limited": {
+      "type": "array",
+      "description": "Plain-language list of what this authority explicitly does NOT allow (limits, exclusions, carve-outs).",
+      "items": { "type": "string" }
+    },
+
+    "preemption": {
+      "type": "object",
+      "description": "Preemption details, when this authority limits or displaces state law.",
+      "required": ["type", "summary"],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["none", "conflict", "field", "floor_ceiling"],
+          "description": "Type of preemption involved."
+        },
+        "summary": {
+          "type": "string",
+          "description": "Plain-language summary of the preemption rule."
+        },
+        "related_cases": {
+          "type": "array",
+          "description": "Optional list of key Supreme Court or appellate cases interpreting this authority.",
+          "items": { "type": "string" }
+        }
+      }
+    },
+
+    "related_cfr": {
+      "type": "array",
+      "description": "List of CFR references that implement this statute.",
+      "items": {
+        "type": "object",
+        "required": ["cfr_title", "cfr_part"],
+        "additionalProperties": false,
+        "properties": {
+          "cfr_title": { "type": "integer" },
+          "cfr_part":  { "type": "string" },
+          "cfr_full_cite": { "type": ["string", "null"] },
+          "purpose":   { "type": ["string", "null"] }
+        }
+      }
+    },
+
+    "funding_links": {
+      "type": "array",
+      "description": "Funding programs that depend on or are constrained by this authority.",
+      "items": {
+        "type": "object",
+        "required": ["program"],
+        "additionalProperties": false,
+        "properties": {
+          "program": {
+            "type": "string",
+            "description": "Program name or shorthand, e.g., 'MCSAP', 'Highway Safety 402', 'Title IV-E'."
+          },
+          "usc_authority": {
+            "type": ["string", "null"],
+            "description": "Statutory cite for the funding program."
+          },
+          "conditions": {
+            "type": "array",
+            "description": "Key funding conditions that constrain how money may be used.",
+            "items": { "type": "string" }
+          }
+        }
+      }
+    },
+
+    "notes": {
+      "type": "string",
+      "description": "Optional freeform notes or caveats about this authority node."
+    }
+  }
+}
