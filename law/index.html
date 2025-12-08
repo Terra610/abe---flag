@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Law Corpus Viewer — A.B.E.</title>
+  <base href="/abe---flag/">
+  <link rel="stylesheet" href="abe-patch/assets/abe-patch.css">
+  <style>
+    .law-wrap{max-width:1100px;margin:0 auto;padding:1.5rem 1rem 3rem;}
+    .law-header h1{margin:0 0 .25rem;font-size:1.9rem;}
+    .law-header .tagline{max-width:800px;color:var(--muted);font-size:.98rem;}
+    .law-grid{display:grid;gap:1.25rem;}
+    @media(min-width:900px){.law-grid{grid-template-columns:2fr 3fr;}}
+    .law-card{background:var(--panel);border-radius:14px;border:1px solid var(--line-soft);padding:1rem 1.1rem 1.25rem;box-shadow:0 18px 40px rgba(0,0,0,.45);}
+    .law-card h2{margin:.1rem 0 .5rem;font-size:1.15rem;}
+    .law-card h3{margin:.2rem 0 .4rem;font-size:1rem;}
+    .law-sub{color:var(--muted);font-size:.9rem;}
+    .law-filter-row{display:flex;flex-wrap:wrap;gap:.5rem;margin:.5rem 0 0;}
+    .law-input{background:#050712;border-radius:999px;border:1px solid var(--line-soft);color:var(--ink);padding:.35rem .75rem;font-size:.85rem;min-width:0;}
+    .law-input[type="search"]{flex:1 1 140px;}
+    .law-select{background:#050712;border-radius:999px;border:1px solid var(--line-soft);color:var(--ink);padding:.35rem .75rem;font-size:.85rem;}
+    .law-status{margin-top:.5rem;font-size:.85rem;color:var(--muted);}
+    .law-status-ok{color:#4bd28f;}
+    .law-status-warn{color:#ffba5c;}
+    .law-status-err{color:#ff8585;}
+    .law-pack-list{margin:.4rem 0 0;font-size:.87rem;}
+    .law-pack{padding:.35rem .5rem;border-radius:8px;border:1px solid var(--line-soft);margin-bottom:.35rem;display:flex;flex-direction:column;gap:.1rem;}
+    .law-pack strong{font-size:.9rem;}
+    .law-pack small{font-size:.8rem;color:var(--muted);}
+    .law-node-list{margin:.4rem 0 0;max-height:340px;overflow:auto;border-radius:10px;border:1px solid var(--line-soft);padding:.4rem;}
+    .law-node-item{padding:.35rem .4rem;border-radius:8px;cursor:pointer;}
+    .law-node-item:hover{background:rgba(255,255,255,.03);}
+    .law-node-item-title{font-size:.9rem;font-weight:500;}
+    .law-node-item-meta{font-size:.8rem;color:var(--muted);}
+    .law-node-item-kind{font-size:.78rem;padding:.05rem .4rem;border-radius:999px;border:1px solid var(--line-soft);margin-right:.3rem;}
+    .law-node-item-kind-statute{border-color:#5ddfff;}
+    .law-node-item-kind-regulation{border-color:#fff750;}
+    .law-node-item-kind-funding{border-color:#4bd28f;}
+    .law-node-item-kind-constitution{border-color:#ff9bd3;}
+    .law-detail{margin-top:.3rem;font-size:.88rem;}
+    .law-detail h3{margin-top:.3rem;font-size:.96rem;}
+    .law-detail pre{background:#050712;border-radius:10px;border:1px solid var(--line-soft);padding:.5rem .6rem;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.8rem;white-space:pre-wrap;word-break:break-word;max-height:220px;overflow:auto;}
+    .law-pill{display:inline-flex;align-items:center;padding:.05rem .55rem;border-radius:999px;border:1px solid var(--line-soft);font-size:.76rem;color:var(--muted);margin-right:.35rem;margin-bottom:.25rem;}
+    .law-pill-domain{border-color:#5ddfff;}
+    .law-pill-pop{border-color:#fff750;}
+    .law-pill-preemption{border-color:#ffba5c;}
+    .law-hash{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.8rem;word-break:break-all;}
+    .law-small{font-size:.8rem;color:var(--muted);}
+    .law-link{font-size:.8rem;color:var(--accent);cursor:pointer;text-decoration:underline;}
+    .law-empty{font-size:.85rem;color:var(--muted);margin-top:.4rem;}
+  </style>
+</head>
+<body class="abe-page">
+
+<header class="abe-header">
+  <div class="law-wrap law-header">
+    <a href="/abe---flag/index.html" class="chip">← A.B.E. Home</a>
+    <h1>Law Corpus Viewer</h1>
+    <p class="tagline">
+      Inspect the federal authority map A.B.E. uses to reason about lawful scope:
+      Constitution, USC, CFR, and funding links — all as structured data, never as a black box.
+    </p>
+  </div>
+</header>
+
+<main class="abe-main">
+  <div class="law-wrap law-grid">
+
+    <!-- LEFT: Filters & Packs -->
+    <section class="law-card">
+      <h2>Browse authority packs</h2>
+      <p class="law-sub">
+        These JSON packs define what each statute, regulation, or funding program is allowed to do,
+        who it applies to, and where states can’t cross the line.
+      </p>
+
+      <div class="law-filter-row">
+        <input id="law-search" type="search" class="law-input" placeholder="Search by cite, id, or text…">
+        <select id="law-domain-filter" class="law-select">
+          <option value="">All domains</option>
+        </select>
+        <select id="law-kind-filter" class="law-select">
+          <option value="">All kinds</option>
+          <option value="constitution">Constitution</option>
+          <option value="statute">Statute</option>
+          <option value="regulation">Regulation</option>
+          <option value="funding">Funding</option>
+        </select>
+      </div>
+
+      <div id="law-status" class="law-status">Loading packs…</div>
+
+      <div id="law-pack-list" class="law-pack-list"></div>
+    </section>
+
+    <!-- RIGHT: Nodes & Details -->
+    <section class="law-card">
+      <h2>Authority nodes</h2>
+      <p class="law-sub">
+        Click a node to see its scope, limits, preemption rules, populations, and funding links.
+        All logic is computed from static JSON you control.
+      </p>
+
+      <div id="law-node-list" class="law-node-list"></div>
+
+      <div id="law-detail" class="law-detail">
+        <p class="law-empty">
+          Select a statute, regulation, or funding node on the left to see its details here.
+        </p>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<footer class="abe-footer">
+  <p>
+    A.B.E. — Law Corpus Viewer · CC BY-NC 4.0 · All authority maps are local, inspectable JSON.
+  </p>
+</footer>
+
+<script src="law/viewer.js"></script>
+</body>
+</html>
