@@ -1,123 +1,114 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Macroeconomic Cascade Model — A.B.E.</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-<style>
-  :root{
-    --bg:#0b0d12;
-    --panel:#141820;
-    --panel2:#0f131a;
-    --line:rgba(255,255,255,.08);
-    --text:#e6e6e6;
-    --muted:#9da9ba;
-    --brand:#5ddfff;
-    --accent:#ffa559;
-    --ok:#33d17a;
-  }
-  *{box-sizing:border-box}
-  body{
-    margin:0;
-    background:var(--bg);
-    color:var(--text);
-    font:16px/1.6 system-ui,Segoe UI,Roboto,sans-serif;
-  }
-  header{
-    position:sticky;
-    top:0;
-    z-index:5;
-    background:linear-gradient(90deg,#11151c,#1b1e25);
-    border-bottom:1px solid var(--line);
-    padding:.9rem 1rem;
-  }
-  header .wrap{
-    max-width:1100px;
-    margin:0 auto;
-    display:flex;
-    align-items:center;
-    gap:1rem;
-    justify-content:space-between;
-  }
-  a{color:#80bfff;text-decoration:none}
-  a:hover{text-decoration:underline}
-  main{
-    max-width:1100px;
-    margin:1.2rem auto 4rem;
-    padding:0 1rem;
-  }
-  h1{
-    margin:.2rem 0 .4rem;
-    color:var(--brand);
-    font-size:1.55rem;
-  }
-  p.lead{
-    margin:.2rem 0 1rem;
-    color:#cbd4e1;
-  }
-  .grid{
-    display:grid;
-    gap:14px;
-  }
-  .kpis{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
-  .cards{grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
-  .card{
-    background:var(--panel);
-    border:1px solid var(--line);
-    border-radius:12px;
-  }
-  .card .inner{padding:14px 16px}
-  h2{
-    margin:0 0 .6rem;
-    color:#dfe9f6;
-    font-size:1.05rem;
-  }
-  .muted,.note{
-    color:var(--muted);
-    font-size:.92rem;
-  }
-  .kpi .label{font-size:.9rem;color:var(--muted)}
-  .kpi .value{font-weight:700;font-size:1.25rem}
-  .row{
-    display:flex;
-    gap:.6rem;
-    flex-wrap:wrap;
-  }
-  .btn{
-    display:inline-block;
-    background:#1b2230;
-    border:1px solid var(--line);
-    padding:.5rem .7rem;
-    border-radius:9px;
-  }
-  .btn:hover{background:#20283a}
-  canvas{
-    width:100%!important;
-    height:320px!important;
-  }
-  .ctrl{
-    display:flex;
-    gap:.6rem;
-    align-items:center;
-    flex-wrap:wrap;
-    margin-top:.4rem;
-  }
-  input[type=number]{
-    background:#0f131a;
-    border:1px solid var(--line);
-    color:#e6e6e6;
-    border-radius:8px;
-    padding:.5rem .6rem;
-    width:120px;
-  }
-  footer{
-    margin:34px 0 18px;
-    text-align:center;
-    color:var(--muted);
-    font-size:.9rem;
-  }
-</style>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Macroeconomic Cascade Model — A.B.E.</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <style>
+    :root{
+      --bg:#0b0d12;
+      --panel:#141820;
+      --panel2:#0f131a;
+      --line:rgba(255,255,255,.08);
+      --text:#e6e6e6;
+      --muted:#9da9ba;
+      --brand:#5ddfff;
+      --accent:#ffa559;
+      --ok:#33d17a;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--text);
+      font:16px/1.6 system-ui,Segoe UI,Roboto,sans-serif;
+    }
+    header{
+      position:sticky;
+      top:0;
+      z-index:5;
+      background:linear-gradient(90deg,#11151c,#1b1e25);
+      border-bottom:1px solid var(--line);
+      padding:.9rem 1rem;
+    }
+    header .wrap{
+      max-width:1100px;
+      margin:0 auto;
+      display:flex;
+      align-items:center;
+      gap:1rem;
+      justify-content:space-between;
+    }
+    a{color:#80bfff;text-decoration:none}
+    a:hover{text-decoration:underline}
+    main{
+      max-width:1100px;
+      margin:1.2rem auto 4rem;
+      padding:0 1rem;
+    }
+    h1{
+      margin:.2rem 0 .4rem;
+      color:var(--brand);
+      font-size:1.55rem;
+    }
+    p.lead{
+      margin:.2rem 0 1rem;
+      color:#cbd4e1;
+    }
+    .grid{
+      display:grid;
+      gap:14px;
+    }
+    .kpis{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+    .cards{grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
+    .card{
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:12px;
+    }
+    .card .inner{padding:14px 16px}
+    h2{
+      margin:0 0 .6rem;
+      color:#dfe9f6;
+      font-size:1.05rem;
+    }
+    .muted,.note{color:var(--muted);font-size:.92rem}
+    .kpi .label{font-size:.9rem;color:var(--muted)}
+    .kpi .value{font-weight:700;font-size:1.25rem}
+    .row{display:flex;gap:.6rem;flex-wrap:wrap}
+    .btn{
+      display:inline-block;
+      background:#1b2230;
+      border:1px solid var(--line);
+      padding:.5rem .7rem;
+      border-radius:9px;
+      cursor:pointer;
+    }
+    .btn:hover{background:#20283a}
+    canvas{width:100%!important;height:320px!important}
+    .ctrl{
+      display:flex;
+      gap:.6rem;
+      align-items:center;
+      flex-wrap:wrap;
+      margin-top:.4rem;
+    }
+    input[type=number]{
+      background:#0f131a;
+      border:1px solid var(--line);
+      color:#e6e6e6;
+      border-radius:8px;
+      padding:.5rem .6rem;
+      width:120px;
+    }
+    footer{
+      margin:34px 0 18px;
+      text-align:center;
+      color:var(--muted);
+      font-size:.9rem;
+    }
+  </style>
 </head>
 <body>
 <header>
@@ -136,18 +127,18 @@
 <main>
   <h1>Macroeconomic Cascade Model</h1>
   <p class="lead">
-    Project the national impact by scaling a single “restored community” across any number of communities,
-    using A.B.E.’s validated multipliers. When available, this view links to your last CIRI scenario
-    stored in this browser.
+    Project the national impact by scaling a single “restored community” across any
+    number of communities, using A.B.E.’s validated multipliers.
   </p>
 
-  <!-- CIRI Scenario Context -->
+  <!-- CIRI Context + Model Source + Controls -->
   <section class="grid cards" id="ciri-context">
+    <!-- CIRI context -->
     <div class="card">
       <div class="inner">
         <h2>CIRI Scenario Context</h2>
         <div class="note" id="ciri-context-note">
-          Looking for a local scenario in this browser (ABE_CIRI_SCENARIO_V2)…
+          Looking for a local CIRI scenario in this browser (<code>ABE_CIRI_SCENARIO_V2</code>)…
         </div>
         <div class="kpi" style="margin-top:.6rem;display:flex;gap:2rem;">
           <div>
@@ -162,17 +153,20 @@
       </div>
     </div>
 
+    <!-- Model source -->
     <div class="card">
       <div class="inner">
         <h2>Model Source</h2>
         <div class="note">
-          This page auto-loads <code>/macro/ABE_MacroCascadeModel.json</code> (or <code>/macro/data/macro_model.json</code>).
-          If not found, it uses an embedded fallback so demos never break.
+          This page auto-loads <code>/macro/ABE_MacroCascadeModel.json</code>
+          (or <code>/macro/data/macro_model.json</code>). If not found, it uses an embedded
+          fallback so demos never break.
         </div>
         <div id="src-status" class="note" style="margin-top:.4rem">Loading model…</div>
       </div>
     </div>
 
+    <!-- Controls -->
     <div class="card">
       <div class="inner">
         <h2>Scenario Controls</h2>
@@ -182,9 +176,9 @@
           <button id="recalc" class="btn">Recalculate</button>
           <button id="dl" class="btn">Download Scenario CSV</button>
         </div>
-        <div id="ciri-bridge" class="note" style="margin-top:.4rem">
-          If you’ve run CIRI in this browser, this page will display that recovery scenario up top
-          and scale its impact nationally.
+        <div class="note" id="macro-bridge" style="margin-top:.4rem">
+          If you’ve run CIRI in this browser, this view will show how far those
+          recovery dollars cascade nationally.
         </div>
       </div>
     </div>
@@ -236,237 +230,295 @@
 </main>
 
 <script>
-const PATHS = [
-  './ABE_MacroCascadeModel.json',
-  './ABE_Macro_Cascading_ROI_Model.json',
-  './data/macro_model.json'
-];
+  // ---- model discovery paths ----
+  const PATHS = [
+    './ABE_MacroCascadeModel.json',
+    './ABE_Macro_Cascading_ROI_Model.json',
+    './data/macro_model.json'
+  ];
 
-const FALLBACK = {
-  "model_name":"ABE_Macroeconomic_Cascade_Model",
-  "base_unit":"One Restored Community",
-  "components":[
-    {"name":"Direct Investment","value_range_usd":[10000000,25000000]},
-    {"name":"Economic Multipliers","multipliers":{"GDP":2.4,"Wages":1.8,"Local Spending":2.0}},
-    {"name":"ROI (Return on Investment)","yearly_return_range":"1.5x - 3.0x","compounding_effect":true},
-    {"name":"Jobs Created","jobs_per_community":550,"avg_salary_usd":42000},
-    {"name":"Citizens Served","low_estimate":3500,"high_estimate":5600},
-    {"name":"Cost Savings","criminal_justice_savings_per_community_usd":6000000,"healthcare_savings_usd":4200000},
-    {"name":"Recurring Value","recurring_frequency":"Annually","compounding":true}
-  ]
-};
+  // ---- embedded fallback model (safe for demos) ----
+  const FALLBACK = {
+    "model_name":"ABE_Macroeconomic_Cascade_Model",
+    "base_unit":"One Restored Community",
+    "components":[
+      {"name":"Direct Investment","value_range_usd":[10000000,25000000]},
+      {"name":"Economic Multipliers","multipliers":{"GDP":2.4,"Wages":1.8,"Local Spending":2.0}},
+      {"name":"ROI (Return on Investment)","yearly_return_range":"1.5x - 3.0x","compounding_effect":true},
+      {"name":"Jobs Created","jobs_per_community":550,"avg_salary_usd":42000},
+      {"name":"Citizens Served","low_estimate":3500,"high_estimate":5600},
+      {"name":"Cost Savings","criminal_justice_savings_per_community_usd":6000000,"healthcare_savings_usd":4200000},
+      {"name":"Recurring Value","recurring_frequency":"Annually","compounding":true}
+    ]
+  };
 
-const fmt = (n)=> Number(n).toLocaleString(undefined,{maximumFractionDigits:0});
-const usd = (n)=> Number(n).toLocaleString(undefined,{style:'currency',currency:'USD',maximumFractionDigits:0});
+  const fmt = n => Number(n).toLocaleString(undefined,{maximumFractionDigits:0});
+  const usd = n => Number(n).toLocaleString(
+    undefined,
+    {style:'currency',currency:'USD',maximumFractionDigits:0}
+  );
 
-// ----- CIRI scenario context (ABE_CIRI_SCENARIO_V2) -----
-(function ciriContext(){
-  const noteEl  = document.getElementById('ciri-context-note');
-  const totalEl = document.getElementById('ciri-context-total');
-  const roiEl   = document.getElementById('ciri-context-roi');
+  // ----- CIRI scenario context (ABE_CIRI_SCENARIO_V2) -----
+  (function ciriContext(){
+    const noteEl  = document.getElementById('ciri-context-note');
+    const totalEl = document.getElementById('ciri-context-total');
+    const roiEl   = document.getElementById('ciri-context-roi');
 
-  function money(n){
-    try{
-      return n.toLocaleString(undefined,{style:'currency',currency:'USD',maximumFractionDigits:0});
-    }catch(_){
-      return '$'+Math.round(n||0).toLocaleString();
-    }
-  }
-
-  try{
-    const raw = localStorage.getItem('ABE_CIRI_SCENARIO_V2');
-    if(!raw){
-      noteEl.innerHTML = 'No local CIRI scenario found yet. Run the engine on <a href="../ciri/index.html">CIRI</a> and your recovery numbers will appear here.';
-      totalEl.textContent = '—';
-      roiEl.textContent   = '—';
-      return;
-    }
-    const scen = JSON.parse(raw);
-    if(!scen || !scen.outputs || typeof scen.outputs.total_recovery !== 'number'){
-      noteEl.textContent = 'Found a CIRI scenario in this browser, but it looks malformed.';
-      totalEl.textContent = '—';
-      roiEl.textContent   = '—';
-      return;
-    }
-    const out = scen.outputs;
-    noteEl.textContent   = 'Using your last local CIRI scenario (ABE_CIRI_SCENARIO_V2) from this browser.';
-    totalEl.textContent  = money(out.total_recovery);
-    roiEl.textContent    = money(out.roi_per_case);
-  }catch(e){
-    noteEl.textContent = 'Could not read local CIRI scenario.';
-    totalEl.textContent = '—';
-    roiEl.textContent   = '—';
-  }
-})();
-
-// ----- Macro model logic -----
-async function loadModel(){
-  const note = document.getElementById('src-status');
-  for(const url of PATHS){
-    try{
-      const r = await fetch(url,{cache:'no-store'});
-      if(r.ok){
-        const j = await r.json();
-        note.textContent = `Loaded: ${url}`;
-        return j;
+    function money(n){
+      try{
+        return n.toLocaleString(undefined,{
+          style:'currency',currency:'USD',maximumFractionDigits:0
+        });
+      }catch(_){
+        return '$'+Math.round(n||0).toLocaleString();
       }
-    }catch(e){}
+    }
+
+    try{
+      const raw = localStorage.getItem('ABE_CIRI_SCENARIO_V2');
+      if(!raw){
+        noteEl.innerHTML =
+          'No local CIRI scenario found yet. Run the engine on '+
+          '<a href="../ciri/index.html">CIRI</a> and your recovery numbers will appear here.';
+        totalEl.textContent = '—';
+        roiEl.textContent   = '—';
+        return;
+      }
+      const scen = JSON.parse(raw);
+      if(!scen || !scen.outputs || typeof scen.outputs.total_recovery !== 'number'){
+        noteEl.textContent = 'Found a CIRI scenario in this browser, but it looks malformed.';
+        totalEl.textContent = '—';
+        roiEl.textContent   = '—';
+        return;
+      }
+      const out = scen.outputs;
+      noteEl.textContent =
+        'Using your last local CIRI scenario (ABE_CIRI_SCENARIO_V2) from this browser.';
+      totalEl.textContent = money(out.total_recovery);
+      roiEl.textContent   = money(out.roi_per_case);
+    }catch(e){
+      noteEl.textContent = 'Could not read local CIRI scenario.';
+      totalEl.textContent = '—';
+      roiEl.textContent   = '—';
+    }
+  })();
+
+  // ----- load macro model JSON -----
+  async function loadModel(){
+    const note = document.getElementById('src-status');
+    for(const url of PATHS){
+      try{
+        const r = await fetch(url,{cache:'no-store'});
+        if(r.ok){
+          const j = await r.json();
+          note.textContent = 'Loaded: '+url;
+          return j;
+        }
+      }catch(e){}
+    }
+    note.textContent = 'Using embedded fallback model (commit your JSON to replace).';
+    return FALLBACK;
   }
-  note.textContent = 'Using embedded fallback model (commit your JSON to replace).';
-  return FALLBACK;
-}
 
-function extract(model){
-  const comps = (name)=> model.components.find(c=>c.name===name) || {};
-  const invest = comps('Direct Investment').value_range_usd || [10000000,25000000];
-  const mults  = (comps('Economic Multipliers').multipliers) || {GDP:2.0,Wages:1.5,Local:1.6};
-  const jobs   = comps('Jobs Created').jobs_per_community || 500;
-  const salary = comps('Jobs Created').avg_salary_usd || 40000;
-  const pplL   = comps('Citizens Served').low_estimate || 3000;
-  const pplH   = comps('Citizens Served').high_estimate || 5000;
-  const cj     = comps('Cost Savings').criminal_justice_savings_per_community_usd || 0;
-  const hc     = comps('Cost Savings').healthcare_savings_usd || 0;
+  function extract(model){
+    const comps = name => (model.components || []).find(c=>c.name===name) || {};
+    const invest = comps('Direct Investment').value_range_usd || [10000000,25000000];
+    const mults  = (comps('Economic Multipliers').multipliers) ||
+                   {GDP:2.0,Wages:1.5,'Local Spending':1.6};
+    const jobs   = comps('Jobs Created').jobs_per_community || 500;
+    const salary = comps('Jobs Created').avg_salary_usd || 40000;
+    const pplL   = comps('Citizens Served').low_estimate  || 3000;
+    const pplH   = comps('Citizens Served').high_estimate || 5000;
+    const cj     = comps('Cost Savings').criminal_justice_savings_per_community_usd || 0;
+    const hc     = comps('Cost Savings').healthcare_savings_usd || 0;
 
-  return {
-    investMin: invest[0],
-    investMax: invest[1],
-    multGDP:   mults.GDP   ?? mults.gdp   ?? 2.0,
-    multWage:  mults.Wages ?? mults.wages ?? 1.5,
-    multSpend: mults.Local ?? mults['Local Spending'] ?? mults.local ?? 1.6,
-    jobs,
-    salary,
-    pplL,
-    pplH,
-    savings: (cj+hc)
-  };
-}
-
-function scenarioRows(n, vals){
-  const invAvg   = (vals.investMin + vals.investMax)/2;
-  const perGDP   = invAvg * vals.multGDP;
-  const perWages = invAvg * vals.multWage;
-  const perSpend = invAvg * vals.multSpend;
-
-  return {
-    invAvg,
-    per: {
-      investment: invAvg,
-      gdp:        perGDP,
-      wages:      perWages,
-      spend:      perSpend,
-      jobs:       vals.jobs,
-      peopleL:    vals.pplL,
-      peopleH:    vals.pplH,
-      savings:    vals.savings
-    },
-    total: {
-      investment: invAvg * n,
-      gdp:        perGDP * n,
-      wages:      perWages * n,
-      spend:      perSpend * n,
-      jobs:       vals.jobs * n,
-      peopleL:    vals.pplL * n,
-      peopleH:    vals.pplH * n,
-      savings:    vals.savings * n
-    }
-  };
-}
-
-function setKPIs(vals){
-  document.getElementById('kpi-invest').textContent  = `${usd(vals.investMin)} – ${usd(vals.investMax)}`;
-  document.getElementById('kpi-jobs').textContent    = `${fmt(vals.jobs)} @ ${usd(vals.salary)}`;
-  document.getElementById('kpi-people').textContent  = `${fmt(vals.pplL)} – ${fmt(vals.pplH)}`;
-  document.getElementById('kpi-savings').textContent = `${usd(vals.savings)} / yr`;
-}
-
-let gdpChart, wagesChart, spendChart;
-function drawCharts(rows, n){
-  const labels = ['Per Community', `Scenario (${fmt(n)} communities)`];
-
-  const mk = (el, vals, label)=> new Chart(el,{
-    type:'bar',
-    data:{ labels, datasets:[{label, data: vals}] },
-    options:{
-      responsive:true,
-      plugins:{
-        legend:{display:false},
-        tooltip:{callbacks:{label:(ctx)=>usd(ctx.raw)}}
-      },
-      scales:{y:{ticks:{callback:(v)=>usd(v)}}}
-    }
-  });
-
-  if(gdpChart)   gdpChart.destroy();
-  if(wagesChart) wagesChart.destroy();
-  if(spendChart) spendChart.destroy();
-
-  gdpChart   = mk(document.getElementById('cGDP'),   [rows.per.gdp,   rows.total.gdp],   'GDP');
-  wagesChart = mk(document.getElementById('cWages'), [rows.per.wages, rows.total.wages], 'Wages');
-  spendChart = mk(document.getElementById('cSpend'), [rows.per.spend, rows.total.spend], 'Local Spending');
-}
-
-// ---- CSV generation (clean, engine-friendly) ----
-function makeCsv(rows, n, vals){
-  const lines = [];
-  lines.push('Metric,Per_Community,Scenario_Total');
-
-  // numeric fields: plain numbers, no $ or commas
-  const num = (x)=> Math.round(Number(x) || 0);
-
-  lines.push(`Direct Investment,${num(rows.per.investment)},${num(rows.total.investment)}`);
-  lines.push(`GDP Uplift,${num(rows.per.gdp)},${num(rows.total.gdp)}`);
-  lines.push(`Wages Uplift,${num(rows.per.wages)},${num(rows.total.wages)}`);
-  lines.push(`Local Spending,${num(rows.per.spend)},${num(rows.total.spend)}`);
-  lines.push(`Annual Savings,${num(rows.per.savings)},${num(rows.total.savings)}`);
-  lines.push(`Jobs,${num(rows.per.jobs)},${num(rows.total.jobs)}`);
-  lines.push(`Citizens Served,${num(rows.per.peopleL)}-${num(rows.per.peopleH)},${num(rows.total.peopleL)}-${num(rows.total.peopleH)}`);
-  lines.push(`Communities,1,${n}`);
-
-  const invAvg = rows.invAvg || (vals.investMin + vals.investMax)/2;
-  const invAvgClean = num(invAvg);
-  const assumptions = `Inv avg ${invAvgClean}`;
-  const multStr = `GDPx${vals.multGDP} · Wagesx${vals.multWage} · Spendx${vals.multSpend}`;
-  lines.push(`Assumptions,"${assumptions}","${multStr}"`);
-
-  return lines.join('\n');
-}
-
-function downloadCsv(filename, text){
-  const blob = new Blob([text], { type: 'text/csv' });
-  const url  = URL.createObjectURL(blob);
-  const a    = document.createElement('a');
-  a.href = url;
-  a.download = filename;
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  URL.revokeObjectURL(url);
-}
-
-(async function init(){
-  const model = await loadModel();
-  const vals  = extract(model);
-  setKPIs(vals);
-
-  const input = document.getElementById('n');
-  const recalc= document.getElementById('recalc');
-  const dl    = document.getElementById('dl');
-
-  function run(){
-    const n = Math.max(1, Math.floor(Number(input.value) || 1));
-    input.value = n;
-    const rows = scenarioRows(n, vals);
-    drawCharts(rows, n);
-
-    dl.onclick = ()=>{
-      const csv = makeCsv(rows, n, vals);
-      downloadCsv(`ABE_MacroCascade_${n}_communities.csv`, csv);
+    return {
+      investMin: invest[0],
+      investMax: invest[1],
+      multGDP:   mults.GDP   ?? mults.gdp   ?? 2.0,
+      multWage:  mults.Wages ?? mults.wages ?? 1.5,
+      multSpend: mults['Local Spending'] ?? mults.Local ?? mults.local ?? 1.6,
+      jobs,
+      salary,
+      pplL,
+      pplH,
+      savings: (cj+hc)
     };
   }
 
-  recalc.onclick = run;
-  run();
-})();
+  function scenarioRows(n, vals){
+    const invAvg   = (vals.investMin + vals.investMax)/2;
+    const perGDP   = invAvg * vals.multGDP;
+    const perWages = invAvg * vals.multWage;
+    const perSpend = invAvg * vals.multSpend;
+
+    return {
+      per: {
+        investment: invAvg,
+        gdp:        perGDP,
+        wages:      perWages,
+        spend:      perSpend,
+        jobs:       vals.jobs,
+        peopleL:    vals.pplL,
+        peopleH:    vals.pplH,
+        savings:    vals.savings
+      },
+      total: {
+        investment: invAvg * n,
+        gdp:        perGDP * n,
+        wages:      perWages * n,
+        spend:      perSpend * n,
+        jobs:       vals.jobs * n,
+        peopleL:    vals.pplL * n,
+        peopleH:    vals.pplH * n,
+        savings:    vals.savings * n
+      }
+    };
+  }
+
+  function setKPIs(vals){
+    document.getElementById('kpi-invest').textContent =
+      `${usd(vals.investMin)} – ${usd(vals.investMax)}`;
+    document.getElementById('kpi-jobs').textContent =
+      `${fmt(vals.jobs)} @ ${usd(vals.salary)}`;
+    document.getElementById('kpi-people').textContent =
+      `${fmt(vals.pplL)} – ${fmt(vals.pplH)}`;
+    document.getElementById('kpi-savings').textContent =
+      `${usd(vals.savings)} / yr`;
+  }
+
+  let gdpChart, wagesChart, spendChart;
+
+  function drawCharts(rows, n){
+    const labels = ['Per Community', `Scenario (${fmt(n)} communities)`];
+
+    const mk = (el, vals, label)=> new Chart(el,{
+      type:'bar',
+      data:{
+        labels,
+        datasets:[{label, data: vals}]
+      },
+      options:{
+        responsive:true,
+        plugins:{
+          legend:{display:false},
+          tooltip:{callbacks:{label:(ctx)=>usd(ctx.raw)}}
+        },
+        scales:{
+          y:{ticks:{callback:(v)=>usd(v)}}
+        }
+      }
+    });
+
+    if(gdpChart)   gdpChart.destroy();
+    if(wagesChart) wagesChart.destroy();
+    if(spendChart) spendChart.destroy();
+
+    gdpChart   = mk(document.getElementById('cGDP'),   [rows.per.gdp,   rows.total.gdp],   'GDP');
+    wagesChart = mk(document.getElementById('cWages'), [rows.per.wages, rows.total.wages], 'Wages');
+    spendChart = mk(document.getElementById('cSpend'), [rows.per.spend, rows.total.spend], 'Local Spending');
+  }
+
+  // ---- CSV EXPORT (fixed \n line breaks) + artifact ----
+  function toCSV(rows,n,vals){
+    const head = ['Metric','Per Community','Scenario Total'];
+    const body = [
+      ['Direct Investment', usd(rows.per.investment), usd(rows.total.investment)],
+      ['GDP Uplift',        usd(rows.per.gdp),        usd(rows.total.gdp)],
+      ['Wages Uplift',      usd(rows.per.wages),      usd(rows.total.wages)],
+      ['Local Spending',    usd(rows.per.spend),      usd(rows.total.spend)],
+      ['Annual Savings',    usd(rows.per.savings),    usd(rows.total.savings)],
+      ['Jobs',              fmt(rows.per.jobs),       fmt(rows.total.jobs)],
+      ['Citizens Served',   `${fmt(rows.per.peopleL)}–${fmt(rows.per.peopleH)}`,
+                            `${fmt(rows.total.peopleL)}–${fmt(rows.total.peopleH)}`],
+      ['Communities',       '1',                      String(n)],
+      [
+        'Assumptions',
+        'Inv avg '+usd((vals.investMin+vals.investMax)/2),
+        `GDP×${vals.multGDP} · Wages×${vals.multWage} · Spend×${vals.multSpend}`
+      ]
+    ];
+    // IMPORTANT: real newline, not "\\n"
+    return [head].concat(body).map(r=>r.join(',')).join('\n');
+  }
+
+  function storeArtifact(rows,n,vals){
+    const ciriRef = localStorage.getItem('ABE_CIRI_SCENARIO_V2') ? 'ABE_CIRI_SCENARIO_V2' : null;
+    const artifact = {
+      version: '1.0',
+      module:  'MACRO',
+      communities: n,
+      source_ciri_scenario: ciriRef,
+      per_community: {
+        investment: rows.per.investment,
+        gdp:        rows.per.gdp,
+        wages:      rows.per.wages,
+        local_spend:rows.per.spend,
+        jobs:       rows.per.jobs,
+        citizens_low: rows.per.peopleL,
+        citizens_high:rows.per.peopleH,
+        savings_annual:rows.per.savings
+      },
+      scenario_totals: {
+        investment: rows.total.investment,
+        gdp:        rows.total.gdp,
+        wages:      rows.total.wages,
+        local_spend:rows.total.spend,
+        jobs:       rows.total.jobs,
+        citizens_low: rows.total.peopleL,
+        citizens_high:rows.total.peopleH,
+        savings_annual:rows.total.savings
+      },
+      assumptions: {
+        invest_min: vals.investMin,
+        invest_max: vals.investMax,
+        multipliers: {
+          gdp:   vals.multGDP,
+          wages: vals.multWage,
+          local: vals.multSpend
+        }
+      },
+      created_at: new Date().toISOString()
+    };
+    try{
+      localStorage.setItem('ABE_MACRO_SCENARIO_V1', JSON.stringify(artifact));
+    }catch(e){
+      console.warn('Could not store MACRO artifact:', e);
+    }
+  }
+
+  // ---- init ----
+  (async function init(){
+    const model = await loadModel();
+    const vals  = extract(model);
+    setKPIs(vals);
+
+    const input = document.getElementById('n');
+    const recalc= document.getElementById('recalc');
+    const dl    = document.getElementById('dl');
+
+    function run(){
+      const n = Math.max(1, Math.floor(Number(input.value)||1));
+      input.value = n;
+      const rows = scenarioRows(n, vals);
+      drawCharts(rows, n);
+      storeArtifact(rows, n, vals);
+
+      dl.onclick = ()=>{
+        const csv = toCSV(rows,n,vals);
+        const blob = new Blob([csv],{type:'text/csv'});
+        const url  = URL.createObjectURL(blob);
+        const a    = document.createElement('a');
+        a.href = url;
+        a.download = `ABE_MacroCascade_${n}_communities.csv`;
+        a.click();
+        URL.revokeObjectURL(url);
+      };
+    }
+
+    recalc.onclick = run;
+    run();
+  })();
 </script>
 </body>
-</html>
+  </html>
