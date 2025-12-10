@@ -4,8 +4,13 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>Intake — Document & OCR Bridge | A.B.E.</title>
+
+  <!-- base so links work on GitHub Pages -->
   <base href="/abe---flag/">
+
+  <!-- shared A.B.E. styles -->
   <link rel="stylesheet" href="abe-patch/assets/abe-patch.css">
+
   <style>
     :root{
       --abe-bg:#05060b;
@@ -18,8 +23,10 @@
       --abe-border:rgba(255,255,255,.08);
     }
     body.abe-page{
+      margin:0;
       background:radial-gradient(circle at top,#111827 0,#05060b 55%,#020309 100%);
       color:var(--abe-ink);
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
     }
     .intake-wrap{
       max-width:1100px;
@@ -154,6 +161,7 @@
       box-shadow:0 0 0 1px rgba(255,247,80,.4),0 0 18px rgba(255,247,80,.25);
     }
     .status-line{
+      display:inline-block;
       margin-top:.6rem;
       font-size:.85rem;
       color:var(--abe-muted);
@@ -206,34 +214,24 @@
       opacity:.5;
       cursor:default;
     }
-    .next-steps{
-      margin-top:1.2rem;
-      padding-top:.7rem;
-      border-top:1px solid rgba(255,255,255,.08);
-    }
-    .next-steps h3{
-      margin:.1rem 0 .35rem;
-      font-size:1rem;
-    }
-    .next-btn-row{
-      display:flex;
-      flex-wrap:wrap;
-      gap:.4rem;
-      margin-top:.4rem;
-    }
-    .next-btn{
-      padding:.35rem .9rem;
-      border-radius:999px;
-      border:1px solid var(--abe-border);
-      background:#050712;
-      color:var(--abe-ink);
-      font-size:.85rem;
-      cursor:pointer;
-    }
-    .next-btn:hover{
-      background:#080b15;
-    }
   </style>
+
+  <!-- PDF.js for text PDFs -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.min.js"></script>
+  <script>
+    if (window['pdfjsLib']) {
+      pdfjsLib.GlobalWorkerOptions.workerSrc =
+        "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.worker.min.js";
+    }
+  </script>
+
+  <!-- Tesseract.js v4 for in-browser OCR -->
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
+  <script>
+    // Worker path used by intake/intake.js
+    const TESSERACT_WORKER =
+      "https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/worker.min.js";
+  </script>
 </head>
 <body class="abe-page">
 
@@ -275,8 +273,6 @@
       <h3>1.3 · What kind of document is this?</h3>
       <select id="doc-type">
         <option value="traffic_ticket">Traffic / citation ticket</option>
-        <option value="vehicle_title">Vehicle title</option>
-        <option value="vehicle_registration">Vehicle registration</option>
         <option value="cps_case">CPS / child welfare documents</option>
         <option value="policy_memo" selected>Policy / memo / directive</option>
         <option value="loan_contract">Loan / finance contract</option>
@@ -300,25 +296,6 @@
         <span class="pill pill-local">Local-only</span>
         &nbsp;Files and OCR never leave this browser tab. You can close it at any time and keep your downloads.
       </p>
-
-      <!-- NEW: Next steps panel, shown after successful run -->
-      <div id="next-steps" class="next-steps" style="display:none;">
-        <h3>Step 3 — Where to go next</h3>
-        <p class="small-note">
-          Your intake artifact is now saved locally in this browser. You do not need to re-upload it.
-          Choose a module to continue:
-        </p>
-        <div class="next-btn-row">
-          <button id="go-cda"  class="next-btn">Run CDA — Divergence</button>
-          <button id="go-cff"  class="next-btn">Run CFF — Funding Forensics</button>
-          <button id="go-ciri" class="next-btn">Run CIRI — Economic Recovery</button>
-          <button id="go-ccri" class="next-btn">Run CCRI — Credit Integrity</button>
-        </div>
-        <p class="small-note" style="margin-top:.5rem;">
-          A.B.E. will carry your intake data forward automatically inside this browser.
-          The only thing you ever need to download is your receipt.
-        </p>
-      </div>
     </section>
 
     <!-- RIGHT: Step 2 + downloads -->
@@ -339,6 +316,14 @@
         This JSON file can be attached to motions, research memos, or uploaded again later.
         Integration will hash it and include it in the SHA-256 audit trail.
       </p>
+
+      <!-- Optional: power-user CIRI CSV download (auto-fed to CIRI via localStorage anyway) -->
+      <button id="download-ciri" class="download-btn" disabled>
+        ⬇ Download CIRI starter CSV (optional)
+      </button>
+      <p class="small-note">
+        Most users can ignore this. CIRI reads your intake automatically from this browser.
+      </p>
     </section>
 
   </div>
@@ -350,12 +335,14 @@
   </p>
 </footer>
 
+<!-- Intake engine -->
 <script src="intake/intake.js"></script>
+
+<!-- tiny helper: show chosen file names -->
 <script>
-  // tiny helper: show chosen file names
   (function(){
     const fileInput = document.getElementById('file-input');
-    const nameEl    = document.getElementById('file-name');
+    const nameEl = document.getElementById('file-name');
     if(!fileInput || !nameEl) return;
     fileInput.addEventListener('change',()=>{
       if(!fileInput.files || !fileInput.files.length){
