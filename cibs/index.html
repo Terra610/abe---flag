@@ -1,308 +1,272 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>CIBS — Constitutional Investment & Budget System</title>
-<base href="/abe---flag/">
-<style>
-:root{--bg:#0b0d12;--panel:#141820;--panel2:#0f131a;--ink:#e6e6e6;--muted:#9fb3c8;--line:rgba(255,255,255,.08);--brand:#5ddfff}
-*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 system-ui}
-a{color:#80bfff} a:hover{text-decoration:underline}
-header{padding:24px 20px;background:linear-gradient(90deg,#11151c,#1b1e25);border-bottom:1px solid var(--line)}
-.wrap{max-width:1100px;margin:0 auto;padding:24px 20px}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;margin:18px 0}
-.table{width:100%;border-collapse:collapse}
-.table th,.table td{border:1px solid var(--line);padding:10px 12px;text-align:left}
-.table th{background:#0f131a}
-.kpi{display:flex;gap:14px;flex-wrap:wrap}
-.kpi .tile{flex:1 1 240px;background:#0f131a;border:1px solid var(--line);border-radius:10px;padding:12px}
-.kpi .num{font-size:1.35rem;font-weight:700}
-.small{color:var(--muted);font-size:.92rem}
-.badge{display:inline-block;padding:2px 8px;border:1px solid var(--line);border-radius:999px;color:var(--muted)}
-footer{margin:36px 0 20px;color:var(--muted);text-align:center;font-size:.9rem}
-.bar{fill:#2d6cdf}
-.axis text{fill:#9fb3c8;font:12px system-ui}
-hr{border:none;border-top:1px solid var(--line);margin:16px 0}
-/* validator banner */
-#cibs-health{border:1px solid #2a3344;border-radius:10px;padding:10px;background:#0e1218;margin:-6px 0 12px}
-#cibs-health.ok{border-color:#245b3c;background:#0f1713}
-#cibs-health.warn{border-color:#66501f;background:#17140b}
-#cibs-health.err{border-color:#6b2a2a;background:#170f10}
-</style>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>CIBS — Community Budget Schema | A.B.E.</title>
+  <base href="/abe---flag/">
+  <link rel="stylesheet" href="../abe-patch/assets/abe-patch.css"/>
+  <style>
+    .cibs-wrap{
+      max-width:1100px;
+      margin:0 auto;
+      padding:1.5rem 1rem 3rem;
+    }
+    .cibs-header h1{
+      margin:0 0 .25rem;
+      font-size:1.9rem;
+    }
+    .cibs-header .tagline{
+      max-width:780px;
+      color:var(--muted);
+      font-size:.98rem;
+    }
+    .cibs-grid{
+      display:grid;
+      gap:1.1rem;
+    }
+    @media(min-width:900px){
+      .cibs-grid{
+        grid-template-columns:1.4fr 1.6fr;
+      }
+    }
+    .cibs-card{
+      background:var(--panel);
+      border-radius:14px;
+      border:1px solid var(--line);
+      padding:1rem 1.1rem 1.2rem;
+      box-shadow:0 18px 40px rgba(0,0,0,.45);
+      min-height:0;
+    }
+    .cibs-card h2{
+      margin:.1rem 0 .4rem;
+      font-size:1.15rem;
+    }
+    .cibs-card h3{
+      margin:.35rem 0 .3rem;
+      font-size:1rem;
+    }
+    .cibs-sub{
+      color:var(--muted);
+      font-size:.9rem;
+    }
+    label{
+      display:block;
+      font-size:.86rem;
+      color:var(--muted);
+      margin:.55rem 0 .18rem;
+    }
+    input[type="number"]{
+      width:100%;
+      background:#050712;
+      border-radius:9px;
+      border:1px solid var(--line);
+      padding:.45rem .6rem;
+      color:var(--ink);
+      font-size:.88rem;
+    }
+    .cibs-row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:.6rem;
+    }
+    .cibs-row > div{
+      flex:1 1 160px;
+    }
+    .cibs-mini{
+      font-size:.82rem;
+      color:var(--muted);
+      margin-top:.3rem;
+    }
+    .cibs-status{
+      margin-top:.6rem;
+      font-size:.84rem;
+      color:var(--muted);
+    }
+    .cibs-status-ok{color:#4bd28f;}
+    .cibs-status-warn{color:#ffba5c;}
+    .cibs-status-bad{color:#ff8585;}
+    .cibs-cat-grid{
+      display:grid;
+      gap:.45rem;
+      margin-top:.4rem;
+    }
+    @media(min-width:900px){
+      .cibs-cat-grid{
+        grid-template-columns:repeat(2,minmax(0,1fr));
+      }
+    }
+    .cibs-cat{
+      background:#050712;
+      border-radius:10px;
+      border:1px solid var(--line);
+      padding:.45rem .55rem .5rem;
+      font-size:.85rem;
+    }
+    .cibs-cat-header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:.4rem;
+      margin-bottom:.2rem;
+    }
+    .cibs-cat-name{
+      font-weight:600;
+    }
+    .cibs-cat-perc{
+      width:72px;
+    }
+    .cibs-cat-amount{
+      margin-top:.15rem;
+      font-size:.88rem;
+    }
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      margin-top:.8rem;
+      padding:.45rem 1.05rem;
+      border-radius:999px;
+      border:1px solid var(--accent);
+      background:#050712;
+      color:var(--ink);
+      font-size:.9rem;
+      cursor:pointer;
+      gap:.4rem;
+    }
+    .btn:hover{
+      box-shadow:0 0 0 1px rgba(93,223,255,.36),0 0 18px rgba(93,223,255,.25);
+    }
+    .btn-ghost{
+      border-color:var(--line);
+      margin-left:.3rem;
+    }
+    .btn-ghost:hover{
+      box-shadow:none;
+      background:#080b15;
+    }
+    .btn:disabled{
+      opacity:.55;
+      cursor:default;
+      box-shadow:none;
+    }
+    pre{
+      margin:.45rem 0 .7rem;
+      background:#050712;
+      border-radius:10px;
+      border:1px solid var(--line);
+      padding:.6rem .7rem;
+      font-family:ui-monospace,SFMono-Regular,Consolas,monospace;
+      font-size:.82rem;
+      max-height:260px;
+      overflow:auto;
+      white-space:pre-wrap;
+      color:var(--ink);
+    }
+  </style>
 </head>
-<body>
-<header>
-  <div class="wrap">
-    <div class="badge"><a href="/abe---flag/">← Home</a></div>
-    <h1 style="margin:8px 0 4px">CIBS — Constitutional Investment & Budget System</h1>
-    <div class="small">Allocations are computed from the current Recovery Pool and resolved from <code>/cibs/auto_budget.csv</code>.</div>
+<body class="abe-page">
+
+<header class="abe-header">
+  <div class="cibs-wrap cibs-header">
+    <a href="/abe---flag/index.html" class="chip">← A.B.E. Home</a>
+    <h1>CIBS — Community Budget Schema</h1>
+    <p class="tagline">
+      Turn CIRI recovery (R<sub>T</sub>) into a simple, transparent budget for housing, clinics, food, mobility,
+      workforce, and justice repair — ready for CII to turn into projects.
+    </p>
+    <nav class="chip-row">
+      <a class="chip" href="../intake/index.html">Intake</a>
+      <a class="chip" href="../cda/index.html">CDA</a>
+      <a class="chip" href="../ciri/index.html">CIRI</a>
+      <span class="chip chip-alt">CIBS</span>
+      <a class="chip" href="../cii/index.html">CII</a>
+      <a class="chip" href="../macro/index.html">Macro</a>
+      <a class="chip" href="../integration/index.html">Integration</a>
+    </nav>
   </div>
 </header>
 
-<main class="wrap">
-  <div id="cibs-health" aria-live="polite">Checking auto_budget.csv…</div>
+<main class="abe-main">
+  <div class="cibs-wrap cibs-grid">
 
-  <div class="card">
-    <div class="kpi">
-      <div class="tile"><div>Total Allocation</div><div id="k-total" class="num">—</div><div class="small">From <code>/cibs/auto_budget.csv</code></div></div>
-      <div class="tile"><div>Categories</div><div id="k-count" class="num">—</div><div class="small">Active reinvestment lines</div></div>
-      <div class="tile"><div>Status</div><div id="k-status" class="num" style="color:#4bd28f">Present</div><div class="small">Live, public, auditable</div></div>
-    </div>
-    <div class="small" id="k-stamp">Loaded: —</div>
-  </div>
+    <!-- LEFT: total + template -->
+    <section class="cibs-card">
+      <h2>Step 1 — Recovery pool & template</h2>
+      <p class="cibs-sub">
+        CIBS looks for your last CIRI scenario in this browser. You can override the total or tweak
+        category percentages at any time. Percentages should add up to 100%.
+      </p>
 
-  <div class="card">
-    <h3>Auto Budget Preview</h3>
-    <div class="small">Source: <a href="/abe---flag/cibs/auto_budget.csv">/cibs/auto_budget.csv</a></div>
-    <table class="table" id="tbl">
-      <thead><tr><th>Category</th><th>Value (USD)</th><th>% of Pool</th></tr></thead>
-      <tbody></tbody>
-      <tfoot><tr><th>Total</th><th id="t-sum">—</th><th id="t-100">100%</th></tr></tfoot>
-    </table>
-  </div>
+      <label for="cibs-total">Total recovery (R<sub>T</sub>) from CIRI (USD)</label>
+      <input id="cibs-total" type="number" min="0" step="1" value="0">
 
-  <div class="card">
-    <h3>Allocation Chart</h3>
-    <svg id="chart" viewBox="0 0 720 360" role="img" aria-label="Allocation chart"></svg>
-    <div class="small">Visualization of category shares.</div>
-  </div>
+      <p id="cibs-bridge" class="cibs-mini">
+        CIRI bridge: looking for ABE_CIRI_SCENARIO_V2 in this browser…
+      </p>
 
-  <div class="card">
-    <h3>Next Steps</h3>
-    <ol class="small">
-      <li>Update <code>/ciri/inputs.csv</code> and recompute the Recovery Pool.</li>
-      <li>Adjust <code>/cibs/auto_budget.csv</code> to match the new pool and policy weights.</li>
-      <li>Publish receipts & custodians in the Integration Layer. Every dollar is visible.</li>
-    </ol>
-  </div>
-</main>
-
-<footer>
-  CC BY-NC 4.0 · DOI <a href="https://doi.org/10.5281/zenodo.17586107">10.5281/zenodo.17586107</a> · Integrity only — never for sale.
-</footer>
-
-<script>
-(async function(){
-  const fmt$ = n => '$' + (isFinite(n)? Math.round(n).toLocaleString() : '—');
-
-  async function loadCSV(url){
-    const res = await fetch(url, {cache:'no-store'});
-    const text = await res.text();
-    // simple robust parse (quotes)
-    const rows=[]; let i=0,f='',row=[],q=false; const s=text.trim();
-    while(i<s.length){ const c=s[i++]; if(q){ if(c=='"' && s[i]=='"'){f+='"';i++;} else if(c=='"'){q=false;} else f+=c; }
-      else { if(c=='"'){q=true;} else if(c==','){row.push(f);f='';} else if(c=='\n'||c=='\r'){ if(f!==''||row.length){row.push(f);rows.push(row);f='';row=[];} } else f+=c; } }
-    if(f!==''||row.length){row.push(f);rows.push(row);}
-    const head = rows.shift().map(h=>h.trim());
-    return {head, rows};
-  }
-
-  const {head, rows} = await loadCSV('/abe---flag/cibs/auto_budget.csv');
-  const idxCat = head.indexOf('category')>-1? head.indexOf('category'): head.indexOf('Category');
-  const idxVal = head.indexOf('value')>-1? head.indexOf('value'): head.indexOf('Value');
-  const data = rows.map(r=>({cat:r[idxCat], val:Number((r[idxVal]||'').replace(/[^0-9.\-]/g,''))||0}));
-  const total = data.reduce((s,d)=>s+d.val,0);
-
-  // KPIs
-  document.getElementById('k-total').textContent = fmt$(total);
-  document.getElementById('k-count').textContent = data.length;
-  document.getElementById('k-stamp').textContent = 'Loaded: ' + new Date().toLocaleString();
-
-  // Table
-  const tbody = document.querySelector('#tbl tbody');
-  tbody.innerHTML = '';
-  data.forEach(d=>{
-    const tr=document.createElement('tr');
-    const td1=document.createElement('td'); td1.textContent=d.cat;
-    const td2=document.createElement('td'); td2.textContent=fmt$(d.val);
-    const td3=document.createElement('td'); td3.textContent= total? (100*d.val/total).toFixed(2)+'%':'0%';
-    tr.append(td1,td2,td3); tbody.appendChild(tr);
-  });
-  document.getElementById('t-sum').textContent = fmt$(total);
-
-  // Chart (pure SVG)
-  const svg = document.getElementById('chart');
-  const W=720,H=360,pad=50,innerW=W-2*pad,innerH=H-2*pad;
-  const max = Math.max(...data.map(d=>d.val),1);
-  const bw = innerW / data.length * 0.7;
-  const gap = innerW / data.length * 0.3;
-  svg.innerHTML = `<g class="axis">
-    <line x1="${pad}" y1="${pad}" x2="${pad}" y2="${H-pad}" stroke="rgba(255,255,255,.2)"/>
-    <line x1="${pad}" y1="${H-pad}" x2="${W-pad}" y2="${H-pad}" stroke="rgba(255,255,255,.2)"/>
-  </g>`;
-  data.forEach((d,i)=>{
-    const h = innerH * (d.val/max);
-    const x = pad + i*(bw+gap);
-    const y = H - pad - h;
-    svg.insertAdjacentHTML('beforeend', `<rect class="bar" x="${x}" y="${y}" width="${bw}" height="${h}"></rect>`);
-  });
-})();
-</script>
-
-<!-- validator (new) -->
-<script src="./validate_cibs.js"></script>
-</body>
-</html><main class="wrap">
-  <div class="card">
-    <div class="kpi">
-      <div class="tile"><div>Total Allocation</div><div id="k-total" class="num">—</div><div class="small">From <code>/cibs/auto_budget.csv</code></div></div>
-      <div class="tile"><div>Categories</div><div id="k-count" class="num">—</div><div class="small">Active reinvestment lines</div></div>
-      <div class="tile"><div>Status</div><div id="k-status" class="num" style="color:#4bd28f">Present</div><div class="small">Live, public, auditable</div></div>
-    </div>
-    <div class="small" id="k-stamp">Loaded: —</div>
-  </div>
-
-  <div class="card">
-    <h3>Auto Budget Preview</h3>
-    <div class="small">Source: <a href="/abe---flag/cibs/auto_budget.csv">/cibs/auto_budget.csv</a></div>
-    <table class="table" id="tbl">
-      <thead><tr><th>Category</th><th>Value (USD)</th><th>% of Pool</th></tr></thead>
-      <tbody></tbody>
-      <tfoot><tr><th>Total</th><th id="t-sum">—</th><th id="t-100">100%</th></tr></tfoot>
-    </table>
-  </div>
-
-  <div class="card">
-    <h3>Allocation Chart</h3>
-    <svg id="chart" viewBox="0 0 720 360" role="img" aria-label="Allocation chart"></svg>
-    <div class="small">Visualization of category shares.</div>
-  </div>
-
-  <div class="card">
-    <h3>Next Steps</h3>
-    <ol class="small">
-      <li>Update <code>/ciri/inputs.csv</code> and recompute the Recovery Pool.</li>
-      <li>Adjust <code>/cibs/auto_budget.csv</code> to match the new pool and policy weights.</li>
-      <li>Publish receipts & custodians in the Integration Layer. Every dollar is visible.</li>
-    </ol>
-  </div>
-
-  <!-- ──────────────────────────────── A.B.E. Nav Dock + Live KPIs ──────────────────────────────── -->
-  <section id="abe-navdock" class="card">
-    <h3 style="margin:0 0 10px;color:#5ddfff">A.B.E. Navigator · Live Links</h3>
-    <div style="display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))">
-      <div style="background:#0f131a;border:1px solid var(--line);border-radius:10px;padding:14px">
-        <div style="font-weight:600;margin-bottom:8px">Doctrines</div>
-        <ul class="small" style="list-style:none;padding:0;margin:0;line-height:1.7">
-          <li><a href="/abe---flag/doctrine/ABE_CRRA_Rebuild.pdf">A.B.E. · CRRA · Rebuild Together (viewer)</a></li>
-          <li><a href="/abe---flag/doctrine/constitutional-fidelity.html">Constitutional Fidelity (full text)</a></li>
-          <li><a href="/abe---flag/doctrine/void-ab-initio.html">Void ab Initio (full text)</a></li>
-        </ul>
-      </div>
-
-      <div style="background:#0f131a;border:1px solid var(--line);border-radius:10px;padding:14px">
-        <div style="font-weight:600;margin-bottom:8px">Calculators & KPIs</div>
-        <ul class="small" style="list-style:none;padding:0;margin:0;line-height:1.9">
-          <li><a href="/abe---flag/ciri/">CIRI Calculator</a> — <span id="kpi-ciri-total" style="opacity:.85">loading…</span></li>
-          <li><a href="/abe---flag/cibs/">CIBS Budget</a> — <span id="kpi-cibs-total" style="opacity:.85">loading…</span></li>
-          <li><a href="/abe---flag/integration/">Integration KPIs</a></li>
-        </ul>
-      </div>
-
-      <div style="background:#0f131a;border:1px solid var(--line);border-radius:10px;padding:14px">
-        <div style="font-weight:600;margin-bottom:8px">Archive & License</div>
-        <div class="small" style="line-height:1.7">
-          DOI: <a href="https://doi.org/10.5281/zenodo.17586107">10.5281/zenodo.17586107</a><br/>
-          License: <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC BY-NC 4.0</a><br/>
-          Project: <a href="/abe---flag/">terra610.github.io/abe---flag</a>
+      <h3>1.1 · Category template</h3>
+      <div class="cibs-row">
+        <div>
+          <label>Preset template</label>
+          <select id="cibs-template">
+            <option value="default" selected>Default · housing/health/food/mobility/work</option>
+            <option value="housing_heavy">Housing-heavy</option>
+            <option value="workforce_heavy">Workforce-heavy</option>
+          </select>
+        </div>
+        <div>
+          <label for="cibs-template-lock">Lock template totals</label>
+          <input id="cibs-template-lock" type="checkbox" checked>
+          <span class="cibs-mini">Keep sum at 100% when you tweak individual fields.</span>
         </div>
       </div>
-    </div>
-  </section>
-  <!-- ──────────────────────────────── End Nav Dock ──────────────────────────────── -->
 
+      <div id="cibs-cats" class="cibs-cat-grid">
+        <!-- categories injected by JS -->
+      </div>
+
+      <button id="cibs-recalc" class="btn">
+        <span>⚖ Recalculate allocations</span>
+      </button>
+      <span id="cibs-status" class="cibs-status">Status: ready — using default template.</span>
+    </section>
+
+    <!-- RIGHT: outputs + receipts -->
+    <section class="cibs-card">
+      <h2>Step 2 — Budget & receipts</h2>
+
+      <h3>2.1 · Budget preview</h3>
+      <pre id="cibs-json">{}</pre>
+
+      <h3>2.2 · Downloads</h3>
+      <button id="cibs-download-csv" class="btn" disabled>
+        ⬇ Download cibs_budget.csv
+      </button>
+      <button id="cibs-download-json" class="btn btn-ghost" disabled>
+        ⬇ Download cibs_budget.json
+      </button>
+
+      <p id="cibs-hash" class="cibs-mini">
+        Audit hash: —  
+        (SHA-256 of this CIBS budget. Any tampering will change this value.)
+      </p>
+
+      <p class="cibs-mini">
+        Next step: open <strong>CII</strong> to convert this budget into real project portfolios
+        (housing units, clinic capacity, transit passes, child care slots, and more).
+      </p>
+    </section>
+
+  </div>
 </main>
 
-<footer>
-  CC BY-NC 4.0 · DOI <a href="https://doi.org/10.5281/zenodo.17586107">10.5281/zenodo.17586107</a> · Integrity only — never for sale.
+<footer class="abe-footer">
+  <p>
+    CC BY-NC 4.0 · DOI <a href="https://doi.org/10.5281/zenodo.17586107">10.5281/zenodo.17586107</a> · Integrity only — never for sale.
+  </p>
 </footer>
 
-<script>
-(async function(){
-  const fmt$ = n => '$' + (isFinite(n)? Math.round(n).toLocaleString() : '—');
-
-  async function loadCSV(url){
-    const res = await fetch(url, {cache:'no-store'});
-    const text = await res.text();
-    const [h, ...rows] = text.trim().split(/\r?\n/);
-    const keys = h.split(',').map(s=>s.trim());
-    return rows.map(r=>{
-      const vals = r.split(',');
-      const o = {};
-      keys.forEach((k,i)=>o[k]= i===0 ? vals[i] : Number(vals[i]));
-      return o;
-    });
-  }
-
-  // ---- CIBS data (you already had) ----
-  const data = await loadCSV('/abe---flag/cibs/auto_budget.csv');
-  const total = data.reduce((s,d)=>s+Number(d.value||d.Value||0),0);
-
-  // KPIs
-  document.getElementById('k-total').textContent = fmt$(total);
-  document.getElementById('k-count').textContent = data.length;
-  document.getElementById('k-stamp').textContent = 'Loaded: ' + new Date().toLocaleString();
-
-  // Table
-  const tbody = document.querySelector('#tbl tbody');
-  tbody.innerHTML = data.map(d=>{
-    const v = Number(d.value||d.Value||0);
-    const p = total? (100*v/total) : 0;
-    return `<tr><td>${d.category||d.Category}</td><td>${fmt$(v)}</td><td>${p.toFixed(2)}%</td></tr>`;
-  }).join('');
-  document.getElementById('t-sum').textContent = fmt$(total);
-
-  // Bar chart (pure SVG)
-  const svg = document.getElementById('chart');
-  const W=720, H=360, pad=50, innerW=W-2*pad, innerH=H-2*pad;
-  const max = Math.max(...data.map(d=>Number(d.value||d.Value||0)),1);
-  const bw = innerW / data.length * 0.7;
-  const gap = innerW / data.length * 0.3;
-
-  svg.innerHTML = `<g class="axis">
-    <line x1="${pad}" y1="${pad}" x2="${pad}" y2="${H-pad}" stroke="rgba(255,255,255,.2)"/>
-    <line x1="${pad}" y1="${H-pad}" x2="${W-pad}" y2="${H-pad}" stroke="rgba(255,255,255,.2)"/>
-  </g>`;
-
-  data.forEach((d,i)=>{
-    const v = Number(d.value||d.Value||0);
-    const h = innerH * (v/max);
-    const x = pad + i*(bw+gap);
-    const y = H - pad - h;
-    svg.insertAdjacentHTML('beforeend',
-      `<rect class="bar" x="${x}" y="${y}" width="${bw}" height="${h}"></rect>`
-    );
-  });
-
-  // ---- Nav Dock KPIs ----
-  // CIBS total (we already computed)
-  const elCibs = document.getElementById('kpi-cibs-total');
-  if(elCibs) elCibs.textContent = fmt$(total);
-
-  // CIRI total recovery from inputs.csv
-  try{
-    const res = await fetch('/abe---flag/ciri/inputs.csv',{cache:'no-store'});
-    const text = await res.text();
-    const [h,d] = text.trim().split(/\r?\n/);
-    const keys = h.split(',').map(s=>s.trim());
-    const vals = d.split(',').map(Number);
-    const o = Object.fromEntries(keys.map((k,i)=>[k,vals[i]]));
-
-    // same decomposition as other pages (demo continuity mode)
-    const c=o.cases_avoided, C=o.avg_cost_per_case, D=o.jail_days_avoided, J=o.cost_per_jail_day,
-          F=o.fees_canceled_total, P=o.policy_corrections, E=o.avg_enforcement_cost_savings,
-          H=o.households_restored, M=o.avg_monthly_market_spend, m=o.months_effective,
-          pe=o.employment_probability, W=o.avg_monthly_wage, L=o.expected_lawsuits,
-          A=o.avg_payout, lam=o.litigation_multiplier, T=o.transition_costs_one_time;
-
-    const totalRecovery = (c*C+F) + (D*J) + (P*E) + (H*M*m) + ((H*pe)*W*m) + (L*A*lam) - T;
-    const elCiri = document.getElementById('kpi-ciri-total');
-    if(elCiri) elCiri.textContent = fmt$(totalRecovery);
-  }catch(e){
-    const elCiri = document.getElementById('kpi-ciri-total');
-    if(elCiri) elCiri.textContent = '—';
-  }
-})();
-</script>
+<script src="local.js"></script>
 </body>
 </html>
