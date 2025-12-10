@@ -1,326 +1,226 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta http-equiv="Content-Security-Policy"
-        content="default-src 'self'; img-src 'self' https://zenodo.org data:; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'self'; upgrade-insecure-requests">
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>CII — Community Investment Interface</title>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>CII — Community Investment Interface | A.B.E.</title>
+  <base href="/abe---flag/">
+  <link rel="stylesheet" href="../abe-patch/assets/abe-patch.css"/>
   <style>
-    :root{
-      --bg:#0b0d12; --panel:#141820; --panel2:#0f131a;
-      --ink:#e6e6e6; --muted:#9fb3c8; --line:rgba(255,255,255,.08);
-      --brand:#5ddfff; --accent:#fff750; --ok:#4bd28f; --warn:#ffa559;
+    .cii-wrap{
+      max-width:1100px;
+      margin:0 auto;
+      padding:1.5rem 1rem 3rem;
     }
-    *{box-sizing:border-box}
-    body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
-    header{position:sticky;top:0;z-index:2;background:linear-gradient(90deg,#11151c,#1b1e25);border-bottom:1px solid var(--line);padding:.85rem 1rem}
-    header .wrap{max-width:1040px;margin:0 auto;display:flex;align-items:center;gap:1rem}
-    a{color:#80bfff;text-decoration:none}
-    a:hover{text-decoration:underline}
-    .badge{margin-left:auto;font-size:.8rem;color:#9fb3c8}
-    .back{font-size:.9rem}
-    main{max-width:1040px;margin:1.25rem auto 4rem;padding:0 1rem}
-    h1{color:var(--brand);margin:.2rem 0 .4rem;font-size:1.6rem}
-    p.lead{color:#c8d2df;margin:.25rem 0 1rem}
-    .cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:16px 0 22px}
-    .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px}
-    .card h3{margin:0 0 .35rem;font-size:.98rem;color:#dfe9f6}
-    .kv{display:flex;gap:8px;align-items:baseline}
-    .kv .label{color:var(--muted);font-size:.85rem}
-    .kv .value{font-weight:600}
-    .ok{color:var(--ok)} .warn{color:var(--warn)}
-    section{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:16px;margin-top:18px}
-    section h2{margin:0 0 .6rem;color:#dfe9f6;font-size:1.05rem}
-    .actions{display:flex;flex-wrap:wrap;gap:.6rem;margin:.35rem 0 .25rem}
-    .btn{display:inline-block;background:#1b2230;border:1px solid var(--line);padding:.5rem .7rem;border-radius:9px;font-size:.9rem}
-    .btn:hover{background:#20283a}
-    table{width:100%;border-collapse:collapse;border:1px solid var(--line);border-radius:10px;overflow:hidden}
-    thead th{background:#18202b;color:#cfe6ff;font-weight:600;text-align:left;padding:10px;border-bottom:1px solid var(--line)}
-    tbody td{padding:10px;border-bottom:1px solid var(--line)}
-    tbody tr:last-child td{border-bottom:none}
-    .num{text-align:right;font-variant-numeric:tabular-nums}
-    .hint{color:#9fb3c8;font-size:.9rem;margin-top:.5rem}
-    .meta{color:#9fb3c8;font-size:.85rem;margin-top:.35rem}
-    footer{margin:32px 0 24px;text-align:center;color:#8fa1b6;font-size:.85rem}
-    /* accessibility */
-    a:focus-visible, .btn:focus-visible { outline:3px solid #5ddfff; outline-offset:2px; border-radius:6px }
-    #status { color:#cfe6ff; }
-    #status.error { color:#ffa7a7; }
-    @media (max-width:760px){.cards{grid-template-columns:1fr}}
+    .cii-header h1{
+      margin:0 0 .25rem;
+      font-size:1.9rem;
+    }
+    .cii-header .tagline{
+      max-width:780px;
+      color:var(--muted);
+      font-size:.98rem;
+    }
+    .cii-grid{
+      display:grid;
+      gap:1.1rem;
+    }
+    @media(min-width:900px){
+      .cii-grid{
+        grid-template-columns:1.4fr 1.6fr;
+      }
+    }
+    .cii-card{
+      background:var(--panel);
+      border-radius:14px;
+      border:1px solid var(--line);
+      padding:1rem 1.1rem 1.2rem;
+      box-shadow:0 18px 40px rgba(0,0,0,.45);
+      min-height:0;
+    }
+    .cii-card h2{
+      margin:.1rem 0 .4rem;
+      font-size:1.15rem;
+    }
+    .cii-card h3{
+      margin:.35rem 0 .3rem;
+      font-size:1rem;
+    }
+    .cii-sub{
+      color:var(--muted);
+      font-size:.9rem;
+    }
+    .cii-mini{
+      font-size:.82rem;
+      color:var(--muted);
+      margin-top:.3rem;
+    }
+    .cii-status{
+      margin-top:.6rem;
+      font-size:.84rem;
+      color:var(--muted);
+    }
+    .cii-status-ok{color:#4bd28f;}
+    .cii-status-warn{color:#ffba5c;}
+    .cii-status-bad{color:#ff8585;}
+    table{
+      width:100%;
+      border-collapse:collapse;
+      font-size:.82rem;
+      margin-top:.4rem;
+    }
+    th,td{
+      border:1px solid var(--line);
+      padding:.3rem .35rem;
+    }
+    th{
+      background:#090d18;
+      text-align:left;
+    }
+    input[type="text"],
+    input[type="number"]{
+      width:100%;
+      background:#050712;
+      border-radius:7px;
+      border:1px solid var(--line);
+      padding:.3rem .35rem;
+      color:var(--ink);
+      font-size:.8rem;
+    }
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      margin-top:.8rem;
+      padding:.45rem 1.05rem;
+      border-radius:999px;
+      border:1px solid var(--accent);
+      background:#050712;
+      color:var(--ink);
+      font-size:.9rem;
+      cursor:pointer;
+      gap:.4rem;
+    }
+    .btn:hover{
+      box-shadow:0 0 0 1px rgba(93,223,255,.36),0 0 18px rgba(93,223,255,.25);
+    }
+    .btn-ghost{
+      border-color:var(--line);
+      margin-left:.3rem;
+    }
+    .btn-ghost:hover{
+      box-shadow:none;
+      background:#080b15;
+    }
+    .btn:disabled{
+      opacity:.55;
+      cursor:default;
+      box-shadow:none;
+    }
+    pre{
+      margin:.45rem 0 .7rem;
+      background:#050712;
+      border-radius:10px;
+      border:1px solid var(--line);
+      padding:.6rem .7rem;
+      font-family:ui-monospace,SFMono-Regular,Consolas,monospace;
+      font-size:.82rem;
+      max-height:260px;
+      overflow:auto;
+      white-space:pre-wrap;
+      color:var(--ink);
+    }
   </style>
 </head>
-<body>
-  <header>
-    <div class="wrap">
-      <a class="back" href="../index.html">← Return to Home</a>
-      <div class="badge">ABE Patch Active</div>
-    </div>
-  </header>
+<body class="abe-page">
 
-  <main>
-    <h1>🏗️ CII — Community Investment Interface</h1>
-    <p class="lead">
-      Turns verified recovery value into <strong>live, trackable projects</strong> (housing, clinics, food systems, broadband,
-      transit, workforce). Consumes <em>CIRI</em>, aligns with <em>CIBS</em>, and publishes an auditable portfolio.
+<header class="abe-header">
+  <div class="cii-wrap cii-header">
+    <a href="/abe---flag/index.html" class="chip">← A.B.E. Home</a>
+    <h1>CII — Community Investment Interface</h1>
+    <p class="tagline">
+      Convert CIBS budgets into real project portfolios — housing units, clinic visits, transit passes,
+      workforce seats, legal aid cases — with clear per-project lines.
     </p>
+    <nav class="chip-row">
+      <a class="chip" href="../ciri/index.html">CIRI</a>
+      <a class="chip" href="../cibs/index.html">CIBS</a>
+      <span class="chip chip-alt">CII</span>
+      <a class="chip" href="../macro/index.html">Macro</a>
+      <a class="chip" href="../integration/index.html">Integration</a>
+    </nav>
+  </div>
+</header>
 
-    <!-- Version/DOI banner -->
-    <div class="meta">
-      DOI: <a href="https://doi.org/10.5281/zenodo.17586107">10.5281/zenodo.17586107</a> ·
-      License: <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC BY-NC 4.0</a> ·
-      <span id="last-mod">Portfolio last modified: —</span>
-    </div>
+<main class="abe-main">
+  <div class="cii-wrap cii-grid">
 
-    <!-- Status cards -->
-    <div class="cards" id="status-cards">
-      <div class="card">
-        <h3>Model</h3>
-        <div class="kv">
-          <span class="label"><a href="model.json">/cii/model.json</a></span>
-          <span class="value" id="model-status">Checking…</span>
-        </div>
-      </div>
-      <div class="card">
-        <h3>Portfolio</h3>
-        <div class="kv">
-          <span class="label"><a href="portfolio.csv">/cii/portfolio.csv</a></span>
-          <span class="value" id="port-status">Checking…</span>
-        </div>
-      </div>
-      <div class="card">
-        <h3>Integration</h3>
-        <div class="kv">
-          <span class="label">Ready to publish to</span>
-          <span class="value"><a href="../integration/index.html">Integration Layer</a></span>
-        </div>
-      </div>
-    </div>
+    <!-- LEFT: load budget + define simple unit costs -->
+    <section class="cii-card">
+      <h2>Step 1 — Load budget & unit assumptions</h2>
+      <p class="cii-sub">
+        CII looks for <code>ABE_CIBS_BUDGET_V1</code> from this browser. Each category can then be translated
+        into units (e.g., housing months, clinic visits, passes, seats).
+      </p>
 
-    <!-- Live status (ARIA) -->
-    <div id="status" class="hint" role="status" aria-live="polite"></div>
+      <p id="cii-bridge" class="cii-mini">
+        CIBS bridge: looking for ABE_CIBS_BUDGET_V1…
+      </p>
 
-    <!-- Quick links -->
-    <section>
-      <h2>🔗 Links</h2>
-      <div class="actions">
-        <a class="btn" href="../ciri/index.html">CIRI — Risk & Recovery</a>
-        <a class="btn" href="../cibs/index.html">CIBS — Budget System</a>
-        <a class="btn" href="../macro/index.html">Macro Cascade</a>
-        <a class="btn" href="../doctrine/index.html">Doctrines</a>
-        <a class="btn" href="model.json">Open model.json</a>
-        <a class="btn" href="portfolio.csv">Open portfolio.csv</a>
+      <h3>1.1 · Per-category unit costs (rough, public-facing)</h3>
+      <p class="cii-mini">
+        These are simple, transparent conversion factors. They do not need to be perfect — they show scale.
+      </p>
+
+      <div id="cii-units-area">
+        <!-- per-category inputs rendered by JS -->
       </div>
-      <p class="hint">
-        Don’t have files yet? Create a <code>model.json</code> with category multipliers,
-        and a <code>portfolio.csv</code> with <code>name,category,cost_usd,households,status</code>.
+
+      <button id="cii-recalc" class="btn">
+        <span>📊 Recalculate project portfolio</span>
+      </button>
+      <div id="cii-status" class="cii-status">Status: waiting for CIBS budget…</div>
+    </section>
+
+    <!-- RIGHT: portfolio table + receipts -->
+    <section class="cii-card">
+      <h2>Step 2 — Portfolio & receipts</h2>
+
+      <h3>2.1 · Portfolio preview</h3>
+      <div id="cii-table-wrap">
+        <!-- table injected here -->
+      </div>
+
+      <h3>2.2 · Scenario JSON</h3>
+      <pre id="cii-json">{}</pre>
+
+      <button id="cii-download-csv" class="btn" disabled>
+        ⬇ Download cii_portfolio.csv
+      </button>
+      <button id="cii-download-json" class="btn btn-ghost" disabled>
+        ⬇ Download cii_portfolio.json
+      </button>
+
+      <p id="cii-hash" class="cii-mini">
+        Audit hash: —  
+        (SHA-256 of this CII portfolio. Any tampering will change this value.)
+      </p>
+
+      <p class="cii-mini">
+        This portfolio is suitable for city halls, councils, community boards, and oversight bodies.
+        Integration will include its hash in the A.B.E. audit trail.
       </p>
     </section>
 
-    <!-- Portfolio preview (secure rendering) -->
-    <section>
-      <h2>📄 Portfolio Preview</h2>
-      <div id="portfolio-wrap" style="margin-top:.5rem"></div>
-      <p class="hint" id="portfolio-hint"></p>
-    </section>
+  </div>
+</main>
 
-    <!-- KPIs -->
-    <section>
-      <h2>📊 KPIs</h2>
-      <div class="cards">
-        <div class="card">
-          <h3>Total Project Cost</h3>
-          <div class="kv"><span class="value" id="k-total">$—</span></div>
-        </div>
-        <div class="card">
-          <h3>Total Households</h3>
-          <div class="kv"><span class="value" id="k-hh">—</span></div>
-        </div>
-        <div class="card">
-          <h3>Avg Cost / Household</h3>
-          <div class="kv"><span class="value" id="k-cph">$—</span></div>
-        </div>
-      </div>
-      <div class="hint" id="budget-note"></div>
-    </section>
+<footer class="abe-footer">
+  <p>
+    CC BY-NC 4.0 · DOI <a href="https://doi.org/10.5281/zenodo.17586107">10.5281/zenodo.17586107</a> · Integrity only — never for sale.
+  </p>
+</footer>
 
-    <!-- How it fits -->
-    <section>
-      <h2>🧬 How CII Fits</h2>
-      <ul>
-        <li><strong>Inputs:</strong> CIRI’s <em>Total Recovery</em>; CIBS allocations; doctrine guardrails; community needs.</li>
-        <li><strong>Process:</strong> Score projects → allocate → publish portfolio + receipts.</li>
-        <li><strong>Outputs:</strong> Live KPIs (households served, ROI per project), public audit trails, DOI-anchored versions.</li>
-      </ul>
-    </section>
-
-    <footer>
-      CII is part of A.B.E.’s open, auditable toolchain.<br>
-      License: <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener">CC BY-NC 4.0</a> — non-commercial use with attribution.
-    </footer>
-  </main>
-
-  <script>
-    // ---------- Utilities ----------
-    const $ = (sel, root=document) => root.querySelector(sel);
-    const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
-
-    function setText(el, txt){ if(el){ el.textContent = txt; } }
-    function fmtUSD(n){
-      const v = Number.isFinite(n) ? n : Number(String(n||'').replace(/[^0-9.\-]/g,''));
-      if(!Number.isFinite(v)) return '$—';
-      try{ return new Intl.NumberFormat(undefined,{style:'currency',currency:'USD',maximumFractionDigits:0}).format(v); }
-      catch{ return '$'+Math.round(v).toLocaleString(); }
-    }
-    function toNumberLikeUSD(s){
-      if (typeof s === 'number') return s;
-      if (!s) return 0;
-      // Prevent spreadsheet formula injection on export/display (prefix if needed)
-      if (/^[=+\-@]/.test(s)) s = "'"+s;
-      const cleaned = String(s).replace(/[^0-9.\-]/g,'');
-      const n = Number(cleaned);
-      return Number.isFinite(n) ? n : 0;
-    }
-
-    // RFC4180-ish CSV parser (handles quotes/commas/newlines)
-    function parseCSV(text){
-      const rows = [];
-      let cur = [], val = '', i = 0, inQ = false;
-      while (i < text.length){
-        const c = text[i];
-        if (inQ){
-          if (c === '"'){
-            if (text[i+1] === '"'){ val += '"'; i += 2; continue; }
-            inQ = false; i++; continue;
-          }
-          val += c; i++; continue;
-        } else {
-          if (c === '"'){ inQ = true; i++; continue; }
-          if (c === ','){ cur.push(val); val=''; i++; continue; }
-          if (c === '\n'){ cur.push(val); rows.push(cur); cur=[]; val=''; i++; continue; }
-          if (c === '\r'){ i++; continue; }
-          val += c; i++; continue;
-        }
-      }
-      cur.push(val); rows.push(cur);
-      // trim trailing blank rows
-      while (rows.length && rows[rows.length-1].every(c=>c==='')) rows.pop();
-      return rows;
-    }
-
-    async function fetchText(url){
-      const res = await fetch(url, {cache:'no-store'});
-      if(!res.ok) throw new Error('HTTP '+res.status);
-      const txt = await res.text();
-      const lm = res.headers.get('Last-Modified');
-      return { text: txt, lastModified: lm };
-    }
-
-    function requireHeaders(headers, required){
-      const missing = required.filter(r => !headers.includes(r));
-      return { ok: missing.length === 0, missing };
-    }
-
-    function renderTable(container, header, rows){
-      const table = document.createElement('table');
-      const thead = document.createElement('thead');
-      const trh = document.createElement('tr');
-      header.forEach(h=>{
-        const th = document.createElement('th');
-        th.textContent = h;
-        trh.appendChild(th);
-      });
-      thead.appendChild(trh);
-      table.appendChild(thead);
-
-      const tbody = document.createElement('tbody');
-      rows.forEach(r=>{
-        const tr = document.createElement('tr');
-        r.forEach((cell, i)=>{
-          const td = document.createElement('td');
-          // right-align money-ish columns
-          const isMoney = /cost|budget|amount|usd/i.test(header[i]||'');
-          td.className = isMoney ? 'num' : '';
-          td.textContent = isMoney ? fmtUSD(toNumberLikeUSD(cell)) : String(cell);
-          tr.appendChild(td);
-        });
-        tbody.appendChild(tr);
-      });
-      table.appendChild(tbody);
-      container.innerHTML = '';
-      container.appendChild(table);
-    }
-
-    // ---------- Page Boot ----------
-    (async function boot(){
-      const statusEl = $('#status');
-
-      // Model check
-      try{
-        const m = await fetchText('model.json');
-        $('#model-status').textContent = m.text.trim() ? 'Present' : 'Empty';
-        $('#model-status').classList.add(m.text.trim() ? 'ok':'warn');
-      }catch{
-        $('#model-status').textContent = 'Missing';
-        $('#model-status').classList.add('warn');
-      }
-
-      // Portfolio load + validate
-      let portfolioRows = null, headers = null, body = null, lastMod = '—';
-      try{
-        const {text, lastModified} = await fetchText('portfolio.csv');
-        lastMod = lastModified ? new Date(lastModified).toLocaleString() : '—';
-        const rows = parseCSV(text);
-        if (!rows || rows.length < 2) throw new Error('Empty CSV');
-        headers = rows[0].map(h=>h.trim());
-        body = rows.slice(1).filter(r => r.some(c=>String(c).trim()!==''));
-        const req = requireHeaders(headers, ['name','category','cost_usd','households','status']);
-        if(!req.ok) throw new Error('Missing columns: '+req.missing.join(', '));
-        portfolioRows = rows;
-
-        $('#port-status').textContent = 'Present';
-        $('#port-status').classList.add('ok');
-        $('#last-mod').textContent = 'Portfolio last modified: '+ lastMod;
-      }catch(e){
-        $('#port-status').textContent = 'Missing';
-        $('#port-status').classList.add('warn');
-        statusEl.classList.add('error');
-        setText(statusEl, 'Could not load portfolio.csv. Ensure headers: name, category, cost_usd, households, status.');
-        return;
-      }
-
-      // Secure render
-      renderTable($('#portfolio-wrap'), headers, body);
-      $('#portfolio-hint').textContent = 'Previewing /cii/portfolio.csv. Update that file to change this view.';
-
-      // KPIs
-      const idxCost = headers.indexOf('cost_usd');
-      const idxHH   = headers.indexOf('households');
-      let sumCost = 0, sumHH = 0;
-      body.forEach(r=>{
-        sumCost += toNumberLikeUSD(r[idxCost]);
-        sumHH   += toNumberLikeUSD(r[idxHH]);
-      });
-      setText($('#k-total'), fmtUSD(sumCost));
-      setText($('#k-hh'), Number.isFinite(sumHH) ? sumHH.toLocaleString() : '—');
-      setText($('#k-cph'), (sumHH>0) ? fmtUSD(sumCost/sumHH) : '$—');
-
-      // Optional: compare to CIBS pool (budget guardrail)
-      try{
-        const {text} = await fetchText('/abe---flag/cibs/auto_budget.csv');
-        const r = parseCSV(text);
-        const totalCIBS = r.slice(1).reduce((acc,row)=> acc + toNumberLikeUSD(row[1]), 0);
-        const note = $('#budget-note');
-        if (totalCIBS && sumCost > totalCIBS){
-          note.textContent = `⚠ Portfolio total (${fmtUSD(sumCost)}) exceeds CIBS allocation (${fmtUSD(totalCIBS)}). Review category weights or project scope.`;
-        } else if (totalCIBS){
-          note.textContent = `✔ Portfolio total (${fmtUSD(sumCost)}) within CIBS allocation (${fmtUSD(totalCIBS)}).`;
-        }
-      }catch{ /* non-fatal */ }
-
-      // Success status
-      setText(statusEl, 'Loaded model & portfolio successfully.');
-    })();
-  </script>
+<script src="local.js"></script>
 </body>
-        </html>
+</html>
