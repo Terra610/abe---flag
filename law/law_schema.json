@@ -1,143 +1,142 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "ABE_LegalAuthorityNode_v1",
-  "description": "Schema for a single federal authority unit (statute, regulation, or funding authority) as used by CAE/CDA/CFF.",
+  "title": "ABE_LawAuthorityCorpus_v1",
+  "description": "Schema for law authority entries used by A.B.E. (Constitution, statutes, regulations, funding rules, and key memoranda).",
   "type": "object",
-  "required": ["id", "kind", "domain"],
   "additionalProperties": false,
+  "required": ["version", "module", "entries"],
   "properties": {
-    "id": {
+    "version": {
       "type": "string",
-      "description": "Stable identifier for this node, e.g., '49usc_31136' or '49cfr_390_3'."
+      "const": "1.0"
     },
-    "kind": {
+    "module": {
       "type": "string",
-      "enum": ["constitution", "statute", "regulation", "funding"],
-      "description": "Type of authority represented."
+      "const": "LAW"
     },
-
-    "domain": {
-      "type": "string",
-      "description": "High-level domain this authority belongs to (transportation, credit_banking, child_welfare, healthcare, social_security, housing, criminal_justice, etc.)."
-    },
-
-    "usc_title": {
-      "type": ["integer", "null"],
-      "description": "USC Title number, if this is a statute or funding authority derived from USC."
-    },
-    "usc_section": {
-      "type": ["string", "null"],
-      "description": "USC section string, e.g., '31136' or '§31136'."
-    },
-    "usc_full_cite": {
-      "type": ["string", "null"],
-      "description": "Full human-readable cite, e.g., '49 U.S.C. § 31136'."
-    },
-
-    "cfr_title": {
-      "type": ["integer", "null"],
-      "description": "CFR Title number, if this is a regulation."
-    },
-    "cfr_part": {
-      "type": ["string", "null"],
-      "description": "CFR Part or Part + Subpart, e.g., '390' or '390.3'."
-    },
-    "cfr_full_cite": {
-      "type": ["string", "null"],
-      "description": "Full human-readable cite, e.g., '49 CFR 390.3'."
-    },
-
-    "constitution_ref": {
-      "type": ["string", "null"],
-      "description": "Reference into the Constitution when relevant, e.g., 'Art. I §8 cl.3 (Commerce Clause)'."
-    },
-
-    "population": {
-      "type": "array",
-      "description": "Primary populations this authority is meant to cover.",
-      "items": {
-        "type": "string"
-      }
-    },
-
-    "authority_granted": {
-      "type": "array",
-      "description": "Plain-language list of what this authority explicitly allows the government to do.",
-      "items": { "type": "string" }
-    },
-    "authority_limited": {
-      "type": "array",
-      "description": "Plain-language list of what this authority explicitly does NOT allow (limits, exclusions, carve-outs).",
-      "items": { "type": "string" }
-    },
-
-    "preemption": {
+    "source": {
       "type": "object",
-      "description": "Preemption details, when this authority limits or displaces state law.",
-      "required": ["type", "summary"],
       "additionalProperties": false,
       "properties": {
-        "type": {
-          "type": "string",
-          "enum": ["none", "conflict", "field", "floor_ceiling"],
-          "description": "Type of preemption involved."
-        },
-        "summary": {
-          "type": "string",
-          "description": "Plain-language summary of the preemption rule."
-        },
-        "related_cases": {
-          "type": "array",
-          "description": "Optional list of key Supreme Court or appellate cases interpreting this authority.",
-          "items": { "type": "string" }
-        }
+        "name": { "type": "string" },
+        "license": { "type": "string" },
+        "notes": { "type": "string" }
       }
     },
-
-    "related_cfr": {
+    "entries": {
       "type": "array",
-      "description": "List of CFR references that implement this statute.",
       "items": {
         "type": "object",
-        "required": ["cfr_title", "cfr_part"],
         "additionalProperties": false,
+        "required": ["id", "type", "jurisdiction", "citation", "title", "scope_tags"],
         "properties": {
-          "cfr_title": { "type": "integer" },
-          "cfr_part":  { "type": "string" },
-          "cfr_full_cite": { "type": ["string", "null"] },
-          "purpose":   { "type": ["string", "null"] }
-        }
-      }
-    },
-
-    "funding_links": {
-      "type": "array",
-      "description": "Funding programs that depend on or are constrained by this authority.",
-      "items": {
-        "type": "object",
-        "required": ["program"],
-        "additionalProperties": false,
-        "properties": {
-          "program": {
+          "id": {
             "type": "string",
-            "description": "Program name or shorthand, e.g., 'MCSAP', 'Highway Safety 402', 'Title IV-E'."
+            "description": "Stable identifier used by CDA/CFF/etc (e.g., 'fmcsr_390_3_applicability')."
           },
-          "usc_authority": {
-            "type": ["string", "null"],
-            "description": "Statutory cite for the funding program."
+          "type": {
+            "type": "string",
+            "enum": [
+              "constitution",
+              "statute",
+              "regulation",
+              "funding_program",
+              "memorandum",
+              "guidance"
+            ]
           },
-          "conditions": {
+          "jurisdiction": {
+            "type": "string",
+            "enum": [
+              "federal",
+              "state",
+              "multi",
+              "unknown"
+            ]
+          },
+          "citation": {
+            "type": "string",
+            "description": "Short legal citation, e.g., '49 CFR 390.3', '49 USC 31136', '23 USC 402'."
+          },
+          "title": {
+            "type": "string",
+            "description": "Human-readable title."
+          },
+          "summary": {
+            "type": "string",
+            "description": "Short summary of what this authority actually does or limits."
+          },
+          "full_text_available": {
+            "type": "boolean",
+            "description": "Whether the full text is embedded here or must be looked up externally.",
+            "default": false
+          },
+          "full_text_ref": {
+            "type": "string",
+            "description": "Optional link or reference to full text (e.g., URL, PDF filename, or external citation)."
+          },
+
+          "scope_tags": {
             "type": "array",
-            "description": "Key funding conditions that constrain how money may be used.",
-            "items": { "type": "string" }
+            "description": "Tags the engine can use to quickly filter by scope.",
+            "items": {
+              "type": "string",
+              "enum": [
+                "commercial_driver",
+                "noncommercial_driver",
+                "vehicle_registration",
+                "cmv_only",
+                "funding_conditions",
+                "preemption",
+                "enforcement_limits",
+                "right_to_travel",
+                "criminal_process",
+                "civil_remedy",
+                "funding_mcsap",
+                "funding_highway_safety",
+                "funding_fmcsr",
+                "dmv_data_use",
+                "credit_use",
+                "cps_case",
+                "child_welfare",
+                "general_state_police_power"
+              ]
+            }
+          },
+
+          "on_mission_conditions": {
+            "type": "string",
+            "description": "Plain-language conditions for when conduct is ON_MISSION (within scope of this authority)."
+          },
+          "off_mission_signals": {
+            "type": "string",
+            "description": "Plain-language signals that conduct is OFF_MISSION (beyond scope or misuse)."
+          },
+          "preemption_strength": {
+            "type": "string",
+            "enum": ["none", "weak", "moderate", "strong"],
+            "description": "How strong the preemptive effect is against conflicting state rules."
+          },
+
+          "funding_program": {
+            "type": "string",
+            "description": "If this entry relates to a funding stream (e.g., 'MCSAP', '23 USC 402'), name it here."
+          },
+          "funding_on_mission_example": {
+            "type": "string",
+            "description": "Example of clearly on-mission funding use."
+          },
+          "funding_off_mission_example": {
+            "type": "string",
+            "description": "Example of clearly off-mission or fraudulent use."
+          },
+
+          "notes_for_engine": {
+            "type": "string",
+            "description": "Implementation notes for CDA/CFF/CCRI (e.g., how to map flags to this authority)."
           }
         }
       }
-    },
-
-    "notes": {
-      "type": "string",
-      "description": "Optional freeform notes or caveats about this authority node."
     }
   }
 }
