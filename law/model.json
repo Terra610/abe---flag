@@ -1,0 +1,34 @@
+{
+  "version": "1.0",
+  "updated": "2025-12-08T00:00:00Z",
+  "module": "LAW",
+  "authority": {
+    "name": "A.B.E. — Lawful Scope & Authority Corpus",
+    "license": "CC BY-NC 4.0",
+    "description": "Structured corpus of key constitutional, statutory, regulatory, and funding authorities used to detect constitutional divergence and funding misuse."
+  },
+  "schema_file": "law_schema.json",
+  "collections": [
+    {
+      "id": "fmcsr_scope",
+      "name": "FMCSR Scope & Applicability",
+      "file": "fmcsr_scope.json",
+      "description": "Anchors FMCSA/FMCSR applicability (49 CFR 300–399, 390.3, 350.303, etc.) for commercial vs noncommercial distinction."
+    },
+    {
+      "id": "mcsap_funding",
+      "name": "MCSAP & FMCSA Funding Conditions",
+      "file": "mcsap_rules.json",
+      "description": "Funding-authority map for MCSAP and related CMV safety programs (on-mission vs off-mission)."
+    }
+  ],
+  "intended_consumers": [
+    "CDA",
+    "CFF",
+    "CIRI",
+    "CCRI",
+    "Integration",
+    "SystemMap"
+  ],
+  "notes": "This module does not embed full statutory text. Instead, it defines scope anchors, funding conditions, and preemption rules that CDA/CFF use to classify divergence and misuse."
+}
