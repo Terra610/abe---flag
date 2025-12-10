@@ -1,114 +1,191 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "ABE_MacroModel_v1",
-  "description": "Schema for the MACRO mathematical model definitions used across the A.B.E. engine. Ensures all formal equations, variables, parameter bounds, and documentation comply with the ABE macro-model contract.",
+  "title": "ABE_MacroCascadeScenario_v1",
+  "description": "Schema for a Macroeconomic Cascade scenario derived from a single restored community model and a chosen number of communities.",
   "type": "object",
+  "additionalProperties": false,
   "required": [
     "version",
     "module",
-    "variables",
-    "parameters",
-    "equations",
-    "domains",
-    "created_at"
+    "communities",
+    "per_community",
+    "scenario_total"
   ],
-  "additionalProperties": false,
-
   "properties": {
     "version": {
       "type": "string",
-      "const": "1.0"
+      "const": "1.0",
+      "description": "Schema / artifact version."
     },
-
     "module": {
       "type": "string",
-      "const": "MACRO"
+      "const": "MACRO",
+      "description": "Module identifier for the macroeconomic cascade engine."
+    },
+    "label": {
+      "type": "string",
+      "description": "Optional human-readable label for this macro scenario (e.g., 'Iowa – 100 communities')."
+    },
+    "communities": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Number of communities used in this scenario run."
+    },
+    "source_model_file": {
+      "type": "string",
+      "description": "Relative path to the JSON model used (e.g., 'macro/ABE_MacroCascadeModel.json')."
+    },
+    "source_ciri_scenario_id": {
+      "type": "string",
+      "description": "Optional identifier or hash of the CIRI scenario this macro run is based on (e.g., localStorage key, SHA-256, or user label)."
     },
 
-    "variables": {
-      "type": "array",
-      "description": "List of variables used in macro equations (e.g., RT, K, CIRI, divergence indexes).",
-      "items": {
-        "type": "object",
-        "required": ["name", "description", "symbol"],
-        "additionalProperties": false,
-        "properties": {
-          "name": { "type": "string" },
-          "symbol": { "type": "string" },
-          "description": { "type": "string" }
-        }
-      }
-    },
-
-    "parameters": {
-      "type": "array",
-      "description": "Numerical parameters used by CIRI, CDI, CAD, etc.",
-      "items": {
-        "type": "object",
-        "required": ["name", "symbol", "description", "default"],
-        "additionalProperties": false,
-        "properties": {
-          "name": { "type": "string" },
-          "symbol": { "type": "string" },
-          "description": { "type": "string" },
-          "default": { "type": "number" },
-          "min": { "type": ["number", "null"] },
-          "max": { "type": ["number", "null"] }
-        }
-      }
-    },
-
-    "equations": {
-      "type": "array",
-      "description": "Formal mathematical equations referenced by CDI, CIRI, CAE, CFF, etc.",
-      "items": {
-        "type": "object",
-        "required": ["id", "expression", "variables", "description"],
-        "additionalProperties": false,
-        "properties": {
-          "id": { "type": "string" },
-          "expression": { "type": "string" },
-          "variables": {
-            "type": "array",
-            "items": { "type": "string" }
-          },
-          "description": { "type": "string" }
-        }
-      }
-    },
-
-    "domains": {
+    "per_community": {
       "type": "object",
-      "description": "Value domains for equations (e.g., CIRI bounded 0–1).",
+      "description": "Metrics for a single restored community.",
+      "additionalProperties": false,
+      "required": [
+        "direct_investment",
+        "gdp_uplift",
+        "wages_uplift",
+        "local_spending_uplift",
+        "annual_savings",
+        "jobs",
+        "citizens_low",
+        "citizens_high"
+      ],
+      "properties": {
+        "direct_investment": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Average direct investment per community (USD)."
+        },
+        "gdp_uplift": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Annual GDP uplift per community (USD)."
+        },
+        "wages_uplift": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Annual wages uplift per community (USD)."
+        },
+        "local_spending_uplift": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Annual local market spending uplift per community (USD)."
+        },
+        "annual_savings": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Annual cost savings per community (justice + health) in USD."
+        },
+        "jobs": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Jobs supported or created per community."
+        },
+        "citizens_low": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Lower bound estimate of citizens materially served in one community."
+        },
+        "citizens_high": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Upper bound estimate of citizens materially served in one community."
+        }
+      }
+    },
+
+    "scenario_total": {
+      "type": "object",
+      "description": "Metrics for the whole macro scenario (all communities combined).",
+      "additionalProperties": false,
+      "required": [
+        "direct_investment",
+        "gdp_uplift",
+        "wages_uplift",
+        "local_spending_uplift",
+        "annual_savings",
+        "jobs",
+        "citizens_low",
+        "citizens_high"
+      ],
+      "properties": {
+        "direct_investment": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Total direct investment for all communities (USD)."
+        },
+        "gdp_uplift": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Total annual GDP uplift across all communities (USD)."
+        },
+        "wages_uplift": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Total annual wages uplift across all communities (USD)."
+        },
+        "local_spending_uplift": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Total annual local market spending uplift across all communities (USD)."
+        },
+        "annual_savings": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Total annual cost savings (justice + health) across all communities (USD)."
+        },
+        "jobs": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Total jobs supported or created across all communities."
+        },
+        "citizens_low": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Lower bound estimate of citizens materially served across all communities."
+        },
+        "citizens_high": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Upper bound estimate of citizens materially served across all communities."
+        }
+      }
+    },
+
+    "assumptions": {
+      "type": "object",
+      "description": "Key model assumptions used for this run.",
       "additionalProperties": false,
       "properties": {
-        "CIRI": {
-          "type": "object",
-          "required": ["min", "max"],
-          "properties": {
-            "min": { "type": "number", "const": 0 },
-            "max": { "type": "number", "const": 1 }
-          }
+        "avg_direct_investment": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Average direct investment per community used in calculations (USD)."
         },
-        "CDI": {
-          "type": "object",
-          "required": ["min", "max"],
-          "properties": {
-            "min": { "type": "number", "const": 0 },
-            "max": { "type": "number", "const": 1 }
-          }
+        "gdp_multiplier": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Multiplier applied to direct investment to estimate GDP uplift."
+        },
+        "wage_multiplier": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Multiplier applied to direct investment to estimate wage uplift."
+        },
+        "local_spending_multiplier": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Multiplier applied to direct investment to estimate local market spending uplift."
+        },
+        "notes": {
+          "type": "string",
+          "description": "Freeform notes documenting any scenario-specific assumptions or caveats."
         }
       }
-    },
-
-    "created_at": {
-      "type": "string",
-      "format": "date-time"
-    },
-
-    "notes": {
-      "type": "string",
-      "description": "Optional free-form notes or derivation commentary."
     }
   }
 }
