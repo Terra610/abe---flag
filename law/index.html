@@ -3,24 +3,10 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Federal Authority Corpus — A.B.E. Law Viewer</title>
+  <title>Law — Federal Authority Corpus | A.B.E.</title>
   <base href="/abe---flag/">
   <link rel="stylesheet" href="abe-patch/assets/abe-patch.css"/>
   <style>
-    :root{
-      --law-bg:#05060b;
-      --law-panel:#10131c;
-      --law-panel-soft:#161a25;
-      --law-ink:#edf2ff;
-      --law-muted:#9fb3c8;
-      --law-accent:#5ddfff;
-      --law-pop:#fff750;
-      --law-border:rgba(255,255,255,.08);
-    }
-    body.abe-page{
-      background:radial-gradient(circle at top,#111827 0,#05060b 55%,#020309 100%);
-      color:var(--law-ink);
-    }
     .law-wrap{
       max-width:1100px;
       margin:0 auto;
@@ -32,234 +18,145 @@
     }
     .law-header .tagline{
       max-width:720px;
-      color:var(--law-muted);
+      color:var(--muted);
       font-size:.98rem;
     }
-    .chip-row{
-      display:flex;
-      flex-wrap:wrap;
-      gap:.5rem;
-      margin-top:.75rem;
-    }
-    .chip{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      padding:.35rem .9rem;
-      border-radius:999px;
-      border:1px solid var(--law-border);
-      font-size:.85rem;
-      text-decoration:none;
-      color:var(--law-ink);
-      background:#050712;
-    }
-    .chip:hover{border-color:var(--law-accent);}
-    .chip-alt{
-      border-color:var(--law-accent);
-    }
-
-    .law-layout{
+    .law-grid{
       display:grid;
       gap:1rem;
-      margin-top:1.4rem;
     }
     @media(min-width:900px){
-      .law-layout{
-        grid-template-columns:minmax(260px,1.4fr) minmax(360px,2fr);
+      .law-grid{
+        grid-template-columns:280px 1.3fr 1.8fr;
       }
     }
-
-    .card-law{
-      background:linear-gradient(135deg,var(--law-panel),#0b101a);
+    .law-card{
+      background:#10131c;
       border-radius:14px;
-      border:1px solid var(--law-border);
-      padding:1rem 1.1rem 1.25rem;
-      box-shadow:0 18px 40px rgba(0,0,0,.45);
+      border:1px solid var(--line);
+      padding:.9rem 1rem 1rem;
+      box-shadow:0 18px 40px rgba(0,0,0,.4);
+      min-height:0;
     }
-    .card-law h2{
+    .law-card h2{
       margin:.1rem 0 .4rem;
-      font-size:1.1rem;
+      font-size:1.05rem;
     }
-    .card-law h3{
-      margin:.35rem 0 .35rem;
-      font-size:1rem;
+    .law-card h3{
+      margin:.2rem 0 .4rem;
+      font-size:.98rem;
     }
-    .sub{
-      color:var(--law-muted);
-      font-size:.9rem;
+    .law-sub{
+      color:var(--muted);
+      font-size:.88rem;
     }
-
-    .tabs{
-      display:inline-flex;
-      flex-wrap:wrap;
-      gap:.4rem;
-      margin:.35rem 0 .6rem;
-    }
-    .tab{
-      padding:.2rem .7rem;
-      border-radius:999px;
-      border:1px solid var(--law-border);
-      font-size:.8rem;
-      cursor:pointer;
-      background:#050712;
-      color:var(--law-muted);
-    }
-    .tab-active{
-      border-color:var(--law-accent);
-      color:var(--law-ink);
-    }
-
-    .pack-list{
-      margin:.25rem 0 .6rem;
-      padding:0;
+    .law-pack-list{
       list-style:none;
-      max-height:180px;
-      overflow:auto;
+      margin:.4rem 0 0;
+      padding:0;
+      display:flex;
+      flex-direction:column;
+      gap:.3rem;
     }
-    .pack-item{
-      padding:.3rem .45rem;
+    .law-pack-btn{
+      width:100%;
+      text-align:left;
+      border-radius:10px;
+      border:1px solid var(--line);
+      padding:.4rem .55rem;
+      background:#050712;
+      color:var(--ink);
+      font-size:.88rem;
+      cursor:pointer;
+    }
+    .law-pack-btn.active{
+      border-color:var(--accent);
+      box-shadow:0 0 0 1px rgba(93,223,255,.3);
+    }
+    .law-status{
+      margin-top:.4rem;
+      font-size:.85rem;
+      color:var(--muted);
+    }
+    .law-status-ok{color:#4bd28f;}
+    .law-status-warn{color:#ffba5c;}
+    .law-status-bad{color:#ff8585;}
+    .law-node-list{
+      list-style:none;
+      margin:.3rem 0 0;
+      padding:0;
+      max-height:460px;
+      overflow:auto;
       border-radius:8px;
+      border:1px solid var(--line);
+      background:#050712;
+    }
+    .law-node{
+      border-bottom:1px solid rgba(255,255,255,.06);
+    }
+    .law-node button{
+      display:block;
+      width:100%;
+      text-align:left;
+      padding:.45rem .55rem;
+      background:transparent;
+      border:none;
+      color:var(--ink);
       cursor:pointer;
       font-size:.88rem;
-      display:flex;
-      flex-direction:column;
-      gap:.1rem;
     }
-    .pack-item:hover{
-      background:#0c111d;
+    .law-node button:hover{
+      background:rgba(255,255,255,.03);
     }
-    .pack-item-active{
-      background:#111828;
-      border:1px solid var(--law-border);
-    }
-    .pack-label{font-weight:500;}
-    .pack-notes{font-size:.8rem;color:var(--law-muted);}
-
-    .search-row{
-      display:flex;
-      gap:.4rem;
-      margin:.25rem 0 .4rem;
-    }
-    .search-input{
-      flex:1;
-      background:#050712;
-      border-radius:999px;
-      border:1px solid var(--law-border);
-      padding:.42rem .7rem;
-      font-size:.9rem;
-      color:var(--law-ink);
-    }
-    .search-count{
-      font-size:.8rem;
-      color:var(--law-muted);
-      margin-left:.1rem;
-      align-self:center;
-    }
-
-    .node-list{
-      margin:.25rem 0 0;
-      padding:0;
-      list-style:none;
-      max-height:260px;
-      overflow:auto;
-      border-radius:10px;
-      background:#050712;
-      border:1px solid var(--law-border);
-    }
-    .node-item{
-      padding:.4rem .55rem;
-      border-bottom:1px solid rgba(255,255,255,.04);
-      cursor:pointer;
-      font-size:.87rem;
-      display:flex;
-      flex-direction:column;
-      gap:.1rem;
-    }
-    .node-item:last-child{border-bottom:none;}
-    .node-item:hover{background:#0b101a;}
-    .node-item-active{background:#111827;}
-    .node-label{font-weight:500;}
-    .node-meta{font-size:.78rem;color:var(--law-muted);}
-
-    .pill{
-      display:inline-flex;
-      align-items:center;
-      gap:.25rem;
-      padding:.1rem .55rem;
-      border-radius:999px;
-      border:1px solid var(--law-border);
+    .law-node small{
+      display:block;
+      color:var(--muted);
       font-size:.78rem;
-      color:var(--law-muted);
     }
-    .pill-type{border-color:#5ddfff;}
-    .pill-level{border-color:#ffba5c;}
-    .pill-src{border-color:#4bd28f;}
-
-    pre{
-      margin:.4rem 0 .6rem;
+    .law-detail{
       background:#050712;
       border-radius:10px;
-      border:1px solid var(--law-border);
+      border:1px solid var(--line);
       padding:.6rem .7rem;
       font-family:ui-monospace,SFMono-Regular,Consolas,monospace;
       font-size:.82rem;
-      color:var(--law-ink);
-      max-height:260px;
+      max-height:480px;
       overflow:auto;
       white-space:pre-wrap;
     }
-
-    .btn-row{
-      display:flex;
-      flex-wrap:wrap;
-      gap:.5rem;
-      margin-top:.4rem;
-    }
-    .btn{
+    .law-pill{
       display:inline-flex;
       align-items:center;
-      justify-content:center;
-      padding:.4rem .85rem;
+      gap:.3rem;
+      padding:.15rem .5rem;
       border-radius:999px;
-      border:1px solid var(--law-border);
-      background:#050712;
-      color:var(--law-ink);
-      font-size:.85rem;
-      cursor:pointer;
+      border:1px solid var(--line);
+      font-size:.75rem;
+      color:var(--muted);
+      margin-right:.25rem;
+      margin-bottom:.25rem;
+    }
+    .law-pill-usc{border-color:#5ddfff;}
+    .law-pill-cfr{border-color:#ffba5c;}
+    .law-pill-funding{border-color:#4bd28f;}
+    .law-links{
+      margin-top:.4rem;
+      font-size:.84rem;
+    }
+    .law-links a{
+      color:var(--accent);
       text-decoration:none;
     }
-    .btn:hover{border-color:var(--law-accent);}
-    .btn-primary{
-      border-color:var(--law-pop);
-      box-shadow:0 0 0 1px rgba(0,0,0,.5);
-    }
-    .btn-primary:hover{
-      box-shadow:0 0 0 1px rgba(255,247,80,.3),0 0 14px rgba(255,247,80,.22);
-    }
-    .btn:disabled{
-      opacity:.5;
-      cursor:default;
-      box-shadow:none;
-    }
-
-    .small-note{
-      font-size:.8rem;
-      color:var(--law-muted);
-    }
-    .status-line{
-      margin-top:.4rem;
-      font-size:.8rem;
-      color:var(--law-muted);
-    }
-    .status-ok{color:#4bd28f;}
-    .status-warn{color:#ffba5c;}
-    .status-err{color:#ff8585;}
-
-    footer.abe-footer{
-      margin-top:2.5rem;
-      text-align:center;
-      font-size:.85rem;
-      color:var(--law-muted);
+    .law-links a:hover{text-decoration:underline;}
+    .law-search{
+      width:100%;
+      background:#050712;
+      border-radius:999px;
+      border:1px solid var(--line);
+      padding:.4rem .7rem;
+      color:var(--ink);
+      font-size:.86rem;
+      margin-top:.3rem;
     }
   </style>
 </head>
@@ -267,90 +164,71 @@
 
 <header class="abe-header">
   <div class="law-wrap law-header">
-    <a href="index.html" class="chip">← A.B.E. Home</a>
-    <h1>Federal Authority Corpus</h1>
+    <a href="/abe---flag/index.html" class="chip">← A.B.E. Home</a>
+    <h1>Law — Federal Authority Corpus</h1>
     <p class="tagline">
-      One place to see how <strong>Title 49 statutes</strong>, <strong>FMCSRs</strong>, and
-      <strong>MCSAP funding rules</strong> actually fit together — the legal backbone for CDA, CFF, and CIRI.
+      See the controlling <strong>USC, CFR, and funding rules</strong> that define the lawful boundary for FMCSA, MCSAP,
+      and state enforcement. This is what CDA, CFF, and Integration treat as “the rails.”
     </p>
-    <div class="chip-row">
-      <span class="chip chip-alt">Local only · static JSON packs</span>
-      <a class="chip" href="doctrine/index.html">Doctrines</a>
+    <nav class="chip-row">
+      <a class="chip" href="intake/index.html">Intake & OCR</a>
       <a class="chip" href="cda/index.html">CDA</a>
       <a class="chip" href="cff/index.html">CFF</a>
-      <a class="chip" href="integration/index.html">Audit Map</a>
-    </div>
+      <a class="chip" href="doctrine/index.html">Doctrines</a>
+      <a class="chip chip-alt" href="integration/index.html">Integration</a>
+    </nav>
   </div>
 </header>
 
 <main class="abe-main">
-  <div class="law-wrap law-layout">
+  <div class="law-wrap law-grid">
 
-    <!-- LEFT: packs + nodes -->
-    <section class="card-law">
-      <h2>Browse Law Packs</h2>
-      <p class="sub">
-        Choose a slice of federal authority, then pick a specific node to see details,
-        cross-references, and doctrine links.
+    <!-- LEFT: Packs & search -->
+    <section class="law-card">
+      <h2>Authority Packs</h2>
+      <p class="law-sub">
+        Each pack is a curated slice of controlling federal law:
+        USC + CFR + funding conditions. A.B.E. uses these as
+        “ground truth” when checking divergence.
       </p>
 
-      <div class="tabs" id="law-tabs">
-        <button class="tab tab-active" data-filter="all">All</button>
-        <button class="tab" data-filter="statutes">Statutes (Title 49)</button>
-        <button class="tab" data-filter="fmcsr">FMCSR Scope</button>
-        <button class="tab" data-filter="mcsap">MCSAP / Funding</button>
-      </div>
+      <input id="law-search" class="law-search" placeholder="Filter by citation, program, or tag…"/>
 
-      <h3>Packs</h3>
-      <ul id="law-pack-list" class="pack-list"></ul>
+      <ul id="law-pack-list" class="law-pack-list"></ul>
 
-      <div class="search-row">
-        <input id="law-search" class="search-input" placeholder="Filter rules by citation, title, or keyword…"/>
-        <span id="law-search-count" class="search-count">0 nodes</span>
-      </div>
+      <p id="law-status" class="law-status">Status: choose a pack to begin.</p>
 
-      <ul id="law-node-list" class="node-list"></ul>
-
-      <p id="law-status" class="status-line">Status: loading packs…</p>
+      <p class="law-sub" style="margin-top:.6rem">
+        This viewer runs entirely in your browser. To verify hashes and audit the corpus,
+        open the <a href="integration/index.html">Integration / Audit</a> page.
+      </p>
     </section>
 
-    <!-- RIGHT: details -->
-    <section class="card-law">
-      <h2>Selected Rule</h2>
-      <p class="sub">
-        When you click a node on the left, its normalized record appears here. This is what CDA and CFF use.
-      </p>
+    <!-- MIDDLE: Node list -->
+    <section class="law-card">
+      <h2>Authority Entries</h2>
+      <p class="law-sub">Select a provision to see its full scope, preemption notes, and doctrine links.</p>
+      <ul id="law-node-list" class="law-node-list"></ul>
+    </section>
 
-      <div id="law-detail-meta" class="small-note" style="margin-top:.4rem">
-        No node selected yet.
+    <!-- RIGHT: Detail -->
+    <section class="law-card">
+      <h2>Detail & Doctrine Links</h2>
+      <div id="law-detail" class="law-detail">
+        Select a pack and an entry to view details here.
       </div>
-
-      <pre id="law-detail-json">{
-  "id": null,
-  "message": "Select a rule from the left to see its normalized JSON."
-}</pre>
-
-      <div class="btn-row">
-        <button id="law-btn-copy" class="btn" disabled>Copy JSON</button>
-        <button id="law-btn-cda" class="btn btn-primary" disabled>Send shape to CDA</button>
-        <a id="law-btn-doctrine" class="btn" href="law/doctrines/index.html" target="_blank" rel="noopener" disabled>
-          View related doctrine
-        </a>
-      </div>
-
-      <p class="small-note" style="margin-top:.7rem">
-        This viewer never calls a server with your data. It only reads static JSON packs that live in this repo.
-        The same shapes can be embedded in motions, FCA complaints, or A.B.E. scenarios.
-      </p>
+      <div id="law-detail-links" class="law-links"></div>
     </section>
 
   </div>
 </main>
 
 <footer class="abe-footer">
-  CC BY-NC 4.0 · Federal Authority Corpus · Integrity only — never for sale.
+  <p>
+    A.B.E. — Federal Authority Corpus · CC BY-NC 4.0 · Integrity only — never for sale.
+  </p>
 </footer>
 
 <script src="law/viewer.js"></script>
 </body>
-          </html>
+</html>
