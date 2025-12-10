@@ -2,499 +2,415 @@
 <html lang="en">
 <head>
   <meta charset="utf-8"/>
-  <title>CDA — Constitutional Divergence Analyzer | A.B.E.</title>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>CDA — Constitutional Divergence Analyzer | A.B.E.</title>
   <base href="/abe---flag/">
-  <link rel="stylesheet" href="abe-patch/assets/abe-patch.css"/>
+  <link rel="stylesheet" href="abe-patch/assets/abe-patch.css">
   <style>
-    .cda-grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
-    .cda-textarea{width:100%;min-height:140px;background:#0f131a;border:1px solid var(--line);border-radius:10px;color:var(--ink);padding:10px;font-family:ui-monospace,monospace;font-size:.9rem}
-    .cda-label{font-size:.9rem;color:var(--muted);margin-bottom:4px;display:block}
-    .cda-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:6px 0}
-    .cda-chip{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;border:1px solid var(--line);font-size:.8rem}
-    .cda-badge{display:inline-flex;align-items:center;padding:3px 8px;border-radius:999px;border:1px solid var(--line);font-size:.8rem;color:var(--muted)}
-    .cda-output{white-space:pre-wrap;word-break:break-word}
-    .cda-small{font-size:.85rem;color:var(--muted)}
-    .cda-input{width:100%;max-width:260px;background:#0f131a;border:1px solid var(--line);border-radius:8px;padding:6px 8px;color:var(--ink);font-size:.9rem}
-    .cda-checkbox-group{display:flex;flex-direction:column;gap:4px;font-size:.9rem}
-    .cda-checkbox-group label{display:flex;gap:6px;align-items:flex-start;cursor:pointer}
-    .cda-checkbox-group input{margin-top:3px}
-    .cda-score-pill{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;border:1px solid var(--line);font-size:.85rem}
-    .cda-score-pill strong{color:var(--accent)}
-    .btn-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+    :root{
+      --abe-bg:#05060b;
+      --abe-panel:#10131c;
+      --abe-panel-soft:#161a25;
+      --abe-ink:#edf2ff;
+      --abe-muted:#9fb3c8;
+      --abe-accent:#5ddfff;
+      --abe-pop:#fff750;
+      --abe-border:rgba(255,255,255,.08);
+    }
+    body.abe-page{
+      background:radial-gradient(circle at top,#111827 0,#05060b 55%,#020309 100%);
+      color:var(--abe-ink);
+    }
+    .cda-wrap{
+      max-width:1100px;
+      margin:0 auto;
+      padding:1.5rem 1rem 3rem;
+    }
+    .cda-header h1{
+      margin:0 0 .25rem;
+      font-size:1.9rem;
+    }
+    .cda-header .tagline{
+      max-width:720px;
+      color:var(--abe-muted);
+      font-size:.98rem;
+    }
+    .chip-row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:.5rem;
+      margin-top:.75rem;
+    }
+    .chip{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:.35rem .9rem;
+      border-radius:999px;
+      border:1px solid var(--abe-border);
+      font-size:.85rem;
+      text-decoration:none;
+      color:var(--abe-ink);
+      background:#050712;
+    }
+    .chip:hover{border-color:var(--abe-accent);}
+    .chip-alt{
+      border-color:var(--abe-accent);
+    }
+
+    .cda-grid{
+      display:grid;
+      gap:1.25rem;
+      margin-top:1.4rem;
+    }
+    @media(min-width:900px){
+      .cda-grid{
+        grid-template-columns:3fr 2.3fr;
+      }
+    }
+
+    .card-cda{
+      background:linear-gradient(135deg,var(--abe-panel),#0b101a);
+      border-radius:14px;
+      border:1px solid var(--abe-border);
+      padding:1rem 1.1rem 1.25rem;
+      box-shadow:0 18px 40px rgba(0,0,0,.45);
+    }
+    .card-cda h2{
+      margin:.1rem 0 .4rem;
+      font-size:1.15rem;
+    }
+    .card-cda h3{
+      margin:.4rem 0 .35rem;
+      font-size:1rem;
+    }
+    .sub{
+      color:var(--abe-muted);
+      font-size:.9rem;
+    }
+
+    label{
+      display:block;
+      font-size:.88rem;
+      color:var(--abe-muted);
+      margin:.55rem 0 .2rem;
+    }
+    input[type="text"],
+    textarea,
+    select{
+      width:100%;
+      background:#050712;
+      border-radius:10px;
+      border:1px solid var(--abe-border);
+      padding:.45rem .6rem;
+      color:var(--abe-ink);
+      font-size:.9rem;
+    }
+    textarea{
+      min-height:70px;
+      resize:vertical;
+      font-family:ui-monospace,SFMono-Regular,Consolas,monospace;
+      font-size:.84rem;
+    }
+    select{
+      border-radius:999px;
+    }
+
+    .two-col{
+      display:grid;
+      gap:.6rem;
+    }
+    @media(min-width:600px){
+      .two-col{
+        grid-template-columns:1.1fr 1fr;
+      }
+    }
+
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:.25rem;
+      padding:.1rem .6rem;
+      border-radius:999px;
+      border:1px solid var(--abe-border);
+      font-size:.78rem;
+      color:var(--abe-muted);
+    }
+    .pill-law{border-color:#5ddfff;}
+    .pill-local{border-color:#4bd28f;color:#4bd28f;}
+
+    .flags-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+      gap:.3rem .7rem;
+      margin-top:.3rem;
+    }
+    .flag-item{
+      display:flex;
+      align-items:flex-start;
+      gap:.3rem;
+      font-size:.86rem;
+      color:var(--abe-muted);
+    }
+    .flag-item input[type="checkbox"]{
+      margin-top:.12rem;
+    }
+    .flag-item strong{
+      color:var(--abe-ink);
+      font-weight:500;
+    }
+
+    .btn-run{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      margin-top:.9rem;
+      padding:.5rem 1.1rem;
+      border-radius:999px;
+      border:1px solid var(--abe-pop);
+      background:transparent;
+      color:var(--abe-ink);
+      font-size:.9rem;
+      cursor:pointer;
+      gap:.35rem;
+      box-shadow:0 0 0 1px rgba(0,0,0,.5);
+    }
+    .btn-run:hover{
+      box-shadow:0 0 0 1px rgba(255,247,80,.4),0 0 18px rgba(255,247,80,.25);
+    }
+
+    .status-line{
+      margin-top:.5rem;
+      font-size:.85rem;
+      color:var(--abe-muted);
+    }
+    .status-ok{color:#4bd28f;}
+    .status-warn{color:#ffba5c;}
+    .status-err{color:#ff8585;}
+
+    pre{
+      margin:.35rem 0 .6rem;
+      background:#050712;
+      border-radius:10px;
+      border:1px solid var(--abe-border);
+      padding:.6rem .7rem;
+      font-family:ui-monospace,SFMono-Regular,Consolas,monospace;
+      font-size:.82rem;
+      color:var(--abe-ink);
+      max-height:260px;
+      overflow:auto;
+      white-space:pre-wrap;
+    }
+
+    .score-big{
+      font-size:1.6rem;
+      font-weight:700;
+    }
+    .score-label{
+      font-size:.85rem;
+      color:var(--abe-muted);
+    }
+
+    .btn-row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:.5rem;
+      margin-top:.3rem;
+    }
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:.4rem .85rem;
+      border-radius:999px;
+      border:1px solid var(--abe-border);
+      background:#050712;
+      color:var(--abe-ink);
+      font-size:.85rem;
+      cursor:pointer;
+      text-decoration:none;
+    }
+    .btn:hover{border-color:var(--abe-accent);}
+    .btn:disabled{
+      opacity:.5;
+      cursor:default;
+    }
+
+    .small-note{
+      font-size:.8rem;
+      color:var(--abe-muted);
+    }
+
+    footer.abe-footer{
+      margin-top:2.5rem;
+      text-align:center;
+      font-size:.85rem;
+      color:var(--abe-muted);
+    }
   </style>
 </head>
 <body class="abe-page">
 
 <header class="abe-header">
-  <h1>CDA — Constitutional Divergence Analyzer</h1>
-  <p class="tagline">
-    Turn messy statutory practice into a clean divergence profile the rest of the A.B.E. engine can read.
-  </p>
-  <nav class="chip-row">
-    <a class="chip" href="index.html">ABE Home</a>
-    <a class="chip" href="intake/index.html">Intake</a>
-    <a class="chip" href="ciri/index.html">CIRI</a>
-    <a class="chip" href="cff/index.html">CFF</a>
-    <a class="chip" href="affe/index.html">AFFE</a>
-    <a class="chip" href="ccri/index.html">CCRI</a>
-    <a class="chip chip-alt" href="system/index.html">System Map</a>
-  </nav>
+  <div class="cda-wrap cda-header">
+    <a href="index.html" class="chip">← A.B.E. Home</a>
+    <h1>CDA — Constitutional Divergence Analyzer</h1>
+    <p class="tagline">
+      Turn a statute, funding rule, or enforcement practice into concrete divergence flags
+      and a 0–1 score that CIRI, CFF, and Macro can consume.
+    </p>
+    <div class="chip-row">
+      <span class="chip chip-alt">No servers · all in this browser</span>
+      <span id="law-bridge-pill" class="chip pill-law" style="display:none;">
+        Linked to Law Viewer node
+      </span>
+      <a class="chip" href="law/index.html">Law Corpus</a>
+      <a class="chip" href="intake/index.html">Intake</a>
+      <a class="chip" href="cff/index.html">CFF</a>
+      <a class="chip" href="integration/index.html">Integration</a>
+    </div>
+  </div>
 </header>
 
 <main class="abe-main">
+  <div class="cda-wrap cda-grid">
 
-  <!-- What CDA does -->
-  <section class="card">
-    <h2>What CDA Does</h2>
-    <p>
-      CDA is the part of A.B.E. that says, in plain terms:
-      <strong>“Here’s where this law or policy jumped the tracks.”</strong>
-    </p>
-    <p>
-      You give CDA a statute or policy scenario. It gives you back a structured divergence object:
-    </p>
-    <ul>
-      <li>Who the rule is supposed to cover vs who it’s actually hitting.</li>
-      <li>Where state law conflicts with federal commercial scope.</li>
-      <li>Where MCSAP / DOT funding rules are being bent or ignored.</li>
-      <li>A numeric divergence score other modules can consume.</li>
-      <li>A doctrine footprint, showing which constitutional doctrines are being violated.</li>
-    </ul>
-    <p class="cda-small">
-      This page is intentionally simple: no AI, no servers, no hidden parsing.
-      You mark the divergences you see; CDA turns them into
-      <code>cda_scenario.json</code> and a clean summary you can hand to CDI, CIRI, CFF, or a court.
-    </p>
-  </section>
+    <!-- LEFT: inputs -->
+    <section class="card-cda">
+      <h2>Step 1 — Describe the rule or practice</h2>
+      <p class="sub">
+        You can type this in yourself, or open a node in the <strong>Law</strong> viewer and let CDA pre-fill
+        the statute and citations from <code>ABE_LAW_TO_CDA</code>.
+      </p>
 
-  <!-- Inputs -->
-  <section class="card">
-    <h2>Step 1 — Describe the statute or policy</h2>
-    <div class="cda-grid">
-      <div>
-        <label class="cda-label" for="cda-name">Statute / Policy Name</label>
-        <input id="cda-name" class="cda-input" placeholder="Example: Iowa Code 321.174 — Drivers license required"/>
-
-        <label class="cda-label" for="cda-juris" style="margin-top:8px">Jurisdiction</label>
-        <input id="cda-juris" class="cda-input" placeholder="Example: Iowa / State level"/>
-
-        <label class="cda-label" for="cda-cites" style="margin-top:8px">Key citations (comma-separated)</label>
-        <input id="cda-cites" class="cda-input" placeholder="e.g. 321.174, 321.1(40), 49 CFR 390.3"/>
-
-        <label class="cda-label" for="cda-notes" style="margin-top:8px">Scenario notes (optional)</label>
-        <textarea id="cda-notes" class="cda-textarea" placeholder="Describe how the statute or policy is being used in practice."></textarea>
-        <p class="cda-small">
-          If you came from Intake, CDA may pre-fill this from your uploaded document (ticket, CPS letter, contract, etc.).
-        </p>
-      </div>
-
-      <div>
-        <span class="cda-label">Scope & level</span>
-        <div class="cda-row">
-          <span class="cda-chip">
-            <input type="radio" name="cda-level" id="cda-level-state" value="state" checked>
-            <label for="cda-level-state">State / local rule</label>
-          </span>
-          <span class="cda-chip">
-            <input type="radio" name="cda-level" id="cda-level-fed" value="federal">
-            <label for="cda-level-fed">Federal statute / regulation</label>
-          </span>
+      <div class="two-col">
+        <div>
+          <label for="statute-name">Name of statute / policy / practice</label>
+          <input id="statute-name" type="text" placeholder="Example: Iowa DPS use of FMCSRs on non-commercial drivers"/>
         </div>
-
-        <span class="cda-label" style="margin-top:10px">Population this rule is hitting</span>
-        <div class="cda-row">
-          <span class="cda-chip">
-            <input type="radio" name="cda-pop" id="cda-pop-noncom" value="non_commercial" checked>
-            <label for="cda-pop-noncom">Non-commercial citizens</label>
-          </span>
-          <span class="cda-chip">
-            <input type="radio" name="cda-pop" id="cda-pop-com" value="commercial">
-            <label for="cda-pop-com">DOT-regulated / commercial drivers</label>
-          </span>
-          <span class="cda-chip">
-            <input type="radio" name="cda-pop" id="cda-pop-mixed" value="mixed">
-            <label for="cda-pop-mixed">Mixed / unclear</label>
-          </span>
-        </div>
-
-        <span class="cda-label" style="margin-top:10px">Related funding streams (if any)</span>
-        <div class="cda-row">
-          <span class="cda-chip">
-            <input type="checkbox" id="cda-fund-mcsap">
-            <label for="cda-fund-mcsap">MCSAP / FMCSA</label>
-          </span>
-          <span class="cda-chip">
-            <input type="checkbox" id="cda-fund-hwy">
-            <label for="cda-fund-hwy">Highway Safety / 23 U.S.C.</label>
-          </span>
-          <span class="cda-chip">
-            <input type="checkbox" id="cda-fund-other">
-            <label for="cda-fund-other">Other federal enforcement funding</label>
-          </span>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Divergence flags -->
-  <section class="card">
-    <h2>Step 2 — Mark the divergences you see</h2>
-    <p class="cda-small">
-      Check only what actually applies. CDA will convert this into a structured
-      divergence profile, a suggested 0–1 score, and a doctrine footprint.
-    </p>
-    <div class="cda-grid">
-      <div>
-        <h3>Scope & preemption</h3>
-        <div class="cda-checkbox-group">
-          <label>
-            <input type="checkbox" id="f-scope-noncom">
-            <span>State is treating <strong>non-commercial citizens</strong> as if they were <strong>commercial/DOT-regulated</strong>.</span>
-          </label>
-          <label>
-            <input type="checkbox" id="f-preempt-conflict">
-            <span>State rule <strong>conflicts with or expands</strong> federal commercial scope (49 U.S.C. / 49 CFR 300–399).</span>
-          </label>
-          <label>
-            <input type="checkbox" id="f-preempt-field">
-            <span>State is legislating inside a field that Congress already fully occupied (field preemption).</span>
-          </label>
-          <label>
-            <input type="checkbox" id="f-ultra-vires">
-            <span>Agency practice goes beyond what the statute actually authorizes (ultra vires).</span>
-          </label>
+        <div>
+          <label for="jurisdiction">Jurisdiction (optional)</label>
+          <input id="jurisdiction" type="text" placeholder="e.g., Iowa, Federal, Multistate"/>
         </div>
       </div>
 
-      <div>
-        <h3>Funding & misuse</h3>
-        <div class="cda-checkbox-group">
-          <label>
-            <input type="checkbox" id="f-mcsap-offmission">
-            <span>Enforcement being funded by <strong>MCSAP or similar grants</strong> for actions <strong>outside commercial scope</strong>.</span>
-          </label>
-          <label>
-            <input type="checkbox" id="f-funding-conditions">
-            <span>State practice ignores or contradicts <strong>federal funding conditions</strong> (e.g., FMCSR adoption requirements).</span>
-          </label>
-          <label>
-            <input type="checkbox" id="f-funding-transparent">
-            <span>Funding source and statutory authority are not disclosed to affected citizens.</span>
-          </label>
+      <div class="two-col">
+        <div>
+          <label for="level">Level</label>
+          <select id="level">
+            <option value="state" selected>State / local</option>
+            <option value="federal">Federal</option>
+          </select>
+        </div>
+        <div>
+          <label for="population">Population impacted</label>
+          <select id="population">
+            <option value="non_commercial">Non-commercial individuals</option>
+            <option value="commercial">Commercial / DOT-regulated</option>
+            <option value="mixed">Mixed / unclear</option>
+          </select>
         </div>
       </div>
 
-      <div>
-        <h3>Rights & due process</h3>
-        <div class="cda-checkbox-group">
-          <label>
-            <input type="checkbox" id="f-right-travel">
-            <span>Rule/practice burdens the <strong>right to travel</strong> for people not engaged in commerce.</span>
-          </label>
-          <label>
-            <input type="checkbox" id="f-due-process">
-            <span>There is no meaningful notice, hearing, or appeal path before rights are restricted.</span>
-          </label>
-          <label>
-            <input type="checkbox" id="f-selective">
-            <span>Application appears selective or arbitrary (similar cases treated differently with no lawful basis).</span>
-          </label>
-        </div>
+      <label for="citations">Citations (optional)</label>
+      <textarea id="citations" placeholder="49 U.S.C. § 31136; 49 CFR 390.3; Iowa Code 80.9; etc."></textarea>
+
+      <label for="funding-streams">Funding streams (optional)</label>
+      <textarea id="funding-streams" placeholder="MCSAP; Highway Safety grants; State DOT funds; etc."></textarea>
+
+      <h3>Step 2 — Set divergence flags</h3>
+      <p class="sub">
+        Check everything that is true for this scenario. CDA will compute a 0–1 score:
+        <strong>0 = fully aligned</strong>, <strong>1 = maximally divergent</strong>.
+      </p>
+
+      <div class="flags-grid">
+        <label class="flag-item">
+          <input type="checkbox" id="flag-scope-noncommercial"/>
+          <span><strong>Scope: non-commercial treated as commercial</strong><br>Private citizens are treated as if they were DOT-regulated carriers.</span>
+        </label>
+        <label class="flag-item">
+          <input type="checkbox" id="flag-preemption-conflict"/>
+          <span><strong>Preemption conflict</strong><br>State rule conflicts with, or expands beyond, federal commercial scope.</span>
+        </label>
+        <label class="flag-item">
+          <input type="checkbox" id="flag-preemption-field"/>
+          <span><strong>Field preemption</strong><br>State is legislating in an area already occupied by Congress.</span>
+        </label>
+        <label class="flag-item">
+          <input type="checkbox" id="flag-ultra-vires"/>
+          <span><strong>Ultra vires enforcement</strong><br>Agency is acting beyond what its statutes actually authorize.</span>
+        </label>
+        <label class="flag-item">
+          <input type="checkbox" id="flag-mcsap-off-mission"/>
+          <span><strong>MCSAP off-mission</strong><br>Commercial enforcement funding used on non-commercial activity.</span>
+        </label>
+        <label class="flag-item">
+          <input type="checkbox" id="flag-funding-conditions-ignored"/>
+          <span><strong>Funding conditions ignored</strong><br>Practice contradicts federal funding conditions or FMCSR adoption rules.</span>
+        </label>
+        <label class="flag-item">
+          <input type="checkbox" id="flag-funding-nontransparent"/>
+          <span><strong>Funding non-transparent</strong><br>People affected cannot easily see what funding is being used.</span>
+        </label>
+        <label class="flag-item">
+          <input type="checkbox" id="flag-right-to-travel"/>
+          <span><strong>Right to travel burdened</strong><br>Non-commercial movement is restricted or criminalized.</span>
+        </label>
+        <label class="flag-item">
+          <input type="checkbox" id="flag-due-process"/>
+          <span><strong>Due process defects</strong><br>No clear notice, hearing, or appeal before rights are taken.</span>
+        </label>
+        <label class="flag-item">
+          <input type="checkbox" id="flag-selective"/>
+          <span><strong>Selective application</strong><br>Rule is applied arbitrarily or only to certain groups.</span>
+        </label>
       </div>
-    </div>
 
-    <div class="btn-row">
-      <button id="btn-generate" class="btn">Generate CDA Scenario JSON</button>
-      <button id="btn-download" class="btn btn-ghost" disabled>Download JSON</button>
-    </div>
-    <p id="cda-score-pill" class="cda-small" style="margin-top:8px"></p>
-  </section>
+      <button id="btn-generate" class="btn-run">
+        <span>⚖️ Generate CDA scenario</span>
+      </button>
+      <div id="cda-status" class="status-line">Status: waiting for inputs…</div>
+    </section>
 
-  <!-- Outputs -->
-  <section class="card">
-    <h2>Outputs</h2>
-    <p class="cda-small">
-      This is what gets passed into CDI / CIRI / CFF as a structured divergence document.
-      You can also print it or attach it as an exhibit.
-    </p>
-    <h3>Structured JSON</h3>
-    <textarea id="cda-json" class="cda-textarea cda-output" readonly aria-label="CDA JSON output"></textarea>
+    <!-- RIGHT: outputs -->
+    <section class="card-cda">
+      <h2>Step 3 — Review result & export</h2>
 
-    <h3 style="margin-top:14px">Plain-language summary</h3>
-    <pre id="cda-summary" class="cda-textarea cda-output" style="min-height:100px"></pre>
-  </section>
+      <div>
+        <div class="score-label">Divergence score (0–1)</div>
+        <div id="score-value" class="score-big">—</div>
+      </div>
 
+      <h3>Structured JSON</h3>
+      <pre id="cda-json">{
+  "version": "1.0",
+  "module": "CDA",
+  "message": "Click “Generate CDA scenario” to see output here."
+}</pre>
+
+      <h3>Plain-language summary</h3>
+      <pre id="cda-summary">Summary will appear here after you generate a scenario…</pre>
+
+      <div class="btn-row">
+        <button id="btn-download" class="btn" disabled>⬇ Download cda_scenario.json</button>
+        <button id="btn-copy-hash" class="btn" disabled>🔗 Copy SHA-256 hash</button>
+      </div>
+
+      <p class="small-note">
+        CDA runs entirely in this browser tab. When you generate a scenario, it is also stored as
+        <code>ABE_CDA_SCENARIO_V1</code> in <em>localStorage</em> so other A.B.E. views on this device
+        (like Integration) can see it.
+      </p>
+    </section>
+
+  </div>
 </main>
 
 <footer class="abe-footer">
-  <p>
-    A.B.E. — American Butterfly Effect · CDA module · CC BY-NC 4.0 · Integrity only — never for sale.
-  </p>
+  CC BY-NC 4.0 · Constitutional Divergence Analyzer · Integrity only — never for sale.
 </footer>
 
-<script>
-(function(){
-  const byId = id => document.getElementById(id);
-
-  function bool(id){ return !!byId(id)?.checked; }
-
-  function getRadio(name, fallback){
-    const els = document.querySelectorAll('input[name="'+name+'"]');
-    for(const el of els){ if(el.checked) return el.value; }
-    return fallback;
-  }
-
-  function computeScore(flags){
-    // simple scoring: each true flag adds weight
-    const weights = {
-      scope_noncommercial_treated_as_commercial: 0.18,
-      preemption_conflict: 0.18,
-      preemption_field: 0.15,
-      ultra_vires_enforcement: 0.15,
-      mcsap_off_mission: 0.14,
-      funding_conditions_ignored: 0.10,
-      funding_nontransparent: 0.04,
-      right_to_travel_burdened: 0.12,
-      due_process_defects: 0.10,
-      selective_application: 0.06
-    };
-    let s = 0;
-    for(const k in weights){
-      if(flags[k]) s += weights[k];
-    }
-    if(s > 1) s = 1;
-    return Number(s.toFixed(3));
-  }
-
-  function makeSummary(obj){
-    const lines = [];
-    lines.push(`CDA scenario: ${obj.statute_name || '(unnamed)'}`);
-    lines.push(`Jurisdiction: ${obj.jurisdiction || '—'} · Level: ${obj.level}`);
-    lines.push(`Population impacted: ${obj.population}`);
-    if(obj.citations && obj.citations.length){
-      lines.push(`Citations: ${obj.citations.join(', ')}`);
-    }
-    if(obj.funding_streams && obj.funding_streams.length){
-      lines.push(`Related funding: ${obj.funding_streams.join(', ')}`);
-    }
-    if(obj.doctrines_triggered && obj.doctrines_triggered.length){
-      lines.push(`Doctrines triggered: ${obj.doctrines_triggered.join(', ')}`);
-    }
-    lines.push('');
-    lines.push(`Divergence score (0–1): ${obj.divergence_score}`);
-    lines.push('');
-
-    const f = obj.flags || {};
-    if(f.scope_noncommercial_treated_as_commercial){
-      lines.push('- State practice is treating non-commercial citizens as if they were commercial/DOT-regulated.');
-    }
-    if(f.preemption_conflict){
-      lines.push('- State rule conflicts with, or expands beyond, federal commercial scope (49 U.S.C. / 49 CFR).');
-    }
-    if(f.preemption_field){
-      lines.push('- State appears to legislate in a field already occupied by Congress (field preemption).');
-    }
-    if(f.ultra_vires_enforcement){
-      lines.push('- Agency conduct goes beyond what the statute actually authorizes (ultra vires).');
-    }
-    if(f.mcsap_off_mission){
-      lines.push('- Enforcement appears funded by MCSAP or similar grants for off-mission/non-commercial activity.');
-    }
-    if(f.funding_conditions_ignored){
-      lines.push('- Practice appears inconsistent with federal funding conditions or FMCSR adoption requirements.');
-    }
-    if(f.funding_nontransparent){
-      lines.push('- Funding source and statutory authority are not transparent to affected people.');
-    }
-    if(f.right_to_travel_burdened){
-      lines.push('- Practice burdens the right to travel for people not engaged in commerce.');
-    }
-    if(f.due_process_defects){
-      lines.push('- There are gaps in notice, hearing, or appeal (due process concerns).');
-    }
-    if(f.selective_application){
-      lines.push('- Application appears selective or arbitrary across similar cases.');
-    }
-    if(obj.notes){
-      lines.push('');
-      lines.push('Scenario notes:');
-      lines.push(obj.notes);
-    }
-    return lines.join('\n');
-  }
-
-  function slugify(str){
-    return (str || 'cda_scenario')
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g,'-')
-      .replace(/^-+|-+$/g,'')
-      || 'cda_scenario';
-  }
-
-  // --- Doctrine mapping: CDA flags → doctrine IDs from law/doctrines/doctrine_map.json
-  const CDA_FLAG_DOCTRINES = {
-    scope_noncommercial_treated_as_commercial: [
-      "police_power_doctrine",
-      "fmcsr_expansion"
-    ],
-    preemption_conflict: [
-      "supremacy_clause"
-    ],
-    preemption_field: [
-      "supremacy_clause"
-    ],
-    ultra_vires_enforcement: [
-      "nondelegation"
-    ],
-    mcsap_off_mission: [
-      "fmcsr_expansion",
-      "major_questions"
-    ],
-    funding_conditions_ignored: [
-      "supremacy_clause"
-    ],
-    funding_nontransparent: [],
-    right_to_travel_burdened: [
-      "equal_protection",
-      "void_for_vagueness"
-    ],
-    due_process_defects: [
-      "void_for_vagueness"
-    ],
-    selective_application: [
-      "equal_protection"
-    ]
-  };
-
-  function collectDoctrines(flags){
-    const set = new Set();
-    for (const [flagKey, on] of Object.entries(flags)) {
-      if (!on) continue;
-      const ids = CDA_FLAG_DOCTRINES[flagKey] || [];
-      ids.forEach(id => set.add(id));
-    }
-    return Array.from(set);
-  }
-
-  const btnGen = byId('btn-generate');
-  const btnDl  = byId('btn-download');
-  const outJson= byId('cda-json');
-  const outSum = byId('cda-summary');
-  const pill   = byId('cda-score-pill');
-
-  let lastObj = null;
-
-  if (btnGen) {
-    btnGen.addEventListener('click', ()=>{
-      const name  = byId('cda-name').value.trim();
-      const juris = byId('cda-juris').value.trim();
-      const cites = byId('cda-cites').value.trim();
-      const notes = byId('cda-notes').value.trim();
-
-      const level = getRadio('cda-level','state');
-      const pop   = getRadio('cda-pop','non_commercial');
-
-      const funding = [];
-      if(bool('cda-fund-mcsap')) funding.push('MCSAP/FMCSA');
-      if(bool('cda-fund-hwy'))   funding.push('Highway Safety / 23 U.S.C.');
-      if(bool('cda-fund-other')) funding.push('Other federal enforcement funding');
-
-      const flags = {
-        scope_noncommercial_treated_as_commercial: bool('f-scope-noncom'),
-        preemption_conflict:                       bool('f-preempt-conflict'),
-        preemption_field:                          bool('f-preempt-field'),
-        ultra_vires_enforcement:                   bool('f-ultra-vires'),
-        mcsap_off_mission:                         bool('f-mcsap-offmission'),
-        funding_conditions_ignored:                bool('f-funding-conditions'),
-        funding_nontransparent:                    bool('f-funding-transparent'),
-        right_to_travel_burdened:                  bool('f-right-travel'),
-        due_process_defects:                       bool('f-due-process'),
-        selective_application:                     bool('f-selective')
-      };
-
-      const score = computeScore(flags);
-      const doctrines_triggered = collectDoctrines(flags);
-
-      const obj = {
-        version: "1.0",
-        module: "CDA",
-        statute_name: name,
-        jurisdiction: juris,
-        level,
-        population: pop,
-        citations: cites ? cites.split(',').map(s=>s.trim()).filter(Boolean) : [],
-        funding_streams: funding,
-        flags,
-        divergence_score: score,
-        doctrines_triggered,
-        notes: notes || ""
-      };
-
-      lastObj = obj;
-
-      outJson.value = JSON.stringify(obj,null,2);
-      outSum.textContent = makeSummary(obj);
-
-      pill.innerHTML = `
-        <span class="cda-score-pill">
-          <span>Suggested divergence score:</span>
-          <strong>${score}</strong>
-          <span class="cda-small">(0 = fully aligned · 1 = severe divergence)</span>
-        </span>
-      `;
-
-      btnDl.disabled = false;
-    });
-  }
-
-  if (btnDl) {
-    btnDl.addEventListener('click', ()=>{
-      if(!lastObj) return;
-      const slug = slugify(lastObj.statute_name);
-      const blob = new Blob([JSON.stringify(lastObj,null,2)],{type:'application/json'});
-      const url  = URL.createObjectURL(blob);
-      const a    = document.createElement('a');
-      a.href = url;
-      a.download = `cda_${slug}.json`;
-      a.click();
-      URL.revokeObjectURL(url);
-    });
-  }
-
-  // --- Optional: prefill from Intake artifact, if present
-  (function hydrateFromIntake(){
-    try {
-      const raw = localStorage.getItem('abe_intake_artifact');
-      if (!raw) return;
-      const intake = JSON.parse(raw);
-
-      const notesEl = byId('cda-notes');
-      if (notesEl && !notesEl.value.trim() && intake.text_normalized) {
-        notesEl.value = intake.text_normalized.slice(0, 2000);
-      }
-
-      if (intake.doc_type === 'traffic_ticket') {
-        const popNon = byId('cda-pop-noncom');
-        if (popNon) popNon.checked = true;
-      }
-
-      if (Array.isArray(intake.doctrine_hints) && intake.doctrine_hints.length) {
-        const main = document.querySelector('main');
-        if (main) {
-          const div = document.createElement('p');
-          div.className = 'cda-small';
-          div.style.marginBottom = '0.5rem';
-          div.textContent = 'Doctrine hints from Intake: ' + intake.doctrine_hints.join(', ');
-          main.insertBefore(div, main.firstChild);
-        }
-      }
-    } catch (e) {
-      console.warn('CDA could not read Intake artifact:', e);
-    }
-  })();
-
-})();
-</script>
+<script src="cda/cda.js"></script>
 </body>
 </html>
