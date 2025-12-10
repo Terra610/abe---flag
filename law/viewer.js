@@ -1,441 +1,317 @@
 // law/viewer.js
-// Lightweight viewer for A.B.E. law packs.
-// All data is static JSON in this repo. No user data, no network writes.
+// Simple in-browser viewer for the Federal Authority Corpus.
+// No network calls leave the GitHub Pages origin; everything is static JSON.
 
 (function(){
   const byId = id => document.getElementById(id);
 
-  // --- Pack catalog ---------------------------------------------------------
-
-  // category: 'statutes' | 'fmcsr' | 'mcsap'
+  // ---------------------------------------------------------------------------
+  // Packs: keep in sync with law/model.json
+  // ---------------------------------------------------------------------------
   const LAW_PACKS = [
     {
       id: 'title_49_transport',
-      label: 'Title 49 — Transportation Statutes',
+      label: 'Title 49 — Transportation (Core FMCSA Scope)',
       file: 'law/title_49_transport.json',
-      category: 'statutes',
-      notes: 'Baseline federal transportation and commercial authority.'
-    },
-    {
-      id: 'fmcsr_scope',
-      label: 'FMCSR Scope & Definitions',
-      file: 'law/fmcsr_scope.json',
-      category: 'fmcsr',
-      notes: 'Who FMCSRs actually apply to (and who they do not).'
-    },
-    {
-      id: 'mcsap_rules',
-      label: 'MCSAP Funding & Conditions',
-      file: 'law/mcsap_rules.json',
-      category: 'mcsap',
-      notes: 'How enforcement dollars are supposed to be used.'
+      notes: 'Definitions, general FMCSA authority, and transportation scope.',
+      kind: 'usc_cfr'
     },
     {
       id: 'title_49_mcsap_fmcsa',
-      label: 'Title 49 — MCSAP & FMCSA Provisions',
+      label: 'Title 49 — MCSAP & FMCSA Program Funding',
       file: 'law/title_49_mcsap_fmcsa.json',
-      category: 'mcsap',
-      notes: 'Statutory backbone for MCSAP and FMCSA grant programs.'
+      notes: 'Funding authority, program conditions, and matching requirements.',
+      kind: 'funding'
+    },
+    {
+      id: 'fmcsr_scope',
+      label: 'FMCSR Scope Map (49 CFR 390.3 / 390.5)',
+      file: 'law/fmcsr_scope.json',
+      notes: 'Commercial vs non-commercial coverage, exclusions, and definitions.',
+      kind: 'cfr'
+    },
+    {
+      id: 'mcsap_rules',
+      label: 'MCSAP Program Rules (49 CFR Part 350)',
+      file: 'law/mcsap_rules.json',
+      notes: 'State plan rules, off-mission limits, and spending conditions.',
+      kind: 'funding'
     }
   ];
 
-  // --- DOM refs -------------------------------------------------------------
+  // Doctrine slugs -> URLs (so we can add links in detail view)
+  const DOCTRINE_LINKS = {
+    constitutional_fidelity: 'doctrine/constitutional-fidelity.html',
+    void_ab_initio:          'doctrine/void-ab-initio.html',
+    abe_crra:                'doctrine/abe-crra.html'
+  };
 
-  const tabsEl        = byId('law-tabs');
-  const packListEl    = byId('law-pack-list');
-  const nodeListEl    = byId('law-node-list');
-  const searchInput   = byId('law-search');
-  const searchCountEl = byId('law-search-count');
-  const statusEl      = byId('law-status');
+  const statusEl   = byId('law-status');
+  const packListEl = byId('law-pack-list');
+  const nodeListEl = byId('law-node-list');
+  const detailEl   = byId('law-detail');
+  const linksEl    = byId('law-detail-links');
+  const searchEl   = byId('law-search');
 
-  const detailMetaEl  = byId('law-detail-meta');
-  const detailJsonEl  = byId('law-detail-json');
-  const btnCopy       = byId('law-btn-copy');
-  const btnCda        = byId('law-btn-cda');
-  const btnDoctrine   = byId('law-btn-doctrine');
+  let currentPack   = null;
+  let currentNodes  = [];
+  let currentFilter = '';
 
-  // --- State ----------------------------------------------------------------
-
-  let currentFilter = 'all';
-  let currentPackId = null;
-  let currentNodeId = null;
-
-  const packData = {};   // packId -> array of nodes
-  const packLoaded = {}; // packId -> bool
-
-  // --- helpers --------------------------------------------------------------
+  // ---------------------------------------------------------------------------
+  // helpers
+  // ---------------------------------------------------------------------------
 
   function setStatus(text, kind){
     if(!statusEl) return;
-    statusEl.textContent = 'Status: ' + text;
-    statusEl.className = 'status-line';
-    if(kind === 'ok')   statusEl.classList.add('status-ok');
-    if(kind === 'warn') statusEl.classList.add('status-warn');
-    if(kind === 'err')  statusEl.classList.add('status-err');
+    statusEl.textContent = `Status: ${text}`;
+    statusEl.className = 'law-status';
+    if(kind === 'ok')   statusEl.classList.add('law-status-ok');
+    if(kind === 'warn') statusEl.classList.add('law-status-warn');
+    if(kind === 'bad')  statusEl.classList.add('law-status-bad');
   }
 
-  function safeArray(v){
-    return Array.isArray(v) ? v : [];
+  function pillForType(type){
+    const span = document.createElement('span');
+    span.className = 'law-pill';
+    if(type === 'usc'){
+      span.classList.add('law-pill-usc');
+      span.textContent = 'USC';
+    } else if(type === 'cfr'){
+      span.classList.add('law-pill-cfr');
+      span.textContent = 'CFR';
+    } else if(type === 'funding'){
+      span.classList.add('law-pill-funding');
+      span.textContent = 'Funding';
+    } else {
+      span.textContent = type || 'Other';
+    }
+    return span;
   }
 
-  function textMatch(node, q){
-    if(!q) return true;
-    q = q.toLowerCase();
-    const fields = [
-      node.label,
+  function matchesFilter(node){
+    if(!currentFilter) return true;
+    const f = currentFilter.toLowerCase();
+    const hay = [
       node.citation,
-      node.short_summary,
-      node.description,
-      (node.scope && node.scope.summary),
-      (node.authority && node.authority.source)
-    ];
-    return fields.some(f => typeof f === 'string' && f.toLowerCase().includes(q));
+      node.title,
+      node.short_title,
+      (node.programs || []).join(' '),
+      (node.tags || []).join(' '),
+      node.scope?.summary
+    ].join(' ').toLowerCase();
+    return hay.includes(f);
   }
 
-  function prettyType(t){
-    if(!t) return 'rule';
-    if(typeof t !== 'string') return String(t);
-    return t.replace(/_/g,' ');
-  }
-
-  function prettyLevel(l){
-    if(!l) return '';
-    if(typeof l !== 'string') return String(l);
-    return l.replace(/_/g,' ');
-  }
-
-  function copyToClipboard(text){
-    try{
-      if(navigator.clipboard && navigator.clipboard.writeText){
-        navigator.clipboard.writeText(text);
-        return;
-      }
-    }catch(e){}
-    const ta = document.createElement('textarea');
-    ta.value = text;
-    ta.style.position = 'fixed';
-    ta.style.top = '-9999px';
-    document.body.appendChild(ta);
-    ta.select();
-    try{ document.execCommand('copy'); } catch(e){}
-    ta.remove();
-  }
-
-  // --- render: packs --------------------------------------------------------
+  // ---------------------------------------------------------------------------
+  // renderers
+  // ---------------------------------------------------------------------------
 
   function renderPacks(){
     if(!packListEl) return;
-
     packListEl.innerHTML = '';
-    const visible = LAW_PACKS.filter(p =>
-      currentFilter === 'all' ? true : p.category === currentFilter
-    );
-
-    if(!visible.length){
+    LAW_PACKS.forEach(pack=>{
       const li = document.createElement('li');
-      li.textContent = 'No packs for this filter yet.';
-      li.className = 'pack-item';
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'law-pack-btn';
+      btn.textContent = pack.label;
+      btn.dataset.packId = pack.id;
+
+      btn.addEventListener('click', ()=>{
+        Array.from(packListEl.querySelectorAll('.law-pack-btn'))
+          .forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+        loadPack(pack);
+      });
+
+      li.appendChild(btn);
       packListEl.appendChild(li);
-      return;
-    }
-
-    for(const pack of visible){
-      const li = document.createElement('li');
-      li.className = 'pack-item';
-      li.dataset.packId = pack.id;
-      if(pack.id === currentPackId){
-        li.classList.add('pack-item-active');
-      }
-
-      const label = document.createElement('div');
-      label.className = 'pack-label';
-      label.textContent = pack.label;
-
-      const notes = document.createElement('div');
-      notes.className = 'pack-notes';
-      notes.textContent = pack.notes || '';
-
-      li.appendChild(label);
-      li.appendChild(notes);
-      packListEl.appendChild(li);
-    }
+    });
   }
 
-  // --- fetch a pack ---------------------------------------------------------
-
-  async function loadPack(packId){
-    if(packLoaded[packId]) return packData[packId] || [];
-
-    const pack = LAW_PACKS.find(p => p.id === packId);
-    if(!pack){
-      setStatus('unknown pack: ' + packId, 'err');
-      return [];
-    }
-
-    try{
-      setStatus(`loading ${pack.label}…`, 'warn');
-      const resp = await fetch(pack.file, { cache: 'no-store' });
-      if(!resp.ok){
-        setStatus(`could not load ${pack.file}`, 'err');
-        return [];
-      }
-      const json = await resp.json();
-      const arr = Array.isArray(json) ? json : (Array.isArray(json.nodes) ? json.nodes : []);
-      packData[packId] = arr;
-      packLoaded[packId] = true;
-      setStatus(`loaded ${pack.label} (${arr.length} nodes)`, 'ok');
-      return arr;
-    }catch(err){
-      console.error(err);
-      setStatus('error loading ' + pack.file, 'err');
-      packLoaded[packId] = true;
-      packData[packId] = [];
-      return [];
-    }
-  }
-
-  // --- render: nodes --------------------------------------------------------
-
-  async function renderNodes(packId){
+  function renderNodes(){
     if(!nodeListEl) return;
     nodeListEl.innerHTML = '';
-    currentNodeId = null;
-
-    if(!packId){
-      searchCountEl.textContent = '0 nodes';
-      return;
-    }
-
-    const nodes = await loadPack(packId);
-    const q = (searchInput && searchInput.value || '').trim();
-    const filtered = nodes.filter(n => textMatch(n, q));
-
-    searchCountEl.textContent = `${filtered.length} node${filtered.length===1?'':'s'}`;
-
-    if(!filtered.length){
+    if(!currentNodes.length){
       const li = document.createElement('li');
-      li.textContent = q ? 'No nodes match this search.' : 'No nodes in this pack yet.';
-      li.className = 'node-item';
+      li.className = 'law-node';
+      const span = document.createElement('span');
+      span.style.display = 'block';
+      span.style.padding = '.5rem .6rem';
+      span.textContent = currentPack
+        ? 'No entries match this filter.'
+        : 'Choose a pack to see entries.';
+      li.appendChild(span);
       nodeListEl.appendChild(li);
       return;
     }
 
-    for(const n of filtered){
+    currentNodes.forEach(node=>{
       const li = document.createElement('li');
-      li.className = 'node-item';
-      li.dataset.nodeId = n.id || '';
+      li.className = 'law-node';
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.dataset.nodeId = node.id || '';
+      const title = node.short_title || node.title || '(untitled)';
+      const cite  = node.citation || '';
 
-      const label = document.createElement('div');
-      label.className = 'node-label';
-      label.textContent = n.label || '(unnamed rule)';
+      btn.innerHTML = `
+        <strong>${cite || 'No citation'}</strong> — ${title}
+        <small>${(node.programs || []).join(', ')}</small>
+      `;
 
-      const meta = document.createElement('div');
-      meta.className = 'node-meta';
-
-      const bits = [];
-      if(n.citation) bits.push(n.citation);
-      if(n.type) bits.push(prettyType(n.type));
-      if(n.level) bits.push(prettyLevel(n.level));
-      meta.textContent = bits.join(' · ');
-
-      li.appendChild(label);
-      li.appendChild(meta);
-
-      li.addEventListener('click', () => {
-        selectNode(n, packId);
-        for(const el of nodeListEl.querySelectorAll('.node-item-active')){
-          el.classList.remove('node-item-active');
-        }
-        li.classList.add('node-item-active');
-      });
-
+      btn.addEventListener('click', ()=> renderDetail(node));
+      li.appendChild(btn);
       nodeListEl.appendChild(li);
-    }
-  }
-
-  // --- detail view ----------------------------------------------------------
-
-  function selectNode(node, packId){
-    currentNodeId = node.id || null;
-
-    const type  = prettyType(node.type);
-    const level = prettyLevel(node.level);
-    const pack  = LAW_PACKS.find(p => p.id === packId);
-
-    const pills = [];
-
-    if(type){
-      pills.push(`<span class="pill pill-type">${type}</span>`);
-    }
-    if(level){
-      pills.push(`<span class="pill pill-level">${level}</span>`);
-    }
-    if(node.citation){
-      pills.push(`<span class="pill pill-src">${node.citation}</span>`);
-    }
-    if(pack){
-      pills.push(`<span class="pill">${pack.label}</span>`);
-    }
-
-    const doctr = safeArray(node.doctrine_refs);
-    const doctrText = doctr.length
-      ? `Linked doctrines: ${doctr.join(', ')}`
-      : 'No explicit doctrine links set in this node.';
-
-    detailMetaEl.innerHTML = `
-      <div style="margin-bottom:.25rem;">
-        ${pills.join(' ')}
-      </div>
-      <div class="small-note">
-        ${node.short_summary || node.description || 'No summary provided yet.'}
-      </div>
-      <div class="small-note" style="margin-top:.25rem;">
-        ${doctrText}
-      </div>
-    `;
-
-    detailJsonEl.textContent = JSON.stringify(node, null, 2);
-
-    // Enable buttons
-    if(btnCopy){
-      btnCopy.disabled = false;
-    }
-    if(btnCda){
-      btnCda.disabled = false;
-    }
-    if(btnDoctrine){
-      btnDoctrine.removeAttribute('disabled');
-      // Very light convention: if first doctrine ref looks like a slug,
-      // link to law/doctrines/<slug>.html; otherwise fall back to index.
-      if(doctr.length && typeof doctr[0] === 'string'){
-        const slug = doctr[0]
-          .toLowerCase()
-          .replace(/[^a-z0-9]+/g,'-')
-          .replace(/^-+|-+$/g,'');
-        btnDoctrine.href = `law/doctrines/${slug}.html`;
-      }else{
-        btnDoctrine.href = 'law/doctrines/index.html';
-      }
-    }
-  }
-
-  // --- events ---------------------------------------------------------------
-
-  function initTabs(){
-    if(!tabsEl) return;
-    tabsEl.addEventListener('click', (ev)=>{
-      const btn = ev.target.closest('.tab');
-      if(!btn) return;
-      const f = btn.getAttribute('data-filter') || 'all';
-      currentFilter = f;
-
-      for(const el of tabsEl.querySelectorAll('.tab')){
-        el.classList.toggle('tab-active', el === btn);
-      }
-
-      // Reset current pack when filter changes
-      currentPackId = null;
-      renderPacks();
-      searchInput && (searchInput.value = '');
-      searchCountEl.textContent = '0 nodes';
-      nodeListEl.innerHTML = '';
-
-      // auto-select first pack in this filter
-      const first = LAW_PACKS.find(p =>
-        currentFilter === 'all' ? true : p.category === currentFilter
-      );
-      if(first){
-        currentPackId = first.id;
-        renderPacks();
-        renderNodes(currentPackId);
-      }
     });
   }
 
-  function initPackClicks(){
-    if(!packListEl) return;
-    packListEl.addEventListener('click', (ev)=>{
-      const li = ev.target.closest('.pack-item');
-      if(!li || !li.dataset.packId) return;
-      currentPackId = li.dataset.packId;
+  function renderDetail(node){
+    if(!detailEl) return;
+    const lines = [];
+    const cite = node.citation || '(no citation)';
+    const title = node.title || node.short_title || '(untitled)';
 
-      for(const el of packListEl.querySelectorAll('.pack-item')){
-        el.classList.toggle('pack-item-active', el === li);
+    lines.push(`${cite}`);
+    lines.push(title);
+    lines.push('');
+
+    if(node.scope && (node.scope.summary || node.scope.text)){
+      lines.push('Scope:');
+      if(node.scope.summary) lines.push('  ' + node.scope.summary);
+      if(node.scope.text)    lines.push('  ' + node.scope.text);
+      lines.push('');
+    }
+
+    if(node.preemption){
+      lines.push('Preemption / Supremacy:');
+      if(node.preemption.rule)  lines.push('  Rule: ' + node.preemption.rule);
+      if(node.preemption.notes) lines.push('  Notes: ' + node.preemption.notes);
+      lines.push('');
+    }
+
+    if(node.funding){
+      lines.push('Funding / Conditions:');
+      if(node.funding.program)  lines.push('  Program: ' + node.funding.program);
+      if(node.funding.section)  lines.push('  Section: ' + node.funding.section);
+      if(node.funding.notes)    lines.push('  Notes: ' + node.funding.notes);
+      lines.push('');
+    }
+
+    if(node.tags && node.tags.length){
+      lines.push('Tags: ' + node.tags.join(', '));
+      lines.push('');
+    }
+
+    if(node.notes){
+      lines.push('Notes:');
+      lines.push(node.notes);
+      lines.push('');
+    }
+
+    detailEl.innerHTML = '';
+    const topRow = document.createElement('div');
+    if(node.type){
+      topRow.appendChild(pillForType(node.type));
+    } else if(currentPack && currentPack.kind){
+      topRow.appendChild(pillForType(currentPack.kind));
+    }
+    if(node.programs && node.programs.length){
+      const p = document.createElement('span');
+      p.className = 'law-pill';
+      p.textContent = node.programs.join(', ');
+      topRow.appendChild(p);
+    }
+    detailEl.appendChild(topRow);
+
+    const pre = document.createElement('pre');
+    pre.textContent = lines.join('\n');
+    detailEl.appendChild(pre);
+
+    // Doctrine links & integration hints
+    if(linksEl){
+      linksEl.innerHTML = '';
+      const refs = node.doctrine_refs || [];
+      if(refs.length){
+        const span = document.createElement('span');
+        span.textContent = 'Related doctrines: ';
+        linksEl.appendChild(span);
+
+        refs.forEach((slug,idx)=>{
+          const href = DOCTRINE_LINKS[slug];
+          const a = document.createElement('a');
+          a.href = href || 'doctrine/index.html';
+          a.textContent = slug.replace(/_/g,' ');
+          if(idx > 0) linksEl.appendChild(document.createTextNode(' · '));
+          linksEl.appendChild(a);
+        });
+      } else {
+        linksEl.textContent = 'No doctrine references attached yet. You can still cross-check this rule from the Doctrines page.';
       }
+    }
+  }
 
-      searchInput && (searchInput.value = '');
-      renderNodes(currentPackId);
+  // ---------------------------------------------------------------------------
+  // loading
+  // ---------------------------------------------------------------------------
+
+  async function loadPack(pack){
+    try{
+      currentPack  = pack;
+      currentNodes = [];
+      if(detailEl) detailEl.textContent = 'Loading…';
+      if(nodeListEl) nodeListEl.innerHTML = '';
+      setStatus(`loading ${pack.label}…`, 'warn');
+
+      const res = await fetch(pack.file,{cache:'no-store'});
+      if(!res.ok){
+        throw new Error(`HTTP ${res.status}`);
+      }
+      const data = await res.json();
+
+      // Expect a top-level { nodes: [...] } or just [ ... ]
+      const nodes = Array.isArray(data) ? data : (data.nodes || []);
+      currentNodes = nodes.filter(n => matchesFilter(n));
+      renderNodes();
+      if(currentNodes[0]) renderDetail(currentNodes[0]);
+      setStatus(`loaded ${nodes.length} entries from ${pack.label}`, 'ok');
+
+      // Expose for other modules (Integration / CDA)
+      try{
+        window.ABE_LAW = window.ABE_LAW || {};
+        window.ABE_LAW[pack.id] = {
+          pack,
+          nodes,
+          getById: id => nodes.find(n => n.id === id || n.citation === id)
+        };
+      }catch(e){}
+    }catch(err){
+      console.error(err);
+      setStatus(`failed to load ${pack.label}: ${err.message || err}`, 'bad');
+      if(detailEl) detailEl.textContent = 'Could not load this authority pack.';
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // init
+  // ---------------------------------------------------------------------------
+
+  renderPacks();
+  setStatus('choose a pack to begin.', 'warn');
+
+  if(searchEl){
+    searchEl.addEventListener('input', ()=>{
+      currentFilter = searchEl.value.trim();
+      if(!currentPack || !currentNodes.length){
+        // if nothing loaded yet, filter applies once a pack is clicked
+        return;
+      }
+      // Re-filter from the underlying full list exposed via ABE_LAW
+      const store = window.ABE_LAW && window.ABE_LAW[currentPack.id];
+      const allNodes = store && store.nodes ? store.nodes : currentNodes;
+      currentNodes = allNodes.filter(n => matchesFilter(n));
+      renderNodes();
     });
-  }
-
-  function initSearch(){
-    if(!searchInput) return;
-    searchInput.addEventListener('input', ()=>{
-      if(!currentPackId) return;
-      renderNodes(currentPackId);
-    });
-  }
-
-  function initButtons(){
-    if(btnCopy){
-      btnCopy.addEventListener('click', ()=>{
-        if(!currentNodeId) return;
-        copyToClipboard(detailJsonEl.textContent || '');
-      });
-    }
-
-    if(btnCda){
-      btnCda.addEventListener('click', ()=>{
-        if(!currentNodeId || !currentPackId) return;
-        try{
-          const nodes = packData[currentPackId] || [];
-          const node = nodes.find(n => n.id === currentNodeId);
-          if(!node) return;
-          const payload = {
-            from: 'LAW_VIEWER',
-            node,
-            at: new Date().toISOString()
-          };
-          localStorage.setItem('ABE_LAW_TO_CDA', JSON.stringify(payload));
-          alert('Node shape stored for CDA. Open the CDA page and it can read ABE_LAW_TO_CDA from this browser.');
-        }catch(e){
-          console.warn('Could not stash node for CDA:', e);
-        }
-      });
-    }
-  }
-
-  // --- boot -----------------------------------------------------------------
-
-  function boot(){
-    if(!packListEl || !nodeListEl){
-      console.warn('law/viewer.js: required DOM elements missing');
-      return;
-    }
-
-    initTabs();
-    initPackClicks();
-    initSearch();
-    initButtons();
-
-    // Initial render
-    renderPacks();
-
-    // Auto-select first pack in "all" filter
-    const first = LAW_PACKS[0];
-    if(first){
-      currentPackId = first.id;
-      renderPacks();
-      renderNodes(currentPackId);
-    }else{
-      setStatus('no law packs configured yet', 'warn');
-    }
-  }
-
-  if(document.readyState === 'loading'){
-    document.addEventListener('DOMContentLoaded', boot);
-  }else{
-    boot();
   }
 
 })();
