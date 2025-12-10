@@ -3,34 +3,34 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>CCRI — Consumer Credit Risk Integrity | A.B.E.</title>
+  <title>CIRI — Constitutional Integrity ROI | A.B.E.</title>
   <base href="/abe---flag/">
   <link rel="stylesheet" href="abe-patch/assets/abe-patch.css"/>
   <style>
-    .ccri-wrap{
+    .ciri-wrap{
       max-width:1100px;
       margin:0 auto;
       padding:1.5rem 1rem 3rem;
     }
-    .ccri-header h1{
+    .ciri-header h1{
       margin:0 0 .25rem;
       font-size:1.9rem;
     }
-    .ccri-header .tagline{
+    .ciri-header .tagline{
       max-width:780px;
       color:var(--muted);
       font-size:.98rem;
     }
-    .ccri-grid{
+    .ciri-grid{
       display:grid;
       gap:1.1rem;
     }
     @media(min-width:900px){
-      .ccri-grid{
+      .ciri-grid{
         grid-template-columns:1.4fr 1.6fr;
       }
     }
-    .ccri-card{
+    .ciri-card{
       background:var(--panel);
       border-radius:14px;
       border:1px solid var(--line);
@@ -38,15 +38,15 @@
       box-shadow:0 18px 40px rgba(0,0,0,.45);
       min-height:0;
     }
-    .ccri-card h2{
+    .ciri-card h2{
       margin:.1rem 0 .4rem;
       font-size:1.15rem;
     }
-    .ccri-card h3{
+    .ciri-card h3{
       margin:.35rem 0 .3rem;
       font-size:1rem;
     }
-    .ccri-sub{
+    .ciri-sub{
       color:var(--muted);
       font-size:.9rem;
     }
@@ -56,8 +56,7 @@
       color:var(--muted);
       margin:.55rem 0 .18rem;
     }
-    input[type="text"],
-    select,
+    input[type="number"],
     textarea{
       width:100%;
       background:#050712;
@@ -71,48 +70,27 @@
       min-height:90px;
       resize:vertical;
     }
-    .ccri-row{
+    .row{
       display:flex;
+      flex-wrap:wrap;
       gap:.6rem;
-      flex-wrap:wrap;
     }
-    .ccri-row > div{
-      flex:1 1 160px;
+    .row > div{
+      flex:1 1 150px;
     }
-    .ccri-yesno{
-      display:flex;
-      gap:.4rem;
-      flex-wrap:wrap;
-      font-size:.84rem;
+    .ciri-mini{
+      font-size:.82rem;
+      color:var(--muted);
       margin-top:.3rem;
     }
-    .ccri-chip{
-      display:inline-flex;
-      align-items:center;
-      gap:.18rem;
-      padding:.18rem .55rem;
-      border-radius:999px;
-      border:1px solid var(--line);
-      cursor:pointer;
-      user-select:none;
-    }
-    .ccri-chip input{
-      margin:0;
-    }
-    .ccri-chip-risk{
-      border-color:#ff8585;
-    }
-    .ccri-chip-safe{
-      border-color:#4bd28f;
-    }
-    .ccri-status{
+    .ciri-status{
       margin-top:.6rem;
       font-size:.84rem;
       color:var(--muted);
     }
-    .ccri-status-ok{color:#4bd28f;}
-    .ccri-status-warn{color:#ffba5c;}
-    .ccri-status-bad{color:#ff8585;}
+    .ciri-status-ok{color:#4bd28f;}
+    .ciri-status-warn{color:#ffba5c;}
+    .ciri-status-bad{color:#ff8585;}
     .btn-run{
       display:inline-flex;
       align-items:center;
@@ -144,6 +122,36 @@
       opacity:.5;
       cursor:default;
     }
+    .ciri-kpis{
+      display:flex;
+      flex-wrap:wrap;
+      gap:.6rem;
+      margin-top:.4rem;
+    }
+    .ciri-kpi{
+      flex:1 1 160px;
+      min-width:160px;
+      max-width:230px;
+      background:#050712;
+      border-radius:10px;
+      border:1px solid var(--line);
+      padding:.45rem .55rem .5rem;
+      font-size:.85rem;
+    }
+    .ciri-kpi-label{
+      color:var(--muted);
+      font-size:.82rem;
+    }
+    .ciri-kpi-value{
+      font-weight:600;
+      font-size:1rem;
+      margin-top:.1rem;
+    }
+    .ciri-kpi-tag{
+      font-size:.78rem;
+      color:var(--muted);
+      margin-top:.15rem;
+    }
     pre{
       margin:.45rem 0 .7rem;
       background:#050712;
@@ -157,209 +165,233 @@
       white-space:pre-wrap;
       color:var(--ink);
     }
-    .ccri-scores{
-      display:flex;
-      flex-wrap:wrap;
-      gap:.6rem;
-      margin-top:.4rem;
-    }
-    .ccri-score{
-      flex:1 1 140px;
-      min-width:140px;
-      max-width:220px;
-      background:#050712;
-      border-radius:10px;
+    .ciri-score-pill{
+      display:inline-flex;
+      align-items:center;
+      gap:.45rem;
+      padding:.28rem .75rem;
+      border-radius:999px;
       border:1px solid var(--line);
-      padding:.45rem .55rem .5rem;
-      font-size:.85rem;
+      font-size:.84rem;
+      margin-top:.35rem;
     }
-    .ccri-score-label{
-      color:var(--muted);
-      font-size:.82rem;
-    }
-    .ccri-score-value{
-      font-weight:600;
+    .ciri-score-pill strong{
+      color:var(--accent);
       font-size:1rem;
-      margin-top:.1rem;
-    }
-    .ccri-score-tag{
-      font-size:.78rem;
-      color:var(--muted);
-      margin-top:.15rem;
-    }
-    .ccri-score-high{color:#ff8585;}
-    .ccri-score-mid{color:#ffba5c;}
-    .ccri-score-low{color:#4bd28f;}
-    .ccri-mini{
-      font-size:.82rem;
-      color:var(--muted);
-      margin-top:.3rem;
     }
   </style>
 </head>
 <body class="abe-page">
 
 <header class="abe-header">
-  <div class="ccri-wrap ccri-header">
+  <div class="ciri-wrap ciri-header">
     <a href="/abe---flag/index.html" class="chip">← A.B.E. Home</a>
-    <h1>CCRI — Consumer Credit Risk Integrity</h1>
+    <h1>CIRI — Constitutional Integrity ROI</h1>
     <p class="tagline">
-      Describe how your institution uses DMV/DOT and enforcement data for non-commercial credit decisions.
-      CCRI builds a system-level risk profile — not a score on people.
+      Turn unconstitutional enforcement and overreach into measurable economic recovery —
+      cases, jail days, fees, wages, households, and litigation risk.
     </p>
     <nav class="chip-row">
       <a class="chip" href="intake/index.html">Intake</a>
       <a class="chip" href="cda/index.html">CDA</a>
-      <a class="chip" href="ciri/index.html">CIRI</a>
+      <span class="chip chip-alt">CIRI</span>
+      <a class="chip" href="cibs/index.html">CIBS</a>
+      <a class="chip" href="cii/index.html">CII</a>
       <a class="chip" href="cff/index.html">CFF</a>
-      <span class="chip chip-alt">CCRI</span>
-      <a class="chip" href="law/index.html">Law Corpus</a>
-      <a class="chip" href="doctrine/index.html">Doctrines</a>
+      <a class="chip" href="ccri/index.html">CCRI</a>
+      <a class="chip" href="macro/index.html">Macro</a>
       <a class="chip" href="integration/index.html">Integration</a>
     </nav>
   </div>
 </header>
 
 <main class="abe-main">
-  <div class="ccri-wrap ccri-grid">
+  <div class="ciri-wrap ciri-grid">
 
     <!-- LEFT: inputs -->
-    <section class="ccri-card">
-      <h2>Step 1 — Describe the institution & model</h2>
-      <p class="ccri-sub">
-        CCRI is about <strong>rules and data flows</strong>, not individuals.
-        It classifies risk when DMV/DOT or enforcement data is used to gate non-commercial credit.
+    <section class="ciri-card">
+      <h2>Step 1 — Describe the scenario</h2>
+      <p class="ciri-sub">
+        You can type values directly or let CIRI auto-fill from the last Intake artifact in this browser.
+        All numbers represent the harm you expect to avoid by correcting the unconstitutional practice.
       </p>
 
-      <label for="inst-name">Institution name (or label)</label>
-      <input id="inst-name" type="text" placeholder="e.g., Auto lender / Dealer finance program / Bank product code">
-
-      <div class="ccri-row">
+      <h3>1.1 · Core counts</h3>
+      <div class="row">
         <div>
-          <label for="inst-type">Institution type</label>
-          <select id="inst-type">
-            <option value="auto_lender" selected>Auto lender / dealer finance</option>
-            <option value="bank">Bank / credit union</option>
-            <option value="fintech">Fintech / alternative lender</option>
-            <option value="other">Other</option>
-          </select>
+          <label for="cases_avoided">Cases avoided</label>
+          <input id="cases_avoided" type="number" min="0" step="1" value="0">
         </div>
         <div>
-          <label for="geo-scope">Geographic scope</label>
-          <select id="geo-scope">
-            <option value="single_state" selected>Single state</option>
-            <option value="multi_state">Multi-state</option>
-            <option value="national">National</option>
-          </select>
+          <label for="avg_cost_per_case">Avg cost per case (USD)</label>
+          <input id="avg_cost_per_case" type="number" min="0" step="1" value="0">
         </div>
       </div>
 
-      <h3>1.1 · Data sources & gating rules</h3>
-      <label>Does your model pull DMV/DOT or license status for non-commercial credit?</label>
-      <div class="ccri-yesno">
-        <label class="ccri-chip ccri-chip-risk">
-          <input type="radio" name="dmv-use" value="yes">
-          <span>Yes — for approvals/denials</span>
-        </label>
-        <label class="ccri-chip ccri-chip-safe">
-          <input type="radio" name="dmv-use" value="limited">
-          <span>Limited — identity only (no gating)</span>
-        </label>
-        <label class="ccri-chip">
-          <input type="radio" name="dmv-use" value="no" checked>
-          <span>No</span>
-        </label>
+      <div class="row">
+        <div>
+          <label for="jail_days_avoided">Jail days avoided</label>
+          <input id="jail_days_avoided" type="number" min="0" step="1" value="0">
+        </div>
+        <div>
+          <label for="cost_per_jail_day">Cost per jail day (USD)</label>
+          <input id="cost_per_jail_day" type="number" min="0" step="1" value="0">
+        </div>
       </div>
 
-      <label>Can license suspension, unpaid traffic tickets, or DMV flags trigger denial?</label>
-      <div class="ccri-yesno">
-        <label class="ccri-chip ccri-chip-risk">
-          <input type="radio" name="suspension-rule" value="direct">
-          <span>Yes — directly coded</span>
-        </label>
-        <label class="ccri-chip ccri-chip-risk">
-          <input type="radio" name="suspension-rule" value="indirect">
-          <span>Indirect — flows into risk/scorecard</span>
-        </label>
-        <label class="ccri-chip ccri-chip-safe">
-          <input type="radio" name="suspension-rule" value="no" checked>
-          <span>No</span>
-        </label>
+      <label for="fees_canceled_total">Fees & fines canceled (USD total)</label>
+      <input id="fees_canceled_total" type="number" min="0" step="1" value="0">
+
+      <h3>1.2 · Enforcement & households</h3>
+      <div class="row">
+        <div>
+          <label for="policy_corrections">Policy corrections implemented</label>
+          <input id="policy_corrections" type="number" min="0" step="1" value="0">
+        </div>
+        <div>
+          <label for="avg_enforcement_cost_savings">Avg enforcement cost savings per correction (USD)</label>
+          <input id="avg_enforcement_cost_savings" type="number" min="0" step="1" value="0">
+        </div>
       </div>
 
-      <label>Is there a human appeal process when DMV/DOT data causes denial?</label>
-      <div class="ccri-yesno">
-        <label class="ccri-chip">
-          <input type="radio" name="appeal" value="robust" checked>
-          <span>Robust — clear path & timeline</span>
-        </label>
-        <label class="ccri-chip">
-          <input type="radio" name="appeal" value="weak">
-          <span>Weak — unclear or slow</span>
-        </label>
-        <label class="ccri-chip">
-          <input type="radio" name="appeal" value="none">
-          <span>No meaningful appeal</span>
-        </label>
+      <div class="row">
+        <div>
+          <label for="households_restored">Households restored / protected</label>
+          <input id="households_restored" type="number" min="0" step="1" value="0">
+        </div>
+        <div>
+          <label for="avg_monthly_market_spend">Avg monthly market spend per household (USD)</label>
+          <input id="avg_monthly_market_spend" type="number" min="0" step="1" value="0">
+        </div>
       </div>
 
-      <h3>1.2 · Narrative notes</h3>
-      <textarea id="ccri-notes" placeholder="Describe how the credit model works in practice. Example: auto lender denies loans when a state DPS system shows an unpaid ticket or suspended license, even for non-commercial borrowers."></textarea>
+      <label for="months_effective">Months the correction is effective (time window)</label>
+      <input id="months_effective" type="number" min="0" step="1" value="12">
 
-      <p id="ccri-intake-bridge" class="ccri-mini">
+      <h3>1.3 · Employment & litigation risk</h3>
+      <div class="row">
+        <div>
+          <label for="employment_probability">Employment probability uplift (0–1)</label>
+          <input id="employment_probability" type="number" min="0" max="1" step="0.01" value="0.00">
+        </div>
+        <div>
+          <label for="avg_monthly_wage">Avg monthly wage (USD)</label>
+          <input id="avg_monthly_wage" type="number" min="0" step="1" value="0">
+        </div>
+      </div>
+
+      <div class="row">
+        <div>
+          <label for="expected_lawsuits">Expected lawsuits avoided</label>
+          <input id="expected_lawsuits" type="number" min="0" step="1" value="0">
+        </div>
+        <div>
+          <label for="avg_payout">Avg payout per lawsuit (USD)</label>
+          <input id="avg_payout" type="number" min="0" step="1" value="0">
+        </div>
+      </div>
+
+      <label for="litigation_multiplier">Litigation multiplier (e.g., 1.0–3.0)</label>
+      <input id="litigation_multiplier" type="number" min="0" step="0.1" value="1.0">
+
+      <h3>1.4 · Transition costs & notes</h3>
+      <label for="transition_costs_one_time">One-time transition costs (USD)</label>
+      <input id="transition_costs_one_time" type="number" min="0" step="1" value="0">
+
+      <label for="ciri-notes">Scenario notes (optional)</label>
+      <textarea id="ciri-notes" placeholder="Short description of the unconstitutional practice being corrected (e.g., non-commercial traffic stops → jail → license suspensions used as credit gates)."></textarea>
+
+      <p id="ciri-intake-bridge" class="ciri-mini">
         Intake bridge: looking for a recent Intake artifact in this browser…
       </p>
 
-      <button id="ccri-run" class="btn-run">
-        <span>📊 Generate CCRI risk classification</span>
+      <button id="ciri-run" class="btn-run">
+        <span>⚡ Compute recovery & CIRI index</span>
       </button>
-      <div id="ccri-status" class="ccri-status">Status: waiting to run…</div>
+      <div id="ciri-status" class="ciri-status">Status: ready — fill values or use Intake defaults.</div>
     </section>
 
     <!-- RIGHT: outputs -->
-    <section class="ccri-card">
-      <h2>Step 2 — Review risk profile</h2>
+    <section class="ciri-card">
+      <h2>Step 2 — Recovery & receipts</h2>
 
-      <h3>2.1 · Scores & classification</h3>
-      <div class="ccri-scores">
-        <div class="ccri-score">
-          <div class="ccri-score-label">Data integrity</div>
-          <div id="score-data" class="ccri-score-value">—</div>
-          <div class="ccri-score-tag">How clean & appropriate the data sources are.</div>
+      <h3>2.1 · Recovery breakdown</h3>
+      <div class="ciri-kpis">
+        <div class="ciri-kpi">
+          <div class="ciri-kpi-label">Direct case cost savings</div>
+          <div id="kpi-case" class="ciri-kpi-value">—</div>
+          <div class="ciri-kpi-tag">Cases avoided × avg cost per case.</div>
         </div>
-        <div class="ccri-score">
-          <div class="ccri-score-label">Constitutional alignment</div>
-          <div id="score-const" class="ccri-score-value">—</div>
-          <div class="ccri-score-tag">How well the model respects constitutional boundaries.</div>
+        <div class="ciri-kpi">
+          <div class="ciri-kpi-label">Detention cost savings</div>
+          <div id="kpi-jail" class="ciri-kpi-value">—</div>
+          <div class="ciri-kpi-tag">Jail days avoided × cost per day.</div>
         </div>
-        <div class="ccri-score">
-          <div class="ccri-score-label">Access & fairness</div>
-          <div id="score-access" class="ccri-score-value">—</div>
-          <div class="ccri-score-tag">Impact on citizens’ access to credit & mobility.</div>
+        <div class="ciri-kpi">
+          <div class="ciri-kpi-label">Enforcement & policy savings</div>
+          <div id="kpi-enf" class="ciri-kpi-value">—</div>
+          <div class="ciri-kpi-tag">Policy corrections × avg enforcement savings.</div>
         </div>
-        <div class="ccri-score">
-          <div class="ccri-score-label">Economic impact</div>
-          <div id="score-econ" class="ccri-score-value">—</div>
-          <div class="ccri-score-tag">Downstream harm to employment, spending, stability.</div>
+        <div class="ciri-kpi">
+          <div class="ciri-kpi-label">Market access uplift</div>
+          <div id="kpi-market" class="ciri-kpi-value">—</div>
+          <div class="ciri-kpi-tag">Households × monthly spend × months.</div>
+        </div>
+        <div class="ciri-kpi">
+          <div class="ciri-kpi-label">Employment & wage uplift</div>
+          <div id="kpi-wage" class="ciri-kpi-value">—</div>
+          <div class="ciri-kpi-tag">Households × employment prob × wage × months.</div>
+        </div>
+        <div class="ciri-kpi">
+          <div class="ciri-kpi-label">Litigation risk avoided</div>
+          <div id="kpi-lit" class="ciri-kpi-value">—</div>
+          <div class="ciri-kpi-tag">Lawsuits × payout × multiplier.</div>
         </div>
       </div>
-      <p class="ccri-mini">
-        Overall risk classification:
-        <span id="ccri-class">—</span>
+
+      <h3>2.2 · Totals & index</h3>
+      <div class="ciri-kpis">
+        <div class="ciri-kpi">
+          <div class="ciri-kpi-label">Fees & fines canceled</div>
+          <div id="kpi-fees" class="ciri-kpi-value">—</div>
+          <div class="ciri-kpi-tag">Direct relief to households.</div>
+        </div>
+        <div class="ciri-kpi">
+          <div class="ciri-kpi-label">Transition costs</div>
+          <div id="kpi-trans" class="ciri-kpi-value">—</div>
+          <div class="ciri-kpi-tag">One-time cost to align the system.</div>
+        </div>
+        <div class="ciri-kpi">
+          <div class="ciri-kpi-label">Total recovery (R_T)</div>
+          <div id="kpi-total" class="ciri-kpi-value">—</div>
+          <div class="ciri-kpi-tag">Sum of all savings minus transition costs.</div>
+        </div>
+      </div>
+
+      <p id="ciri-index-pill" class="ciri-score-pill">
+        <span>CIRI index (0–1):</span>
+        <strong id="ciri-index-val">—</strong>
+        <span class="ciri-kpi-tag">(0 = no recovery · 1 = very high recovery)</span>
       </p>
 
-      <h3>2.2 · Structured JSON</h3>
-      <pre id="ccri-json">{}</pre>
+      <p class="ciri-mini">
+        ROI per case:
+        <span id="ciri-roi-case">—</span>
+      </p>
 
-      <h3>2.3 · Plain-language summary</h3>
-      <pre id="ccri-summary">Run CCRI to generate a summary…</pre>
+      <h3>2.3 · Scenario JSON & receipts</h3>
+      <pre id="ciri-json">{}</pre>
 
-      <button id="ccri-download" class="btn-download" disabled>
-        ⬇ Download ccri_scenario.json
+      <button id="ciri-download-json" class="btn-download" disabled>
+        ⬇ Download ciri_scenario.json
       </button>
-      <p id="ccri-hash" class="ccri-mini">
+      <button id="ciri-download-csv" class="btn-download" disabled>
+        ⬇ Download ciri_inputs_row.csv
+      </button>
+
+      <p id="ciri-hash" class="ciri-mini">
         Audit hash: —  
-        (SHA-256 of this CCRI scenario. Any tampering will change this value.)
+        (SHA-256 of this CIRI scenario. Any tampering will change this value.)
       </p>
     </section>
 
@@ -372,6 +404,6 @@
   </p>
 </footer>
 
-<script src="ccri/local.js"></script>
+<script src="ciri/local.js"></script>
 </body>
-</html>
+          </html>
