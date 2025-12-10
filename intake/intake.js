@@ -124,39 +124,99 @@
     // fallback: try text read
     return extractPlainTextFile(file);
   }
+  
+  // ---------- vehicle doc extraction (title / registration) ----------
+  
+  function vehicleScopeGuess(normalizedText){
+  const text = (normalizedText || '').toUpperCase();
+  const scope = {
+    doc_type_detected: null,
+    raw_hits: [],
+    paperwork_suggests_commercial: null,
+    gvwr_estimate_lbs: null,
+    plate_class_hits: [],
+    notes: ''
+  };
 
-  // ---------- tiny heuristic extraction ----------
+  // title vs registration signals
+  if(text.includes('CERTIFICATE OF TITLE')) scope.doc_type_detected = 'title';
+  if(text.includes('REGISTRATION')) scope.doc_type_detected = scope.doc_type_detected || 'registration';
 
-  function basicFieldGuess(normalizedText, docType) {
-    const text = normalizedText || '';
-    const fields = {};
+  // class keywords
+  const classHits = [];
+  const classPatterns = [
+    'COMMERCIAL','TRUCK','TRK','TRUCK TRACTOR','BUS','APPORTIONED','FOR HIRE','FLEET',
+    'PASSENGER','PRIVATE','NON-COMMERCIAL'
+  ];
+  classPatterns.forEach(p=>{ if(text.includes(p)) classHits.push(p); });
+  scope.raw_hits = classHits;
 
-    // Very light hints. User is still in control.
-
-    // Dollars
-    const moneyMatches = text.match(/\$?\s?[\d,]+(\.\d{1,2})?/g) || [];
-    fields.approx_dollar_values_found = moneyMatches.slice(0, 10);
-
-    // Dates
-    const dateMatches = text.match(/\b\d{1,2}\/\d{1,2}\/\d{2,4}\b/g) || [];
-    fields.approx_dates_found = dateMatches.slice(0, 10);
-
-    // For traffic tickets, try to guess a citation / code reference
-    if (docType === 'traffic_ticket') {
-      const codeMatch = text.match(/\b\d{3,4}\.\d{1,3}[A-Za-z0-9\-]*/);
-      if (codeMatch) fields.possible_code_section = codeMatch[0];
-    }
-
-    // For loan contracts, try to spot APR / interest mentions
-    if (docType === 'loan_contract') {
-      const apr = text.match(/\b\d{1,2}\.\d{1,2}%|\b\d{1,2}%\b/);
-      if (apr) fields.possible_apr = apr[0];
-    }
-
-    fields.preview_snippet = text.slice(0, 800);
-
-    return fields;
+  // GVWR
+  const gvwrMatch = text.match(/\b(GVWR|GROSS WEIGHT|GROSS WT)[^0-9]{0,10}([\d,]{4,6})\b/);
+  if(gvwrMatch && gvwrMatch[2]){
+    const num = Number(gvwrMatch[2].replace(/,/g,''));
+    if(!Number.isNaN(num)) scope.gvwr_estimate_lbs = num;
   }
+
+  // plate type hints
+  const plateHits = [];
+  const platePatterns = ['PLATE TYPE','CLASS:','CLASS CODE','PAS','COM','FARM','GVT','DLR'];
+  platePatterns.forEach(p=>{ if(text.includes(p)) plateHits.push(p); });
+  scope.plate_class_hits = plateHits;
+
+  // paperwork commercial vs passenger
+  const commercialTokens = ['COMMERCIAL','TRK','TRUCK','TRUCK TRACTOR','APPORTIONED','FOR HIRE','BUS','FLEET'];
+  const passengerTokens  = ['PASSENGER','PRIVATE','NON-COMMERCIAL'];
+
+  const commercialHit = commercialTokens.some(t => text.includes(t));
+  const passengerHit  = passengerTokens.some(t => text.includes(t));
+
+  if (commercialHit && !passengerHit) scope.paperwork_suggests_commercial = true;
+  else if (passengerHit && !commercialHit) scope.paperwork_suggests_commercial = false;
+  else scope.paperwork_suggests_commercial = null;
+
+  scope.notes = "Heuristic only. Paperwork ≠ CMV status. CMV requires actual commerce.";
+
+  return scope;
+}
+
+ // ---------- tiny heuristic extraction ----------
+
+ function basicFieldGuess(normalizedText, docType) {
+  const text = normalizedText || '';
+  const fields = {};
+
+  // Very light hints. User is still in control.
+
+  // Dollars
+  const moneyMatches = text.match(/\$?\s?[\d,]+(\.\d{1,2})?/g) || [];
+  fields.approx_dollar_values_found = moneyMatches.slice(0, 10);
+
+  // Dates
+  const dateMatches = text.match(/\b\d{1,2}\/\d{1,2}\/\d{2,4}\b/g) || [];
+  fields.approx_dates_found = dateMatches.slice(0, 10);
+
+  // For traffic tickets, try to guess a citation / code reference
+  if (docType === 'traffic_ticket') {
+    const codeMatch = text.match(/\b\d{3,4}\.\d{1,3}[A-Za-z0-9\-]*/);
+    if (codeMatch) fields.possible_code_section = codeMatch[0];
+  }
+
+  // For loan contracts, try to spot APR / interest mentions
+  if (docType === 'loan_contract') {
+    const apr = text.match(/\b\d{1,2}\.\d{1,2}%|\b\d{1,2}%\b/);
+    if (apr) fields.possible_apr = apr[0];
+  }
+
+  // NEW: Vehicle docs → parse CMV / exempt paperwork signals
+  if (docType === 'vehicle_title' || docType === 'vehicle_registration') {
+    fields.vehicle_scope = vehicleScopeGuess(normalizedText);
+  }
+
+  fields.preview_snippet = text.slice(0, 800);
+
+  return fields;
+}
 
   // ---------- CIRI CSV starter row ----------
 
