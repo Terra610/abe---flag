@@ -3,334 +3,255 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Integration — SHA-256 Audit Graph | A.B.E.</title>
+  <title>Integration / Audit — A.B.E.</title>
   <base href="/abe---flag/">
   <link rel="stylesheet" href="abe-patch/assets/abe-patch.css"/>
   <style>
-    :root{
-      --int-bg:#05060b;
-      --int-panel:#111522;
-      --int-panel-soft:#161a25;
-      --int-ink:#edf2ff;
-      --int-muted:#9fb3c8;
-      --int-accent:#5ddfff;
-      --int-warn:#ffba5c;
-      --int-bad:#ff8585;
-      --int-ok:#4bd28f;
-      --int-border:rgba(255,255,255,.08);
-    }
-
-    body.abe-page{
-      background:radial-gradient(circle at top,#111827 0,#05060b 55%,#020309 100%);
-      color:var(--int-ink);
-    }
-
     .int-wrap{
       max-width:1100px;
       margin:0 auto;
       padding:1.5rem 1rem 3rem;
     }
-
     .int-header h1{
       margin:0 0 .25rem;
       font-size:1.9rem;
     }
-
     .int-header .tagline{
       max-width:720px;
-      color:var(--int-muted);
+      color:var(--muted);
       font-size:.98rem;
     }
-
-    .chip-row{
-      display:flex;
-      flex-wrap:wrap;
-      gap:.5rem;
-      margin-top:.75rem;
-    }
-
-    .chip{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      padding:.3rem .8rem;
-      border-radius:999px;
-      border:1px solid var(--int-border);
-      font-size:.86rem;
-      text-decoration:none;
-      color:var(--int-ink);
-      background:#050712;
-    }
-    .chip:hover{border-color:var(--int-accent);}
-    .chip-alt{
-      border-color:var(--int-accent);
-    }
-
-    .card{
-      background:linear-gradient(135deg,var(--int-panel),#0b101a);
-      border-radius:14px;
-      border:1px solid var(--int-border);
-      padding:1rem 1.2rem 1.2rem;
-      box-shadow:0 18px 40px rgba(0,0,0,.45);
-      margin-bottom:1rem;
-    }
-
-    h2{
-      margin:.1rem 0 .5rem;
-      font-size:1.1rem;
-    }
-
-    p,li{
-      font-size:.9rem;
-      color:var(--int-muted);
-    }
-
-    code{
-      font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      font-size:.84rem;
-      background:#050712;
-      padding:.08rem .3rem;
-      border-radius:4px;
-    }
-
-    /* Last check + legend */
-    .status-row{
-      display:flex;
-      flex-wrap:wrap;
-      gap:1rem;
-      align-items:center;
-      justify-content:space-between;
-    }
-    .status-main{
-      font-size:.95rem;
-    }
-    .status-main strong{
-      font-size:1.05rem;
-    }
-    .legend{
-      display:flex;
-      flex-wrap:wrap;
-      gap:.4rem .75rem;
-      font-size:.83rem;
-      color:var(--int-muted);
-    }
-    .legend span{
-      display:inline-flex;
-      align-items:center;
-      gap:.25rem;
-    }
-    .legend-dot{
-      width:9px;
-      height:9px;
-      border-radius:50%;
-      display:inline-block;
-    }
-    .lg-ok{background:var(--int-ok);}
-    .lg-warn{background:var(--int-warn);}
-    .lg-bad{background:var(--int-bad);}
-
-    /* Graph panel */
-    .graph-wrap{
-      border-radius:14px;
-      background:#050712;
-      border:1px solid var(--int-border);
-      padding:.5rem;
-      height:420px;
-      overflow:hidden;
-    }
-    #integration-graph{
-      width:100%;
-      height:100%;
-    }
-
-    /* Local engine footprints */
-    .card-local{
-      margin-top:.3rem;
-    }
-    .card-local .muted{
-      font-size:.9rem;
-    }
-    .local-grid{
+    .int-grid{
       display:grid;
-      gap:.7rem;
-      margin-top:.6rem;
+      gap:1rem;
     }
-    @media(min-width:800px){
-      .local-grid{
-        grid-template-columns:repeat(3,minmax(0,1fr));
+    @media(min-width:900px){
+      .int-grid{
+        grid-template-columns:1.4fr 1.6fr;
       }
     }
-    .local-item{
-      background:#050712;
-      border-radius:10px;
-      border:1px solid var(--int-border);
-      padding:.55rem .7rem .6rem;
+    .int-card{
+      background:#10131c;
+      border-radius:14px;
+      border:1px solid var(--line);
+      padding:1rem 1.1rem 1.2rem;
+      box-shadow:0 18px 40px rgba(0,0,0,.4);
+      min-height:0;
     }
-    .local-title{
+    .int-card h2{
+      margin:.1rem 0 .4rem;
+      font-size:1.1rem;
+    }
+    .int-card h3{
+      margin:.3rem 0 .35rem;
+      font-size:1rem;
+    }
+    .int-sub{
+      color:var(--muted);
+      font-size:.9rem;
+    }
+    .int-summary{
+      display:flex;
+      flex-wrap:wrap;
+      gap:.5rem 1.4rem;
+      margin-top:.6rem;
       font-size:.88rem;
-      font-weight:600;
-      margin:0 0 .2rem;
+      color:var(--muted);
     }
-    .local-meta{
-      font-size:.8rem;
-      color:var(--int-muted);
-      margin-top:.15rem;
-    }
-    .local-pill{
+    .int-pill{
       display:inline-flex;
       align-items:center;
-      padding:.1rem .55rem;
+      gap:.3rem;
+      padding:.12rem .6rem;
       border-radius:999px;
-      border:1px solid var(--int-border);
+      border:1px solid var(--line);
       font-size:.78rem;
-      margin-top:.1rem;
-      color:var(--int-muted);
+      color:var(--muted);
     }
-    .local-pill.ok{
-      border-color:var(--int-ok);
-      color:var(--int-ok);
+    .int-pill-ok{border-color:#4bd28f;color:#4bd28f;}
+    .int-pill-warn{border-color:#ffba5c;color:#ffba5c;}
+    .int-pill-bad{border-color:#ff8585;color:#ff8585;}
+    .int-pill-law{border-color:#5ddfff;color:#5ddfff;}
+    .int-mod-list{
+      display:flex;
+      flex-wrap:wrap;
+      gap:.6rem;
+      margin-top:.6rem;
     }
-    .local-pill.miss{
-      border-color:var(--int-bad);
-      color:var(--int-bad);
+    .int-mod{
+      flex:1 1 140px;
+      min-width:140px;
+      max-width:210px;
+      background:#050712;
+      border-radius:12px;
+      border:1px solid var(--line);
+      padding:.55rem .6rem .5rem;
+      cursor:pointer;
+      font-size:.86rem;
     }
-    .local-pill.warn{
-      border-color:var(--int-warn);
-      color:var(--int-warn);
+    .int-mod:hover{
+      border-color:var(--accent);
+      box-shadow:0 0 0 1px rgba(93,223,255,.35);
     }
-
-    footer.abe-footer{
-      margin-top:2.5rem;
-      text-align:center;
-      color:var(--int-muted);
-      font-size:.85rem;
+    .int-mod.active{
+      border-color:var(--accent);
+      box-shadow:0 0 0 1px rgba(93,223,255,.45);
     }
+    .int-mod-name{
+      font-weight:600;
+      margin-bottom:.1rem;
+    }
+    .int-mod-status{
+      font-size:.8rem;
+      color:var(--muted);
+    }
+    .int-mod-status span{
+      font-weight:600;
+    }
+    .int-mod-status-ok span{color:#4bd28f;}
+    .int-mod-status-partial span{color:#ffba5c;}
+    .int-mod-status-mismatch span{color:#ff8585;}
+    .int-mod-status-unknown span{color:#9fb3c8;}
+    .int-detail{
+      background:#050712;
+      border-radius:10px;
+      border:1px solid var(--line);
+      padding:.6rem .7rem;
+      font-family:ui-monospace,SFMono-Regular,Consolas,monospace;
+      font-size:.82rem;
+      max-height:420px;
+      overflow:auto;
+      white-space:pre-wrap;
+    }
+    .int-legend{
+      margin-top:.5rem;
+      font-size:.84rem;
+      color:var(--muted);
+    }
+    .int-legend ul{
+      margin:.2rem 0 0;
+      padding-left:1.1rem;
+    }
+    .int-legend li{margin:.1rem 0;}
+    .int-section{
+      margin-top:.6rem;
+      font-size:.9rem;
+      color:var(--muted);
+    }
+    .int-section ol{
+      margin:.3rem 0 0;
+      padding-left:1.3rem;
+    }
+    .int-law-note{
+      margin-top:.4rem;
+      background:#050712;
+      border-radius:10px;
+      border:1px solid var(--line);
+      padding:.55rem .6rem;
+      font-size:.84rem;
+    }
+    .int-law-note a{
+      color:var(--accent);
+      text-decoration:none;
+    }
+    .int-law-note a:hover{text-decoration:underline;}
   </style>
 </head>
 <body class="abe-page">
 
 <header class="abe-header">
   <div class="int-wrap int-header">
-    <a href="index.html" class="chip">← A.B.E. Home</a>
-    <h1>Integration — SHA-256 Audit Graph</h1>
+    <a href="/abe---flag/index.html" class="chip">← A.B.E. Home</a>
+    <h1>Integration / Audit</h1>
     <p class="tagline">
-      Client-side integrity for the whole engine. No logins, no servers — just hashes, files, and a transparent map.
+      This page checks every tracked file in A.B.E. using <strong>SHA-256</strong>. It shows which modules are verified,
+      which are partial, and whether the <strong>Law corpus</strong> (USC/CFR/funding packs) matches the ledger.
     </p>
     <nav class="chip-row">
+      <span class="chip chip-alt">Integration</span>
       <a class="chip" href="intake/index.html">Intake</a>
       <a class="chip" href="cda/index.html">CDA</a>
       <a class="chip" href="ciri/index.html">CIRI</a>
-      <a class="chip" href="cibs/index.html">CIBS</a>
-      <a class="chip" href="cii/index.html">CII</a>
+      <a class="chip" href="law/index.html">Law Corpus</a>
       <a class="chip" href="doctrine/index.html">Doctrines</a>
-      <a class="chip chip-alt" href="system/index.html">System Map</a>
     </nav>
   </div>
 </header>
 
 <main class="abe-main">
-  <div class="int-wrap">
+  <div class="int-wrap int-grid">
 
-    <!-- Status + graph -->
-    <section class="card">
-      <div class="status-row">
-        <div class="status-main">
-          <div>Last Check</div>
-          <div id="last-check"><strong>—</strong></div>
-        </div>
-        <div class="legend">
-          <span><span class="legend-dot lg-ok"></span>verified</span>
-          <span><span class="legend-dot lg-warn"></span>partial / unknown</span>
-          <span><span class="legend-dot lg-bad"></span>mismatch</span>
-          <span>· link color = upstream verified</span>
-        </div>
-      </div>
-
-      <div class="graph-wrap" style="margin-top:.8rem;">
-        <!-- viewer.js will draw into this SVG -->
-        <svg id="integration-graph"></svg>
-      </div>
-    </section>
-
-    <!-- Local engine footprints -->
-    <section class="card card-local">
-      <h2>Local Engine Footprints (this device only)</h2>
-      <p class="muted">
-        This shows what <strong>this browser</strong> currently holds from A.B.E. runs. Data lives only in
-        <code>localStorage</code> on this device — nothing here is uploaded or logged.
+    <!-- LEFT: Summary + modules -->
+    <section class="int-card">
+      <h2>System Summary</h2>
+      <p class="int-sub">
+        Integration reads <code>system/map.json</code> and <code>system/ledger.json</code>,
+        recomputes SHA-256 for each tracked file in your browser, and compares the results.
       </p>
 
-      <div class="local-grid">
-        <!-- Intake -->
-        <div class="local-item">
-          <div class="local-title">Intake artifact</div>
-          <div id="local-intake-status" class="local-pill">checking…</div>
-          <div id="local-intake-meta" class="local-meta">
-            Looking for <code>abe_intake_artifact</code>…
-          </div>
+      <div class="int-summary">
+        <div id="int-last-check">Last check: —</div>
+        <div id="int-count-mod">Modules: —</div>
+        <div id="int-count-ok"   class="int-pill int-pill-ok">Verified: —</div>
+        <div id="int-count-warn" class="int-pill int-pill-warn">Partial: —</div>
+        <div id="int-count-bad"  class="int-pill int-pill-bad">Mismatch: —</div>
+        <div id="int-law-pill"   class="int-pill int-pill-law" style="display:none;">
+          LAW corpus: —
         </div>
+      </div>
 
-        <!-- CIRI -->
-        <div class="local-item">
-          <div class="local-title">CIRI scenario</div>
-          <div id="local-ciri-status" class="local-pill">checking…</div>
-          <div id="local-ciri-meta" class="local-meta">
-            Looking for <code>ABE_CIRI_SCENARIO_V2</code>…
-          </div>
-        </div>
+      <h3 style="margin-top:.9rem;">Modules & Status</h3>
+      <div id="int-mod-list" class="int-mod-list">
+        <!-- populated by JS -->
+      </div>
 
-        <!-- CDA -->
-        <div class="local-item">
-          <div class="local-title">CDA divergence scenario</div>
-          <div id="local-cda-status" class="local-pill">checking…</div>
-          <div id="local-cda-meta" class="local-meta">
-            Looking for <code>ABE_CDA_SCENARIO_V1</code>…
-          </div>
-        </div>
+      <div class="int-legend">
+        <strong>Legend</strong>
+        <ul>
+          <li><span class="int-pill int-pill-ok">verified</span> all tracked files match the ledger.</li>
+          <li><span class="int-pill int-pill-warn">partial</span> some files tracked or pack coverage incomplete.</li>
+          <li><span class="int-pill int-pill-bad">mismatch</span> at least one tracked file hash disagrees.</li>
+          <li>untracked = present in <code>map.json</code> but not yet listed in <code>ledger.json</code>.</li>
+        </ul>
+      </div>
+
+      <div class="int-law-note" id="int-law-note">
+        LAW corpus note: Loading…
       </div>
     </section>
 
-    <!-- Explanation -->
-    <section class="card">
-      <h2>What You’re Seeing</h2>
-      <ul>
-        <li><strong>Rectangles</strong> are modules (Intake, CDA, CIRI, CFF, CCRI, CIBS, CII, Macro…).
-          Stroke color reflects integrity based on <code>system/ledger.json</code>.</li>
-        <li><strong>Arrows</strong> show the canonical data flow defined in <code>system/map.json</code>
-          (for example: Intake → CDA → CIRI → CIBS → CII).</li>
-        <li>If a tracked file is missing or can’t be fetched, its node shows as
-          <span style="color:var(--int-warn);font-weight:600;">partial/unknown</span>.</li>
-        <li>If a file’s live SHA-256 doesn’t match the ledger, the node shows as
-          <span style="color:var(--int-bad);font-weight:600;">mismatch</span>.</li>
-        <li>The “Local Engine Footprints” section above is separate: it only looks at
-          what this browser has stored from your own runs (Intake, CIRI, CDA).</li>
-      </ul>
-    </section>
+    <!-- RIGHT: Detail + how-to -->
+    <section class="int-card">
+      <h2>Detail & Local Verification</h2>
 
-    <!-- How-to -->
-    <section class="card">
-      <h2>How to Verify Locally</h2>
-      <ol>
-        <li>Open <code>system/ledger.json</code> in this repo. Each entry lists a file path and its
-          canonical SHA-256 hash.</li>
-        <li>Download any file you care about — for example
-          <code>cda/schema.json</code>, <code>ciri/model.json</code>, or a doctrine PDF.</li>
-        <li>On your own machine, run a SHA-256 tool (command line or GUI) on that file
-          and compare the hash to the ledger:</li>
-      </ol>
-<pre><code>sha256sum cda/schema.json
-# or
-shasum -a 256 cda/schema.json
-</code></pre>
-      <ol start="4">
-        <li>If the hash matches, the file is verified. If not, you’ve found tampering or an unlogged edit.</li>
-        <li>Any time you intentionally update a tracked file, update its hash in
-          <code>system/ledger.json</code> so future checks stay honest.</li>
-      </ol>
-      <p>
-        A.B.E. never phones home. All integrity checks happen in your browser, against files you can see, hash,
-        and print. That’s the whole point.
-      </p>
+      <h3>Selected Module Details</h3>
+      <div id="int-detail" class="int-detail">
+        Select a module on the left to see which files are tracked,
+        their expected SHA-256, and the live recomputed hashes.
+      </div>
+
+      <div class="int-section">
+        <h3>How to Verify or Extend the Audit</h3>
+        <ol>
+          <li>
+            Open <code>system/ledger.json</code> in the repo. Each entry lists a
+            <code>path</code> and an expected <code>sha256</code>.
+          </li>
+          <li>
+            To track a new file, compute its SHA-256 on your own machine
+            (or with a trusted tool), add a new entry to <code>ledger.json</code>,
+            and commit it.
+          </li>
+          <li>
+            Refresh this page. Any mismatch will show as
+            <span class="int-pill int-pill-bad">mismatch</span> for that module.
+          </li>
+          <li>
+            The <strong>LAW corpus</strong> (USC/CFR/funding packs) is described in
+            <code>law/model.json</code> and hashed here under the <code>LAW</code> module.
+          </li>
+        </ol>
+      </div>
     </section>
 
   </div>
@@ -338,16 +259,10 @@ shasum -a 256 cda/schema.json
 
 <footer class="abe-footer">
   <p>
-    CC BY-NC 4.0 · DOI <a href="https://doi.org/10.5281/zenodo.17586107">10.5281/zenodo.17586107</a> ·
-    Integrity only — never for sale.
+    CC BY-NC 4.0 · DOI <a href="https://doi.org/10.5281/zenodo.17586107">10.5281/zenodo.17586107</a> · Integrity only — never for sale.
   </p>
 </footer>
 
-<!-- Existing graph renderer (already in your repo) -->
-<script src="integration/viewer.js"></script>
-
-<!-- New: local engine footprints (Intake, CIRI, CDA) -->
 <script src="integration/local.js"></script>
-
 </body>
 </html>
