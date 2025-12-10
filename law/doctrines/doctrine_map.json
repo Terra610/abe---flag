@@ -1,0 +1,135 @@
+{
+  "version": "1.0",
+  "updated": "2025-12-15",
+  "source": "A.B.E. Doctrine Map — Terra Dawn Shouse",
+  "categories": {
+    "constitutional_core": "Doctrines grounded directly in the Constitution and therefore fully valid.",
+    "text_aligned_judicial": "Doctrines created by courts but consistent with constitutional text.",
+    "judicial_invention_ultra_vires": "Doctrines created by courts without textual basis; invalid when conflicting with structure.",
+    "collapsing_or_transitional": "Doctrines currently being limited or overturned (2020–2025)."
+  },
+  "doctrines": [
+    {
+      "id": "judicial_review",
+      "name": "Judicial Review",
+      "category": "constitutional_core",
+      "source": "Marbury v. Madison (1803)",
+      "legitimacy": "high",
+      "conflicts": [],
+      "abe_status": "anchor",
+      "relevance": ["CDA", "CFF", "System", "Law"]
+    },
+    {
+      "id": "supremacy_clause",
+      "name": "Supremacy Clause Doctrine",
+      "category": "constitutional_core",
+      "source": "U.S. Constitution, Article VI",
+      "legitimacy": "high",
+      "conflicts": [],
+      "abe_status": "core",
+      "relevance": ["CDA", "CFF", "CDI", "Macro", "Integration"]
+    },
+    {
+      "id": "equal_protection",
+      "name": "Equal Protection Doctrine",
+      "category": "constitutional_core",
+      "source": "Fourteenth Amendment",
+      "legitimacy": "high",
+      "conflicts": [],
+      "abe_status": "core",
+      "relevance": ["CDA", "CCRI", "CIRI"]
+    },
+    {
+      "id": "void_for_vagueness",
+      "name": "Void for Vagueness / Overbreadth",
+      "category": "constitutional_core",
+      "source": "Due Process Clause",
+      "legitimacy": "high",
+      "abe_status": "critical",
+      "conflicts": [],
+      "relevance": ["CDA", "CIRI", "CCRI"]
+    },
+
+    /* TEXT-ALIGNED JUDICIAL DOCTRINES */
+
+    {
+      "id": "levels_of_scrutiny",
+      "name": "Levels of Scrutiny",
+      "category": "text_aligned_judicial",
+      "legitimacy": "mixed",
+      "abe_status": "useful",
+      "conflicts": [],
+      "relevance": ["CDA", "CIRI"]
+    },
+    {
+      "id": "standing_ripeness_mootness",
+      "name": "Standing / Ripeness / Mootness",
+      "category": "text_aligned_judicial",
+      "legitimacy": "moderate",
+      "abe_status": "caution",
+      "conflicts": ["used to dodge constitutional relief"],
+      "relevance": ["System", "CDA"]
+    },
+
+    /* ULTRA VIRES — VOID AB INITIO */
+
+    {
+      "id": "police_power_doctrine",
+      "name": "Police Power Doctrine",
+      "category": "judicial_invention_ultra_vires",
+      "source": "Not found in Constitution",
+      "legitimacy": "void",
+      "conflicts": ["Ninth Amendment", "Tenth Amendment", "Supremacy Clause"],
+      "abe_status": "void_ab_initio",
+      "relevance": ["CDA", "CFF", "CDI", "CIRI"],
+      "notes": "Used by states to justify universal licensing; constitutionally non-existent."
+    },
+    {
+      "id": "qualified_immunity",
+      "name": "Qualified Immunity",
+      "category": "judicial_invention_ultra_vires",
+      "source": "Harlow v. Fitzgerald (1982)",
+      "legitimacy": "void",
+      "conflicts": ["§1983", "14th Amendment", "Marbury", "Separation of Powers"],
+      "abe_status": "void_ab_initio",
+      "relevance": ["CDA", "CIRI"]
+    },
+    {
+      "id": "implied_consent",
+      "name": "Implied Consent Doctrine",
+      "category": "judicial_invention_ultra_vires",
+      "legitimacy": "void",
+      "conflicts": ["4th Amendment", "5th Amendment", "49 CFR Part 40"],
+      "abe_status": "void_ab_initio",
+      "relevance": ["CDA", "CFF", "CDI"]
+    },
+    {
+      "id": "fmcsr_expansion",
+      "name": "FMCSR Expansion to Non-Commercial Drivers",
+      "category": "judicial_invention_ultra_vires",
+      "legitimacy": "void",
+      "conflicts": ["49 CFR 390.3", "49 CFR 350.303", "Commerce Clause"],
+      "abe_status": "void_ab_initio",
+      "relevance": ["CDA", "CFF", "CIRI"]
+    },
+
+    /* COLLAPSING OR TRANSITIONAL */
+
+    {
+      "id": "major_questions",
+      "name": "Major Questions Doctrine",
+      "category": "collapsing_or_transitional",
+      "legitimacy": "increasing",
+      "abe_status": "strengthens_alignment",
+      "relevance": ["CDA", "CFF"]
+    },
+    {
+      "id": "nondelegation",
+      "name": "Nondelegation Revival",
+      "category": "collapsing_or_transitional",
+      "legitimacy": "strengthening",
+      "abe_status": "strengthens_alignment",
+      "relevance": ["CDA", "System", "CFF"]
+    }
+  ]
+}
