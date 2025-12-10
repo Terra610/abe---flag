@@ -3,221 +3,333 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Law — Federal Authority Corpus | A.B.E.</title>
+  <title>Intake — Document & OCR Bridge | A.B.E.</title>
   <base href="/abe---flag/">
-  <link rel="stylesheet" href="abe-patch/assets/abe-patch.css"/>
+  <!-- Optional shared styling; safe to keep -->
+  <link rel="stylesheet" href="abe-patch/assets/abe-patch.css">
   <style>
-    .law-wrap{
+    :root{
+      --abe-bg:#05060b;
+      --abe-panel:#10131c;
+      --abe-panel-soft:#161a25;
+      --abe-ink:#edf2ff;
+      --abe-muted:#9fb3c8;
+      --abe-accent:#5ddfff;
+      --abe-pop:#fff750;
+      --abe-border:rgba(255,255,255,.08);
+    }
+    body.abe-page{
+      margin:0;
+      background:radial-gradient(circle at top,#111827 0,#05060b 55%,#020309 100%);
+      color:var(--abe-ink);
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+    }
+
+    /* Header + home chip */
+    .abe-header{
+      border-bottom:1px solid var(--abe-border);
+      background:linear-gradient(90deg,#090c15,#111827);
+    }
+    .intake-wrap{
       max-width:1100px;
       margin:0 auto;
       padding:1.5rem 1rem 3rem;
     }
-    .law-header h1{
+    .intake-header h1{
       margin:0 0 .25rem;
       font-size:1.9rem;
     }
-    .law-header .tagline{
-      max-width:720px;
-      color:var(--muted);
+    .intake-header .tagline{
+      max-width:700px;
+      color:var(--abe-muted);
       font-size:.98rem;
     }
-    .law-grid{
+    .home-chip{
+      display:inline-flex;
+      align-items:center;
+      gap:.4rem;
+      padding:.35rem .9rem;
+      border-radius:999px;
+      border:1px solid var(--abe-border);
+      background:#050712;
+      color:var(--abe-ink);
+      text-decoration:none;
+      font-size:.9rem;
+      margin-bottom:.75rem;
+    }
+    .home-chip:hover{
+      text-decoration:none;
+      box-shadow:0 0 0 1px rgba(255,255,255,.06);
+    }
+
+    .abe-main{
+      padding:0 0 3rem;
+    }
+
+    .intake-grid{
       display:grid;
-      gap:1rem;
+      gap:1.25rem;
     }
     @media(min-width:900px){
-      .law-grid{
-        grid-template-columns:280px 1.3fr 1.8fr;
+      .intake-grid{
+        grid-template-columns:3fr 2fr;
       }
     }
-    .law-card{
-      background:#10131c;
+
+    .card-intake{
+      background:linear-gradient(135deg,var(--abe-panel),#0b101a);
       border-radius:14px;
-      border:1px solid var(--line);
-      padding:.9rem 1rem 1rem;
-      box-shadow:0 18px 40px rgba(0,0,0,.4);
-      min-height:0;
+      border:1px solid var(--abe-border);
+      padding:1rem 1.1rem 1.25rem;
+      box-shadow:0 18px 40px rgba(0,0,0,.45);
     }
-    .law-card h2{
+    .card-intake h2{
       margin:.1rem 0 .4rem;
-      font-size:1.05rem;
+      font-size:1.15rem;
     }
-    .law-card h3{
+    .card-intake h3{
       margin:.2rem 0 .4rem;
-      font-size:.98rem;
+      font-size:1rem;
     }
-    .law-sub{
-      color:var(--muted);
-      font-size:.88rem;
+    .sub{
+      color:var(--abe-muted);
+      font-size:.9rem;
     }
-    .law-pack-list{
-      list-style:none;
-      margin:.4rem 0 0;
-      padding:0;
-      display:flex;
-      flex-direction:column;
-      gap:.3rem;
-    }
-    .law-pack-btn{
-      width:100%;
-      text-align:left;
-      border-radius:10px;
-      border:1px solid var(--line);
-      padding:.4rem .55rem;
-      background:#050712;
-      color:var(--ink);
-      font-size:.88rem;
-      cursor:pointer;
-    }
-    .law-pack-btn.active{
-      border-color:var(--accent);
-      box-shadow:0 0 0 1px rgba(93,223,255,.3);
-    }
-    .law-status{
-      margin-top:.4rem;
-      font-size:.85rem;
-      color:var(--muted);
-    }
-    .law-status-ok{color:#4bd28f;}
-    .law-status-warn{color:#ffba5c;}
-    .law-status-bad{color:#ff8585;}
-    .law-node-list{
-      list-style:none;
-      margin:.3rem 0 0;
-      padding:0;
-      max-height:460px;
-      overflow:auto;
-      border-radius:8px;
-      border:1px solid var(--line);
-      background:#050712;
-    }
-    .law-node{
-      border-bottom:1px solid rgba(255,255,255,.06);
-    }
-    .law-node button{
+    label{
       display:block;
-      width:100%;
-      text-align:left;
-      padding:.45rem .55rem;
+      font-size:.9rem;
+      color:var(--abe-muted);
+      margin:.75rem 0 .25rem;
+    }
+    input[type="file"]{
+      display:none;
+    }
+    .file-label{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:.45rem .9rem;
+      border-radius:999px;
+      border:1px solid var(--abe-pop);
       background:transparent;
-      border:none;
-      color:var(--ink);
+      color:var(--abe-ink);
+      font-size:.9rem;
       cursor:pointer;
-      font-size:.88rem;
+      gap:.45rem;
     }
-    .law-node button:hover{
-      background:rgba(255,255,255,.03);
+    .file-label span{
+      opacity:.9;
     }
-    .law-node small{
-      display:block;
-      color:var(--muted);
-      font-size:.78rem;
+    .file-name{
+      display:inline-block;
+      margin-left:.4rem;
+      font-size:.85rem;
+      color:var(--abe-muted);
+      max-width:260px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      vertical-align:middle;
     }
-    .law-detail{
+    textarea{
+      width:100%;
+      min-height:120px;
       background:#050712;
       border-radius:10px;
-      border:1px solid var(--line);
+      border:1px solid var(--abe-border);
+      padding:.6rem .7rem;
+      color:var(--abe-ink);
+      font-family:ui-monospace,SFMono-Regular,Consolas,monospace;
+      font-size:.85rem;
+      resize:vertical;
+    }
+    select{
+      width:100%;
+      background:#050712;
+      border-radius:999px;
+      border:1px solid var(--abe-border);
+      color:var(--abe-ink);
+      padding:.4rem .7rem;
+      font-size:.9rem;
+    }
+    .targets{
+      margin-top:.4rem;
+      font-size:.88rem;
+      color:var(--abe-muted);
+    }
+    .targets label{
+      display:flex;
+      align-items:center;
+      gap:.35rem;
+      margin:.15rem 0;
+    }
+    .targets input[type="checkbox"]{
+      width:15px;
+      height:15px;
+    }
+    .btn-run{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      margin-top:.8rem;
+      padding:.45rem 1.05rem;
+      border-radius:999px;
+      border:1px solid var(--abe-pop);
+      background:transparent;
+      color:var(--abe-ink);
+      font-size:.9rem;
+      cursor:pointer;
+      gap:.4rem;
+      box-shadow:0 0 0 1px rgba(0,0,0,.5);
+    }
+    .btn-run:hover{
+      box-shadow:0 0 0 1px rgba(255,247,80,.4),0 0 18px rgba(255,247,80,.25);
+    }
+    .status-line{
+      margin-top:.6rem;
+      font-size:.85rem;
+      color:var(--abe-muted);
+    }
+    .status-ok{color:#4bd28f;}
+    .status-warn{color:#ffba5c;}
+    .status-err{color:#ff8585;}
+    pre{
+      margin:.4rem 0 .7rem;
+      background:#050712;
+      border-radius:10px;
+      border:1px solid var(--abe-border);
       padding:.6rem .7rem;
       font-family:ui-monospace,SFMono-Regular,Consolas,monospace;
       font-size:.82rem;
-      max-height:480px;
+      color:var(--abe-ink);
+      max-height:260px;
       overflow:auto;
       white-space:pre-wrap;
     }
-    .law-pill{
+    .small-note{
+      font-size:.82rem;
+      color:var(--abe-muted);
+    }
+    .pill{
       display:inline-flex;
       align-items:center;
-      gap:.3rem;
-      padding:.15rem .5rem;
+      padding:.1rem .55rem;
       border-radius:999px;
-      border:1px solid var(--line);
-      font-size:.75rem;
-      color:var(--muted);
-      margin-right:.25rem;
-      margin-bottom:.25rem;
+      border:1px solid var(--abe-border);
+      font-size:.78rem;
+      color:var(--abe-muted);
+      gap:.25rem;
     }
-    .law-pill-usc{border-color:#5ddfff;}
-    .law-pill-cfr{border-color:#ffba5c;}
-    .law-pill-funding{border-color:#4bd28f;}
-    .law-links{
-      margin-top:.4rem;
-      font-size:.84rem;
+    .pill-local{
+      border-color:#4bd28f;
+      color:#4bd28f;
     }
-    .law-links a{
-      color:var(--accent);
-      text-decoration:none;
-    }
-    .law-links a:hover{text-decoration:underline;}
-    .law-search{
-      width:100%;
+    .download-btn{
+      margin-top:.5rem;
+      padding:.35rem .8rem;
+      border-radius:999px;
+      border:1px solid var(--abe-border);
       background:#050712;
-      border-radius:999px;
-      border:1px solid var(--line);
-      padding:.4rem .7rem;
-      color:var(--ink);
-      font-size:.86rem;
-      margin-top:.3rem;
+      color:var(--abe-ink);
+      font-size:.85rem;
+      cursor:pointer;
     }
+    .download-btn:disabled{
+      opacity:.5;
+      cursor:default;
+    }
+    .abe-footer{
+      text-align:center;
+      padding:1.5rem 1rem 2rem;
+      color:var(--abe-muted);
+      font-size:.85rem;
+    }
+    .abe-footer a{color:var(--abe-accent);}
   </style>
 </head>
 <body class="abe-page">
 
 <header class="abe-header">
-  <div class="law-wrap law-header">
-    <a href="/abe---flag/index.html" class="chip">← A.B.E. Home</a>
-    <h1>Law — Federal Authority Corpus</h1>
+  <div class="intake-wrap intake-header">
+    <a href="/abe---flag/index.html" class="home-chip">← A.B.E. Home</a>
+    <h1>Intake — Document & OCR Bridge</h1>
     <p class="tagline">
-      See the controlling <strong>USC, CFR, and funding rules</strong> that define the lawful boundary for FMCSA, MCSAP,
-      and state enforcement. This is what CDA, CFF, and Integration treat as “the rails.”
+      Upload a ticket, CPS letter, policy memo, or contract and let A.B.E. turn it into
+      structured data for CIRI, CDA, CFF, and CCRI — all in your browser, never on a server.
     </p>
-    <nav class="chip-row">
-      <a class="chip" href="intake/index.html">Intake & OCR</a>
-      <a class="chip" href="cda/index.html">CDA</a>
-      <a class="chip" href="cff/index.html">CFF</a>
-      <a class="chip" href="doctrine/index.html">Doctrines</a>
-      <a class="chip chip-alt" href="integration/index.html">Integration</a>
-    </nav>
   </div>
 </header>
 
 <main class="abe-main">
-  <div class="law-wrap law-grid">
+  <div class="intake-wrap intake-grid">
 
-    <!-- LEFT: Packs & search -->
-    <section class="law-card">
-      <h2>Authority Packs</h2>
-      <p class="law-sub">
-        Each pack is a curated slice of controlling federal law:
-        USC + CFR + funding conditions. A.B.E. uses these as
-        “ground truth” when checking divergence.
+    <!-- LEFT: Steps 1–2 -->
+    <section class="card-intake">
+      <h2>Step 1 — Tell Intake what you’re uploading</h2>
+
+      <h3>1.1 · Select one or more files</h3>
+      <label class="file-label">
+        <span>📎 Choose files</span>
+        <input id="file-input" type="file" multiple>
+      </label>
+      <span id="file-name" class="file-name">No file chosen</span>
+      <p class="small-note">
+        You can upload ticket photos, scanned letters, PDFs, or simple text files.
+        For multi-page docs, choose one file per page — Intake will merge them.
       </p>
 
-      <input id="law-search" class="law-search" placeholder="Filter by citation, program, or tag…"/>
-
-      <ul id="law-pack-list" class="law-pack-list"></ul>
-
-      <p id="law-status" class="law-status">Status: choose a pack to begin.</p>
-
-      <p class="law-sub" style="margin-top:.6rem">
-        This viewer runs entirely in your browser. To verify hashes and audit the corpus,
-        open the <a href="integration/index.html">Integration / Audit</a> page.
+      <h3>1.2 · Or paste plain text</h3>
+      <textarea id="text-input" placeholder="Optional: paste the text of your ticket, CPS letter, contract, or policy memo here. If both files and text are provided, Intake will combine them."></textarea>
+      <p class="small-note">
+        Use this if your document is already text (email copy/paste, online docket, etc.).
       </p>
-    </section>
 
-    <!-- MIDDLE: Node list -->
-    <section class="law-card">
-      <h2>Authority Entries</h2>
-      <p class="law-sub">Select a provision to see its full scope, preemption notes, and doctrine links.</p>
-      <ul id="law-node-list" class="law-node-list"></ul>
-    </section>
+      <h3>1.3 · What kind of document is this?</h3>
+      <select id="doc-type">
+        <option value="traffic_ticket">Traffic / citation ticket</option>
+        <option value="cps_case">CPS / child welfare documents</option>
+        <option value="policy_memo" selected>Policy / memo / directive</option>
+        <option value="loan_contract">Loan / finance contract</option>
+        <option value="generic_case_text">Other / freeform case text</option>
+      </select>
 
-    <!-- RIGHT: Detail -->
-    <section class="law-card">
-      <h2>Detail & Doctrine Links</h2>
-      <div id="law-detail" class="law-detail">
-        Select a pack and an entry to view details here.
+      <div class="targets">
+        <div>Send this intake to:</div>
+        <label><input id="target-ciri" type="checkbox" checked> CIRI (economic recovery)</label>
+        <label><input id="target-cda" type="checkbox"> CDA (divergence flags)</label>
+        <label><input id="target-cff" type="checkbox"> CFF (funding forensics)</label>
+        <label><input id="target-ccri" type="checkbox"> CCRI (credit risk integrity)</label>
       </div>
-      <div id="law-detail-links" class="law-links"></div>
+
+      <button id="run-intake" class="btn-run">
+        <span>⚡ Run Intake & OCR</span>
+      </button>
+      <span id="status" class="status-line">Status: waiting to run…</span>
+
+      <p class="small-note" style="margin-top:.6rem">
+        <span class="pill pill-local">Local-only</span>
+        &nbsp;Files and OCR never leave this browser tab. You can close it at any time and keep your downloads.
+      </p>
+    </section>
+
+    <!-- RIGHT: Step 2 + downloads -->
+    <section class="card-intake">
+      <h2>Step 2 — Review text & extracted fields</h2>
+
+      <h3>2.1 · Normalized text (what Intake sees)</h3>
+      <pre id="norm-text">Text will appear here after Intake runs…</pre>
+
+      <h3>2.2 · Extracted fields</h3>
+      <pre id="fields-json">{}</pre>
+
+      <h3>2.3 · Download intake artifact</h3>
+      <button id="download-artifact" class="download-btn" disabled>
+        ⬇ Download intake_artifact.json
+      </button>
+      <p class="small-note">
+        This JSON file can be attached to motions, research memos, or uploaded again later.
+        Integration will hash it and include it in the SHA-256 audit trail.
+      </p>
     </section>
 
   </div>
@@ -225,10 +337,26 @@
 
 <footer class="abe-footer">
   <p>
-    A.B.E. — Federal Authority Corpus · CC BY-NC 4.0 · Integrity only — never for sale.
+    CC BY-NC 4.0 · DOI <a href="https://doi.org/10.5281/zenodo.17586107">10.5281/zenodo.17586107</a> · Integrity only — never for sale.
   </p>
 </footer>
 
-<script src="law/viewer.js"></script>
+<script src="intake/intake.js"></script>
+<script>
+  // tiny helper: show chosen file names
+  (function(){
+    const fileInput = document.getElementById('file-input');
+    const nameEl = document.getElementById('file-name');
+    if(!fileInput || !nameEl) return;
+    fileInput.addEventListener('change',()=>{
+      if(!fileInput.files || !fileInput.files.length){
+        nameEl.textContent = 'No file chosen';
+        return;
+      }
+      const names = Array.from(fileInput.files).map(f=>f.name);
+      nameEl.textContent = names.join(', ');
+    });
+  })();
+</script>
 </body>
 </html>
