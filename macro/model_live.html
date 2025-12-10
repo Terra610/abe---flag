@@ -1,296 +1,394 @@
-<!doctype html><html lang="en"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>A.B.E. Model Math — SIRF · IRE · CEQ (Live)</title>
-<base href="/abe---flag/">
-<style>
-:root{
-  --bg:#0b0d12;--panel:#141820;--panel2:#0f131a;--ink:#e6e6e6;--muted:#9fb3c8;
-  --line:rgba(255,255,255,.08);--brand:#5ddfff;--warn:#ffa559;--ok:#4bd28f
-}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 system-ui}
-a{color:#80bfff} a:hover{text-decoration:underline}
-header{padding:24px 20px;background:linear-gradient(90deg,#11151c,#1b1e25);border-bottom:1px solid var(--line)}
-.wrap{max-width:1100px;margin:0 auto;padding:24px 20px}
-h1{margin:0 0 6px}
-h2{margin:18px 0 6px}
-h3{margin:16px 0 6px}
-.sub{color:var(--muted)}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;margin:18px 0}
-.grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
-.table{width:100%;border-collapse:collapse}
-.table th,.table td{border:1px solid var(--line);padding:10px 12px;text-align:left}
-.table th{background:var(--panel2)}
-.kpi{display:flex;gap:14px;flex-wrap:wrap}
-.kpi .tile{flex:1 1 240px;background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:12px}
-.kpi .num{font-size:1.35rem;font-weight:700}
-.badge{display:inline-block;padding:2px 8px;border:1px solid var(--line);border-radius:999px;color:var(--muted)}
-footer{margin:36px 0 20px;color:var(--muted);text-align:center;font-size:.9rem}
-code{background:var(--panel2);padding:0 4px;border-radius:6px;border:1px solid var(--line)}
-.flow{width:100%;height:auto;background:var(--panel2);border:1px solid var(--line);border-radius:10px}
-.flow text{fill:#e6e6e6;font:12px system-ui}
-.flow .box{fill:#141820;stroke:rgba(255,255,255,.15);stroke-width:1}
-.flow .arrow{stroke:#5ddfff;stroke-width:2;marker-end:url(#arrowhead)}
-.flow .note{fill:#9fb3c8;font-size:11px}
-</style>
-<!-- MathJax (LaTeX renderer) -->
-<script>
-window.MathJax = {tex:{inlineMath:[['$','$'],['\\(','\\)']]}};
-</script>
-<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Macro Model Inspector — A.B.E.</title>
+  <style>
+    :root{
+      --bg:#0b0d12;
+      --panel:#141820;
+      --panel-soft:#101521;
+      --line:rgba(255,255,255,.09);
+      --ink:#e6e6e6;
+      --muted:#9da9ba;
+      --accent:#5ddfff;
+      --warn:#ffd46b;
+      --bad:#ff7b7b;
+      --ok:#4bd28f;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      background:radial-gradient(circle at top,#141922 0,var(--bg) 55%,#05060b 100%);
+      color:var(--ink);
+      font:15px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+    }
+    header{
+      padding:.9rem 1rem;
+      border-bottom:1px solid var(--line);
+      background:#0f131b;
+    }
+    header .wrap{
+      max-width:1100px;
+      margin:0 auto;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:.75rem;
+      flex-wrap:wrap;
+    }
+    h1{
+      margin:0;
+      font-size:1.4rem;
+      color:var(--accent);
+    }
+    .tagline{
+      margin:0;
+      color:var(--muted);
+      font-size:.9rem;
+    }
+    .nav-row{
+      display:flex;
+      gap:.4rem;
+      flex-wrap:wrap;
+    }
+    a{
+      color:var(--accent);
+      text-decoration:none;
+    }
+    a:hover{text-decoration:underline}
+    .chip{
+      display:inline-flex;
+      align-items:center;
+      padding:.3rem .7rem;
+      border-radius:999px;
+      border:1px solid var(--line);
+      font-size:.82rem;
+      text-decoration:none;
+      color:var(--ink);
+      background:#111521;
+    }
+    .chip:hover{
+      background:#151a27;
+      text-decoration:none;
+    }
+
+    main{
+      max-width:1100px;
+      margin:1.2rem auto 3rem;
+      padding:0 1rem;
+      display:grid;
+      gap:1rem;
+      grid-template-columns:minmax(0,1.7fr) minmax(0,1.3fr);
+    }
+    @media(max-width:900px){
+      main{grid-template-columns:minmax(0,1fr);}
+    }
+
+    .card{
+      background:var(--panel);
+      border-radius:12px;
+      border:1px solid var(--line);
+      padding:1rem 1.1rem 1.1rem;
+    }
+    .card h2{
+      margin:.1rem 0 .4rem;
+      font-size:1.05rem;
+      color:#e0ecff;
+    }
+    .card p{
+      margin:.15rem 0;
+      font-size:.9rem;
+      color:var(--muted);
+    }
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:.35rem;
+      padding:.15rem .6rem;
+      border-radius:999px;
+      border:1px solid var(--line);
+      font-size:.8rem;
+      color:var(--muted);
+    }
+    .pill-ok{border-color:var(--ok);color:var(--ok);}
+    .pill-warn{border-color:var(--warn);color:var(--warn);}
+    .pill-bad{border-color:var(--bad);color:var(--bad);}
+    .meta-row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:.4rem;
+      margin-top:.35rem;
+      font-size:.82rem;
+      color:var(--muted);
+    }
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+      margin-top:.5rem;
+      font-size:.86rem;
+    }
+    th,td{
+      padding:.32rem .4rem;
+      text-align:left;
+      border-bottom:1px solid rgba(255,255,255,.05);
+    }
+    th{
+      font-weight:600;
+      color:#d8e4ff;
+      background:#171d2a;
+    }
+    tr:nth-child(even) td{
+      background:#151926;
+    }
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      padding:.05rem .45rem;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.12);
+      font-size:.74rem;
+      color:var(--muted);
+    }
+    .badge-core{border-color:var(--ok);color:var(--ok);}
+    .badge-extra{border-color:var(--accent);color:var(--accent);}
+    .badge-missing{border-color:var(--bad);color:var(--bad);}
+
+    pre{
+      margin:.4rem 0 0;
+      background:#050712;
+      border-radius:10px;
+      border:1px solid rgba(255,255,255,.09);
+      padding:.6rem .7rem;
+      max-height:420px;
+      overflow:auto;
+      font-size:.8rem;
+      font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      color:#e6e6e6;
+    }
+    code{
+      font-family:inherit;
+      background:rgba(255,255,255,.07);
+      padding:.05rem .3rem;
+      border-radius:6px;
+    }
+    footer{
+      margin:1.5rem 0 1rem;
+      text-align:center;
+      color:var(--muted);
+      font-size:.8rem;
+    }
+  </style>
 </head>
 <body>
 <header>
   <div class="wrap">
-    <div class="badge" style="margin-right:8px;"><a href="/abe---flag/">← Home</a></div>
-    <div class="badge"><a href="/abe---flag/integration/">← Integration KPIs</a></div>
-    <h1>A.B.E. Model Math (Live)</h1>
-    <div class="sub">Formal equations for the constitutional integrity engine (SIRF · IRE · CEQ), computed from <code>/ciri/inputs.csv</code>.</div>
-    <div class="badge" style="margin-top:8px">
-      <a href="https://doi.org/10.5281/zenodo.17586107">
-        <img alt="DOI" src="https://zenodo.org/badge/DOI/10.5281/zenodo.17586107.svg">
-      </a>
+    <div>
+      <h1>Macro Model Inspector</h1>
+      <p class="tagline">View and sanity-check the Macroeconomic Cascade model JSON used by A.B.E.</p>
+    </div>
+    <div class="nav-row">
+      <a href="../index.html" class="chip">← A.B.E. Home</a>
+      <a href="./index.html" class="chip">Macro Engine</a>
+      <a href="../ciri/index.html" class="chip">CIRI</a>
+      <a href="../integration/index.html" class="chip">Integration / Audit</a>
     </div>
   </div>
 </header>
 
-<main class="wrap">
-  <!-- Notation -->
-  <div class="card">
-    <h2>Notation</h2>
-    <p>
-      Cases avoided $c$, average case cost $\bar{C}$, jail days $D$, jail day cost $\bar{J}$, fees canceled $F$, policy corrections $P$, avg. enforcement savings $\bar{E}$, households restored $H$, market spend $\bar{M}$, months $m$, employment probability $p_e$, avg. wage $\bar{W}$, lawsuits $L$, payout $\bar{A}$, litigation multiplier $\lambda$, transition cost $T$, scaling constant $K$.
+<main>
+  <!-- LEFT: Summary + components -->
+  <section class="card">
+    <h2>Model Summary</h2>
+    <p id="model-title"><strong>Model:</strong> (loading…)</p>
+    <div class="meta-row">
+      <span id="model-base" class="pill">Base unit: —</span>
+      <span id="model-status" class="pill pill-warn">Status: loading…</span>
+    </div>
+    <p style="margin-top:.6rem;">
+      This viewer reads the same JSON the Macro engine uses:
+      <code>/macro/ABE_MacroCascadeModel.json</code> (or <code>/macro/data/macro_model.json</code>).
+      Nothing leaves your browser.
     </p>
-  </div>
 
-  <!-- Quick Key Legend (NEW) -->
-  <div class="card">
-    <h3>Quick Key Legend</h3>
-    <table class="table">
-      <thead><tr><th>Symbol</th><th>Meaning</th><th>Unit / Context</th></tr></thead>
-      <tbody>
-        <tr><td><code>c</code></td><td>Cases avoided</td><td>count</td></tr>
-        <tr><td><code>𝐶̄</code></td><td>Average cost per case</td><td>USD</td></tr>
-        <tr><td><code>D</code></td><td>Jail days avoided</td><td>days</td></tr>
-        <tr><td><code>𝐽̄</code></td><td>Average jail cost per day</td><td>USD/day</td></tr>
-        <tr><td><code>F</code></td><td>Fees canceled or forgiven</td><td>USD</td></tr>
-        <tr><td><code>P</code></td><td>Policy corrections enacted</td><td>count</td></tr>
-        <tr><td><code>𝐸̄</code></td><td>Avg. enforcement cost savings</td><td>USD per correction</td></tr>
-        <tr><td><code>H</code></td><td>Households restored to stability</td><td>count</td></tr>
-        <tr><td><code>𝐌̄</code></td><td>Avg. monthly market participation</td><td>USD/household</td></tr>
-        <tr><td><code>m</code></td><td>Months effective for recovery</td><td>months</td></tr>
-        <tr><td><code>pₑ</code></td><td>Employment probability</td><td>0–1 ratio</td></tr>
-        <tr><td><code>𝐖̄</code></td><td>Avg. monthly wage (re-entry)</td><td>USD/month</td></tr>
-        <tr><td><code>L</code></td><td>Expected lawsuits resolved</td><td>count</td></tr>
-        <tr><td><code>𝐀̄</code></td><td>Average payout per case</td><td>USD</td></tr>
-        <tr><td><code>λ</code></td><td>Litigation multiplier</td><td>scalar</td></tr>
-        <tr><td><code>T</code></td><td>Transition cost (one-time)</td><td>USD</td></tr>
-        <tr><td><code>K</code></td><td>Scaling constant (CIRI sensitivity)</td><td>USD (default = 2 × 10⁹)</td></tr>
+    <h2 style="margin-top:.9rem;">Key Components</h2>
+    <table id="components-table">
+      <thead>
+        <tr>
+          <th>Component</th>
+          <th>Present</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody id="components-body">
+        <tr><td colspan="3">Looking for model components…</td></tr>
       </tbody>
     </table>
-    <p class="sub">
-      Variables are normalized across CIRI, CIBS, CII for transparent, lawful parity. Archived under DOI
-      <a href="https://doi.org/10.5281/zenodo.17586107">10.5281/zenodo.17586107</a>.
-    </p>
-  </div>
+  </section>
 
-  <!-- Key Flow Diagram (NEW SVG) -->
-  <div class="card">
-    <h3>Key Flow Diagram</h3>
-    <svg class="flow" viewBox="0 0 1000 360" role="img" aria-label="A.B.E. system flow">
-      <defs>
-        <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
-          <polygon points="0 0, 8 3, 0 6" fill="#5ddfff"></polygon>
-        </marker>
-      </defs>
-
-      <!-- Boxes -->
-      <rect class="box" x="40"  y="30"  width="180" height="60" rx="10"></rect>
-      <rect class="box" x="40"  y="150" width="180" height="60" rx="10"></rect>
-
-      <rect class="box" x="260" y="30"  width="200" height="60" rx="10"></rect>
-      <rect class="box" x="500" y="30"  width="180" height="60" rx="10"></rect>
-      <rect class="box" x="720" y="30"  width="180" height="60" rx="10"></rect>
-
-      <rect class="box" x="500" y="150" width="180" height="60" rx="10"></rect>
-      <rect class="box" x="720" y="150" width="180" height="60" rx="10"></rect>
-
-      <!-- Labels -->
-      <text x="130" y="65" text-anchor="middle">CDI — Divergence</text>
-      <text x="130" y="185" text-anchor="middle">CIRI Inputs (CSV)</text>
-
-      <text x="360" y="65" text-anchor="middle">SIRF — Integrity Potential</text>
-      <text x="590" y="65" text-anchor="middle">IRE — Restoration</text>
-      <text x="810" y="65" text-anchor="middle">CIBS — Budget</text>
-
-      <text x="590" y="185" text-anchor="middle">CEQ — Efficiency</text>
-      <text x="810" y="185" text-anchor="middle">CII / SIY — Citizen Impact</text>
-
-      <!-- Arrows top row -->
-      <line class="arrow" x1="220" y1="60" x2="260" y2="60"></line>
-      <line class="arrow" x1="460" y1="60" x2="500" y2="60"></line>
-      <line class="arrow" x1="680" y1="60" x2="720" y2="60"></line>
-
-      <!-- CDI to SIRF -->
-      <text class="note" x="240" y="48">δₜ</text>
-
-      <!-- Inputs to IRE (down then up) -->
-      <line class="arrow" x1="220" y1="180" x2="500" y2="180"></line>
-      <line class="arrow" x1="590" y1="150" x2="590" y2="90"></line>
-
-      <!-- From CIBS to Impact (down) -->
-      <line class="arrow" x1="810" y1="90" x2="810" y2="150"></line>
-
-      <!-- From CEQ to CII/SIY (right) -->
-      <line class="arrow" x1="680" y1="180" x2="720" y2="180"></line>
-
-      <!-- Footnotes -->
-      <text class="note" x="130" y="115" text-anchor="middle">Signals risk & misalignment</text>
-      <text class="note" x="130" y="225" text-anchor="middle">/ciri/inputs.csv → Aₜ</text>
-      <text class="note" x="360" y="100" text-anchor="middle">Pulls F toward 1</text>
-      <text class="note" x="590" y="100" text-anchor="middle">Verified action lowers Eₑ</text>
-      <text class="note" x="810" y="100" text-anchor="middle">Allocates Recovery Pool</text>
-      <text class="note" x="590" y="220" text-anchor="middle">Maps F & Eₑ to η</text>
-      <text class="note" x="810" y="220" text-anchor="middle">Outcomes & households</text>
-    </svg>
-    <p class="sub">Data flows left→right; CDI (signal) and CIRI inputs (data) drive SIRF/IRE; outputs allocate via CIBS; CEQ converts fidelity to efficiency; CII/SIY capture public impact.</p>
-  </div>
-
-  <!-- Core Components (SIRF) -->
-  <div class="card">
-    <h2>Core Components (SIRF)</h2>
-    <p><strong>Shouse Integrity Recovery Function (SIRF)</strong> decomposes Total Recovery $R_T$:</p>
+  <!-- RIGHT: Raw JSON -->
+  <section class="card">
+    <h2>Raw JSON Model</h2>
     <p>
-      $$R_T=\underbrace{c\bar{C}+F}_{\text{direct\_case}}
-      +\underbrace{\Phi_D}_{\text{detention}}
-      +\underbrace{P\bar{E}}_{\text{enforcement}}
-      +\underbrace{H\,\bar{M}\,m}_{\text{market\_access}}
-      +\underbrace{\Phi_E}_{\text{employment}}
-      +\underbrace{L\,\bar{A}\,\lambda}_{\text{litigation}}
-      -\underbrace{T}_{\text{transition}}$$
+      This is the exact JSON object the Macro engine consumes. You can copy it into
+      version control, attach it to motions, or hash it via the Integration layer.
     </p>
-    <p><em>Mode toggles:</em> detention $\Phi_D$ and employment $\Phi_E$ can be configured as:</p>
-    <ul>
-      <li><strong>Demo continuity (default):</strong> $\Phi_D=D\bar{J}$, $\;\Phi_E=(H p_e)\,\bar{W}\,m$</li>
-      <li><strong>Strict v2:</strong> $\Phi_D=c D \bar{J}$, $\;\Phi_E=c\,p_e\,\bar{W}\,(m/12)$</li>
-    </ul>
-  </div>
-
-  <!-- Indices (IRE · CEQ) -->
-  <div class="card">
-    <h2>Indices (IRE · CEQ)</h2>
-    <p><strong>Integrity Restoration Equation (IRE):</strong> $$\displaystyle CIRI = 1 - e^{-R_T/K} \qquad;\qquad CII = 1 - CIRI$$</p>
-    <p><strong>Civic Efficiency Quotient (CEQ):</strong> $$\displaystyle CEQ = \frac{R_T}{\text{Input Cost Baseline}} \quad\text{(optional jurisdictional benchmark)}$$</p>
-    <p><strong>ROI per Case:</strong> $$\displaystyle ROI_{case}=\frac{R_T}{\max(1,c)}$$</p>
-  </div>
-
-  <!-- Live KPIs -->
-  <div class="card">
-    <h2>Live KPIs (from <code>/ciri/inputs.csv</code>)</h2>
-    <div class="kpi">
-      <div class="tile"><div>Total Recovery</div><div id="kpi-total" class="num">—</div><small>$R_T$</small></div>
-      <div class="tile"><div>CIRI</div><div id="kpi-ciri" class="num">—</div><small>$1-e^{-R_T/K}$ with $K=2\times10^9$</small></div>
-      <div class="tile"><div>CII</div><div id="kpi-cii" class="num">—</div><small>$1-\text{CIRI}$</small></div>
-      <div class="tile"><div>ROI / Case</div><div id="kpi-roi" class="num">—</div><small>$R_T/\max(1,c)$</small></div>
-    </div>
-    <p><label><input type="checkbox" id="strictV2"> Use <strong>Strict v2</strong> component formulas (detention & employment)</label></p>
-  </div>
-
-  <!-- Component Breakdown -->
-  <div class="card">
-    <h3>Component Breakdown</h3>
-    <table class="table">
-      <thead><tr><th>Component</th><th>Formula</th><th>Value (USD)</th></tr></thead>
-      <tbody id="tbody-breakdown"></tbody>
-      <tfoot><tr><th>Total</th><th></th><th id="tfoot-total">—</th></tr></tfoot>
-    </table>
-  </div>
-
-  <!-- Links & License -->
-  <div class="grid">
-    <div class="card">
-      <h3>Audit & Quick Links</h3>
-      <ul>
-        <li><a href="/abe---flag/ciri/">CIRI Calculator</a> — inputs, assumptions, and engine output</li>
-        <li><a href="/abe---flag/cibs/">CIBS Budget</a> — public allocation from recovery pool</li>
-        <li><a href="/abe---flag/integration/">Integration KPIs</a> — live tiles and component breakdown</li>
-        <li><a href="/abe---flag/ciri/inputs.csv">/ciri/inputs.csv</a> — current inputs (CSV)</li>
-        <li><a href="/abe---flag/cibs/auto_budget.csv">/cibs/auto_budget.csv</a> — current allocations (CSV)</li>
-        <li><a href="https://doi.org/10.5281/zenodo.17586107">DOI 10.5281/zenodo.17586107</a></li>
-      </ul>
-    </div>
-    <div class="card">
-      <h3>License</h3>
-      <p>CC BY-NC 4.0 — Integrity only, never for sale.</p>
-    </div>
-  </div>
+    <pre id="json-raw">Loading…</pre>
+  </section>
 </main>
 
 <footer>
-  CC BY-NC 4.0 · DOI <a href="https://doi.org/10.5281/zenodo.17586107">10.5281/zenodo.17586107</a> · Integrity only — never for sale.
+  A.B.E. Macroeconomic Cascade · Model Inspector · CC BY-NC 4.0 · Integrity only — never for sale.
 </footer>
 
 <script>
-(async function(){
-  const fmt = n => '$' + (isFinite(n)? Math.round(n).toLocaleString() : '—');
+(function(){
+  const PATHS = [
+    './ABE_MacroCascadeModel.json',
+    './ABE_Macro_Cascading_ROI_Model.json',
+    './data/macro_model.json'
+  ];
 
-  async function readInputs(){
-    const res = await fetch('/abe---flag/ciri/inputs.csv',{cache:'no-store'});
-    const text = await res.text();
-    const [h,d] = text.trim().split(/\r?\n/);
-    const keys = h.split(',').map(s=>s.trim());
-    const vals = d.split(',').map(x=>Number(x));
-    return Object.fromEntries(keys.map((k,i)=>[k,vals[i]]));
+  const titleEl   = document.getElementById('model-title');
+  const baseEl    = document.getElementById('model-base');
+  const statusEl  = document.getElementById('model-status');
+  const tbody     = document.getElementById('components-body');
+  const rawEl     = document.getElementById('json-raw');
+
+  const CORE_COMPONENTS = [
+    'Direct Investment',
+    'Economic Multipliers',
+    'Jobs Created',
+    'Citizens Served',
+    'Cost Savings'
+  ];
+
+  function pill(kind, text){
+    const span = document.createElement('span');
+    span.className = 'pill pill-' + kind;
+    span.textContent = text;
+    return span;
   }
 
-  function compute(o, strict){
-    const c=o.cases_avoided, C=o.avg_cost_per_case, D=o.jail_days_avoided, J=o.cost_per_jail_day,
-          F=o.fees_canceled_total, P=o.policy_corrections, E=o.avg_enforcement_cost_savings,
-          H=o.households_restored, M=o.avg_monthly_market_spend, m=o.months_effective,
-          pe=o.employment_probability, W=o.avg_monthly_wage, L=o.expected_lawsuits,
-          A=o.avg_payout, lam=o.litigation_multiplier, T=o.transition_costs_one_time;
-
-    const direct_case = c*C + F;
-    const detention   = strict ? c*D*J : D*J;
-    const enforcement = P*E;
-    const market      = H*M*m;
-    const employment  = strict ? c*pe*W*(m/12) : (H*pe)*W*m;
-    const litigation  = L*A*lam;
-    const total = direct_case + detention + enforcement + market + employment + litigation - T;
-
-    const K = 2_000_000_000;
-    const CIRI = 1 - Math.exp(- total / K);
-    const CII  = 1 - CIRI;
-    const ROI  = total / Math.max(1,c);
-
-    return {direct_case, detention, enforcement, market, employment, litigation, transition:-T, total, CIRI, CII, ROI};
+  async function loadModel(){
+    for(const url of PATHS){
+      try{
+        const r = await fetch(url,{cache:'no-store'});
+        if(r.ok){
+          const j = await r.json();
+          statusEl.textContent = 'Status: loaded '+url;
+          statusEl.className = 'pill pill-ok';
+          return j;
+        }
+      }catch(e){
+        // ignore and try next
+      }
+    }
+    statusEl.textContent = 'Status: using no external model (none found)';
+    statusEl.className = 'pill pill-warn';
+    return null;
   }
 
-  function render(calc){
-    document.getElementById('kpi-total').textContent = fmt(calc.total);
-    document.getElementById('kpi-ciri').textContent  = calc.CIRI.toFixed(2);
-    document.getElementById('kpi-cii').textContent   = calc.CII.toFixed(2);
-    document.getElementById('kpi-roi').textContent   = fmt(calc.ROI);
+  function renderSummary(model){
+    if(!model){
+      titleEl.innerHTML = '<strong>Model:</strong> <span style="color:#ff9b9b;">No model JSON found in /macro</span>';
+      baseEl.textContent = 'Base unit: —';
+      return;
+    }
 
-    const rows = [
-      ['Direct case','c·C + F',calc.direct_case],
-      ['Detention','Φ_D',calc.detention],
-      ['Enforcement','P·E',calc.enforcement],
-      ['Market access','H·M·m',calc.market],
-      ['Employment','Φ_E',calc.employment],
-      ['Litigation','L·A·λ',calc.litigation],
-      ['Transition','−T',calc.transition]
-    ];
-    document.getElementById('tbody-breakdown').innerHTML =
-      rows.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${fmt(r[2])}</td></tr>`).join('');
-    document.getElementById('tfoot-total').textContent = fmt(calc.total);
+    const name = model.model_name || model.name || '(unnamed model)';
+    const base = model.base_unit || 'One Restored Community';
+
+    titleEl.innerHTML = '<strong>Model:</strong> '+name;
+    baseEl.textContent = 'Base unit: '+base;
   }
 
-  const inputs = await readInputs();
-  const toggle = document.getElementById('strictV2');
-  function refresh(){ render(compute(inputs, toggle.checked)); }
-  toggle.addEventListener('change', refresh);
-  refresh();
+  function renderComponents(model){
+    while(tbody.firstChild) tbody.removeChild(tbody.firstChild);
+
+    if(!model || !Array.isArray(model.components) || !model.components.length){
+      const tr = document.createElement('tr');
+      const td = document.createElement('td');
+      td.colSpan = 3;
+      td.textContent = 'No components array found on this model.';
+      tr.appendChild(td);
+      tbody.appendChild(tr);
+      return;
+    }
+
+    const presentNames = new Set(model.components.map(c=>c.name));
+
+    // Core rows
+    CORE_COMPONENTS.forEach(name=>{
+      const tr = document.createElement('tr');
+      const tdName = document.createElement('td');
+      const tdPresent = document.createElement('td');
+      const tdNotes = document.createElement('td');
+
+      tdName.textContent = name;
+
+      if(presentNames.has(name)){
+        tdPresent.innerHTML = '<span class="badge badge-core">present</span>';
+        if(name === 'Direct Investment'){
+          tdNotes.textContent = 'Defines per-community investment range (drives all multipliers).';
+        } else if(name === 'Economic Multipliers'){
+          tdNotes.textContent = 'Holds GDP/Wages/Local multipliers used in the cascade.';
+        } else if(name === 'Jobs Created'){
+          tdNotes.textContent = 'Required for job and wage projections.';
+        } else if(name === 'Citizens Served'){
+          tdNotes.textContent = 'Required to estimate citizens helped per community.';
+        } else if(name === 'Cost Savings'){
+          tdNotes.textContent = 'Feeds justice/health savings into annual savings.';
+        }
+      } else {
+        tdPresent.innerHTML = '<span class="badge badge-missing">missing</span>';
+        tdNotes.textContent = 'Not found in model.components — Macro will fall back to defaults here.';
+      }
+
+      tr.appendChild(tdName);
+      tr.appendChild(tdPresent);
+      tr.appendChild(tdNotes);
+      tbody.appendChild(tr);
+    });
+
+    // Extra components (nice-to-haves)
+    model.components.forEach(c=>{
+      if(CORE_COMPONENTS.includes(c.name)) return;
+      const tr = document.createElement('tr');
+      const tdName = document.createElement('td');
+      const tdPresent = document.createElement('td');
+      const tdNotes = document.createElement('td');
+
+      tdName.textContent = c.name || '(unnamed)';
+      tdPresent.innerHTML = '<span class="badge badge-extra">extra</span>';
+      tdNotes.textContent = 'Additional component available to the engine.';
+
+      tr.appendChild(tdName);
+      tr.appendChild(tdPresent);
+      tr.appendChild(tdNotes);
+      tbody.appendChild(tr);
+    });
+  }
+
+  function renderRaw(model){
+    try{
+      rawEl.textContent = model ? JSON.stringify(model, null, 2)
+                                : '// No model JSON found in PATHS.';
+    }catch(e){
+      rawEl.textContent = '// Error stringifying model JSON.';
+    }
+  }
+
+  (async function init(){
+    statusEl.textContent = 'Status: loading…';
+    const model = await loadModel();
+    renderSummary(model);
+    renderComponents(model);
+    renderRaw(model);
+  })();
 })();
 </script>
-</body></html>
+</body>
+</html>
