@@ -271,13 +271,17 @@
       </p>
 
       <h3>1.3 · What kind of document is this?</h3>
-      <select id="doc-type">
-        <option value="traffic_ticket">Traffic / citation ticket</option>
-        <option value="cps_case">CPS / child welfare documents</option>
-        <option value="policy_memo" selected>Policy / memo / directive</option>
-        <option value="loan_contract">Loan / finance contract</option>
-        <option value="generic_case_text">Other / freeform case text</option>
-      </select>
+<select id="doc-type">
+  <option value="traffic_ticket">Traffic / citation ticket</option>
+  <option value="cps_case">CPS / child welfare documents</option>
+  <option value="policy_memo" selected>Policy / memo / directive</option>
+
+  <!-- NEW: vehicle titles & registrations -->
+  <option value="vehicle_title_registration">Vehicle title / registration</option>
+
+  <option value="loan_contract">Loan / finance contract</option>
+  <option value="generic_case_text">Other / freeform case text</option>
+</select>
 
       <div class="targets">
         <div>Send this intake to:</div>
