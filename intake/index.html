@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>Intake — Document & OCR Bridge | A.B.E.</title>
   <base href="/abe---flag/">
-  <!-- Optional shared styling; safe to keep -->
   <link rel="stylesheet" href="abe-patch/assets/abe-patch.css">
   <style>
     :root{
@@ -19,16 +18,8 @@
       --abe-border:rgba(255,255,255,.08);
     }
     body.abe-page{
-      margin:0;
       background:radial-gradient(circle at top,#111827 0,#05060b 55%,#020309 100%);
       color:var(--abe-ink);
-      font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
-    }
-
-    /* Header + home chip */
-    .abe-header{
-      border-bottom:1px solid var(--abe-border);
-      background:linear-gradient(90deg,#090c15,#111827);
     }
     .intake-wrap{
       max-width:1100px;
@@ -44,28 +35,6 @@
       color:var(--abe-muted);
       font-size:.98rem;
     }
-    .home-chip{
-      display:inline-flex;
-      align-items:center;
-      gap:.4rem;
-      padding:.35rem .9rem;
-      border-radius:999px;
-      border:1px solid var(--abe-border);
-      background:#050712;
-      color:var(--abe-ink);
-      text-decoration:none;
-      font-size:.9rem;
-      margin-bottom:.75rem;
-    }
-    .home-chip:hover{
-      text-decoration:none;
-      box-shadow:0 0 0 1px rgba(255,255,255,.06);
-    }
-
-    .abe-main{
-      padding:0 0 3rem;
-    }
-
     .intake-grid{
       display:grid;
       gap:1.25rem;
@@ -75,7 +44,6 @@
         grid-template-columns:3fr 2fr;
       }
     }
-
     .card-intake{
       background:linear-gradient(135deg,var(--abe-panel),#0b101a);
       border-radius:14px;
@@ -238,20 +206,40 @@
       opacity:.5;
       cursor:default;
     }
-    .abe-footer{
-      text-align:center;
-      padding:1.5rem 1rem 2rem;
-      color:var(--abe-muted);
-      font-size:.85rem;
+    .next-steps{
+      margin-top:1.2rem;
+      padding-top:.7rem;
+      border-top:1px solid rgba(255,255,255,.08);
     }
-    .abe-footer a{color:var(--abe-accent);}
+    .next-steps h3{
+      margin:.1rem 0 .35rem;
+      font-size:1rem;
+    }
+    .next-btn-row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:.4rem;
+      margin-top:.4rem;
+    }
+    .next-btn{
+      padding:.35rem .9rem;
+      border-radius:999px;
+      border:1px solid var(--abe-border);
+      background:#050712;
+      color:var(--abe-ink);
+      font-size:.85rem;
+      cursor:pointer;
+    }
+    .next-btn:hover{
+      background:#080b15;
+    }
   </style>
 </head>
 <body class="abe-page">
 
 <header class="abe-header">
   <div class="intake-wrap intake-header">
-    <a href="/abe---flag/index.html" class="home-chip">← A.B.E. Home</a>
+    <a href="/abe---flag/index.html" class="chip">← A.B.E. Home</a>
     <h1>Intake — Document & OCR Bridge</h1>
     <p class="tagline">
       Upload a ticket, CPS letter, policy memo, or contract and let A.B.E. turn it into
@@ -312,6 +300,25 @@
         <span class="pill pill-local">Local-only</span>
         &nbsp;Files and OCR never leave this browser tab. You can close it at any time and keep your downloads.
       </p>
+
+      <!-- NEW: Next steps panel, shown after successful run -->
+      <div id="next-steps" class="next-steps" style="display:none;">
+        <h3>Step 3 — Where to go next</h3>
+        <p class="small-note">
+          Your intake artifact is now saved locally in this browser. You do not need to re-upload it.
+          Choose a module to continue:
+        </p>
+        <div class="next-btn-row">
+          <button id="go-cda"  class="next-btn">Run CDA — Divergence</button>
+          <button id="go-cff"  class="next-btn">Run CFF — Funding Forensics</button>
+          <button id="go-ciri" class="next-btn">Run CIRI — Economic Recovery</button>
+          <button id="go-ccri" class="next-btn">Run CCRI — Credit Integrity</button>
+        </div>
+        <p class="small-note" style="margin-top:.5rem;">
+          A.B.E. will carry your intake data forward automatically inside this browser.
+          The only thing you ever need to download is your receipt.
+        </p>
+      </div>
     </section>
 
     <!-- RIGHT: Step 2 + downloads -->
@@ -348,7 +355,7 @@
   // tiny helper: show chosen file names
   (function(){
     const fileInput = document.getElementById('file-input');
-    const nameEl = document.getElementById('file-name');
+    const nameEl    = document.getElementById('file-name');
     if(!fileInput || !nameEl) return;
     fileInput.addEventListener('change',()=>{
       if(!fileInput.files || !fileInput.files.length){
