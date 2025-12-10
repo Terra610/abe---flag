@@ -1,0 +1,349 @@
+{
+  "version": "1.0",
+  "updated": "2025-12-08T00:00:00Z",
+  "module": "DOCTRINE_MAP",
+  "authority": {
+    "name": "A.B.E. — Doctrine Map",
+    "license": "CC BY-NC 4.0",
+    "description": "Structured map of constitutional, judge-made, and ultra-vires doctrines for use across CDA, CFF, CIRI, and law modules."
+  },
+  "void_ab_initio_criteria": [
+    "Contradicts explicit constitutional text",
+    "Removes or nullifies a guaranteed remedy",
+    "Transfers power from the people to the government without amendment",
+    "Creates a penalty for exercising a right",
+    "Invents power not delegated in the Constitution"
+  ],
+  "categories": [
+    {
+      "id": "core",
+      "name": "Constitutional Core",
+      "description": "Doctrines that arise directly from constitutional text and are text-aligned implementations.",
+      "abe_position": "anchor"
+    },
+    {
+      "id": "judge_text_aligned",
+      "name": "Judge-Made, Text-Aligned",
+      "description": "Judicial doctrines created for administrability that are legitimate when applied in a way consistent with constitutional text.",
+      "abe_position": "conditional"
+    },
+    {
+      "id": "judge_ultra_vires",
+      "name": "Judge-Made, Ultra Vires / Text-Conflicting",
+      "description": "Doctrines that have no clear textual basis and conflict with structure, rights, or remedies.",
+      "abe_position": "challenge / void_ab_initio_candidate"
+    },
+    {
+      "id": "driver_overreach",
+      "name": "Driver Licensing & Enforcement Overreach",
+      "description": "Doctrines and practices that bridge commercial law into non-commercial citizens and transportation policing.",
+      "abe_position": "core_to_transport_model"
+    },
+    {
+      "id": "modern_shift",
+      "name": "Modern Corrective Shifts",
+      "description": "Recent doctrinal shifts (e.g., Major Questions, Nondelegation revival) that narrow agency power and reinforce A.B.E.'s alignment claims.",
+      "abe_position": "strengthening"
+    }
+  ],
+  "doctrines": [
+    {
+      "id": "judicial_review",
+      "name": "Judicial Review",
+      "category": "core",
+      "source": "Marbury v. Madison (1803); Article III; Supremacy Clause",
+      "text_basis": "Courts must decide cases under the law; the Constitution and laws made under it are supreme.",
+      "status": "valid",
+      "abe_position": "anchor",
+      "uses": [
+        "Confirms courts have a duty to strike down unconstitutional statutes, doctrines, and practices.",
+        "Supports A.B.E.'s insistence that ultra-vires doctrines are not binding simply because they are old."
+      ],
+      "tags": ["enforcement", "supremacy", "cda_support"]
+    },
+    {
+      "id": "supremacy_clause",
+      "name": "Supremacy Clause Doctrine",
+      "category": "core",
+      "source": "U.S. Const. art. VI",
+      "text_basis": "The Constitution and laws of the United States made in pursuance thereof are the supreme law of the land.",
+      "status": "valid",
+      "abe_position": "core",
+      "uses": [
+        "Federal commercial limits and funding conditions override conflicting state practices.",
+        "Underpins A.B.E. arguments about FMCSA/MCSAP scope and state overreach."
+      ],
+      "tags": ["supremacy", "preemption", "cda_preemption", "cff_funding"]
+    },
+    {
+      "id": "incorporation",
+      "name": "Incorporation Doctrine",
+      "category": "core",
+      "source": "Fourteenth Amendment, Due Process; key cases like Gitlow, McDonald",
+      "text_basis": "States must respect fundamental rights enumerated in the Bill of Rights.",
+      "status": "valid",
+      "abe_position": "core_safeguard",
+      "uses": [
+        "Brings Fourth, Fifth, and Fourteenth protections to state traffic, CPS, and credit practices.",
+        "Restricts 'police power' narratives that ignore federal rights."
+      ],
+      "tags": ["rights", "14A", "cda_rights"]
+    },
+    {
+      "id": "equal_protection",
+      "name": "Equal Protection Doctrine",
+      "category": "core",
+      "source": "Fourteenth Amendment, Equal Protection Clause",
+      "text_basis": "No state shall deny to any person the equal protection of the laws.",
+      "status": "valid",
+      "abe_position": "core_guardrail",
+      "uses": [
+        "Supports challenges to selective traffic enforcement and discriminatory licensing.",
+        "Helps flag unequal treatment in CPS, credit underwriting, and mobility access."
+      ],
+      "tags": ["equal_protection", "selective_enforcement", "cda_rights"]
+    },
+    {
+      "id": "void_for_vagueness",
+      "name": "Void for Vagueness / Overbreadth",
+      "category": "core",
+      "source": "Due Process; numerous Supreme Court decisions",
+      "text_basis": "Laws must be clear enough that ordinary people can understand what is prohibited and not invite arbitrary enforcement.",
+      "status": "valid",
+      "abe_position": "attack_overbroad",
+      "uses": [
+        "Applied to vague traffic, CPS, and licensing statutes that invite open-ended discretion.",
+        "Supports A.B.E. arguments that citizens cannot be punished under incoherent or overbroad codes."
+      ],
+      "tags": ["due_process", "vagueness", "cda_scope_alignment"]
+    },
+
+    {
+      "id": "levels_of_scrutiny",
+      "name": "Levels of Scrutiny",
+      "category": "judge_text_aligned",
+      "source": "Judge-made tiers (strict, intermediate, rational basis)",
+      "text_basis": "Not in text; tool courts use to weigh burdens on rights.",
+      "status": "conditional",
+      "abe_position": "useful_when_rights_recognized",
+      "uses": [
+        "Helps show that when travel and liberty are properly recognized, licensing burdens cannot hide under 'rational basis'.",
+        "Used to test whether safety claims match actual commercial nexus and evidence."
+      ],
+      "tags": ["scrutiny", "rights", "cda_argument"]
+    },
+    {
+      "id": "standing_ripeness_mootness",
+      "name": "Standing / Ripeness / Mootness",
+      "category": "judge_text_aligned",
+      "source": "Article III case-or-controversy gloss",
+      "text_basis": "Courts may only decide real disputes, not hypotheticals.",
+      "status": "mixed",
+      "abe_position": "limit_abuse",
+      "uses": [
+        "Recognizes that access filters exist but rejects their use to dodge ongoing rights violations.",
+        "Supports A.B.E. framing that systemic harms (e.g., funding misuse) are live controversies."
+      ],
+      "tags": ["procedural", "access_to_courts"]
+    },
+    {
+      "id": "exclusionary_rule",
+      "name": "Exclusionary Rule",
+      "category": "judge_text_aligned",
+      "source": "Fourth Amendment remedy doctrine (e.g., Mapp v. Ohio)",
+      "text_basis": "Evidence obtained in violation of the Fourth Amendment is inadmissible.",
+      "status": "valid",
+      "abe_position": "remedy_anchor",
+      "uses": [
+        "Supports suppression when traffic stops, searches, and seizures begin in ultra-vires enforcement.",
+        "Aligns with A.B.E.'s view that unlawful processes cannot generate lawful outcomes."
+      ],
+      "tags": ["4A", "remedy", "suppression"]
+    },
+    {
+      "id": "federalism_balancing",
+      "name": "Federalism Balancing Doctrines",
+      "category": "judge_text_aligned",
+      "source": "Anti-commandeering, intergovernmental immunity, etc.",
+      "text_basis": "Structural inferences from Articles I, II, III and Tenth Amendment.",
+      "status": "mixed",
+      "abe_position": "support_scope_limits",
+      "uses": [
+        "Helps show that states may not convert federal commercial regimes into universal citizen control.",
+        "Helps expose when 'compliance' with federal law is actually overreach beyond federal scope."
+      ],
+      "tags": ["federalism", "commandeering", "cda_preemption"]
+    },
+
+    {
+      "id": "police_power_doctrine",
+      "name": "Police Power Doctrine",
+      "category": "judge_ultra_vires",
+      "source": "19th–20th century state case law; not grounded in constitutional text.",
+      "text_basis": "No explicit grant of inherent police powers in the federal Constitution.",
+      "status": "contested",
+      "abe_position": "void_ab_initio_candidate",
+      "uses": [
+        "Shows that 'police power' claims cannot override explicit constitutional rights and limits.",
+        "Provides grounding to attack state claims of inherent authority to license all movement or life activity."
+      ],
+      "tags": ["ultra_vires", "state_power", "void_ab_initio"]
+    },
+    {
+      "id": "qualified_immunity",
+      "name": "Qualified Immunity",
+      "category": "judge_ultra_vires",
+      "source": "Harlow v. Fitzgerald and progeny",
+      "text_basis": "Not present in §1983 text or the Constitution.",
+      "status": "contested",
+      "abe_position": "void_ab_initio_candidate",
+      "uses": [
+        "Demonstrates that courts carved out protections for officials that the text does not grant.",
+        "Supports A.B.E. remedies arguments that rights must have real, accessible enforcement pathways."
+      ],
+      "tags": ["immunity", "1983", "remedy", "void_ab_initio"]
+    },
+    {
+      "id": "expanded_sovereign_immunity",
+      "name": "Expanded Sovereign Immunity (Eleventh Amendment doctrine)",
+      "category": "judge_ultra_vires",
+      "source": "Post–Eleventh Amendment case law expanding immunity beyond text.",
+      "text_basis": "Eleventh Amendment text is narrow; later doctrine is much broader.",
+      "status": "vulnerable",
+      "abe_position": "challenge",
+      "uses": [
+        "Shows where state immunity has been expanded beyond what the text supports.",
+        "Connects to A.B.E.'s focus on access to remedies and accountability for unlawful funding/enforcement."
+      ],
+      "tags": ["immunity", "state_liability"]
+    },
+    {
+      "id": "community_caretaking",
+      "name": "Community Caretaking Doctrine",
+      "category": "judge_ultra_vires",
+      "source": "Earlier lower court cases; narrowed in Caniglia v. Strom (2021)",
+      "text_basis": "Judge-made; stretches beyond traditional warrant exceptions.",
+      "status": "collapsing",
+      "abe_position": "limiting_unlawful_stops",
+      "uses": [
+        "Used to argue that generic 'safety' cannot justify warrantless home intrusions or traffic intrusions without RAS.",
+        "Supports attacks on non-specific, pretextual traffic stops."
+      ],
+      "tags": ["4A", "traffic", "collapse"]
+    },
+    {
+      "id": "special_needs",
+      "name": "Special Needs Doctrine",
+      "category": "judge_ultra_vires",
+      "source": "Cases allowing suspicionless searches for 'special needs'",
+      "text_basis": "Not explicit in text; carves out new category of searches.",
+      "status": "contested",
+      "abe_position": "narrow_to_true_special_needs",
+      "uses": [
+        "Highlights that general policing of non-commercial drivers does not fit true 'special needs'.",
+        "Undercuts suspicionless checkpoints and chemical tests used as routine policing tools."
+      ],
+      "tags": ["4A", "checkpoints", "drug_testing"]
+    },
+    {
+      "id": "auto_exception_expansion",
+      "name": "Automobile Exception Expansion",
+      "category": "judge_ultra_vires",
+      "source": "Carroll and its progeny",
+      "text_basis": "Originally narrow; expanded significantly over time.",
+      "status": "overextended",
+      "abe_position": "rein_in_scope",
+      "uses": [
+        "Shows how mobility became the wedge for deep intrusions into privacy.",
+        "Supports A.B.E.’s structural argument that traffic policing has been leveraged far beyond commerce-related safety."
+      ],
+      "tags": ["4A", "traffic", "overreach"]
+    },
+
+    {
+      "id": "commerce_clause_misuse",
+      "name": "Commerce Clause Misuse for Universal Licensing",
+      "category": "driver_overreach",
+      "source": "Commerce Clause; misapplied by states and agencies",
+      "text_basis": "Commerce power is about regulating interstate commerce, not private non-commercial travel.",
+      "status": "misapplied",
+      "abe_position": "key_divergence",
+      "uses": [
+        "Demonstrates how commercial authority was used as a pretext to license all adult movement.",
+        "Supports A.B.E.'s distinction between commercial drivers and non-commercial citizens."
+      ],
+      "tags": ["commerce", "licensing", "cda_scope_alignment"]
+    },
+    {
+      "id": "fmcsr_adoption",
+      "name": "FMCSR Adoption Doctrine (49 CFR 300–399, 350)",
+      "category": "driver_overreach",
+      "source": "49 CFR 350.303; 49 CFR 390.3; FMCSA/MCSAP conditions",
+      "text_basis": "States may adopt FMCSRs for commercial motor vehicle safety; scope is limited to defined commercial activity.",
+      "status": "misused_in_practice",
+      "abe_position": "funding_and_scope_anchor",
+      "uses": [
+        "Links MCSAP and FMCSA funding conditions to lawful scope (commercial only).",
+        "Shows that applying FMCSRs to private, non-commercial drivers is outside authorized scope and funding terms."
+      ],
+      "tags": ["fmcsr", "mcsap", "funding_misuse", "cff_link", "cda_preemption"]
+    },
+    {
+      "id": "implied_consent_noncommercial",
+      "name": "Implied Consent for Non-Commercial Drivers",
+      "category": "driver_overreach",
+      "source": "State statutes and case law extending implied consent doctrines",
+      "text_basis": "Not grounded in Fourth/Fifth Amendment text; conflicts with consent principles and DOT Part 40.",
+      "status": "contested",
+      "abe_position": "void_ab_initio_candidate",
+      "uses": [
+        "Shows that 'consent' extracted under threat of license loss or arrest is not true consent.",
+        "Ties directly into A.B.E.'s right-to-travel and bodily integrity arguments."
+      ],
+      "tags": ["4A", "5A", "travel", "void_ab_initio"]
+    },
+    {
+      "id": "administrative_deference",
+      "name": "Administrative Deference (Chevron / Auer-style)",
+      "category": "driver_overreach",
+      "source": "Chevron, Auer, and related cases (partly limited in recent decisions)",
+      "text_basis": "Courts historically deferred heavily to agency interpretations.",
+      "status": "narrowing",
+      "abe_position": "supports_alignment_reclaims",
+      "uses": [
+        "Recent limitations help courts scrutinize DOT and state interpretations of scope.",
+        "Strengthens A.B.E.'s claim that agencies cannot invent new classes of regulated people by 'interpretation'."
+      ],
+      "tags": ["admin_law", "chevron", "scope"]
+    },
+
+    {
+      "id": "major_questions",
+      "name": "Major Questions Doctrine",
+      "category": "modern_shift",
+      "source": "Recent Supreme Court cases (e.g., West Virginia v. EPA)",
+      "text_basis": "Agencies need clear congressional authorization for decisions of vast economic and political significance.",
+      "status": "rising",
+      "abe_position": "strengthens_abe",
+      "uses": [
+        "Supports the argument that DOT and states lack clear authority to convert non-commercial travel into a licensed, quasi-criminal regime.",
+        "Backs A.B.E.'s view that large-scale economic and civil-liberty impacts require explicit legislative authorization."
+      ],
+      "tags": ["major_questions", "admin_law", "scope"]
+    },
+    {
+      "id": "nondelegation_revival",
+      "name": "Nondelegation Revival",
+      "category": "modern_shift",
+      "source": "Emerging Supreme Court skepticism of broad delegations",
+      "text_basis": "Article I vests legislative power in Congress; agencies and states cannot assume vague open-ended power.",
+      "status": "emerging",
+      "abe_position": "strengthens_abe",
+      "uses": [
+        "Highlights that neither Congress nor agencies clearly delegated power to license mere existence in public space.",
+        "Supports A.B.E.'s thesis that licensing + traffic enforcement overreach sit in a nondelegation gap."
+      ],
+      "tags": ["nondelegation", "admin_law", "scope"]
+    }
+  ]
+}
