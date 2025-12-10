@@ -1,53 +1,36 @@
-// ccri/local.js
-// CCRI — Consumer Credit Risk Integrity
-// Runs entirely in-browser. No network calls with user data.
-// Builds a system-level risk profile for how DMV/DOT & enforcement data
-// is used in non-commercial credit decisions.
+// ciri/local.js
+// CIRI — Constitutional Integrity ROI Engine (client-side)
+// - Auto-bridges from Intake (abe_intake_artifact), CDA, and CCRI when present.
+// - Computes economic recovery categories and CIRI index.
+// - Stores ABE_CIRI_SCENARIO_V2 in localStorage, with SHA-256 hash.
+// - Lets user download JSON + one-row CSV.
+
+// ---------- helpers ----------
 
 (function(){
   const byId = id => document.getElementById(id);
 
-  // Inputs
-  const instNameEl = byId('inst-name');
-  const instTypeEl = byId('inst-type');
-  const geoScopeEl = byId('geo-scope');
-  const notesEl    = byId('ccri-notes');
-
-  // Radio groups
-  function getRadio(name, fallback){
-    const els = document.querySelectorAll('input[name="'+name+'"]');
-    for(const el of els){
-      if(el.checked) return el.value;
-    }
-    return fallback;
+  function setStatus(text, kind){
+    const el = byId('ciri-status');
+    if(!el) return;
+    el.textContent = 'Status: ' + text;
+    el.className = 'ciri-status';
+    if(kind === 'ok')   el.classList.add('ciri-status-ok');
+    if(kind === 'warn') el.classList.add('ciri-status-warn');
+    if(kind === 'bad')  el.classList.add('ciri-status-bad');
   }
 
-  // Outputs
-  const statusEl   = byId('ccri-status');
-  const bridgeEl   = byId('ccri-intake-bridge');
-  const runBtn     = byId('ccri-run');
-  const jsonEl     = byId('ccri-json');
-  const summaryEl  = byId('ccri-summary');
-  const dlBtn      = byId('ccri-download');
-  const hashEl     = byId('ccri-hash');
-
-  const dataEl   = byId('score-data');
-  const constEl  = byId('score-const');
-  const accessEl = byId('score-access');
-  const econEl   = byId('score-econ');
-  const classEl  = byId('ccri-class');
-
-  let latestScenario = null;
-
-  // ---------- helpers ----------
-
-  function setStatus(text, kind){
-    if(!statusEl) return;
-    statusEl.textContent = 'Status: ' + text;
-    statusEl.className = 'ccri-status';
-    if(kind === 'ok')   statusEl.classList.add('ccri-status-ok');
-    if(kind === 'warn') statusEl.classList.add('ccri-status-warn');
-    if(kind === 'bad')  statusEl.classList.add('ccri-status-bad');
+  function money(n){
+    const num = Number(n) || 0;
+    try{
+      return num.toLocaleString(undefined,{
+        style:'currency',
+        currency:'USD',
+        maximumFractionDigits:0
+      });
+    }catch(_){
+      return '$' + Math.round(num).toLocaleString();
+    }
   }
 
   async function sha256OfText(text){
@@ -70,311 +53,449 @@
     URL.revokeObjectURL(url);
   }
 
+  function numberFromInput(id){
+    const el = byId(id);
+    if(!el) return 0;
+    const raw = (el.value || '').trim();
+    const num = Number(raw);
+    if(Number.isNaN(num)) return 0;
+    return num;
+  }
+
+  function setText(id, value){
+    const el = byId(id);
+    if(el) el.textContent = value;
+  }
+
   // ---------- Intake bridge ----------
 
-  function hydrateFromIntake(){
-    if(!bridgeEl) return;
+  function applyIntakeDefaults(){
+    const bridge = byId('ciri-intake-bridge');
     try{
       const raw = localStorage.getItem('abe_intake_artifact');
       if(!raw){
-        bridgeEl.textContent = 'Intake bridge: no recent Intake artifact found. You can still fill this form manually.';
+        if(bridge) bridge.textContent =
+          'Intake bridge: no recent Intake artifact found. You can still fill values manually.';
         return;
       }
       const art = JSON.parse(raw);
-      if(!art || typeof art !== 'object'){
-        bridgeEl.textContent = 'Intake bridge: found a value, but it does not look like an Intake artifact.';
-        return;
-      }
 
-      if(instNameEl && !instNameEl.value){
-        instNameEl.value = (art.doc_type || 'credit scenario') + ' — ' + (art.original_file_name || '');
-      }
+      if(bridge) bridge.textContent =
+        'Intake bridge: using the last Intake artifact as context. All fields are editable.';
+
+      // put snippet into notes if empty
+      const notesEl = byId('ciri-notes');
       if(notesEl && !notesEl.value && art.text_normalized){
-        const snippet = String(art.text_normalized).slice(0, 600).replace(/\s+/g,' ');
+        const snippet = String(art.text_normalized).slice(0,500).replace(/\s+/g,' ');
         notesEl.value = snippet;
       }
 
-      bridgeEl.textContent = 'Intake bridge: using the last Intake artifact as context (you can change any field).';
+      // if Intake already built a CIRI CSV row, try to parse & prefill
+      const gen = art.generated_outputs || {};
+      if(gen.ciri && gen.ciri.present && gen.ciri.csv_inline){
+        const csv = String(gen.ciri.csv_inline);
+        const lines = csv.split(/\r?\n/).filter(l=>l.trim().length>0);
+        if(lines.length >= 2){
+          const header = lines[0].split(',');
+          const row    = lines[1].split(',');
+          const map = {};
+          header.forEach((h,i)=>{
+            map[h.trim()] = (i < row.length ? row[i].trim() : '');
+          });
+
+          function setIf(key, id){
+            if(map[key] && byId(id) && Number(map[key])){
+              byId(id).value = Number(map[key]);
+            }
+          }
+
+          setIf('cases_avoided','cases_avoided');
+          setIf('avg_cost_per_case','avg_cost_per_case');
+          setIf('jail_days_avoided','jail_days_avoided');
+          setIf('cost_per_jail_day','cost_per_jail_day');
+          setIf('fees_canceled_total','fees_canceled_total');
+          setIf('policy_corrections','policy_corrections');
+          setIf('avg_enforcement_cost_savings','avg_enforcement_cost_savings');
+          setIf('households_restored','households_restored');
+          setIf('avg_monthly_market_spend','avg_monthly_market_spend');
+          setIf('months_effective','months_effective');
+          setIf('employment_probability','employment_probability');
+          setIf('avg_monthly_wage','avg_monthly_wage');
+          setIf('expected_lawsuits','expected_lawsuits');
+          setIf('avg_payout','avg_payout');
+          setIf('litigation_multiplier','litigation_multiplier');
+          setIf('transition_costs_one_time','transition_costs_one_time');
+        }
+      }
+
     }catch(e){
-      console.warn('CCRI Intake bridge error:', e);
-      bridgeEl.textContent = 'Intake bridge: could not read the Intake artifact.';
+      console.warn('CIRI Intake bridge error:', e);
+      if(bridge) bridge.textContent =
+        'Intake bridge: found a value but could not parse it. You can still fill values manually.';
     }
   }
 
-  // ---------- scoring ----------
+  // ---------- CDA / CCRI context ----------
 
-  function classifyScore(num){
-    if(num >= 75) return 'high';
-    if(num >= 40) return 'mid';
-    return 'low';
+  function readCdaContext(){
+    try{
+      const raw = localStorage.getItem('ABE_CDA_SCENARIO_V1');
+      if(!raw) return { present:false };
+      const obj = JSON.parse(raw);
+      return {
+        present:true,
+        divergence_score: typeof obj.divergence_score === 'number' ? obj.divergence_score : null,
+        statute_name: obj.statute_name || '',
+        jurisdiction: obj.jurisdiction || ''
+      };
+    }catch(e){
+      console.warn('CIRI CDA context error:', e);
+      return { present:false };
+    }
   }
 
-  function setScore(el, val){
-    if(!el) return;
-    if(val == null){
-      el.textContent = '—';
-      return;
+  function readCcriContext(){
+    try{
+      const raw = localStorage.getItem('ABE_CCRI_SCENARIO_V1');
+      if(!raw) return { present:false };
+      const obj = JSON.parse(raw);
+      const s = obj.scores || {};
+      return {
+        present:true,
+        overall_risk_class: s.overall_risk_class || null,
+        data_integrity: s.data_integrity,
+        constitutional_alignment: s.constitutional_alignment,
+        access_fairness: s.access_fairness,
+        economic_impact: s.economic_impact
+      };
+    }catch(e){
+      console.warn('CIRI CCRI context error:', e);
+      return { present:false };
     }
-    el.textContent = Math.round(val);
   }
 
-  function computeScores(inputs){
-    // inputs: { dmvUse, suspensionRule, appeal, instType, geoScope }
-    // All scores are 0–100, where 100 = best (low risk), 0 = worst (high risk).
-    let data = 100;
-    let align = 100;
-    let access = 100;
-    let econ = 100;
+  // ---------- CIRI math ----------
 
-    // DMV use
-    if(inputs.dmvUse === 'yes'){
-      data -= 45;
-      align -= 40;
-      access -= 35;
-      econ -= 30;
-    }else if(inputs.dmvUse === 'limited'){
-      data -= 10;
-      align -= 5;
-    }
+  function computeRecovery(fields){
+    const {
+      cases_avoided,
+      avg_cost_per_case,
+      jail_days_avoided,
+      cost_per_jail_day,
+      fees_canceled_total,
+      policy_corrections,
+      avg_enforcement_cost_savings,
+      households_restored,
+      avg_monthly_market_spend,
+      months_effective,
+      employment_probability,
+      avg_monthly_wage,
+      expected_lawsuits,
+      avg_payout,
+      litigation_multiplier,
+      transition_costs_one_time
+    } = fields;
 
-    // Suspension rule
-    if(inputs.suspensionRule === 'direct'){
-      align -= 40;
-      access -= 30;
-      econ -= 25;
-    }else if(inputs.suspensionRule === 'indirect'){
-      align -= 25;
-      access -= 20;
-      econ -= 15;
-    }
+    const direct_case_savings = cases_avoided * avg_cost_per_case;
+    const detention_savings   = jail_days_avoided * cost_per_jail_day;
+    const enforcement_savings = policy_corrections * avg_enforcement_cost_savings;
+    const market_access_uplift = households_restored * avg_monthly_market_spend * months_effective;
+    const employment_wage_uplift =
+      households_restored * employment_probability * avg_monthly_wage * months_effective;
+    const litigation_risk_avoided =
+      expected_lawsuits * avg_payout * litigation_multiplier;
 
-    // Appeal
-    if(inputs.appeal === 'weak'){
-      access -= 15;
-      align -= 10;
-    }else if(inputs.appeal === 'none'){
-      access -= 30;
-      align -= 20;
-      econ -= 10;
-    }
+    const transition_costs = transition_costs_one_time;
 
-    // Geo scope multiplies impact
-    if(inputs.geoScope === 'multi_state'){
-      econ -= 10;
-    }else if(inputs.geoScope === 'national'){
-      econ -= 20;
-    }
+    let total_recovery =
+      direct_case_savings +
+      detention_savings +
+      enforcement_savings +
+      fees_canceled_total +
+      market_access_uplift +
+      employment_wage_uplift +
+      litigation_risk_avoided -
+      transition_costs;
 
-    // Bound 0–100
-    data   = Math.min(100, Math.max(0, data));
-    align  = Math.min(100, Math.max(0, align));
-    access = Math.min(100, Math.max(0, access));
-    econ   = Math.min(100, Math.max(0, econ));
+    if(total_recovery < 0) total_recovery = 0;
 
-    // Overall risk: invert average
-    const avg = (data + align + access + econ) / 4;
-    let overallClass = 'LOW';
-    if(avg <= 40) overallClass = 'HIGH';
-    else if(avg <= 70) overallClass = 'MODERATE';
+    // Scale constant for index (can be tuned over time)
+    const K = 50000000; // 50M
+    const ciri_index = 1 - Math.exp(- total_recovery / K);
+
+    const roi_per_case = cases_avoided > 0
+      ? total_recovery / cases_avoided
+      : null;
 
     return {
-      data_integrity: data,
-      constitutional_alignment: align,
-      access_fairness: access,
-      economic_impact: econ,
-      overall_risk_class: overallClass
+      direct_case_savings,
+      detention_savings,
+      enforcement_savings,
+      market_access_uplift,
+      employment_wage_uplift,
+      litigation_risk_avoided,
+      transition_costs,
+      total_recovery,
+      ciri_index,
+      roi_per_case
     };
   }
 
-  // ---------- summary ----------
+  function buildCsvRow(fields){
+    const header = [
+      'cases_avoided',
+      'avg_cost_per_case',
+      'jail_days_avoided',
+      'cost_per_jail_day',
+      'fees_canceled_total',
+      'policy_corrections',
+      'avg_enforcement_cost_savings',
+      'households_restored',
+      'avg_monthly_market_spend',
+      'months_effective',
+      'employment_probability',
+      'avg_monthly_wage',
+      'expected_lawsuits',
+      'avg_payout',
+      'litigation_multiplier',
+      'transition_costs_one_time',
+      'notes'
+    ];
+    const notesEl = byId('ciri-notes');
+    const notes = notesEl ? (notesEl.value || '') : '';
+
+    const row = [
+      fields.cases_avoided,
+      fields.avg_cost_per_case,
+      fields.jail_days_avoided,
+      fields.cost_per_jail_day,
+      fields.fees_canceled_total,
+      fields.policy_corrections,
+      fields.avg_enforcement_cost_savings,
+      fields.households_restored,
+      fields.avg_monthly_market_spend,
+      fields.months_effective,
+      fields.employment_probability,
+      fields.avg_monthly_wage,
+      fields.expected_lawsuits,
+      fields.avg_payout,
+      fields.litigation_multiplier,
+      fields.transition_costs_one_time,
+      JSON.stringify(notes.replace(/\s+/g,' ').slice(0,200))
+    ];
+
+    return header.join(',') + '\n' + row.join(',');
+  }
+
+  function buildScenario(fields, outputs, cdaCtx, ccriCtx){
+    const notesEl = byId('ciri-notes');
+    const notes = notesEl ? (notesEl.value || '') : '';
+
+    return {
+      version: '2.0',
+      module: 'CIRI',
+      inputs: fields,
+      context: {
+        cda: cdaCtx,
+        ccri: ccriCtx
+      },
+      outputs: {
+        direct_case_savings: outputs.direct_case_savings,
+        detention_savings: outputs.detention_savings,
+        enforcement_savings: outputs.enforcement_savings,
+        market_access_uplift: outputs.market_access_uplift,
+        employment_wage_uplift: outputs.employment_wage_uplift,
+        litigation_risk_avoided: outputs.litigation_risk_avoided,
+        fees_canceled_total: fields.fees_canceled_total,
+        transition_costs: outputs.transition_costs,
+        total_recovery: outputs.total_recovery,
+        ciri_index: outputs.ciri_index,
+        roi_per_case: outputs.roi_per_case
+      },
+      notes,
+      created_at: new Date().toISOString()
+    };
+  }
 
   function buildSummary(scen){
-    const s = scen;
+    const o = scen.outputs;
+    const f = scen.inputs;
+    const ctx = scen.context || {};
+    const cda = ctx.cda || {};
+    const ccri = ctx.ccri || {};
+
     const lines = [];
-    lines.push(`CCRI scenario: ${s.institution_name || '(unnamed institution)'}`);
-    lines.push(`Type: ${s.institution_type} · Scope: ${s.geographic_scope}`);
+    lines.push('CIRI scenario — Integrity ROI');
     lines.push('');
-    lines.push(`Data integrity score: ${Math.round(s.scores.data_integrity)} / 100`);
-    lines.push(`Constitutional alignment score: ${Math.round(s.scores.constitutional_alignment)} / 100`);
-    lines.push(`Access & fairness score: ${Math.round(s.scores.access_fairness)} / 100`);
-    lines.push(`Economic impact score: ${Math.round(s.scores.economic_impact)} / 100`);
-    lines.push(`Overall risk classification: ${s.scores.overall_risk_class}`);
+    lines.push(`Total recovery (R_T): ${money(o.total_recovery)}`);
+    lines.push(`CIRI index (0–1): ${o.ciri_index.toFixed(3)}`);
+    if(o.roi_per_case != null){
+      lines.push(`ROI per case: ${money(o.roi_per_case)}`);
+    }
     lines.push('');
-
-    lines.push('Key signals:');
-    if(s.flags.uses_dmv_for_gating){
-      lines.push('- Model uses DMV/DOT or license status as a gate for non-commercial credit.');
-    }
-    if(s.flags.suspension_triggers_denial){
-      lines.push('- License suspension / unpaid tickets can trigger denial or higher risk.');
-    }
-    if(s.flags.weak_or_no_appeal){
-      lines.push('- Appeal path is weak or missing; citizens have little remedy.');
-    }
-    if(s.flags.multi_state_or_national){
-      lines.push('- Practices are scaled beyond a single state, increasing systemic harm.');
-    }
-    if(!s.flags.uses_dmv_for_gating &&
-       !s.flags.suspension_triggers_denial &&
-       !s.flags.weak_or_no_appeal &&
-       !s.flags.multi_state_or_national){
-      lines.push('- No high-risk signals were marked; CCRI still recommends periodic review.');
-    }
-
-    if(s.notes){
-      lines.push('');
-      lines.push('Notes:');
-      lines.push(s.notes);
-    }
-
+    lines.push('Breakdown:');
+    lines.push(`- Direct case cost savings: ${money(o.direct_case_savings)}`);
+    lines.push(`- Detention cost savings: ${money(o.detention_savings)}`);
+    lines.push(`- Enforcement & policy savings: ${money(o.enforcement_savings)}`);
+    lines.push(`- Fees & fines canceled: ${money(o.fees_canceled_total)}`);
+    lines.push(`- Market access uplift: ${money(o.market_access_uplift)}`);
+    lines.push(`- Employment & wage uplift: ${money(o.employment_wage_uplift)}`);
+    lines.push(`- Litigation risk avoided: ${money(o.litigation_risk_avoided)}`);
+    lines.push(`- Transition costs: ${money(o.transition_costs)}`);
     lines.push('');
-    lines.push('Law & doctrine anchors:');
-    if(s.flags.uses_dmv_for_gating || s.flags.suspension_triggers_denial){
-      lines.push('  - LAW: Title 49 Transportation scope + FMCSR adoption rules (non-commercial vs commercial).');
-      lines.push('  - LAW: Check MCSAP/FMCSA packs for spillover into consumer credit models.');
-      lines.push('  - Doctrine: Constitutional Fidelity + Void ab initio for DMV-based gating outside commerce nexus.');
+    lines.push('Context anchors:');
+    if(cda.present){
+      lines.push(`- CDA: divergence score ${cda.divergence_score != null ? cda.divergence_score.toFixed(3) : '—'} ` +
+                 `(statute: ${cda.statute_name || '—'}, jurisdiction: ${cda.jurisdiction || '—'})`);
     }else{
-      lines.push('  - For deeper review, open: /abe---flag/law/index.html and /abe---flag/doctrine/index.html');
+      lines.push('- CDA: no divergence scenario found in this browser (optional but recommended).');
+    }
+    if(ccri.present){
+      lines.push(`- CCRI: overall credit risk class = ${ccri.overall_risk_class || '—'} ` +
+                 `(data/constitutional/access/economic scores baked into scenario).`);
+    }else{
+      lines.push('- CCRI: no credit integrity scenario found in this browser (optional).');
     }
 
     lines.push('');
     lines.push('Downstream engines:');
-    lines.push('  - Feed economic harm into CIRI using expected cases, lost jobs, and wage suppression.');
-    lines.push('  - Use CFF/AFFE if federal funds are propping up the data infrastructure or enforcement inputs.');
+    lines.push('- CIBS will treat R_T as the recovery pool for community budgets.');
+    lines.push('- CII will translate those budgets into actual projects (housing, clinics, transit).');
+    lines.push('- Macro will scale this single scenario to many communities.');
+    lines.push('');
+    lines.push('Viewer shortcuts (if you are on the A.B.E. site):');
+    lines.push('  - Law viewer:       /abe---flag/law/index.html');
+    lines.push('  - Doctrines index:  /abe---flag/doctrine/index.html');
+    lines.push('  - Integration audit:/abe---flag/integration/index.html');
 
     return lines.join('\n');
   }
 
-  // ---------- run ----------
+  // ---------- main run ----------
 
-  async function run(){
+  async function runCiri(){
     try{
+      const runBtn = byId('ciri-run');
+      const dlJson = byId('ciri-download-json');
+      const dlCsv  = byId('ciri-download-csv');
       if(runBtn) runBtn.disabled = true;
-      if(dlBtn)  dlBtn.disabled  = true;
-      setStatus('computing CCRI risk profile…','warn');
-      jsonEl.textContent = '{}';
-      summaryEl.textContent = 'Working…';
+      if(dlJson) dlJson.disabled = true;
+      if(dlCsv)  dlCsv.disabled  = true;
 
-      const institution_name  = (instNameEl && instNameEl.value.trim()) || '';
-      const institution_type  = (instTypeEl && instTypeEl.value) || 'auto_lender';
-      const geographic_scope  = (geoScopeEl && geoScopeEl.value) || 'single_state';
-      const dmvUse            = getRadio('dmv-use','no');
-      const suspensionRule    = getRadio('suspension-rule','no');
-      const appeal            = getRadio('appeal','robust');
-      const notes             = (notesEl && notesEl.value.trim()) || '';
+      setStatus('computing recovery…','warn');
 
-      const flags = {
-        uses_dmv_for_gating: (dmvUse === 'yes'),
-        uses_dmv_identity_only: (dmvUse === 'limited'),
-        suspension_triggers_denial: (suspensionRule === 'direct' || suspensionRule === 'indirect'),
-        direct_suspension_gate: (suspensionRule === 'direct'),
-        weak_or_no_appeal: (appeal === 'weak' || appeal === 'none'),
-        multi_state_or_national: (geographic_scope === 'multi_state' || geographic_scope === 'national')
+      const fields = {
+        cases_avoided:                numberFromInput('cases_avoided'),
+        avg_cost_per_case:            numberFromInput('avg_cost_per_case'),
+        jail_days_avoided:            numberFromInput('jail_days_avoided'),
+        cost_per_jail_day:            numberFromInput('cost_per_jail_day'),
+        fees_canceled_total:          numberFromInput('fees_canceled_total'),
+        policy_corrections:           numberFromInput('policy_corrections'),
+        avg_enforcement_cost_savings: numberFromInput('avg_enforcement_cost_savings'),
+        households_restored:          numberFromInput('households_restored'),
+        avg_monthly_market_spend:     numberFromInput('avg_monthly_market_spend'),
+        months_effective:             numberFromInput('months_effective'),
+        employment_probability:       numberFromInput('employment_probability'),
+        avg_monthly_wage:             numberFromInput('avg_monthly_wage'),
+        expected_lawsuits:            numberFromInput('expected_lawsuits'),
+        avg_payout:                   numberFromInput('avg_payout'),
+        litigation_multiplier:        numberFromInput('litigation_multiplier'),
+        transition_costs_one_time:    numberFromInput('transition_costs_one_time')
       };
 
-      const scores = computeScores({
-        dmvUse,
-        suspensionRule,
-        appeal,
-        instType: institution_type,
-        geoScope: geographic_scope
-      });
+      const outputs = computeRecovery(fields);
+      const cdaCtx  = readCdaContext();
+      const ccriCtx = readCcriContext();
+      const scen    = buildScenario(fields, outputs, cdaCtx, ccriCtx);
 
-      const scenario = {
-        version: '1.0',
-        module: 'CCRI',
-        institution_name,
-        institution_type,
-        geographic_scope,
-        inputs: {
-          dmv_use: dmvUse,
-          suspension_rule: suspensionRule,
-          appeal_process: appeal
-        },
-        flags,
-        scores,
-        notes,
-        created_at: new Date().toISOString()
-      };
+      // KPIs
+      setText('kpi-case',  money(outputs.direct_case_savings));
+      setText('kpi-jail',  money(outputs.detention_savings));
+      setText('kpi-enf',   money(outputs.enforcement_savings));
+      setText('kpi-market',money(outputs.market_access_uplift));
+      setText('kpi-wage',  money(outputs.employment_wage_uplift));
+      setText('kpi-lit',   money(outputs.litigation_risk_avoided));
 
-      latestScenario = scenario;
-      const jsonText = JSON.stringify(scenario, null, 2);
-      jsonEl.textContent = jsonText;
-      summaryEl.textContent = buildSummary(scenario);
+      setText('kpi-fees',  money(fields.fees_canceled_total));
+      setText('kpi-trans', money(outputs.transition_costs));
+      setText('kpi-total', money(outputs.total_recovery));
 
-      // Scores display
-      setScore(dataEl, scores.data_integrity);
-      setScore(constEl, scores.constitutional_alignment);
-      setScore(accessEl, scores.access_fairness);
-      setScore(econEl, scores.economic_impact);
-      if(classEl) classEl.textContent = scores.overall_risk_class;
+      const idxEl = byId('ciri-index-val');
+      if(idxEl) idxEl.textContent = outputs.ciri_index.toFixed(3);
+      const roiEl = byId('ciri-roi-case');
+      if(roiEl){
+        roiEl.textContent = outputs.roi_per_case != null
+          ? money(outputs.roi_per_case)
+          : '—';
+      }
 
-      // Hash + download
+      const jsonText = JSON.stringify(scen,null,2);
+      const jsonOut  = byId('ciri-json');
+      if(jsonOut) jsonOut.textContent = jsonText;
+
       const hash = await sha256OfText(jsonText);
+      const hashEl = byId('ciri-hash');
       if(hashEl){
         hashEl.textContent =
           'Audit hash: ' + hash +
-          '  (SHA-256 of this CCRI scenario. Any tampering will change this value.)';
+          '  (SHA-256 of this CIRI scenario. Any tampering will change this value.)';
       }
 
-      if(dlBtn){
-        dlBtn.disabled = false;
-        dlBtn.onclick = ()=>{
-          downloadTextFile('ccri_scenario.json', jsonText, 'application/json');
+      const csvRow = buildCsvRow(fields);
+
+      if(dlJson){
+        dlJson.disabled = false;
+        dlJson.onclick = ()=>{
+          downloadTextFile('ciri_scenario.json', jsonText, 'application/json');
+        };
+      }
+      if(dlCsv){
+        dlCsv.disabled = false;
+        dlCsv.onclick = ()=>{
+          downloadTextFile('ciri_inputs_row.csv', csvRow, 'text/csv');
         };
       }
 
-      setStatus('CCRI scenario generated. Review the risk profile and summary.','ok');
-
-      // Store for downstream modules
+      // Store for Macro/CIBS/CII/Integration
       try{
-        localStorage.setItem('ABE_CCRI_SCENARIO_V1', jsonText);
+        localStorage.setItem('ABE_CIRI_SCENARIO_V2', jsonText);
       }catch(e){
-        console.warn('Could not store CCRI scenario in localStorage:', e);
+        console.warn('Could not store CIRI scenario in localStorage:', e);
       }
+
+      // Summary text (if you later want a separate <pre>, you can split it out)
+      const summary = buildSummary(scen);
+      // If you want, you can also dump it into another <pre id="ciri-summary"> element.
+      // For now, JSON + KPIs + hash carry the meaning.
+
+      setStatus('CIRI scenario computed. Review breakdown & download receipts.','ok');
 
     }catch(err){
       console.error(err);
-      setStatus('CCRI failed: ' + (err.message || String(err)),'bad');
-      jsonEl.textContent = '{}';
-      summaryEl.textContent = 'CCRI run failed. See console for details.';
-      if(dlBtn) dlBtn.disabled = true;
+      setStatus('CIRI failed: ' + (err.message || String(err)),'bad');
+      const jsonOut = byId('ciri-json');
+      if(jsonOut) jsonOut.textContent = '{}';
+      const hashEl = byId('ciri-hash');
       if(hashEl) hashEl.textContent = 'Audit hash: —';
-      setScore(dataEl,null);
-      setScore(constEl,null);
-      setScore(accessEl,null);
-      setScore(econEl,null);
-      if(classEl) classEl.textContent = '—';
+      const dlJson = byId('ciri-download-json');
+      const dlCsv  = byId('ciri-download-csv');
+      if(dlJson) dlJson.disabled = true;
+      if(dlCsv)  dlCsv.disabled  = true;
     }finally{
+      const runBtn = byId('ciri-run');
       if(runBtn) runBtn.disabled = false;
     }
-  }
-
-  function setScore(el,val){
-    if(!el){
-      return;
-    }
-    if(val==null){
-      el.textContent='—';
-      el.classList.remove('ccri-score-high','ccri-score-mid','ccri-score-low');
-      return;
-    }
-    el.textContent = Math.round(val);
-    el.classList.remove('ccri-score-high','ccri-score-mid','ccri-score-low');
-    const band = classifyScore(val);
-    if(band === 'high') el.classList.add('ccri-score-high');
-    else if(band === 'mid') el.classList.add('ccri-score-mid');
-    else el.classList.add('ccri-score-low');
   }
 
   // ---------- init ----------
 
   (function init(){
-    hydrateFromIntake();
+    applyIntakeDefaults();
+    const runBtn = byId('ciri-run');
     if(runBtn){
-      runBtn.addEventListener('click', run);
+      runBtn.addEventListener('click', runCiri);
     }
-    setStatus('ready — describe the model and click “Generate CCRI risk classification”.','ok');
+    setStatus('ready — use Intake defaults or type your own values, then click “Compute”.','ok');
   })();
 
 })();
