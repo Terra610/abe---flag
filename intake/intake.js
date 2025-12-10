@@ -1,10 +1,11 @@
 // intake/intake.js
 // Runs entirely in-browser. No network calls with user data.
-// Uses PDF.js for text PDFs and Tesseract.js v4 for images/scanned pages.
+// Uses PDF.js for text PDFs and Tesseract.js for images/scanned pages.
 
 (function () {
   const $ = id => document.getElementById(id);
 
+  // --- DOM hooks (match intake/index.html) ---
   const fileInput      = $('file-input');
   const textInput      = $('text-input');
   const docTypeSelect  = $('doc-type');
@@ -19,9 +20,10 @@
 
   const normTextEl     = $('norm-text');
   const fieldsEl       = $('fields-json');
-
   const btnDlIntake    = $('download-artifact');
-  const btnDlCiri      = $('download-ciri'); // optional, may be null
+
+  // (optional, you don’t currently have this in HTML, so may be null)
+  const btnDlCiri      = $('dl-ciri-csv');
 
   let latestArtifact = null;
   let latestCiriCsv  = null;
@@ -61,9 +63,9 @@
   // ---------- PDF text extraction (PDF.js) ----------
 
   async function extractTextFromPdfFile(file) {
-    const pdfjsLib = window['pdfjsLib'];
+    const pdfjsLib = window.pdfjsLib;
     if (!pdfjsLib || !pdfjsLib.getDocument) {
-      throw new Error('PDF.js not available (pdfjsLib not found)');
+      throw new Error('PDF.js not available in this page');
     }
 
     const buf = await file.arrayBuffer();
@@ -73,38 +75,33 @@
     const pdf = await loadingTask.promise;
 
     let allText = '';
-    for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+    const maxPages = Math.min(pdf.numPages, 50); // safety cap
+
+    for (let pageNum = 1; pageNum <= maxPages; pageNum++) {
       const page = await pdf.getPage(pageNum);
       const content = await page.getTextContent();
       const strings = content.items.map(it => it.str);
       allText += strings.join(' ') + '\n\n';
     }
+
+    if (pdf.numPages > maxPages) {
+      allText += '\n\n[Intake note: truncated after ' + maxPages +
+                 ' pages for performance. You can split this PDF if needed.]';
+    }
+
     return allText;
   }
 
-  // ---------- image OCR (Tesseract.js v4 worker) ----------
+  // ---------- image OCR (Tesseract.js) ----------
 
   async function ocrImageFile(file) {
     const T = window.Tesseract;
-    if (!T || !T.createWorker) {
-      throw new Error('Tesseract.js not available');
+    if (!T || !T.recognize) {
+      throw new Error('Tesseract.js not available in this page');
     }
-
-    const worker = await T.createWorker({
-      workerPath: window.TESSERACT_WORKER ||
-        "https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/worker.min.js",
-      langPath: "https://tessdata.projectnaptha.com/4.0.0",
-      corePath: "https://cdn.jsdelivr.net/npm/tesseract.js-core@4.0.0/tesseract-core.wasm.js"
-    });
-
-    await worker.load();
-    await worker.loadLanguage('eng');
-    await worker.initialize('eng');
-
-    const { data } = await worker.recognize(file);
-    await worker.terminate();
-
-    return (data && data.text) ? data.text : '';
+    // This can be slow on phones for big images – that’s normal.
+    const result = await T.recognize(file, 'eng');
+    return result.data && result.data.text ? result.data.text : '';
   }
 
   // ---------- generic text extraction ----------
@@ -120,20 +117,23 @@
 
   async function extractTextFromFile(file) {
     const type = (file.type || '').toLowerCase();
-    const name = (file.name || '').toLowerCase();
 
-    // Images → OCR
-    if (type.startsWith('image/')) {
-      return ocrImageFile(file);
+    try {
+      if (type.startsWith('image/')) {
+        return await ocrImageFile(file);
+      }
+
+      if (type === 'application/pdf') {
+        return await extractTextFromPdfFile(file);
+      }
+
+      // fallback: try text read
+      return await extractPlainTextFile(file);
+    } catch (e) {
+      console.error('extractTextFromFile error for', file.name, e);
+      // Bubble the error up so runIntake can show it to the user
+      throw e;
     }
-
-    // PDFs → PDF.js
-    if (type === 'application/pdf' || name.endsWith('.pdf')) {
-      return extractTextFromPdfFile(file);
-    }
-
-    // Fallback: read as plain text
-    return extractPlainTextFile(file);
   }
 
   // ---------- tiny heuristic extraction ----------
@@ -150,16 +150,25 @@
     const dateMatches = text.match(/\b\d{1,2}\/\d{1,2}\/\d{2,4}\b/g) || [];
     fields.approx_dates_found = dateMatches.slice(0, 10);
 
-    // Traffic tickets → try to guess a code reference
+    // For traffic tickets, try to guess a citation / code reference
     if (docType === 'traffic_ticket') {
       const codeMatch = text.match(/\b\d{3,4}\.\d{1,3}[A-Za-z0-9\-]*/);
       if (codeMatch) fields.possible_code_section = codeMatch[0];
     }
 
-    // Loan contracts → APR/interest
+    // For loan contracts, try to spot APR / interest mentions
     if (docType === 'loan_contract') {
       const apr = text.match(/\b\d{1,2}\.\d{1,2}%|\b\d{1,2}%\b/);
       if (apr) fields.possible_apr = apr[0];
+    }
+
+    // For vehicle titles / registrations, try VIN + plate
+    if (docType === 'vehicle_title_registration') {
+      const vinMatch = text.match(/\b[0-9A-HJ-NPR-Z]{17}\b/i);
+      if (vinMatch) fields.possible_vin = vinMatch[0];
+
+      const plateMatch = text.match(/\b[A-Z0-9]{1,8}\b/);
+      if (plateMatch) fields.possible_plate = plateMatch[0];
     }
 
     fields.preview_snippet = text.slice(0, 800);
@@ -202,20 +211,23 @@
   // ---------- main intake runner ----------
 
   async function runIntake() {
+    if (!btnRun) return;
+
     try {
-      if (btnRun) btnRun.disabled = true;
-      setStatus('running OCR + parsing (local only)…', 'warn');
+      btnRun.disabled = true;
       latestArtifact = null;
       latestCiriCsv  = null;
       if (btnDlIntake) btnDlIntake.disabled = true;
       if (btnDlCiri)   btnDlCiri.disabled   = true;
+
+      setStatus('Running Intake & OCR (local only)…', 'warn');
 
       const files   = Array.from((fileInput && fileInput.files) || []);
       const pasted  = textInput ? (textInput.value || '') : '';
       const docType = docTypeSelect ? docTypeSelect.value : 'generic_case_text';
 
       if (!files.length && !pasted.trim()) {
-        setStatus('please add at least one file or some pasted text', 'bad');
+        setStatus('Please add at least one file or some pasted text.', 'bad');
         return;
       }
 
@@ -233,7 +245,9 @@
         primaryFileName = files[0].name;
         primaryFileHash = await hashFile(files[0]);
 
+        // Extract each file sequentially to avoid overloading the browser
         for (const f of files) {
+          setStatus(`OCR / parsing: ${f.name}…`, 'warn');
           const t = await extractTextFromFile(f);
           if (t) combinedText += '\n\n' + t;
         }
@@ -273,7 +287,7 @@
         notes: ''
       };
 
-      // Build CIRI CSV starter row if target checked
+      // Create CIRI starter CSV if requested
       if (targets.includes('CIRI')) {
         const csv = buildCiriCsvRow(normalized);
         latestCiriCsv = csv;
@@ -291,10 +305,10 @@
         artifact.generated_outputs.ciri = { present: false };
       }
 
-      // Stubs for other modules (just marking selection for now)
-      artifact.generated_outputs.cda  = { requested: targets.includes('CDA'),  present: false };
-      artifact.generated_outputs.cff  = { requested: targets.includes('CFF'),  present: false };
-      artifact.generated_outputs.ccri = { requested: targets.includes('CCRI'), present: false };
+      // Stubs for other modules (so Integration can see intentions)
+      artifact.generated_outputs.cda  = { present: false, requested: targets.includes('CDA')  };
+      artifact.generated_outputs.cff  = { present: false, requested: targets.includes('CFF')  };
+      artifact.generated_outputs.ccri = { present: false, requested: targets.includes('CCRI') };
 
       latestArtifact = artifact;
 
@@ -306,12 +320,9 @@
       if (btnDlIntake) btnDlIntake.disabled = false;
       if (btnDlCiri)   btnDlCiri.disabled   = !latestCiriCsv;
 
-      // store artifact so CIRI / CDA / others can pick it up automatically
+      // Store artifact so CIRI / CDA / others can pick it up automatically
       try {
-        const json = JSON.stringify(artifact);
-        localStorage.setItem('ABE_INTAKE_ARTIFACT_V1', json);
-        // legacy key for compatibility
-        localStorage.setItem('abe_intake_artifact', json);
+        localStorage.setItem('abe_intake_artifact', JSON.stringify(artifact));
       } catch (e) {
         console.warn('Could not store intake artifact in localStorage:', e);
       }
