@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>A.B.E. Doctrine Map | Law · Doctrines</title>
+  <base href="/abe---flag/">
+  <link rel="stylesheet" href="abe-patch/assets/abe-patch.css">
+  <style>
+    .docmap-wrap{max-width:1000px;margin:0 auto;padding:1.5rem 1rem 3rem;}
+    .docmap-header h1{margin:0 0 .3rem;font-size:1.9rem;}
+    .docmap-header .tagline{max-width:720px;color:var(--muted);font-size:.98rem;}
+    .pill-row{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.5rem;}
+    .pill-filter{border-radius:999px;border:1px solid var(--line-soft);padding:.2rem .7rem;font-size:.8rem;cursor:pointer;opacity:.8;}
+    .pill-filter.active{border-color:var(--accent);opacity:1;}
+    .pill-core{border-color:#4bd28f;}
+    .pill-ultra{border-color:#ff8585;}
+    .docmap-grid{display:grid;gap:1rem;margin-top:1.25rem;}
+    @media(min-width:800px){
+      .docmap-grid{grid-template-columns:2fr 1.6fr;}
+    }
+    .card-docmap{background:var(--panel);border-radius:14px;border:1px solid var(--line-soft);padding:1rem 1.1rem 1.2rem;}
+    .card-docmap h2{margin:.1rem 0 .4rem;font-size:1.15rem;}
+    .doc-list{max-height:520px;overflow:auto;margin-top:.4rem;}
+    .doc-item{border-radius:10px;border:1px solid var(--line-soft);padding:.6rem .7rem;margin-bottom:.5rem;font-size:.9rem;}
+    .doc-item h3{margin:.05rem 0 .25rem;font-size:1rem;}
+    .doc-meta{font-size:.8rem;color:var(--muted);}
+    .doc-tags{display:flex;flex-wrap:wrap;gap:.25rem;margin-top:.25rem;font-size:.75rem;}
+    .tag{border-radius:999px;border:1px solid var(--line-soft);padding:.05rem .5rem;}
+    .tag-core{border-color:#4bd28f;}
+    .tag-ultra{border-color:#ff8585;}
+    .tag-warn{border-color:#ffba5c;}
+    .tag-weak{border-style:dashed;}
+    .doc-notes{margin-top:.35rem;font-size:.85rem;color:var(--muted);}
+    .kbd{font-family:ui-monospace,monospace;font-size:.8rem;background:#050712;border-radius:4px;padding:.1rem .3rem;border:1px solid var(--line-soft);}
+    .search-row{margin-top:.4rem;}
+    .search-row input{width:100%;background:#050712;border-radius:999px;border:1px solid var(--line-soft);padding:.35rem .7rem;font-size:.9rem;color:var(--ink);}
+  </style>
+</head>
+<body class="abe-page">
+
+<header class="abe-header">
+  <div class="docmap-wrap docmap-header">
+    <a href="index.html" class="chip">← A.B.E. Home</a>
+    <a href="doctrine/index.html" class="chip chip-alt" style="margin-left:.4rem;">Doctrine Index</a>
+    <h1>A.B.E. Doctrine Map</h1>
+    <p class="tagline">
+      A constitutional divergence chart mapping which doctrines are text-aligned, which are judge-made,
+      which are ultra vires, and how A.B.E. uses them to detect drift and restore alignment.
+    </p>
+    <div class="pill-row">
+      <button class="pill-filter pill-core" data-filter="constitutional_core">Constitutional core</button>
+      <button class="pill-filter" data-filter="text_aligned_judicial">Text-aligned judicial</button>
+      <button class="pill-filter pill-ultra" data-filter="judicial_invention_ultra_vires">Ultra vires / void</button>
+      <button class="pill-filter" data-filter="collapsing_or_transitional">Collapsing / transitional</button>
+      <button class="pill-filter" data-filter="all">Show all</button>
+    </div>
+  </div>
+</header>
+
+<main class="abe-main">
+  <div class="docmap-wrap docmap-grid">
+    <!-- LEFT: doctrine list -->
+    <section class="card-docmap">
+      <h2>Doctrines</h2>
+      <p class="small">
+        Filter and inspect how A.B.E. classifies Supreme Court and lower-court doctrines:
+        which ones anchor the engine, which ones are tolerated, and which ones are treated as
+        <strong>void ab initio</strong>.
+      </p>
+
+      <div class="search-row">
+        <input id="search" type="text" placeholder="Search doctrines (name, source, conflicts)…">
+      </div>
+
+      <div id="doc-list" class="doc-list"></div>
+    </section>
+
+    <!-- RIGHT: explanation -->
+    <section class="card-docmap">
+      <h2>How A.B.E. Uses Doctrine</h2>
+      <p class="small">
+        A.B.E. treats the Constitution as the only true source of lawful authority. Doctrines are graded:
+      </p>
+      <ul class="small">
+        <li><strong>Constitutional core</strong> — directly grounded in text (Supremacy, Equal Protection, Due Process).</li>
+        <li><strong>Text-aligned judicial</strong> — court-created but workable if they respect the text.</li>
+        <li><strong>Ultra vires</strong> — judge-made power grabs with no textual basis; treated as <em>void ab initio</em>.</li>
+        <li><strong>Collapsing</strong> — modern cases are already cutting them back (major questions, nondelegation, etc.).</li>
+      </ul>
+
+      <p class="small">
+        Inside the engine:
+      </p>
+      <ul class="small">
+        <li><span class="kbd">CDA</span> uses doctrine to tag divergence and classify violations.</li>
+        <li><span class="kbd">CFF</span> uses it to spot federally funded unconstitutional practices.</li>
+        <li><span class="kbd">CIRI</span> prices the economic impact of void doctrines.</li>
+        <li><span class="kbd">Macro</span> scales the uplift from collapsing them.</li>
+      </ul>
+
+      <p class="small">
+        All data on this page is loaded from <code>law/doctrines/doctrine_map.json</code> and rendered locally in your
+        browser. No calls go to a server.
+      </p>
+
+      <p class="small">
+        To change doctrine classifications, edit that JSON file and refresh this page — the map will update itself.
+      </p>
+    </section>
+  </div>
+</main>
+
+<footer class="abe-footer">
+  <p>
+    A.B.E. — Doctrine Map · CC BY-NC 4.0 · Integrity only — never for sale.
+  </p>
+</footer>
+
+<script>
+// Local-only fetch of the doctrine map JSON
+(async function(){
+  const listEl   = document.getElementById('doc-list');
+  const searchEl = document.getElementById('search');
+  const filterButtons = Array.from(document.querySelectorAll('.pill-filter'));
+
+  let data = null;
+  let activeFilter = 'all';
+  let searchTerm = '';
+
+  function tagClassFor(d){
+    if (d.category === 'constitutional_core') return 'tag-core';
+    if (d.category === 'judicial_invention_ultra_vires') return 'tag-ultra';
+    return '';
+  }
+
+  function render() {
+    if (!data || !Array.isArray(data.doctrines)) {
+      listEl.innerHTML = '<p class="small">No doctrine map loaded.</p>';
+      return;
+    }
+    const docs = data.doctrines
+      .filter(d => {
+        if (activeFilter !== 'all' && d.category !== activeFilter) return false;
+        if (!searchTerm) return true;
+        const hay = (d.name + ' ' + (d.source||'') + ' ' + (d.conflicts||[]).join(' ') + ' ' + (d.abe_status||''))
+          .toLowerCase();
+        return hay.includes(searchTerm);
+      });
+
+    if (!docs.length) {
+      listEl.innerHTML = '<p class="small">No doctrines match this filter/search.</p>';
+      return;
+    }
+
+    listEl.innerHTML = '';
+    for (const d of docs) {
+      const div = document.createElement('div');
+      div.className = 'doc-item';
+
+      const catLabel = {
+        constitutional_core: 'Constitutional core',
+        text_aligned_judicial: 'Text-aligned judicial',
+        judicial_invention_ultra_vires: 'Ultra vires / void',
+        collapsing_or_transitional: 'Collapsing / transitional'
+      }[d.category] || d.category;
+
+      div.innerHTML = `
+        <h3>${d.name}</h3>
+        <div class="doc-meta">
+          <span>${catLabel}</span>
+          ${d.source ? ` · <span>${d.source}</span>` : ''}
+          ${d.legitimacy ? ` · <span>Legitimacy: ${d.legitimacy}</span>` : ''}
+        </div>
+        <div class="doc-tags">
+          <span class="tag ${tagClassFor(d)}">${d.abe_status || '—'}</span>
+          ${(d.relevance || []).map(m => `<span class="tag tag-weak">${m}</span>`).join('')}
+        </div>
+        ${Array.isArray(d.conflicts) && d.conflicts.length ? `
+          <div class="doc-notes"><strong>Conflicts:</strong> ${d.conflicts.join('; ')}</div>
+        ` : ''}
+        ${d.notes ? `<div class="doc-notes">${d.notes}</div>` : ''}
+      `;
+      listEl.appendChild(div);
+    }
+  }
+
+  try {
+    const res = await fetch('law/doctrines/doctrine_map.json', {cache: 'no-store'});
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    data = await res.json();
+    render();
+  } catch(err) {
+    console.error('Failed to load doctrine map JSON:', err);
+    listEl.innerHTML = '<p class="small">Could not load doctrine_map.json. Check file path and try again.</p>';
+  }
+
+  filterButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const f = btn.getAttribute('data-filter') || 'all';
+      activeFilter = f;
+      filterButtons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      render();
+    });
+  });
+  // default = Show all
+  const allBtn = filterButtons.find(b => b.dataset.filter === 'all');
+  if (allBtn) allBtn.classList.add('active');
+
+  if (searchEl) {
+    searchEl.addEventListener('input', () => {
+      searchTerm = searchEl.value.trim().toLowerCase();
+      render();
+    });
+  }
+})();
+</script>
+</body>
+</html>
