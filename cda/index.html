@@ -33,6 +33,7 @@
   </p>
   <nav class="chip-row">
     <a class="chip" href="index.html">ABE Home</a>
+    <a class="chip" href="intake/index.html">Intake</a>
     <a class="chip" href="ciri/index.html">CIRI</a>
     <a class="chip" href="cff/index.html">CFF</a>
     <a class="chip" href="affe/index.html">AFFE</a>
@@ -58,11 +59,12 @@
       <li>Where state law conflicts with federal commercial scope.</li>
       <li>Where MCSAP / DOT funding rules are being bent or ignored.</li>
       <li>A numeric divergence score other modules can consume.</li>
+      <li>A doctrine footprint, showing which constitutional doctrines are being violated.</li>
     </ul>
     <p class="cda-small">
       This page is intentionally simple: no AI, no servers, no hidden parsing.
       You mark the divergences you see; CDA turns them into
-      <code>cda_scenario.json</code> and a clean summary you can hand to CDI, CIRI, or a court.
+      <code>cda_scenario.json</code> and a clean summary you can hand to CDI, CIRI, CFF, or a court.
     </p>
   </section>
 
@@ -82,6 +84,9 @@
 
         <label class="cda-label" for="cda-notes" style="margin-top:8px">Scenario notes (optional)</label>
         <textarea id="cda-notes" class="cda-textarea" placeholder="Describe how the statute or policy is being used in practice."></textarea>
+        <p class="cda-small">
+          If you came from Intake, CDA may pre-fill this from your uploaded document (ticket, CPS letter, contract, etc.).
+        </p>
       </div>
 
       <div>
@@ -137,7 +142,7 @@
     <h2>Step 2 — Mark the divergences you see</h2>
     <p class="cda-small">
       Check only what actually applies. CDA will convert this into a structured
-      divergence profile and a suggested 0–1 divergence score for CDI / CIRI.
+      divergence profile, a suggested 0–1 score, and a doctrine footprint.
     </p>
     <div class="cda-grid">
       <div>
@@ -273,6 +278,9 @@
     if(obj.funding_streams && obj.funding_streams.length){
       lines.push(`Related funding: ${obj.funding_streams.join(', ')}`);
     }
+    if(obj.doctrines_triggered && obj.doctrines_triggered.length){
+      lines.push(`Doctrines triggered: ${obj.doctrines_triggered.join(', ')}`);
+    }
     lines.push('');
     lines.push(`Divergence score (0–1): ${obj.divergence_score}`);
     lines.push('');
@@ -324,6 +332,51 @@
       || 'cda_scenario';
   }
 
+  // --- Doctrine mapping: CDA flags → doctrine IDs from law/doctrines/doctrine_map.json
+  const CDA_FLAG_DOCTRINES = {
+    scope_noncommercial_treated_as_commercial: [
+      "police_power_doctrine",
+      "fmcsr_expansion"
+    ],
+    preemption_conflict: [
+      "supremacy_clause"
+    ],
+    preemption_field: [
+      "supremacy_clause"
+    ],
+    ultra_vires_enforcement: [
+      "nondelegation"
+    ],
+    mcsap_off_mission: [
+      "fmcsr_expansion",
+      "major_questions"
+    ],
+    funding_conditions_ignored: [
+      "supremacy_clause"
+    ],
+    funding_nontransparent: [],
+    right_to_travel_burdened: [
+      "equal_protection",
+      "void_for_vagueness"
+    ],
+    due_process_defects: [
+      "void_for_vagueness"
+    ],
+    selective_application: [
+      "equal_protection"
+    ]
+  };
+
+  function collectDoctrines(flags){
+    const set = new Set();
+    for (const [flagKey, on] of Object.entries(flags)) {
+      if (!on) continue;
+      const ids = CDA_FLAG_DOCTRINES[flagKey] || [];
+      ids.forEach(id => set.add(id));
+    }
+    return Array.from(set);
+  }
+
   const btnGen = byId('btn-generate');
   const btnDl  = byId('btn-download');
   const outJson= byId('cda-json');
@@ -332,76 +385,115 @@
 
   let lastObj = null;
 
-  btnGen.addEventListener('click', ()=>{
-    const name  = byId('cda-name').value.trim();
-    const juris = byId('cda-juris').value.trim();
-    const cites = byId('cda-cites').value.trim();
-    const notes = byId('cda-notes').value.trim();
+  if (btnGen) {
+    btnGen.addEventListener('click', ()=>{
+      const name  = byId('cda-name').value.trim();
+      const juris = byId('cda-juris').value.trim();
+      const cites = byId('cda-cites').value.trim();
+      const notes = byId('cda-notes').value.trim();
 
-    const level = getRadio('cda-level','state');
-    const pop   = getRadio('cda-pop','non_commercial');
+      const level = getRadio('cda-level','state');
+      const pop   = getRadio('cda-pop','non_commercial');
 
-    const funding = [];
-    if(bool('cda-fund-mcsap')) funding.push('MCSAP/FMCSA');
-    if(bool('cda-fund-hwy'))   funding.push('Highway Safety / 23 U.S.C.');
-    if(bool('cda-fund-other')) funding.push('Other federal enforcement funding');
+      const funding = [];
+      if(bool('cda-fund-mcsap')) funding.push('MCSAP/FMCSA');
+      if(bool('cda-fund-hwy'))   funding.push('Highway Safety / 23 U.S.C.');
+      if(bool('cda-fund-other')) funding.push('Other federal enforcement funding');
 
-    const flags = {
-      scope_noncommercial_treated_as_commercial: bool('f-scope-noncom'),
-      preemption_conflict:                       bool('f-preempt-conflict'),
-      preemption_field:                          bool('f-preempt-field'),
-      ultra_vires_enforcement:                   bool('f-ultra-vires'),
-      mcsap_off_mission:                         bool('f-mcsap-offmission'),
-      funding_conditions_ignored:                bool('f-funding-conditions'),
-      funding_nontransparent:                    bool('f-funding-transparent'),
-      right_to_travel_burdened:                  bool('f-right-travel'),
-      due_process_defects:                       bool('f-due-process'),
-      selective_application:                     bool('f-selective')
-    };
+      const flags = {
+        scope_noncommercial_treated_as_commercial: bool('f-scope-noncom'),
+        preemption_conflict:                       bool('f-preempt-conflict'),
+        preemption_field:                          bool('f-preempt-field'),
+        ultra_vires_enforcement:                   bool('f-ultra-vires'),
+        mcsap_off_mission:                         bool('f-mcsap-offmission'),
+        funding_conditions_ignored:                bool('f-funding-conditions'),
+        funding_nontransparent:                    bool('f-funding-transparent'),
+        right_to_travel_burdened:                  bool('f-right-travel'),
+        due_process_defects:                       bool('f-due-process'),
+        selective_application:                     bool('f-selective')
+      };
 
-    const score = computeScore(flags);
+      const score = computeScore(flags);
+      const doctrines_triggered = collectDoctrines(flags);
 
-    const obj = {
-      version: "1.0",
-      module: "CDA",
-      statute_name: name,
-      jurisdiction: juris,
-      level,
-      population: pop,
-      citations: cites ? cites.split(',').map(s=>s.trim()).filter(Boolean) : [],
-      funding_streams: funding,
-      flags,
-      divergence_score: score,
-      notes: notes || ""
-    };
+      const obj = {
+        version: "1.0",
+        module: "CDA",
+        statute_name: name,
+        jurisdiction: juris,
+        level,
+        population: pop,
+        citations: cites ? cites.split(',').map(s=>s.trim()).filter(Boolean) : [],
+        funding_streams: funding,
+        flags,
+        divergence_score: score,
+        doctrines_triggered,
+        notes: notes || ""
+      };
 
-    lastObj = obj;
+      lastObj = obj;
 
-    outJson.value = JSON.stringify(obj,null,2);
-    outSum.textContent = makeSummary(obj);
+      outJson.value = JSON.stringify(obj,null,2);
+      outSum.textContent = makeSummary(obj);
 
-    pill.innerHTML = `
-      <span class="cda-score-pill">
-        <span>Suggested divergence score:</span>
-        <strong>${score}</strong>
-        <span class="cda-small">(0 = fully aligned · 1 = severe divergence)</span>
-      </span>
-    `;
+      pill.innerHTML = `
+        <span class="cda-score-pill">
+          <span>Suggested divergence score:</span>
+          <strong>${score}</strong>
+          <span class="cda-small">(0 = fully aligned · 1 = severe divergence)</span>
+        </span>
+      `;
 
-    btnDl.disabled = false;
-  });
+      btnDl.disabled = false;
+    });
+  }
 
-  btnDl.addEventListener('click', ()=>{
-    if(!lastObj) return;
-    const slug = slugify(lastObj.statute_name);
-    const blob = new Blob([JSON.stringify(lastObj,null,2)],{type:'application/json'});
-    const url  = URL.createObjectURL(blob);
-    const a    = document.createElement('a');
-    a.href = url;
-    a.download = `cda_${slug}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
-  });
+  if (btnDl) {
+    btnDl.addEventListener('click', ()=>{
+      if(!lastObj) return;
+      const slug = slugify(lastObj.statute_name);
+      const blob = new Blob([JSON.stringify(lastObj,null,2)],{type:'application/json'});
+      const url  = URL.createObjectURL(blob);
+      const a    = document.createElement('a');
+      a.href = url;
+      a.download = `cda_${slug}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+  }
+
+  // --- Optional: prefill from Intake artifact, if present
+  (function hydrateFromIntake(){
+    try {
+      const raw = localStorage.getItem('abe_intake_artifact');
+      if (!raw) return;
+      const intake = JSON.parse(raw);
+
+      const notesEl = byId('cda-notes');
+      if (notesEl && !notesEl.value.trim() && intake.text_normalized) {
+        notesEl.value = intake.text_normalized.slice(0, 2000);
+      }
+
+      if (intake.doc_type === 'traffic_ticket') {
+        const popNon = byId('cda-pop-noncom');
+        if (popNon) popNon.checked = true;
+      }
+
+      if (Array.isArray(intake.doctrine_hints) && intake.doctrine_hints.length) {
+        const main = document.querySelector('main');
+        if (main) {
+          const div = document.createElement('p');
+          div.className = 'cda-small';
+          div.style.marginBottom = '0.5rem';
+          div.textContent = 'Doctrine hints from Intake: ' + intake.doctrine_hints.join(', ');
+          main.insertBefore(div, main.firstChild);
+        }
+      }
+    } catch (e) {
+      console.warn('CDA could not read Intake artifact:', e);
+    }
+  })();
+
 })();
 </script>
 </body>
