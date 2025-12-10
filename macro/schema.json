@@ -1,191 +1,106 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "ABE_MacroCascadeScenario_v1",
-  "description": "Schema for a Macroeconomic Cascade scenario derived from a single restored community model and a chosen number of communities.",
+  "description": "Scenario artifact for A.B.E. Macroeconomic Cascade (per-community and scaled totals).",
   "type": "object",
-  "additionalProperties": false,
   "required": [
     "version",
     "module",
     "communities",
     "per_community",
-    "scenario_total"
+    "scenario_totals",
+    "assumptions",
+    "created_at"
   ],
+  "additionalProperties": false,
   "properties": {
     "version": {
       "type": "string",
-      "const": "1.0",
-      "description": "Schema / artifact version."
+      "const": "1.0"
     },
     "module": {
       "type": "string",
-      "const": "MACRO",
-      "description": "Module identifier for the macroeconomic cascade engine."
-    },
-    "label": {
-      "type": "string",
-      "description": "Optional human-readable label for this macro scenario (e.g., 'Iowa – 100 communities')."
+      "const": "MACRO"
     },
     "communities": {
       "type": "integer",
       "minimum": 1,
-      "description": "Number of communities used in this scenario run."
+      "description": "Number of communities in this scenario."
     },
-    "source_model_file": {
-      "type": "string",
-      "description": "Relative path to the JSON model used (e.g., 'macro/ABE_MacroCascadeModel.json')."
+    "source_ciri_scenario": {
+      "type": ["string", "null"],
+      "description": "LocalStorage key of the CIRI scenario that seeded this run, if any."
     },
-    "source_ciri_scenario_id": {
-      "type": "string",
-      "description": "Optional identifier or hash of the CIRI scenario this macro run is based on (e.g., localStorage key, SHA-256, or user label)."
-    },
-
     "per_community": {
       "type": "object",
-      "description": "Metrics for a single restored community.",
-      "additionalProperties": false,
       "required": [
-        "direct_investment",
-        "gdp_uplift",
-        "wages_uplift",
-        "local_spending_uplift",
-        "annual_savings",
+        "investment",
+        "gdp",
+        "wages",
+        "local_spend",
         "jobs",
         "citizens_low",
-        "citizens_high"
+        "citizens_high",
+        "savings_annual"
       ],
+      "additionalProperties": false,
       "properties": {
-        "direct_investment": {
-          "type": "number",
-          "minimum": 0,
-          "description": "Average direct investment per community (USD)."
-        },
-        "gdp_uplift": {
-          "type": "number",
-          "minimum": 0,
-          "description": "Annual GDP uplift per community (USD)."
-        },
-        "wages_uplift": {
-          "type": "number",
-          "minimum": 0,
-          "description": "Annual wages uplift per community (USD)."
-        },
-        "local_spending_uplift": {
-          "type": "number",
-          "minimum": 0,
-          "description": "Annual local market spending uplift per community (USD)."
-        },
-        "annual_savings": {
-          "type": "number",
-          "minimum": 0,
-          "description": "Annual cost savings per community (justice + health) in USD."
-        },
-        "jobs": {
-          "type": "number",
-          "minimum": 0,
-          "description": "Jobs supported or created per community."
-        },
-        "citizens_low": {
-          "type": "number",
-          "minimum": 0,
-          "description": "Lower bound estimate of citizens materially served in one community."
-        },
-        "citizens_high": {
-          "type": "number",
-          "minimum": 0,
-          "description": "Upper bound estimate of citizens materially served in one community."
-        }
+        "investment": { "type": "number" },
+        "gdp": { "type": "number" },
+        "wages": { "type": "number" },
+        "local_spend": { "type": "number" },
+        "jobs": { "type": "number" },
+        "citizens_low": { "type": "number" },
+        "citizens_high": { "type": "number" },
+        "savings_annual": { "type": "number" }
       }
     },
-
-    "scenario_total": {
+    "scenario_totals": {
       "type": "object",
-      "description": "Metrics for the whole macro scenario (all communities combined).",
-      "additionalProperties": false,
       "required": [
-        "direct_investment",
-        "gdp_uplift",
-        "wages_uplift",
-        "local_spending_uplift",
-        "annual_savings",
+        "investment",
+        "gdp",
+        "wages",
+        "local_spend",
         "jobs",
         "citizens_low",
-        "citizens_high"
+        "citizens_high",
+        "savings_annual"
       ],
+      "additionalProperties": false,
       "properties": {
-        "direct_investment": {
-          "type": "number",
-          "minimum": 0,
-          "description": "Total direct investment for all communities (USD)."
-        },
-        "gdp_uplift": {
-          "type": "number",
-          "minimum": 0,
-          "description": "Total annual GDP uplift across all communities (USD)."
-        },
-        "wages_uplift": {
-          "type": "number",
-          "minimum": 0,
-          "description": "Total annual wages uplift across all communities (USD)."
-        },
-        "local_spending_uplift": {
-          "type": "number",
-          "minimum": 0,
-          "description": "Total annual local market spending uplift across all communities (USD)."
-        },
-        "annual_savings": {
-          "type": "number",
-          "minimum": 0,
-          "description": "Total annual cost savings (justice + health) across all communities (USD)."
-        },
-        "jobs": {
-          "type": "number",
-          "minimum": 0,
-          "description": "Total jobs supported or created across all communities."
-        },
-        "citizens_low": {
-          "type": "number",
-          "minimum": 0,
-          "description": "Lower bound estimate of citizens materially served across all communities."
-        },
-        "citizens_high": {
-          "type": "number",
-          "minimum": 0,
-          "description": "Upper bound estimate of citizens materially served across all communities."
-        }
+        "investment": { "type": "number" },
+        "gdp": { "type": "number" },
+        "wages": { "type": "number" },
+        "local_spend": { "type": "number" },
+        "jobs": { "type": "number" },
+        "citizens_low": { "type": "number" },
+        "citizens_high": { "type": "number" },
+        "savings_annual": { "type": "number" }
       }
     },
-
     "assumptions": {
       "type": "object",
-      "description": "Key model assumptions used for this run.",
+      "required": ["invest_min", "invest_max", "multipliers"],
       "additionalProperties": false,
       "properties": {
-        "avg_direct_investment": {
-          "type": "number",
-          "minimum": 0,
-          "description": "Average direct investment per community used in calculations (USD)."
-        },
-        "gdp_multiplier": {
-          "type": "number",
-          "minimum": 0,
-          "description": "Multiplier applied to direct investment to estimate GDP uplift."
-        },
-        "wage_multiplier": {
-          "type": "number",
-          "minimum": 0,
-          "description": "Multiplier applied to direct investment to estimate wage uplift."
-        },
-        "local_spending_multiplier": {
-          "type": "number",
-          "minimum": 0,
-          "description": "Multiplier applied to direct investment to estimate local market spending uplift."
-        },
-        "notes": {
-          "type": "string",
-          "description": "Freeform notes documenting any scenario-specific assumptions or caveats."
+        "invest_min": { "type": "number" },
+        "invest_max": { "type": "number" },
+        "multipliers": {
+          "type": "object",
+          "required": ["gdp", "wages", "local"],
+          "additionalProperties": false,
+          "properties": {
+            "gdp": { "type": "number" },
+            "wages": { "type": "number" },
+            "local": { "type": "number" }
+          }
         }
       }
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
     }
   }
 }
