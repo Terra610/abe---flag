@@ -74,7 +74,6 @@
       "type": "object",
       "description": "Boolean divergence indicators used to determine score + doctrine implications.",
       "additionalProperties": false,
-
       "properties": {
         "scope_noncommercial_treated_as_commercial": { "type": "boolean", "default": false },
         "preemption_conflict":                       { "type": "boolean", "default": false },
