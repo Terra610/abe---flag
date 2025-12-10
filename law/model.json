@@ -3,32 +3,44 @@
   "updated": "2025-12-08T00:00:00Z",
   "module": "LAW",
   "authority": {
-    "name": "A.B.E. — Lawful Scope & Authority Corpus",
+    "name": "A.B.E. — Federal Authority Corpus",
     "license": "CC BY-NC 4.0",
-    "description": "Structured corpus of key constitutional, statutory, regulatory, and funding authorities used to detect constitutional divergence and funding misuse."
+    "description": "Canonical map of controlling federal authority for transportation, FMCSA, MCSAP, and related funding programs."
   },
-  "schema_file": "law_schema.json",
-  "collections": [
+  "schema_file": "law/law_schema.json",
+  "packs": [
     {
-      "id": "fmcsr_scope",
-      "name": "FMCSR Scope & Applicability",
-      "file": "fmcsr_scope.json",
-      "description": "Anchors FMCSA/FMCSR applicability (49 CFR 300–399, 390.3, 350.303, etc.) for commercial vs noncommercial distinction."
+      "id": "title_49_transport",
+      "label": "Title 49 — Transportation (Core FMCSA Scope)",
+      "file": "law/title_49_transport.json",
+      "kind": "usc_cfr",
+      "notes": "Definitions and general FMCSA transportation authority. Used as a baseline for scope and preemption questions."
     },
     {
-      "id": "mcsap_funding",
-      "name": "MCSAP & FMCSA Funding Conditions",
-      "file": "mcsap_rules.json",
-      "description": "Funding-authority map for MCSAP and related CMV safety programs (on-mission vs off-mission)."
+      "id": "title_49_mcsap_fmcsa",
+      "label": "Title 49 — MCSAP & FMCSA Program Funding",
+      "file": "law/title_49_mcsap_fmcsa.json",
+      "kind": "funding",
+      "notes": "Funding authorization, eligibility, and matching requirements for commercial motor vehicle safety programs."
+    },
+    {
+      "id": "fmcsr_scope",
+      "label": "FMCSR Scope Map (49 CFR 390.3 / 390.5)",
+      "file": "law/fmcsr_scope.json",
+      "kind": "cfr",
+      "notes": "Maps FMCSR scope and exclusions, including commercial nexus and private-use exemptions."
+    },
+    {
+      "id": "mcsap_rules",
+      "label": "MCSAP Program Rules (49 CFR Part 350)",
+      "file": "law/mcsap_rules.json",
+      "kind": "funding",
+      "notes": "Program rules, state plan requirements, and off-mission enforcement limits tied to MCSAP grants."
     }
   ],
-  "intended_consumers": [
-    "CDA",
-    "CFF",
-    "CIRI",
-    "CCRI",
-    "Integration",
-    "SystemMap"
-  ],
-  "notes": "This module does not embed full statutory text. Instead, it defines scope anchors, funding conditions, and preemption rules that CDA/CFF use to classify divergence and misuse."
+  "integration": {
+    "hash_tracked": true,
+    "ledger_key": "law",
+    "notes": "Integration/index.html computes SHA-256 hashes for all pack files listed here and compares them to system/ledger.json."
+  }
 }
