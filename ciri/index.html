@@ -1,409 +1,258 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>CIRI — Constitutional Integrity ROI | A.B.E.</title>
-  <base href="/abe---flag/">
-  <link rel="stylesheet" href="abe-patch/assets/abe-patch.css"/>
-  <style>
-    .ciri-wrap{
-      max-width:1100px;
-      margin:0 auto;
-      padding:1.5rem 1rem 3rem;
-    }
-    .ciri-header h1{
-      margin:0 0 .25rem;
-      font-size:1.9rem;
-    }
-    .ciri-header .tagline{
-      max-width:780px;
-      color:var(--muted);
-      font-size:.98rem;
-    }
-    .ciri-grid{
-      display:grid;
-      gap:1.1rem;
-    }
-    @media(min-width:900px){
-      .ciri-grid{
-        grid-template-columns:1.4fr 1.6fr;
-      }
-    }
-    .ciri-card{
-      background:var(--panel);
-      border-radius:14px;
-      border:1px solid var(--line);
-      padding:1rem 1.1rem 1.2rem;
-      box-shadow:0 18px 40px rgba(0,0,0,.45);
-      min-height:0;
-    }
-    .ciri-card h2{
-      margin:.1rem 0 .4rem;
-      font-size:1.15rem;
-    }
-    .ciri-card h3{
-      margin:.35rem 0 .3rem;
-      font-size:1rem;
-    }
-    .ciri-sub{
-      color:var(--muted);
-      font-size:.9rem;
-    }
-    label{
-      display:block;
-      font-size:.86rem;
-      color:var(--muted);
-      margin:.55rem 0 .18rem;
-    }
-    input[type="number"],
-    textarea{
-      width:100%;
-      background:#050712;
-      border-radius:9px;
-      border:1px solid var(--line);
-      padding:.45rem .6rem;
-      color:var(--ink);
-      font-size:.88rem;
-    }
-    textarea{
-      min-height:90px;
-      resize:vertical;
-    }
-    .row{
-      display:flex;
-      flex-wrap:wrap;
-      gap:.6rem;
-    }
-    .row > div{
-      flex:1 1 150px;
-    }
-    .ciri-mini{
-      font-size:.82rem;
-      color:var(--muted);
-      margin-top:.3rem;
-    }
-    .ciri-status{
-      margin-top:.6rem;
-      font-size:.84rem;
-      color:var(--muted);
-    }
-    .ciri-status-ok{color:#4bd28f;}
-    .ciri-status-warn{color:#ffba5c;}
-    .ciri-status-bad{color:#ff8585;}
-    .btn-run{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      margin-top:.8rem;
-      padding:.45rem 1.05rem;
-      border-radius:999px;
-      border:1px solid var(--accent);
-      background:#050712;
-      color:var(--ink);
-      font-size:.9rem;
-      cursor:pointer;
-      gap:.4rem;
-    }
-    .btn-run:hover{
-      box-shadow:0 0 0 1px rgba(93,223,255,.36),0 0 18px rgba(93,223,255,.25);
-    }
-    .btn-download{
-      margin-top:.45rem;
-      padding:.36rem .85rem;
-      border-radius:999px;
-      border:1px solid var(--line);
-      background:#050712;
-      color:var(--ink);
-      font-size:.84rem;
-      cursor:pointer;
-    }
-    .btn-download:disabled{
-      opacity:.5;
-      cursor:default;
-    }
-    .ciri-kpis{
-      display:flex;
-      flex-wrap:wrap;
-      gap:.6rem;
-      margin-top:.4rem;
-    }
-    .ciri-kpi{
-      flex:1 1 160px;
-      min-width:160px;
-      max-width:230px;
-      background:#050712;
-      border-radius:10px;
-      border:1px solid var(--line);
-      padding:.45rem .55rem .5rem;
-      font-size:.85rem;
-    }
-    .ciri-kpi-label{
-      color:var(--muted);
-      font-size:.82rem;
-    }
-    .ciri-kpi-value{
-      font-weight:600;
-      font-size:1rem;
-      margin-top:.1rem;
-    }
-    .ciri-kpi-tag{
-      font-size:.78rem;
-      color:var(--muted);
-      margin-top:.15rem;
-    }
-    pre{
-      margin:.45rem 0 .7rem;
-      background:#050712;
-      border-radius:10px;
-      border:1px solid var(--line);
-      padding:.6rem .7rem;
-      font-family:ui-monospace,SFMono-Regular,Consolas,monospace;
-      font-size:.82rem;
-      max-height:260px;
-      overflow:auto;
-      white-space:pre-wrap;
-      color:var(--ink);
-    }
-    .ciri-score-pill{
-      display:inline-flex;
-      align-items:center;
-      gap:.45rem;
-      padding:.28rem .75rem;
-      border-radius:999px;
-      border:1px solid var(--line);
-      font-size:.84rem;
-      margin-top:.35rem;
-    }
-    .ciri-score-pill strong{
-      color:var(--accent);
-      font-size:1rem;
-    }
-  </style>
-</head>
-<body class="abe-page">
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>CIRI — Constitutional Integrity & ROI | A.B.E.</title>
+<base href="/abe---flag/">
+<link rel="stylesheet" href="abe-patch/assets/abe-patch.css"/>
 
-<header class="abe-header">
-  <div class="ciri-wrap ciri-header">
-    <a href="/abe---flag/index.html" class="chip">← A.B.E. Home</a>
-    <h1>CIRI — Constitutional Integrity ROI</h1>
-    <p class="tagline">
-      Turn unconstitutional enforcement and overreach into measurable economic recovery —
-      cases, jail days, fees, wages, households, and litigation risk.
-    </p>
-    <nav class="chip-row">
-      <a class="chip" href="intake/index.html">Intake</a>
-      <a class="chip" href="cda/index.html">CDA</a>
-      <span class="chip chip-alt">CIRI</span>
-      <a class="chip" href="cibs/index.html">CIBS</a>
-      <a class="chip" href="cii/index.html">CII</a>
-      <a class="chip" href="cff/index.html">CFF</a>
-      <a class="chip" href="ccri/index.html">CCRI</a>
-      <a class="chip" href="macro/index.html">Macro</a>
-      <a class="chip" href="integration/index.html">Integration</a>
-    </nav>
-  </div>
+<style>
+  :root{
+    --bg:#05060b;
+    --panel:#10131c;
+    --panel-soft:#161a25;
+    --text:#edf2ff;
+    --muted:#9fb3c8;
+    --accent:#5ddfff;
+    --border:rgba(255,255,255,.08);
+  }
+  body{background:var(--bg);color:var(--text);font-family:system-ui,Segoe UI,Roboto,sans-serif;margin:0}
+  header{padding:1.2rem 1rem;text-align:center;border-bottom:1px solid var(--border);background:#0d111a}
+  h1{margin:0;font-size:1.7rem;color:var(--accent)}
+  .tagline{margin-top:.3rem;font-size:.95rem;color:var(--muted)}
+  nav.chip-row{margin-top:.7rem;display:flex;gap:.4rem;flex-wrap:wrap;justify-content:center}
+  main{max-width:1100px;margin:1.3rem auto;padding:0 1rem}
+  .card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:1rem;margin-bottom:1rem}
+  h2{margin:0 0 .6rem;font-size:1.2rem;color:#dfe9f6}
+  h3{margin:.3rem 0 .5rem;color:#cfe7ff;font-size:1rem}
+  .row{display:flex;flex-wrap:wrap;gap:1rem}
+  .input{background:#0f131a;border:1px solid var(--border);color:var(--text);border-radius:8px;padding:.5rem .6rem;width:120px;font-size:.92rem}
+  label{color:var(--muted);font-size:.86rem}
+  .output-box{background:#0f131a;border:1px solid var(--border);border-radius:10px;padding:.75rem;font-family:ui-monospace,monospace;font-size:.9rem;white-space:pre-wrap}
+  .btn-row{display:flex;gap:.6rem;margin-top:.6rem;flex-wrap:wrap}
+  .btn{padding:.55rem 1rem;border-radius:9px;border:1px solid var(--accent);background:rgba(93,223,255,.1);color:var(--accent);cursor:pointer;transition:.2s}
+  .btn:hover{background:rgba(93,223,255,.2)}
+  footer{text-align:center;margin:2rem 0 1rem;color:var(--muted);font-size:.85rem}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>CIRI — Integrity & ROI</h1>
+  <p class="tagline">Quantify recovery when unconstitutional practices stop — cases, fees, jobs, households, ROI.</p>
+  <nav class="chip-row">
+    <a class="chip" href="index.html">Home</a>
+    <a class="chip" href="intake/index.html">Intake</a>
+    <a class="chip" href="cda/index.html">CDA</a>
+    <a class="chip" href="cibs/index.html">CIBS</a>
+    <a class="chip" href="cii/index.html">CII</a>
+    <a class="chip" href="macro/index.html">Macro</a>
+    <a class="chip chip-alt" href="integration/index.html">Integration</a>
+  </nav>
 </header>
 
-<main class="abe-main">
-  <div class="ciri-wrap ciri-grid">
+<main>
 
-    <!-- LEFT: inputs -->
-    <section class="ciri-card">
-      <h2>Step 1 — Describe the scenario</h2>
-      <p class="ciri-sub">
-        You can type values directly or let CIRI auto-fill from the last Intake artifact in this browser.
-        All numbers represent the harm you expect to avoid by correcting the unconstitutional practice.
-      </p>
+<!-- CONTEXT: auto-load Intake CSV -->
+<section class="card">
+  <h2>Intake Context</h2>
+  <p id="intake-status" class="tagline">Looking for Intake artifact…</p>
+  <div id="intake-preview" class="output-box" style="min-height:80px">—</div>
+</section>
 
-      <h3>1.1 · Core counts</h3>
-      <div class="row">
-        <div>
-          <label for="cases_avoided">Cases avoided</label>
-          <input id="cases_avoided" type="number" min="0" step="1" value="0">
-        </div>
-        <div>
-          <label for="avg_cost_per_case">Avg cost per case (USD)</label>
-          <input id="avg_cost_per_case" type="number" min="0" step="1" value="0">
-        </div>
-      </div>
+<!-- INPUTS -->
+<section class="card">
+  <h2>Step 1 — Confirm or edit scenario values</h2>
 
-      <div class="row">
-        <div>
-          <label for="jail_days_avoided">Jail days avoided</label>
-          <input id="jail_days_avoided" type="number" min="0" step="1" value="0">
-        </div>
-        <div>
-          <label for="cost_per_jail_day">Cost per jail day (USD)</label>
-          <input id="cost_per_jail_day" type="number" min="0" step="1" value="0">
-        </div>
-      </div>
+  <div class="row">
 
-      <label for="fees_canceled_total">Fees & fines canceled (USD total)</label>
-      <input id="fees_canceled_total" type="number" min="0" step="1" value="0">
+    <div>
+      <label>Cases involved</label><br>
+      <input id="cases" type="number" class="input" value="1" min="0">
+    </div>
 
-      <h3>1.2 · Enforcement & households</h3>
-      <div class="row">
-        <div>
-          <label for="policy_corrections">Policy corrections implemented</label>
-          <input id="policy_corrections" type="number" min="0" step="1" value="0">
-        </div>
-        <div>
-          <label for="avg_enforcement_cost_savings">Avg enforcement cost savings per correction (USD)</label>
-          <input id="avg_enforcement_cost_savings" type="number" min="0" step="1" value="0">
-        </div>
-      </div>
+    <div>
+      <label>Avg economic cost per case</label><br>
+      <input id="cost_case" type="number" class="input" value="25000">
+    </div>
 
-      <div class="row">
-        <div>
-          <label for="households_restored">Households restored / protected</label>
-          <input id="households_restored" type="number" min="0" step="1" value="0">
-        </div>
-        <div>
-          <label for="avg_monthly_market_spend">Avg monthly market spend per household (USD)</label>
-          <input id="avg_monthly_market_spend" type="number" min="0" step="1" value="0">
-        </div>
-      </div>
+    <div>
+      <label>Fees/Fines canceled</label><br>
+      <input id="fees" type="number" class="input" value="0">
+    </div>
 
-      <label for="months_effective">Months the correction is effective (time window)</label>
-      <input id="months_effective" type="number" min="0" step="1" value="12">
+    <div>
+      <label>Jail days avoided</label><br>
+      <input id="jail" type="number" class="input" value="0">
+    </div>
 
-      <h3>1.3 · Employment & litigation risk</h3>
-      <div class="row">
-        <div>
-          <label for="employment_probability">Employment probability uplift (0–1)</label>
-          <input id="employment_probability" type="number" min="0" max="1" step="0.01" value="0.00">
-        </div>
-        <div>
-          <label for="avg_monthly_wage">Avg monthly wage (USD)</label>
-          <input id="avg_monthly_wage" type="number" min="0" step="1" value="0">
-        </div>
-      </div>
+    <div>
+      <label>Cost per jail day</label><br>
+      <input id="cost_jail" type="number" class="input" value="98">
+    </div>
 
-      <div class="row">
-        <div>
-          <label for="expected_lawsuits">Expected lawsuits avoided</label>
-          <input id="expected_lawsuits" type="number" min="0" step="1" value="0">
-        </div>
-        <div>
-          <label for="avg_payout">Avg payout per lawsuit (USD)</label>
-          <input id="avg_payout" type="number" min="0" step="1" value="0">
-        </div>
-      </div>
+    <div>
+      <label>Households restored</label><br>
+      <input id="hh" type="number" class="input" value="1" min="0">
+    </div>
 
-      <label for="litigation_multiplier">Litigation multiplier (e.g., 1.0–3.0)</label>
-      <input id="litigation_multiplier" type="number" min="0" step="0.1" value="1.0">
+    <div>
+      <label>Avg monthly spend per restored household</label><br>
+      <input id="spend" type="number" class="input" value="1200">
+    </div>
 
-      <h3>1.4 · Transition costs & notes</h3>
-      <label for="transition_costs_one_time">One-time transition costs (USD)</label>
-      <input id="transition_costs_one_time" type="number" min="0" step="1" value="0">
-
-      <label for="ciri-notes">Scenario notes (optional)</label>
-      <textarea id="ciri-notes" placeholder="Short description of the unconstitutional practice being corrected (e.g., non-commercial traffic stops → jail → license suspensions used as credit gates)."></textarea>
-
-      <p id="ciri-intake-bridge" class="ciri-mini">
-        Intake bridge: looking for a recent Intake artifact in this browser…
-      </p>
-
-      <button id="ciri-run" class="btn-run">
-        <span>⚡ Compute recovery & CIRI index</span>
-      </button>
-      <div id="ciri-status" class="ciri-status">Status: ready — fill values or use Intake defaults.</div>
-    </section>
-
-    <!-- RIGHT: outputs -->
-    <section class="ciri-card">
-      <h2>Step 2 — Recovery & receipts</h2>
-
-      <h3>2.1 · Recovery breakdown</h3>
-      <div class="ciri-kpis">
-        <div class="ciri-kpi">
-          <div class="ciri-kpi-label">Direct case cost savings</div>
-          <div id="kpi-case" class="ciri-kpi-value">—</div>
-          <div class="ciri-kpi-tag">Cases avoided × avg cost per case.</div>
-        </div>
-        <div class="ciri-kpi">
-          <div class="ciri-kpi-label">Detention cost savings</div>
-          <div id="kpi-jail" class="ciri-kpi-value">—</div>
-          <div class="ciri-kpi-tag">Jail days avoided × cost per day.</div>
-        </div>
-        <div class="ciri-kpi">
-          <div class="ciri-kpi-label">Enforcement & policy savings</div>
-          <div id="kpi-enf" class="ciri-kpi-value">—</div>
-          <div class="ciri-kpi-tag">Policy corrections × avg enforcement savings.</div>
-        </div>
-        <div class="ciri-kpi">
-          <div class="ciri-kpi-label">Market access uplift</div>
-          <div id="kpi-market" class="ciri-kpi-value">—</div>
-          <div class="ciri-kpi-tag">Households × monthly spend × months.</div>
-        </div>
-        <div class="ciri-kpi">
-          <div class="ciri-kpi-label">Employment & wage uplift</div>
-          <div id="kpi-wage" class="ciri-kpi-value">—</div>
-          <div class="ciri-kpi-tag">Households × employment prob × wage × months.</div>
-        </div>
-        <div class="ciri-kpi">
-          <div class="ciri-kpi-label">Litigation risk avoided</div>
-          <div id="kpi-lit" class="ciri-kpi-value">—</div>
-          <div class="ciri-kpi-tag">Lawsuits × payout × multiplier.</div>
-        </div>
-      </div>
-
-      <h3>2.2 · Totals & index</h3>
-      <div class="ciri-kpis">
-        <div class="ciri-kpi">
-          <div class="ciri-kpi-label">Fees & fines canceled</div>
-          <div id="kpi-fees" class="ciri-kpi-value">—</div>
-          <div class="ciri-kpi-tag">Direct relief to households.</div>
-        </div>
-        <div class="ciri-kpi">
-          <div class="ciri-kpi-label">Transition costs</div>
-          <div id="kpi-trans" class="ciri-kpi-value">—</div>
-          <div class="ciri-kpi-tag">One-time cost to align the system.</div>
-        </div>
-        <div class="ciri-kpi">
-          <div class="ciri-kpi-label">Total recovery (R_T)</div>
-          <div id="kpi-total" class="ciri-kpi-value">—</div>
-          <div class="ciri-kpi-tag">Sum of all savings minus transition costs.</div>
-        </div>
-      </div>
-
-      <p id="ciri-index-pill" class="ciri-score-pill">
-        <span>CIRI index (0–1):</span>
-        <strong id="ciri-index-val">—</strong>
-        <span class="ciri-kpi-tag">(0 = no recovery · 1 = very high recovery)</span>
-      </p>
-
-      <p class="ciri-mini">
-        ROI per case:
-        <span id="ciri-roi-case">—</span>
-      </p>
-
-      <h3>2.3 · Scenario JSON & receipts</h3>
-      <pre id="ciri-json">{}</pre>
-
-      <button id="ciri-download-json" class="btn-download" disabled>
-        ⬇ Download ciri_scenario.json
-      </button>
-      <button id="ciri-download-csv" class="btn-download" disabled>
-        ⬇ Download ciri_inputs_row.csv
-      </button>
-
-      <p id="ciri-hash" class="ciri-mini">
-        Audit hash: —  
-        (SHA-256 of this CIRI scenario. Any tampering will change this value.)
-      </p>
-    </section>
+    <div>
+      <label>Months effective</label><br>
+      <input id="months" type="number" class="input" value="12" min="0">
+    </div>
 
   </div>
+
+  <div class="btn-row">
+    <button id="run" class="btn">Compute Recovery</button>
+    <button id="dl" class="btn" disabled>Download CSV</button>
+  </div>
+</section>
+
+<!-- OUTPUT -->
+<section class="card">
+  <h2>Step 2 — Outputs</h2>
+  <h3>Total Recovery</h3>
+  <div id="total" class="output-box">—</div>
+
+  <h3 style="margin-top:1rem">ROI per Case</h3>
+  <div id="roi" class="output-box">—</div>
+
+  <h3 style="margin-top:1rem">Full JSON Scenario</h3>
+  <div id="json" class="output-box" style="min-height:160px">—</div>
+</section>
+
 </main>
 
-<footer class="abe-footer">
-  <p>
-    CC BY-NC 4.0 · DOI <a href="https://doi.org/10.5281/zenodo.17586107">10.5281/zenodo.17586107</a> · Integrity only — never for sale.
-  </p>
+<footer>
+  CIRI — A.B.E. Constitutional Integrity & ROI · CC BY-NC 4.0 · Integrity only.
 </footer>
 
-<script src="ciri/local.js"></script>
+<script>
+/* ======================
+   Helpers
+====================== */
+
+const $ = id => document.getElementById(id);
+const money = n => Number(n).toLocaleString(undefined,{style:"currency",currency:"USD"});
+
+/* ======================
+   Auto-load Intake Artifact
+====================== */
+
+(function loadIntake(){
+  const status = $("intake-status");
+  const box = $("intake-preview");
+
+  try {
+    const raw = localStorage.getItem("abe_intake_artifact");
+    if (!raw) {
+      status.textContent = "No Intake artifact found — running in manual mode.";
+      box.textContent = "Upload a document in Intake to auto-chain data here.";
+      return;
+    }
+
+    const obj = JSON.parse(raw);
+    status.textContent = "Loaded Intake artifact automatically.";
+    box.textContent = obj.text_normalized?.slice(0,500) + "…";
+
+    // If Intake provided a CIRI row, try to auto-fill fields
+    if (obj.generated_outputs?.ciri?.csv_inline) {
+      const csv = obj.generated_outputs.ciri.csv_inline;
+      const parts = csv.split("\n")[1]?.split(",") || [];
+
+      $("cases").value = 1;
+      $("cost_case").value = Number(parts[1] || 25000);
+      $("jail").value = Number(parts[2] || 0);
+      $("cost_jail").value = Number(parts[3] || 98);
+      $("fees").value = Number(parts[4] || 0);
+      $("hh").value = Number(parts[7] || 1);
+      $("spend").value = Number(parts[8] || 1200);
+      $("months").value = Number(parts[9] || 12);
+    }
+
+  } catch(e) {
+    status.textContent = "Could not load Intake artifact.";
+    box.textContent = "—";
+  }
+})();
+
+/* ======================
+   Compute CIRI Recovery
+====================== */
+
+$("run").onclick = function(){
+
+  const cases  = Number($("cases").value);
+  const cost_c = Number($("cost_case").value);
+  const fees   = Number($("fees").value);
+  const jail   = Number($("jail").value);
+  const cost_j = Number($("cost_jail").value);
+  const hh     = Number($("hh").value);
+  const spend  = Number($("spend").value);
+  const months = Number($("months").value);
+
+  const jail_val  = jail * cost_j;
+  const hh_val    = hh * spend * months;
+  const case_val  = cases * cost_c;
+
+  const total = jail_val + hh_val + case_val + fees;
+  const roi = cases > 0 ? total / cases : 0;
+
+  $("total").textContent = money(total);
+  $("roi").textContent   = money(roi);
+
+  const scenario = {
+    version:"2.0",
+    module:"CIRI",
+    inputs:{
+      cases, cost_c, fees, jail, cost_j, hh, spend, months
+    },
+    outputs:{
+      total_recovery: total,
+      roi_per_case: roi,
+      jail_value: jail_val,
+      household_value: hh_val,
+      case_value: case_val
+    },
+    created_at:new Date().toISOString()
+  };
+
+  $("json").textContent = JSON.stringify(scenario,null,2);
+  $("dl").disabled = false;
+
+  // Store for next modules: CIBS, CII, Macro, Integration
+  try{
+    localStorage.setItem("ABE_CIRI_SCENARIO_V2", JSON.stringify(scenario));
+  }catch(e){ console.warn("Could not store CIRI scenario:",e); }
+
+  // Save CSV rows
+  $("dl").onclick = function(){
+    const csv =
+      "metric,value\n" +
+      "total_recovery,"+total+"\n" +
+      "roi_per_case,"+roi+"\n" +
+      "jail_value,"+jail_val+"\n" +
+      "household_value,"+hh_val+"\n" +
+      "case_value,"+case_val+"\n";
+
+    const blob = new Blob([csv],{type:"text/csv"});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "ciri_scenario.csv";
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+};
+</script>
+
 </body>
-          </html>
+</html>
