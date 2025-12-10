@@ -9,27 +9,23 @@
   const textInput      = $('text-input');
   const docTypeSelect  = $('doc-type');
 
-  // NOTE: these IDs now match your HTML (target-ciri, target-cda, etc.)
   const tCIRI          = $('target-ciri');
   const tCDA           = $('target-cda');
   const tCFF           = $('target-cff');
   const tCCRI          = $('target-ccri');
 
   const btnRun         = $('run-intake');
-
-  // Your status span is id="status"
   const statusEl       = $('status');
 
-  // Right-hand previews
-  const normTextEl     = $('norm-text');     // <pre id="norm-text">
-  const fieldsEl       = $('fields-json');   // <pre id="fields-json">
-
-  // Download button is id="download-artifact"
+  const normTextEl     = $('norm-text');
+  const fieldsEl       = $('fields-json');
   const btnDlIntake    = $('download-artifact');
 
-  // You don’t currently have a CIRI CSV download button in the HTML,
-  // so this may be null. We’ll guard against that.
-  const btnDlCiri      = $('dl-ciri-csv');
+  const nextStepsEl    = $('next-steps');
+  const goCdaBtn       = $('go-cda');
+  const goCffBtn       = $('go-cff');
+  const goCiriBtn      = $('go-ciri');
+  const goCcriBtn      = $('go-ccri');
 
   let latestArtifact = null;
   let latestCiriCsv  = null;
@@ -121,102 +117,100 @@
       return extractTextFromPdfFile(file);
     }
 
-    // fallback: try text read
+    // fallback: try text read (txt/csv/json/etc.)
     return extractPlainTextFile(file);
   }
-  
+
   // ---------- vehicle doc extraction (title / registration) ----------
-  
+
   function vehicleScopeGuess(normalizedText){
-  const text = (normalizedText || '').toUpperCase();
-  const scope = {
-    doc_type_detected: null,
-    raw_hits: [],
-    paperwork_suggests_commercial: null,
-    gvwr_estimate_lbs: null,
-    plate_class_hits: [],
-    notes: ''
-  };
+    const text = (normalizedText || '').toUpperCase();
+    const scope = {
+      doc_type_detected: null,
+      raw_hits: [],
+      paperwork_suggests_commercial: null,
+      gvwr_estimate_lbs: null,
+      plate_class_hits: [],
+      notes: ''
+    };
 
-  // title vs registration signals
-  if(text.includes('CERTIFICATE OF TITLE')) scope.doc_type_detected = 'title';
-  if(text.includes('REGISTRATION')) scope.doc_type_detected = scope.doc_type_detected || 'registration';
+    // title vs registration signals
+    if(text.includes('CERTIFICATE OF TITLE')) scope.doc_type_detected = 'title';
+    if(text.includes('REGISTRATION')) scope.doc_type_detected = scope.doc_type_detected || 'registration';
 
-  // class keywords
-  const classHits = [];
-  const classPatterns = [
-    'COMMERCIAL','TRUCK','TRK','TRUCK TRACTOR','BUS','APPORTIONED','FOR HIRE','FLEET',
-    'PASSENGER','PRIVATE','NON-COMMERCIAL'
-  ];
-  classPatterns.forEach(p=>{ if(text.includes(p)) classHits.push(p); });
-  scope.raw_hits = classHits;
+    // class keywords
+    const classHits = [];
+    const classPatterns = [
+      'COMMERCIAL','TRUCK','TRK','TRUCK TRACTOR','BUS','APPORTIONED','FOR HIRE','FLEET',
+      'PASSENGER','PRIVATE','NON-COMMERCIAL'
+    ];
+    classPatterns.forEach(p=>{ if(text.includes(p)) classHits.push(p); });
+    scope.raw_hits = classHits;
 
-  // GVWR
-  const gvwrMatch = text.match(/\b(GVWR|GROSS WEIGHT|GROSS WT)[^0-9]{0,10}([\d,]{4,6})\b/);
-  if(gvwrMatch && gvwrMatch[2]){
-    const num = Number(gvwrMatch[2].replace(/,/g,''));
-    if(!Number.isNaN(num)) scope.gvwr_estimate_lbs = num;
+    // GVWR
+    const gvwrMatch = text.match(/\b(GVWR|GROSS WEIGHT|GROSS WT)[^0-9]{0,10}([\d,]{4,6})\b/);
+    if(gvwrMatch && gvwrMatch[2]){
+      const num = Number(gvwrMatch[2].replace(/,/g,''));
+      if(!Number.isNaN(num)) scope.gvwr_estimate_lbs = num;
+    }
+
+    // plate type hints
+    const plateHits = [];
+    const platePatterns = ['PLATE TYPE','CLASS:','CLASS CODE','PAS','COM','FARM','GVT','DLR'];
+    platePatterns.forEach(p=>{ if(text.includes(p)) plateHits.push(p); });
+    scope.plate_class_hits = plateHits;
+
+    // paperwork commercial vs passenger
+    const commercialTokens = ['COMMERCIAL','TRK','TRUCK','TRUCK TRACTOR','APPORTIONED','FOR HIRE','BUS','FLEET'];
+    const passengerTokens  = ['PASSENGER','PRIVATE','NON-COMMERCIAL'];
+
+    const commercialHit = commercialTokens.some(t => text.includes(t));
+    const passengerHit  = passengerTokens.some(t => text.includes(t));
+
+    if (commercialHit && !passengerHit) scope.paperwork_suggests_commercial = true;
+    else if (passengerHit && !commercialHit) scope.paperwork_suggests_commercial = false;
+    else scope.paperwork_suggests_commercial = null;
+
+    scope.notes = "Heuristic only. Paperwork ≠ CMV status. CMV requires actual commerce.";
+
+    return scope;
   }
 
-  // plate type hints
-  const plateHits = [];
-  const platePatterns = ['PLATE TYPE','CLASS:','CLASS CODE','PAS','COM','FARM','GVT','DLR'];
-  platePatterns.forEach(p=>{ if(text.includes(p)) plateHits.push(p); });
-  scope.plate_class_hits = plateHits;
+  // ---------- tiny heuristic extraction ----------
 
-  // paperwork commercial vs passenger
-  const commercialTokens = ['COMMERCIAL','TRK','TRUCK','TRUCK TRACTOR','APPORTIONED','FOR HIRE','BUS','FLEET'];
-  const passengerTokens  = ['PASSENGER','PRIVATE','NON-COMMERCIAL'];
+  function basicFieldGuess(normalizedText, docType) {
+    const text = normalizedText || '';
+    const fields = {};
 
-  const commercialHit = commercialTokens.some(t => text.includes(t));
-  const passengerHit  = passengerTokens.some(t => text.includes(t));
+    // Dollars
+    const moneyMatches = text.match(/\$?\s?[\d,]+(\.\d{1,2})?/g) || [];
+    fields.approx_dollar_values_found = moneyMatches.slice(0, 10);
 
-  if (commercialHit && !passengerHit) scope.paperwork_suggests_commercial = true;
-  else if (passengerHit && !commercialHit) scope.paperwork_suggests_commercial = false;
-  else scope.paperwork_suggests_commercial = null;
+    // Dates
+    const dateMatches = text.match(/\b\d{1,2}\/\d{1,2}\/\d{2,4}\b/g) || [];
+    fields.approx_dates_found = dateMatches.slice(0, 10);
 
-  scope.notes = "Heuristic only. Paperwork ≠ CMV status. CMV requires actual commerce.";
+    // For traffic tickets, try to guess a citation / code reference
+    if (docType === 'traffic_ticket') {
+      const codeMatch = text.match(/\b\d{3,4}\.\d{1,3}[A-Za-z0-9\-]*/);
+      if (codeMatch) fields.possible_code_section = codeMatch[0];
+    }
 
-  return scope;
-}
+    // For loan contracts, try to spot APR / interest mentions
+    if (docType === 'loan_contract') {
+      const apr = text.match(/\b\d{1,2}\.\d{1,2}%|\b\d{1,2}%\b/);
+      if (apr) fields.possible_apr = apr[0];
+    }
 
- // ---------- tiny heuristic extraction ----------
+    // Vehicle docs → parse CMV / exempt paperwork signals
+    if (docType === 'vehicle_title' || docType === 'vehicle_registration') {
+      fields.vehicle_scope = vehicleScopeGuess(normalizedText);
+    }
 
- function basicFieldGuess(normalizedText, docType) {
-  const text = normalizedText || '';
-  const fields = {};
+    fields.preview_snippet = text.slice(0, 800);
 
-  // Very light hints. User is still in control.
-
-  // Dollars
-  const moneyMatches = text.match(/\$?\s?[\d,]+(\.\d{1,2})?/g) || [];
-  fields.approx_dollar_values_found = moneyMatches.slice(0, 10);
-
-  // Dates
-  const dateMatches = text.match(/\b\d{1,2}\/\d{1,2}\/\d{2,4}\b/g) || [];
-  fields.approx_dates_found = dateMatches.slice(0, 10);
-
-  // For traffic tickets, try to guess a citation / code reference
-  if (docType === 'traffic_ticket') {
-    const codeMatch = text.match(/\b\d{3,4}\.\d{1,3}[A-Za-z0-9\-]*/);
-    if (codeMatch) fields.possible_code_section = codeMatch[0];
+    return fields;
   }
-
-  // For loan contracts, try to spot APR / interest mentions
-  if (docType === 'loan_contract') {
-    const apr = text.match(/\b\d{1,2}\.\d{1,2}%|\b\d{1,2}%\b/);
-    if (apr) fields.possible_apr = apr[0];
-  }
-
-  // NEW: Vehicle docs → parse CMV / exempt paperwork signals
-  if (docType === 'vehicle_title' || docType === 'vehicle_registration') {
-    fields.vehicle_scope = vehicleScopeGuess(normalizedText);
-  }
-
-  fields.preview_snippet = text.slice(0, 800);
-
-  return fields;
-}
 
   // ---------- CIRI CSV starter row ----------
 
@@ -259,7 +253,7 @@
       latestArtifact = null;
       latestCiriCsv  = null;
       if (btnDlIntake) btnDlIntake.disabled = true;
-      if (btnDlCiri)   btnDlCiri.disabled   = true;
+      if (nextStepsEl) nextStepsEl.style.display = 'none';
 
       const files   = Array.from((fileInput && fileInput.files) || []);
       const pasted  = textInput ? (textInput.value || '') : '';
@@ -324,6 +318,7 @@
         notes: ''
       };
 
+      // build CIRI CSV starter row if target checked
       if (targets.includes('CIRI')) {
         const csv = buildCiriCsvRow(normalized);
         latestCiriCsv = csv;
@@ -350,23 +345,26 @@
       if (normTextEl) normTextEl.textContent = normalized;
       if (fieldsEl)   fieldsEl.textContent   = JSON.stringify(extractedFields, null, 2);
 
-      setStatus('Intake complete — review text & download artifacts.', 'ok');
+      setStatus('Intake complete — review text, see extracted fields, and continue.', 'ok');
 
       if (btnDlIntake) btnDlIntake.disabled = false;
-      if (btnDlCiri)   btnDlCiri.disabled   = !latestCiriCsv;
 
-      // store artifact so CIRI / others can pick it up automatically
+      // store artifact so CDA / CFF / CIRI / CCRI can pick it up automatically
       try {
         localStorage.setItem('abe_intake_artifact', JSON.stringify(artifact));
       } catch (e) {
         console.warn('Could not store intake artifact in localStorage:', e);
       }
 
+      // show next steps panel
+      if (nextStepsEl) nextStepsEl.style.display = 'block';
+
     } catch (err) {
       console.error(err);
       setStatus('Intake failed: ' + (err.message || String(err)), 'bad');
       if (normTextEl) normTextEl.textContent = '—';
       if (fieldsEl)   fieldsEl.textContent   = '{}';
+      if (nextStepsEl) nextStepsEl.style.display = 'none';
     } finally {
       if (btnRun) btnRun.disabled = false;
     }
@@ -386,6 +384,7 @@
     URL.revokeObjectURL(url);
   }
 
+  // wire buttons
   if (btnDlIntake) {
     btnDlIntake.addEventListener('click', () => {
       if (!latestArtifact) return;
@@ -397,16 +396,31 @@
     });
   }
 
-  if (btnDlCiri) {
-    btnDlCiri.addEventListener('click', () => {
-      if (!latestCiriCsv) return;
-      downloadTextFile(`ciri_intake_row_${Date.now()}.csv`, latestCiriCsv, 'text/csv');
-    });
-  }
-
   if (btnRun) {
     btnRun.addEventListener('click', () => {
       runIntake();
+    });
+  }
+
+  // Next steps navigation (just routing, data stays in localStorage)
+  if (goCdaBtn) {
+    goCdaBtn.addEventListener('click', () => {
+      window.location.href = '../cda/index.html';
+    });
+  }
+  if (goCffBtn) {
+    goCffBtn.addEventListener('click', () => {
+      window.location.href = '../cff/index.html';
+    });
+  }
+  if (goCiriBtn) {
+    goCiriBtn.addEventListener('click', () => {
+      window.location.href = '../ciri/index.html';
+    });
+  }
+  if (goCcriBtn) {
+    goCcriBtn.addEventListener('click', () => {
+      window.location.href = '../ccri/index.html';
     });
   }
 
