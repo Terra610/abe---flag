@@ -1,425 +1,377 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>CIRI — Integrity ROI Engine | A.B.E.</title>
-<base href="/abe---flag/">
-<style>
-:root{
-  --bg:#0b0d12;--panel:#141820;--panel2:#0f131a;--ink:#e6e6e6;--muted:#9fb3c8;
-  --line:rgba(255,255,255,.08);--brand:#5ddfff;--accent:#ffa559;--ok:#4bd28f;--warn:#ffa559;--bad:#ff6b6b;
-}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
-a{color:#80bfff;text-decoration:none}
-a:hover{text-decoration:underline}
-header{padding:24px 20px;background:linear-gradient(90deg,#11151c,#1b1e25);border-bottom:1px solid var(--line)}
-.wrap{max-width:1100px;margin:0 auto;padding:0 20px}
-h1{margin:0 0 6px}
-.sub{color:var(--muted)}
-.badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
-.badge,.chip{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;border:1px solid var(--line);font-size:.88rem;color:var(--muted);background:rgba(0,0,0,.15)}
-main{max-width:1100px;margin:22px auto 40px;padding:0 20px}
-.grid{display:grid;gap:16px}
-.grid-2{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px}
-.tile{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:12px}
-/* Fix long header wrapping */
-.note code.hdr {
-  white-space: pre-wrap;
-  word-break: break-word;
-  font-size: 0.85rem;
-  display: block;
-  margin-top: 4px;
-}
-h2{margin:0 0 .4rem;font-size:1.1rem}
-small,.muted{color:var(--muted);font-size:.9rem}
-.kpi-label{font-size:.9rem;color:var(--muted)}
-.kpi-val{font-size:1.4rem;font-weight:700;margin-top:4px}
-.note{font-size:.85rem;color:var(--muted);margin-top:6px}
-.btn{display:inline-flex;align-items:center;justify-content:center;padding:.5rem .8rem;border-radius:9px;border:1px solid var(--line);background:#0f131a;color:var(--ink);font-size:.9rem;cursor:pointer;text-decoration:none}
-.btn:hover{border-color:var(--brand)}
-.btn[disabled]{opacity:.4;cursor:not-allowed}
-table{width:100%;border-collapse:collapse;font-size:.9rem}
-th,td{border:1px solid var(--line);padding:6px 8px;text-align:left}
-th{background:var(--panel2);font-weight:500}
-tbody tr:nth-child(even){background:rgba(255,255,255,.02)}
-code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.85rem}
-input[type=file]{display:none}
-.src-pill{display:inline-flex;align-items:center;gap:6px;padding:4px 9px;border-radius:999px;border:1px solid var(--line);font-size:.85rem;background:rgba(0,0,0,.18);color:var(--muted)}
-.bad{color:var(--bad)}
-.ok{color:var(--ok)}
-.drop{border:1px dashed var(--line);border-radius:10px;padding:14px;text-align:center;font-size:.9rem;color:var(--muted);cursor:pointer;margin-top:8px}
-.drop.dragover{border-color:var(--brand);background:rgba(93,223,255,.06);color:var(--ink)}
-.tag{display:inline-flex;align-items:center;gap:4px;border-radius:999px;border:1px solid var(--line);padding:2px 8px;font-size:.78rem;color:var(--muted)}
-footer{margin:36px 0 22px;text-align:center;color:var(--muted);font-size:.9rem}
-@media (min-width:720px){
-  .grid-2{grid-template-columns:2fr 3fr}
-}
-</style>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>CCRI — Consumer Credit Risk Integrity | A.B.E.</title>
+  <base href="/abe---flag/">
+  <link rel="stylesheet" href="abe-patch/assets/abe-patch.css"/>
+  <style>
+    .ccri-wrap{
+      max-width:1100px;
+      margin:0 auto;
+      padding:1.5rem 1rem 3rem;
+    }
+    .ccri-header h1{
+      margin:0 0 .25rem;
+      font-size:1.9rem;
+    }
+    .ccri-header .tagline{
+      max-width:780px;
+      color:var(--muted);
+      font-size:.98rem;
+    }
+    .ccri-grid{
+      display:grid;
+      gap:1.1rem;
+    }
+    @media(min-width:900px){
+      .ccri-grid{
+        grid-template-columns:1.4fr 1.6fr;
+      }
+    }
+    .ccri-card{
+      background:var(--panel);
+      border-radius:14px;
+      border:1px solid var(--line);
+      padding:1rem 1.1rem 1.2rem;
+      box-shadow:0 18px 40px rgba(0,0,0,.45);
+      min-height:0;
+    }
+    .ccri-card h2{
+      margin:.1rem 0 .4rem;
+      font-size:1.15rem;
+    }
+    .ccri-card h3{
+      margin:.35rem 0 .3rem;
+      font-size:1rem;
+    }
+    .ccri-sub{
+      color:var(--muted);
+      font-size:.9rem;
+    }
+    label{
+      display:block;
+      font-size:.86rem;
+      color:var(--muted);
+      margin:.55rem 0 .18rem;
+    }
+    input[type="text"],
+    select,
+    textarea{
+      width:100%;
+      background:#050712;
+      border-radius:9px;
+      border:1px solid var(--line);
+      padding:.45rem .6rem;
+      color:var(--ink);
+      font-size:.88rem;
+    }
+    textarea{
+      min-height:90px;
+      resize:vertical;
+    }
+    .ccri-row{
+      display:flex;
+      gap:.6rem;
+      flex-wrap:wrap;
+    }
+    .ccri-row > div{
+      flex:1 1 160px;
+    }
+    .ccri-yesno{
+      display:flex;
+      gap:.4rem;
+      flex-wrap:wrap;
+      font-size:.84rem;
+      margin-top:.3rem;
+    }
+    .ccri-chip{
+      display:inline-flex;
+      align-items:center;
+      gap:.18rem;
+      padding:.18rem .55rem;
+      border-radius:999px;
+      border:1px solid var(--line);
+      cursor:pointer;
+      user-select:none;
+    }
+    .ccri-chip input{
+      margin:0;
+    }
+    .ccri-chip-risk{
+      border-color:#ff8585;
+    }
+    .ccri-chip-safe{
+      border-color:#4bd28f;
+    }
+    .ccri-status{
+      margin-top:.6rem;
+      font-size:.84rem;
+      color:var(--muted);
+    }
+    .ccri-status-ok{color:#4bd28f;}
+    .ccri-status-warn{color:#ffba5c;}
+    .ccri-status-bad{color:#ff8585;}
+    .btn-run{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      margin-top:.8rem;
+      padding:.45rem 1.05rem;
+      border-radius:999px;
+      border:1px solid var(--accent);
+      background:#050712;
+      color:var(--ink);
+      font-size:.9rem;
+      cursor:pointer;
+      gap:.4rem;
+    }
+    .btn-run:hover{
+      box-shadow:0 0 0 1px rgba(93,223,255,.36),0 0 18px rgba(93,223,255,.25);
+    }
+    .btn-download{
+      margin-top:.45rem;
+      padding:.36rem .85rem;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:#050712;
+      color:var(--ink);
+      font-size:.84rem;
+      cursor:pointer;
+    }
+    .btn-download:disabled{
+      opacity:.5;
+      cursor:default;
+    }
+    pre{
+      margin:.45rem 0 .7rem;
+      background:#050712;
+      border-radius:10px;
+      border:1px solid var(--line);
+      padding:.6rem .7rem;
+      font-family:ui-monospace,SFMono-Regular,Consolas,monospace;
+      font-size:.82rem;
+      max-height:260px;
+      overflow:auto;
+      white-space:pre-wrap;
+      color:var(--ink);
+    }
+    .ccri-scores{
+      display:flex;
+      flex-wrap:wrap;
+      gap:.6rem;
+      margin-top:.4rem;
+    }
+    .ccri-score{
+      flex:1 1 140px;
+      min-width:140px;
+      max-width:220px;
+      background:#050712;
+      border-radius:10px;
+      border:1px solid var(--line);
+      padding:.45rem .55rem .5rem;
+      font-size:.85rem;
+    }
+    .ccri-score-label{
+      color:var(--muted);
+      font-size:.82rem;
+    }
+    .ccri-score-value{
+      font-weight:600;
+      font-size:1rem;
+      margin-top:.1rem;
+    }
+    .ccri-score-tag{
+      font-size:.78rem;
+      color:var(--muted);
+      margin-top:.15rem;
+    }
+    .ccri-score-high{color:#ff8585;}
+    .ccri-score-mid{color:#ffba5c;}
+    .ccri-score-low{color:#4bd28f;}
+    .ccri-mini{
+      font-size:.82rem;
+      color:var(--muted);
+      margin-top:.3rem;
+    }
+  </style>
 </head>
-<body>
-<header>
-  <div class="wrap">
-    <div>
-      <a href="/abe---flag/" class="badge">← Home</a>
-      <h1>💹 CIRI — Integrity ROI Engine</h1>
-      <div class="sub">Turns divergence + local inputs into recovery dollars and indices. All in your browser.</div>
-      <div class="badges" style="margin-top:8px">
-        <span class="chip">Local only · No uploads</span>
-        <a class="chip" href="/abe---flag/cff/index.html">CFF (Funding Forensics)</a>
-        <a class="chip" href="/abe---flag/cibs/index.html">CIBS</a>
-        <a class="chip" href="/abe---flag/macro/index.html">Macro</a>
-        <a class="chip" href="/abe---flag/integration/index.html">Integration</a>
-      </div>
-    </div>
+<body class="abe-page">
+
+<header class="abe-header">
+  <div class="ccri-wrap ccri-header">
+    <a href="/abe---flag/index.html" class="chip">← A.B.E. Home</a>
+    <h1>CCRI — Consumer Credit Risk Integrity</h1>
+    <p class="tagline">
+      Describe how your institution uses DMV/DOT and enforcement data for non-commercial credit decisions.
+      CCRI builds a system-level risk profile — not a score on people.
+    </p>
+    <nav class="chip-row">
+      <a class="chip" href="intake/index.html">Intake</a>
+      <a class="chip" href="cda/index.html">CDA</a>
+      <a class="chip" href="ciri/index.html">CIRI</a>
+      <a class="chip" href="cff/index.html">CFF</a>
+      <span class="chip chip-alt">CCRI</span>
+      <a class="chip" href="law/index.html">Law Corpus</a>
+      <a class="chip" href="doctrine/index.html">Doctrines</a>
+      <a class="chip" href="integration/index.html">Integration</a>
+    </nav>
   </div>
 </header>
 
-<main class="wrap">
-  <section class="grid grid-2">
-    <div class="card">
-      <h2>1. Choose Inputs</h2>
-      <p class="muted">
-        Use the default repo inputs (<code>ciri/inputs.csv</code>) or drop in your own CSV in the same format.
+<main class="abe-main">
+  <div class="ccri-wrap ccri-grid">
+
+    <!-- LEFT: inputs -->
+    <section class="ccri-card">
+      <h2>Step 1 — Describe the institution & model</h2>
+      <p class="ccri-sub">
+        CCRI is about <strong>rules and data flows</strong>, not individuals.
+        It classifies risk when DMV/DOT or enforcement data is used to gate non-commercial credit.
       </p>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px">
-        <button id="btn-default" class="btn">Use repo baseline</button>
-        <button id="btn-file" class="btn">Upload CSV</button>
-      </div>
-      <div id="src-pill" class="src-pill">
-        Source: <strong>Repo baseline</strong> (<code>ciri/inputs.csv</code>)
-      </div>
-      <div id="drop" class="drop">
-        <strong>Drop your CIRI CSV here</strong><br/>
-        or tap “Upload CSV”
-        <input id="file" type="file" accept=".csv,text/csv"/>
-      </div>
-      <div class="note" style="margin-top:8px">
-  Required header (single row):<br/>
-  <code class="hdr">
-cases_avoided,
-avg_cost_per_case,
-jail_days_avoided,
-cost_per_jail_day,
-fees_canceled_total,
-policy_corrections,
-avg_enforcement_cost_savings,
-households_restored,
-avg_monthly_market_spend,
-months_effective,
-employment_probability,
-avg_monthly_wage,
-expected_lawsuits,
-avg_payout,
-litigation_multiplier,
-transition_costs_one_time
-  </code>
-      </div>
-      <div id="load-status" class="note" style="margin-top:8px">
-        Using repo baseline. No local override loaded yet.
-      </div>
-      <div id="cff-pill" class="note" style="margin-top:10px"></div>
-    </div>
 
-    <div class="card">
-      <h2>2. Recovery KPIs (CIRI v2)</h2>
-      <div class="grid" style="gap:10px">
-        <div class="tile">
-          <div class="kpi-label">Total Recovery (CIRI)</div>
-          <div id="k-total" class="kpi-val">—</div>
-          <div class="note">Includes repo inputs + any OFF_MISSION dollars handed off from CFF on this device.</div>
-        </div>
-        <div class="tile">
-          <div class="kpi-label">CIRI Index</div>
-          <div id="k-idx" class="kpi-val">—</div>
-          <div class="note"><code>1 - e^{-R_T/K}</code>, with <code>K = 2,000,000,000</code></div>
-        </div>
-        <div class="tile">
-          <div class="kpi-label">ROI per Case</div>
-          <div id="k-roi" class="kpi-val">—</div>
-          <div class="note"><code>R_T / max(1, cases_avoided)</code></div>
-        </div>
-        <div class="tile">
-          <div class="kpi-label">Households Restored</div>
-          <div id="k-hh" class="kpi-val">—</div>
-          <div class="note">Pulled from the same CSV.</div>
-        </div>
-      </div>
-      <div class="note" style="margin-top:10px">
-        This run is stored locally as <code>ABE_CIRI_SCENARIO_V2</code> so the homepage and Integration layer can reflect <em>your</em> numbers on this device.
-      </div>
-    </div>
-  </section>
+      <label for="inst-name">Institution name (or label)</label>
+      <input id="inst-name" type="text" placeholder="e.g., Auto lender / Dealer finance program / Bank product code">
 
-  <section class="card" style="margin-top:18px">
-    <h2>3. Component Breakdown</h2>
-    <p class="muted">How CIRI builds the recovery pool from each part of the CSV.</p>
-    <div style="overflow:auto;margin-top:8px">
-      <table style="min-width:640px">
-        <thead>
-          <tr>
-            <th>Component</th>
-            <th>Formula</th>
-            <th>Value (USD)</th>
-          </tr>
-        </thead>
-        <tbody id="tbl-body">
-          <tr><td colspan="3" style="text-align:center;color:var(--muted)">Run the model to see the breakdown.</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </section>
+      <div class="ccri-row">
+        <div>
+          <label for="inst-type">Institution type</label>
+          <select id="inst-type">
+            <option value="auto_lender" selected>Auto lender / dealer finance</option>
+            <option value="bank">Bank / credit union</option>
+            <option value="fintech">Fintech / alternative lender</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <div>
+          <label for="geo-scope">Geographic scope</label>
+          <select id="geo-scope">
+            <option value="single_state" selected>Single state</option>
+            <option value="multi_state">Multi-state</option>
+            <option value="national">National</option>
+          </select>
+        </div>
+      </div>
+
+      <h3>1.1 · Data sources & gating rules</h3>
+      <label>Does your model pull DMV/DOT or license status for non-commercial credit?</label>
+      <div class="ccri-yesno">
+        <label class="ccri-chip ccri-chip-risk">
+          <input type="radio" name="dmv-use" value="yes">
+          <span>Yes — for approvals/denials</span>
+        </label>
+        <label class="ccri-chip ccri-chip-safe">
+          <input type="radio" name="dmv-use" value="limited">
+          <span>Limited — identity only (no gating)</span>
+        </label>
+        <label class="ccri-chip">
+          <input type="radio" name="dmv-use" value="no" checked>
+          <span>No</span>
+        </label>
+      </div>
+
+      <label>Can license suspension, unpaid traffic tickets, or DMV flags trigger denial?</label>
+      <div class="ccri-yesno">
+        <label class="ccri-chip ccri-chip-risk">
+          <input type="radio" name="suspension-rule" value="direct">
+          <span>Yes — directly coded</span>
+        </label>
+        <label class="ccri-chip ccri-chip-risk">
+          <input type="radio" name="suspension-rule" value="indirect">
+          <span>Indirect — flows into risk/scorecard</span>
+        </label>
+        <label class="ccri-chip ccri-chip-safe">
+          <input type="radio" name="suspension-rule" value="no" checked>
+          <span>No</span>
+        </label>
+      </div>
+
+      <label>Is there a human appeal process when DMV/DOT data causes denial?</label>
+      <div class="ccri-yesno">
+        <label class="ccri-chip">
+          <input type="radio" name="appeal" value="robust" checked>
+          <span>Robust — clear path & timeline</span>
+        </label>
+        <label class="ccri-chip">
+          <input type="radio" name="appeal" value="weak">
+          <span>Weak — unclear or slow</span>
+        </label>
+        <label class="ccri-chip">
+          <input type="radio" name="appeal" value="none">
+          <span>No meaningful appeal</span>
+        </label>
+      </div>
+
+      <h3>1.2 · Narrative notes</h3>
+      <textarea id="ccri-notes" placeholder="Describe how the credit model works in practice. Example: auto lender denies loans when a state DPS system shows an unpaid ticket or suspended license, even for non-commercial borrowers."></textarea>
+
+      <p id="ccri-intake-bridge" class="ccri-mini">
+        Intake bridge: looking for a recent Intake artifact in this browser…
+      </p>
+
+      <button id="ccri-run" class="btn-run">
+        <span>📊 Generate CCRI risk classification</span>
+      </button>
+      <div id="ccri-status" class="ccri-status">Status: waiting to run…</div>
+    </section>
+
+    <!-- RIGHT: outputs -->
+    <section class="ccri-card">
+      <h2>Step 2 — Review risk profile</h2>
+
+      <h3>2.1 · Scores & classification</h3>
+      <div class="ccri-scores">
+        <div class="ccri-score">
+          <div class="ccri-score-label">Data integrity</div>
+          <div id="score-data" class="ccri-score-value">—</div>
+          <div class="ccri-score-tag">How clean & appropriate the data sources are.</div>
+        </div>
+        <div class="ccri-score">
+          <div class="ccri-score-label">Constitutional alignment</div>
+          <div id="score-const" class="ccri-score-value">—</div>
+          <div class="ccri-score-tag">How well the model respects constitutional boundaries.</div>
+        </div>
+        <div class="ccri-score">
+          <div class="ccri-score-label">Access & fairness</div>
+          <div id="score-access" class="ccri-score-value">—</div>
+          <div class="ccri-score-tag">Impact on citizens’ access to credit & mobility.</div>
+        </div>
+        <div class="ccri-score">
+          <div class="ccri-score-label">Economic impact</div>
+          <div id="score-econ" class="ccri-score-value">—</div>
+          <div class="ccri-score-tag">Downstream harm to employment, spending, stability.</div>
+        </div>
+      </div>
+      <p class="ccri-mini">
+        Overall risk classification:
+        <span id="ccri-class">—</span>
+      </p>
+
+      <h3>2.2 · Structured JSON</h3>
+      <pre id="ccri-json">{}</pre>
+
+      <h3>2.3 · Plain-language summary</h3>
+      <pre id="ccri-summary">Run CCRI to generate a summary…</pre>
+
+      <button id="ccri-download" class="btn-download" disabled>
+        ⬇ Download ccri_scenario.json
+      </button>
+      <p id="ccri-hash" class="ccri-mini">
+        Audit hash: —  
+        (SHA-256 of this CCRI scenario. Any tampering will change this value.)
+      </p>
+    </section>
+
+  </div>
 </main>
 
-<footer>
-  CC BY-NC 4.0 · DOI <a href="https://doi.org/10.5281/zenodo.17586107">10.5281/zenodo.17586107</a><br/>
-  Integrity only — never for sale.
+<footer class="abe-footer">
+  <p>
+    CC BY-NC 4.0 · DOI <a href="https://doi.org/10.5281/zenodo.17586107">10.5281/zenodo.17586107</a> · Integrity only — never for sale.
+  </p>
 </footer>
 
-<script>
-const K_CIRI_V2 = 2_000_000_000;
-const SCEN_KEY = 'ABE_CIRI_SCENARIO_V2';
-const CFF_KEY_TOTAL = 'ABE_CFF_OFF_MISSION_TOTAL';
-const CFF_KEY_CTX   = 'ABE_CFF_CONTEXT';
-
-const money = n => isFinite(n) ? '$' + Math.round(n).toLocaleString() : '—';
-
-function parseCsv(text){
-  const lines = text.trim().split(/\r?\n/).filter(Boolean);
-  if(lines.length<2) throw new Error('CSV must have a header row + one data row');
-  const head = lines[0].split(',').map(s=>s.trim());
-  const row  = lines[1].split(',').map(s=>s.trim());
-  const obj = {};
-  head.forEach((h,i)=> obj[h] = row[i] ?? '');
-  return obj;
-}
-
-function num(x){ const v = Number(x); return isFinite(v)?v:0; }
-
-function readCffHandoff(){
-  try{
-    const raw = localStorage.getItem(CFF_KEY_TOTAL);
-    if(!raw) return null;
-    const total = Number(raw);
-    if(!isFinite(total) || total<=0) return null;
-    let ctx = null;
-    try{ ctx = JSON.parse(localStorage.getItem(CFF_KEY_CTX)||'null'); }catch(_){}
-    return {total,ctx};
-  }catch(e){
-    console.warn('Could not read CFF handoff', e);
-    return null;
-  }
-}
-
-function computeCiriMetrics(d){
-  const cases_avoided       = num(d.cases_avoided);
-  const avg_cost_per_case   = num(d.avg_cost_per_case);
-  const jail_days_avoided   = num(d.jail_days_avoided);
-  const cost_per_jail_day   = num(d.cost_per_jail_day);
-  const fees_canceled_total = num(d.fees_canceled_total);
-  const policy_corrections  = num(d.policy_corrections);
-  const avg_enforcement_cost_savings = num(d.avg_enforcement_cost_savings);
-  const households_restored = num(d.households_restored);
-  const avg_monthly_market_spend = num(d.avg_monthly_market_spend);
-  const months_effective    = num(d.months_effective);
-  const employment_probability = num(d.employment_probability);
-  const avg_monthly_wage    = num(d.avg_monthly_wage);
-  const expected_lawsuits   = num(d.expected_lawsuits);
-  const avg_payout          = num(d.avg_payout);
-  const litigation_multiplier = num(d.litigation_multiplier);
-  const transition_costs_one_time = num(d.transition_costs_one_time);
-
-  const direct_case   = cases_avoided * avg_cost_per_case;
-  const detention     = jail_days_avoided * cost_per_jail_day;
-  const fees          = fees_canceled_total;
-  const enforcement   = policy_corrections * avg_enforcement_cost_savings;
-  const market_access = households_restored * avg_monthly_market_spend * months_effective;
-  const employment    = households_restored * employment_probability * avg_monthly_wage * months_effective;
-  const litigation    = expected_lawsuits * avg_payout * litigation_multiplier;
-  const transition    = transition_costs_one_time;
-
-  let total = direct_case + detention + fees + enforcement + market_access + employment + litigation - transition;
-
-  // 🔗 Inject OFF_MISSION total from CFF, if present
-  const cff = readCffHandoff();
-  const cff_extra = cff ? cff.total : 0;
-  if(cff_extra > 0){
-    total += cff_extra;
-  }
-
-  total = Math.max(0,total);
-  const ciri_index = 1 - Math.exp(- total / Math.max(1,K_CIRI_V2));
-  const roi_per_case = cases_avoided>0 ? total / cases_avoided : 0;
-
-  return {
-    inputs:{
-      cases_avoided,avg_cost_per_case,jail_days_avoided,cost_per_jail_day,
-      fees_canceled_total,policy_corrections,avg_enforcement_cost_savings,
-      households_restored,avg_monthly_market_spend,months_effective,
-      employment_probability,avg_monthly_wage,expected_lawsuits,avg_payout,
-      litigation_multiplier,transition_costs_one_time
-    },
-    components:{
-      direct_case,detention,fees,enforcement,market_access,employment,litigation,transition,
-      cff_extra
-    },
-    outputs:{
-      total_recovery:total,
-      ciri_index,
-      roi_per_case,
-      households_restored
-    }
-  };
-}
-
-function renderBreakdown(components){
-  const body = document.getElementById('tbl-body');
-  const rows = [
-    ['Direct case cost avoidance','cases_avoided × avg_cost_per_case',components.direct_case],
-    ['Detention avoided','jail_days_avoided × cost_per_jail_day',components.detention],
-    ['Fees canceled','fees_canceled_total',components.fees],
-    ['Enforcement savings','policy_corrections × avg_enforcement_cost_savings',components.enforcement],
-    ['Market access uplift','households_restored × avg_monthly_market_spend × months_effective',components.market_access],
-    ['Employment uplift','households_restored × employment_probability × avg_monthly_wage × months_effective',components.employment],
-    ['Litigation avoided','expected_lawsuits × avg_payout × litigation_multiplier',components.litigation],
-    ['Transition costs (one-time)','− transition_costs_one_time',-components.transition],
-  ];
-  if(components.cff_extra>0){
-    rows.push(['OFF_MISSION federal funds (CFF)','OFF_MISSION total handed off from CFF',components.cff_extra]);
-  }
-  rows.push(['Total Recovery (CIRI v2)','Sum of components above',rows.reduce((s,r)=>s + Number(r[2]||0),0)]);
-
-  body.innerHTML = rows.map(r=>`
-    <tr>
-      <td>${r[0]}</td>
-      <td><code>${r[1]}</code></td>
-      <td>${money(r[2])}</td>
-    </tr>
-  `).join('');
-}
-
-function saveScenario(result,sourceLabel){
-  try{
-    const payload = {
-      generated_at:new Date().toISOString(),
-      source:sourceLabel,
-      inputs:result.inputs,
-      components:result.components,
-      outputs:result.outputs
-    };
-    localStorage.setItem(SCEN_KEY, JSON.stringify(payload));
-  }catch(e){
-    console.warn('Could not save CIRI scenario', e);
-  }
-}
-
-async function loadRepoInputs(){
-  const r = await fetch('/abe---flag/ciri/inputs.csv',{cache:'no-store'});
-  if(!r.ok) throw new Error('HTTP '+r.status);
-  const txt = await r.text();
-  return parseCsv(txt);
-}
-
-(function init(){
-  const btnDefault = document.getElementById('btn-default');
-  const btnFile    = document.getElementById('btn-file');
-  const drop       = document.getElementById('drop');
-  const fileInput  = document.getElementById('file');
-  const srcPill    = document.getElementById('src-pill');
-  const loadStatus = document.getElementById('load-status');
-  const kTotal = document.getElementById('k-total');
-  const kIdx   = document.getElementById('k-idx');
-  const kRoi   = document.getElementById('k-roi');
-  const kHh    = document.getElementById('k-hh');
-  const cffPill= document.getElementById('cff-pill');
-
-  function renderCffPill(){
-    const cff = readCffHandoff();
-    if(!cff){
-      cffPill.innerHTML = '<span class="tag">CFF handoff: none detected</span>';
-      return;
-    }
-    const share = cff.ctx && typeof cff.ctx.share==='number'
-      ? (cff.ctx.share*100).toFixed(1)+'%'
-      : null;
-    cffPill.innerHTML =
-      `<span class="tag">CFF handoff: ${money(cff.total)} OFF_MISSION</span>` +
-      (share ? ` <span class="tag">≈ ${share} of that bundle</span>` : '');
-  }
-
-  async function runWithInputs(obj, sourceLabel){
-    const result = computeCiriMetrics(obj);
-    const {components,outputs} = result;
-
-    kTotal.textContent = money(outputs.total_recovery);
-    kIdx.textContent   = outputs.ciri_index.toFixed(3);
-    kRoi.textContent   = money(outputs.roi_per_case);
-    kHh.textContent    = outputs.households_restored.toLocaleString();
-
-    renderBreakdown(components);
-    saveScenario(result, sourceLabel);
-    renderCffPill();
-  }
-
-  btnDefault.addEventListener('click', async ()=>{
-    try{
-      loadStatus.textContent = 'Loading repo baseline…';
-      const obj = await loadRepoInputs();
-      await runWithInputs(obj,'repo_inputs.csv');
-      srcPill.innerHTML = 'Source: <strong>Repo baseline</strong> (<code>ciri/inputs.csv</code>)';
-      loadStatus.textContent = 'Using repo baseline.';
-    }catch(e){
-      console.error(e);
-      loadStatus.textContent = 'Could not load ciri/inputs.csv';
-    }
-  });
-
-  btnFile.addEventListener('click', ()=>fileInput.click());
-
-  function handleFile(files){
-    if(!files || !files.length) return;
-    const f = files[0];
-    const reader = new FileReader();
-    reader.onload = async ev=>{
-      try{
-        loadStatus.textContent = 'Parsing uploaded CSV…';
-        const txt = String(ev.target.result||'');
-        const obj = parseCsv(txt);
-        await runWithInputs(obj,f.name);
-        srcPill.innerHTML = `Source: <strong>Uploaded</strong> (<code>${f.name}</code>)`;
-        loadStatus.textContent = `Using uploaded CSV: ${f.name}`;
-      }catch(e){
-        console.error(e);
-        loadStatus.textContent = 'Could not parse uploaded CSV. Check that the header matches the template.';
-      }
-    };
-    reader.onerror = ()=>{ loadStatus.textContent = 'Error reading file.'; };
-    reader.readAsText(f);
-  }
-
-  drop.addEventListener('click', ()=>fileInput.click());
-  drop.addEventListener('dragover', e=>{e.preventDefault();drop.classList.add('dragover');});
-  drop.addEventListener('dragleave', e=>{e.preventDefault();drop.classList.remove('dragover');});
-  drop.addEventListener('drop', e=>{
-    e.preventDefault();drop.classList.remove('dragover');
-    handleFile(e.dataTransfer.files);
-  });
-  fileInput.addEventListener('change', e=>handleFile(e.target.files));
-
-  // Initial run: repo baseline
-  (async ()=>{
-    try{
-      const obj = await loadRepoInputs();
-      await runWithInputs(obj,'repo_inputs.csv');
-      loadStatus.textContent = 'Using repo baseline.';
-    }catch(e){
-      console.error(e);
-      loadStatus.textContent = 'Could not load ciri/inputs.csv';
-    }
-  })();
-})();
-</script>
+<script src="ccri/local.js"></script>
 </body>
 </html>
