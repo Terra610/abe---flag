@@ -1,73 +1,114 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "CDA_scenario_v1",
-  "description": "Schema for CDA (Constitutional Divergence Analyzer) scenario JSON.",
+  "title": "CDA Scenario v1",
+  "description": "Schema for CDA (Constitutional Divergence Analyzer) scenario JSON. All fields used by CDI, CIRI, AFFE, and the audit ledger.",
   "type": "object",
-  "required": ["version", "module", "statute_name", "level", "population", "flags", "divergence_score"],
+
+  "required": [
+    "version",
+    "module",
+    "statute_name",
+    "level",
+    "population",
+    "flags",
+    "divergence_score"
+  ],
+
   "additionalProperties": false,
+
   "properties": {
     "version": {
       "type": "string",
-      "const": "1.0"
+      "const": "1.0",
+      "description": "Schema + model version for CDA scenario objects."
     },
+
     "module": {
       "type": "string",
-      "const": "CDA"
+      "const": "CDA",
+      "description": "Identifies this artifact as a CDA scenario."
     },
+
     "statute_name": {
       "type": "string",
-      "description": "Human-readable name or label for the statute or policy."
+      "description": "Human-readable name of the statute, rule, policy, or enforcement practice being evaluated."
     },
+
     "jurisdiction": {
       "type": "string",
-      "description": "State, local, or federal jurisdiction label (e.g., 'Iowa', 'Federal')."
+      "description": "Optional human-readable jurisdiction label (e.g., 'Iowa', 'Federal').",
+      "default": ""
     },
+
     "level": {
       "type": "string",
       "enum": ["state", "federal"],
-      "description": "Whether this scenario is a state/local rule or a federal rule."
+      "description": "Classification of the rule or enforcement practice."
     },
+
     "population": {
       "type": "string",
       "enum": ["non_commercial", "commercial", "mixed"],
-      "description": "Primary population being impacted by this practice."
+      "description": "Population impacted — critical for Commerce Clause & FMCSR divergence."
     },
+
     "citations": {
       "type": "array",
-      "description": "Optional list of specific code or CFR citations.",
-      "items": { "type": "string" }
-    },
-    "funding_streams": {
-      "type": "array",
-      "description": "Optional list of related funding streams (MCSAP, highway grants, etc.).",
-      "items": { "type": "string" }
-    },
-    "flags": {
-      "type": "object",
-      "description": "Normalized divergence flags used by CDI/CIRI.",
-      "additionalProperties": false,
-      "properties": {
-        "scope_noncommercial_treated_as_commercial": { "type": "boolean" },
-        "preemption_conflict": { "type": "boolean" },
-        "preemption_field": { "type": "boolean" },
-        "ultra_vires_enforcement": { "type": "boolean" },
-        "mcsap_off_mission": { "type": "boolean" },
-        "funding_conditions_ignored": { "type": "boolean" },
-        "funding_nontransparent": { "type": "boolean" },
-        "right_to_travel_burdened": { "type": "boolean" },
-        "due_process_defects": { "type": "boolean" },
-        "selective_application": { "type": "boolean" }
+      "description": "Optional list of statutory or CFR citations implicated by this scenario.",
+      "default": [],
+      "items": {
+        "type": "string"
       }
     },
+
+    "funding_streams": {
+      "type": "array",
+      "description": "Optional list of relevant federal funding sources (e.g., MCSAP, 23 U.S.C. 402).",
+      "default": [],
+      "items": {
+        "type": "string"
+      }
+    },
+
+    "flags": {
+      "type": "object",
+      "description": "Boolean divergence indicators used to determine score + doctrine implications.",
+      "additionalProperties": false,
+
+      "properties": {
+        "scope_noncommercial_treated_as_commercial": { "type": "boolean", "default": false },
+        "preemption_conflict":                       { "type": "boolean", "default": false },
+        "preemption_field":                          { "type": "boolean", "default": false },
+        "ultra_vires_enforcement":                   { "type": "boolean", "default": false },
+        "mcsap_off_mission":                         { "type": "boolean", "default": false },
+        "funding_conditions_ignored":                { "type": "boolean", "default": false },
+        "funding_nontransparent":                    { "type": "boolean", "default": false },
+        "right_to_travel_burdened":                  { "type": "boolean", "default": false },
+        "due_process_defects":                       { "type": "boolean", "default": false },
+        "selective_application":                     { "type": "boolean", "default": false }
+      }
+    },
+
     "divergence_score": {
       "type": "number",
       "minimum": 0,
       "maximum": 1,
-      "description": "Suggested 0–1 divergence score derived from flags."
+      "description": "Normalized 0–1 score derived from flags. Used by CDI → CIRI → CIBS → CII."
     },
+
+    "doctrines_triggered": {
+      "type": "array",
+      "description": "Automatically identified doctrine IDs from law/doctrines/doctrine_map.json based on flags.",
+      "default": [],
+      "items": {
+        "type": "string"
+      }
+    },
+
     "notes": {
       "type": "string",
-      "description": "Optional freeform notes about this scenario."
+      "description": "Optional user notes, context, or observations.",
+      "default": ""
     }
   }
 }
