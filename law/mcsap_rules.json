@@ -1,0 +1,58 @@
+{
+  "version": "1.0",
+  "module": "LAW",
+  "source": {
+    "name": "MCSAP / FMCSA Funding Conditions (A.B.E. summary)",
+    "license": "CC BY-NC 4.0",
+    "notes": "Summaries of how federal MCSAP and related FMCSA funds are supposed to be used, framed for ON_MISSION / OFF_MISSION classification."
+  },
+  "entries": [
+    {
+      "id": "mcsap_core_purpose",
+      "type": "funding_program",
+      "jurisdiction": "federal",
+      "citation": "49 USC 31102; 49 CFR Part 350",
+      "title": "MCSAP — Motor Carrier Safety Assistance Program core purpose",
+      "summary": "Provides grants to States to assist in enforcement of commercial motor vehicle safety regulations and standards, primarily for CMVs and their drivers.",
+      "full_text_available": false,
+      "full_text_ref": "49 USC 31102; 49 CFR 350",
+      "scope_tags": [
+        "funding_mcsap",
+        "funding_conditions",
+        "commercial_driver",
+        "cmv_only",
+        "funding_fmcsr"
+      ],
+      "on_mission_conditions": "Funds are used to enforce safety regulations applicable to commercial motor vehicles and commercial drivers, reduce CMV-related crashes, and support CMV safety programs.",
+      "off_mission_signals": "Funds or personnel financed by MCSAP are used primarily for general state traffic enforcement on non-commercial private drivers, CPS investigations, general criminal patrol, or administrative activities far removed from CMV safety.",
+      "preemption_strength": "moderate",
+      "funding_program": "MCSAP",
+      "funding_on_mission_example": "CMV roadside inspections, CMV-focused enforcement blitzes, CMV safety data systems, crash reduction initiatives targeting commercial motor vehicles.",
+      "funding_off_mission_example": "MCSAP-funded officers spending most of their time issuing tickets for expired license plates, non-commercial driver license issues, or minor speeding infractions in ordinary passenger vehicles.",
+      "notes_for_engine": "CFF can map spend_category_code=OFF_MISSION when line items clearly fit the off_mission_signals and do not have a plausible CMV safety tie."
+    },
+    {
+      "id": "mcsap_dmz_noncommercial",
+      "type": "funding_program",
+      "jurisdiction": "federal",
+      "citation": "49 CFR 350 (compatibility / CMV focus)",
+      "title": "MCSAP — Non-commercial DMV/traffic operations",
+      "summary": "Clarifies that non-commercial private passenger vehicles and their drivers are outside the core scope of CMV-focused MCSAP enforcement.",
+      "full_text_available": false,
+      "full_text_ref": "Compatibility discussions under 49 CFR Part 350 and FMCSA guidance",
+      "scope_tags": [
+        "funding_mcsap",
+        "funding_conditions",
+        "noncommercial_driver",
+        "enforcement_limits"
+      ],
+      "on_mission_conditions": "State can conduct CMV-focused operations even if they occur on roads also used by private drivers, as long as the activities are genuinely directed at CMV safety.",
+      "off_mission_signals": "Using MCSAP-funded checkpoints, patrols, or task forces to routinely stop and process non-commercial private drivers for issues unrelated to CMV safety (e.g., generic licensing, insurance, minor state traffic violations).",
+      "preemption_strength": "weak",
+      "funding_program": "MCSAP",
+      "funding_on_mission_example": "Combined operations where a CMV safety inspection station is active and non-commercial interactions are incidental and not the primary output.",
+      "funding_off_mission_example": "Roadblock operations where MCSAP-funded officers largely focus on checking licenses/insurance of ordinary motorists rather than inspecting CMVs.",
+      "notes_for_engine": "CFF can treat this as an interpretive lens for borderline cases, pushing ambiguous spend into UNCLEAR rather than ON_MISSION when non-commercial enforcement dominates."
+    }
+  ]
+}
