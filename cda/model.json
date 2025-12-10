@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "updated": "2025-11-29T00:00:00Z",
+  "updated": "2025-12-15T00:00:00Z",
   "module": "CDA",
   "authority": {
     "name": "A.B.E. — Constitutional Divergence Analyzer",
@@ -84,6 +84,43 @@
       "preemption_fidelity": 0.33,
       "funding_integrity": 0.18,
       "rights_and_process": 0.13
+    }
+  },
+  "doctrine_integration": {
+    "source": "law/doctrines/doctrine_map.json",
+    "notes": "CDA maps each flag to one or more doctrine IDs from the doctrine map. The front-end populates doctrines_triggered based on CDA_FLAG_DOCTRINES.",
+    "flag_doctrine_map": {
+      "scope_noncommercial_treated_as_commercial": [
+        "police_power_doctrine",
+        "fmcsr_expansion"
+      ],
+      "preemption_conflict": [
+        "supremacy_clause"
+      ],
+      "preemption_field": [
+        "supremacy_clause"
+      ],
+      "ultra_vires_enforcement": [
+        "nondelegation"
+      ],
+      "mcsap_off_mission": [
+        "fmcsr_expansion",
+        "major_questions"
+      ],
+      "funding_conditions_ignored": [
+        "supremacy_clause"
+      ],
+      "funding_nontransparent": [],
+      "right_to_travel_burdened": [
+        "equal_protection",
+        "void_for_vagueness"
+      ],
+      "due_process_defects": [
+        "void_for_vagueness"
+      ],
+      "selective_application": [
+        "equal_protection"
+      ]
     }
   }
 }
