@@ -339,11 +339,23 @@
   </p>
 </footer>
 
-<!-- Intake engine -->
+<!-- PDF.js for text PDFs -->
+<script src="https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
+<script>
+  if (window['pdfjsLib']) {
+    window['pdfjsLib'].GlobalWorkerOptions.workerSrc =
+      'https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js';
+  }
+</script>
+
+<!-- Tesseract.js for in-browser OCR -->
+<script src="https://unpkg.com/tesseract.js@5.0.3/dist/tesseract.min.js"></script>
+
+<!-- Intake logic -->
 <script src="intake/intake.js"></script>
 
-<!-- tiny helper: show chosen file names -->
 <script>
+  // tiny helper: show chosen file names
   (function(){
     const fileInput = document.getElementById('file-input');
     const nameEl = document.getElementById('file-name');
