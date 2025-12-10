@@ -1,361 +1,199 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>AFFE — American Funding & Fidelity Explorer | A.B.E.</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <base href="/abe---flag/">
-  <link rel="stylesheet" href="abe-patch/assets/abe-patch.css" />
+  <link rel="stylesheet" href="abe-patch/assets/abe-patch.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <style>
-    .affe-layout{max-width:1100px;margin:0 auto;padding:1.2rem 1rem 3rem}
-    .affe-grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
-    .dropzone{
-      border:1px dashed var(--abe-border-soft,#444);
-      border-radius:12px;
-      padding:1.1rem 1rem;
-      text-align:center;
-      background:rgba(15,19,26,.7);
-      cursor:pointer;
+    .affe-wrap{
+      max-width:1100px;
+      margin:0 auto;
+      padding:1.5rem 1rem 3rem;
     }
-    .dropzone.dragover{border-style:solid}
-    .affe-metrics-table{
-      width:100%;border-collapse:collapse;font-size:.9rem;
+    .affe-header h1{
+      margin:0 0 .25rem;
+      font-size:1.9rem;
+    }
+    .affe-header .tagline{
+      max-width:780px;
+      color:var(--muted);
+      font-size:.98rem;
+    }
+    .affe-grid{
+      display:grid;
+      gap:1.1rem;
+    }
+    @media(min-width:900px){
+      .affe-grid{
+        grid-template-columns:1.4fr 1.6fr;
+      }
+    }
+    .affe-card{
+      background:var(--panel);
+      border-radius:14px;
+      border:1px solid var(--line);
+      padding:1rem 1.1rem 1.2rem;
+      box-shadow:0 18px 40px rgba(0,0,0,.45);
+      min-height:0;
+    }
+    .affe-card h2{
+      margin:.1rem 0 .4rem;
+      font-size:1.15rem;
+    }
+    .affe-card h3{
+      margin:.35rem 0 .3rem;
+      font-size:1rem;
+    }
+    .affe-sub{
+      color:var(--muted);
+      font-size:.9rem;
+    }
+    .affe-upload{
       margin-top:.4rem;
+      padding:.7rem .75rem;
+      border-radius:12px;
+      border:1px dashed var(--line);
+      background:#050712;
+      font-size:.88rem;
     }
-    .affe-metrics-table th,.affe-metrics-table td{
-      border:1px solid rgba(255,255,255,.08);
-      padding:.4rem .55rem;
+    .affe-upload label{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:.45rem .9rem;
+      border-radius:999px;
+      border:1px solid var(--accent);
+      background:#050712;
+      color:var(--ink);
+      cursor:pointer;
+      gap:.35rem;
+      margin-bottom:.3rem;
+    }
+    .affe-upload input[type="file"]{
+      display:none;
+    }
+    .affe-file-name{
+      display:block;
+      font-size:.84rem;
+      color:var(--muted);
+      margin-top:.15rem;
+    }
+    .affe-mini{
+      font-size:.82rem;
+      color:var(--muted);
+      margin-top:.3rem;
+    }
+    .affe-status{
+      margin-top:.6rem;
+      font-size:.84rem;
+      color:var(--muted);
+    }
+    .affe-status-ok{color:#4bd28f;}
+    .affe-status-warn{color:#ffba5c;}
+    .affe-status-bad{color:#ff8585;}
+    canvas{
+      width:100%!important;
+      height:260px!important;
+    }
+    table{
+      width:100%;
+      border-collapse:collapse;
+      margin-top:.4rem;
+      font-size:.82rem;
+    }
+    th,td{
+      border:1px solid var(--line);
+      padding:.3rem .35rem;
+    }
+    th{
       text-align:left;
+      background:#090d18;
     }
-    .affe-metrics-table th{background:rgba(255,255,255,.04)}
-    .affe-note{font-size:.85rem;color:#9fb3c8;margin-top:.3rem}
-    .affe-tag{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.85rem}
+    .affe-good{color:#4bd28f;}
+    .affe-off{color:#ff8585;}
+    .affe-unclear{color:#ffba5c;}
   </style>
 </head>
 <body class="abe-page">
 
 <header class="abe-header">
-  <h1>AFFE — American Funding & Fidelity Explorer</h1>
-  <p class="tagline">
-    Turns messy CSVs into a clean CIRI-ready template so you can quantify constitutional and economic harm in one shot.
-  </p>
-  <nav class="chip-row">
-    <a class="chip" href="index.html">ABE Home</a>
-    <a class="chip" href="ciri/index.html">CIRI</a>
-    <a class="chip" href="cff/index.html">CFF</a>
-    <a class="chip" href="cibs/index.html">CIBS</a>
-    <a class="chip" href="ccri/index.html">CCRI</a>
-    <a class="chip chip-alt" href="system/index.html">System Map</a>
-  </nav>
+  <div class="affe-wrap affe-header">
+    <a href="/abe---flag/index.html" class="chip">← A.B.E. Home</a>
+    <h1>AFFE — American Funding & Fidelity Explorer</h1>
+    <p class="tagline">
+      Explore ON_MISSION / OFF_MISSION / UNCLEAR funding patterns. AFFE reads your CFF artifact and
+      turns it into an audit-grade visual story.
+    </p>
+    <nav class="chip-row">
+      <a class="chip" href="intake/index.html">Intake</a>
+      <a class="chip" href="cda/index.html">CDA</a>
+      <a class="chip" href="ciri/index.html">CIRI</a>
+      <a class="chip" href="cff/index.html">CFF</a>
+      <span class="chip chip-alt">AFFE</span>
+      <a class="chip" href="law/index.html">Law Corpus</a>
+      <a class="chip" href="doctrine/index.html">Doctrines</a>
+      <a class="chip" href="integration/index.html">Integration</a>
+    </nav>
+  </div>
 </header>
 
-<main class="abe-main affe-layout">
+<main class="abe-main">
+  <div class="affe-wrap affe-grid">
 
-  <!-- What AFFE does -->
-  <section class="card">
-    <h2>What AFFE Does (v1)</h2>
-    <p>
-      This version of AFFE focuses on one job:
-      <strong>take raw CSV evidence and give you a ready-to-run CIRI template</strong>.
-    </p>
-    <p>
-      You drop in enforcement / detention / fee / income CSVs. AFFE runs simple,
-      transparent rules in your browser to estimate:
-    </p>
-    <ul>
-      <li>Total people / cases affected</li>
-      <li>Total detention / jail days</li>
-      <li>Total fees and fines that should be canceled</li>
-      <li>Lost wages or income exposure (if present in your data)</li>
-    </ul>
-    <p>
-      Then it builds <code class="affe-tag">AFFE_CIRI_TEMPLATE.csv</code> with the
-      exact header CIRI expects. You can tweak numbers manually before you upload
-      it into CIRI.
-    </p>
-    <p class="affe-note">
-      Future versions will add multi-file policy alignment, statute crosswalks, and deeper pattern analysis —
-      but this already lets you turn <em>“I have data”</em> into <em>“here’s the recovery value.”</em>
-    </p>
-  </section>
+    <!-- LEFT: source + status -->
+    <section class="affe-card">
+      <h2>Step 1 — Load a CFF artifact</h2>
+      <p class="affe-sub">
+        AFFE looks for a <code>CFF</code> artifact generated in this browser
+        (<code>ABE_CFF_ARTIFACT_V1</code>). You can also upload one manually.
+      </p>
 
-  <section class="card">
-    <h2>1. Upload your CSV evidence</h2>
-    <div id="dropzone" class="dropzone">
-      <strong>Drop CSV files here</strong><br/>
-      <span class="affe-note">or click to choose files from your device</span><br/>
-      <input id="file-input" type="file" accept=".csv,text/csv" multiple style="display:none"/>
-    </div>
-    <p class="affe-note">
-      AFFE runs entirely in your browser. Files are never uploaded to any server.
-      For now, only <strong>CSV</strong> is supported in this parser.
-    </p>
-    <div id="file-list" class="affe-note"></div>
-  </section>
+      <div class="affe-upload">
+        <label>
+          <span>📎 Choose cff_artifact.json (optional)</span>
+          <input id="affe-file" type="file" accept=".json,application/json">
+        </label>
+        <span id="affe-file-name" class="affe-file-name">No file selected</span>
+        <div id="affe-status" class="affe-status">Status: looking for local CFF artifact…</div>
+      </div>
 
-  <section class="card">
-    <h2>2. Review the inferred CIRI metrics</h2>
-    <p class="affe-note">
-      AFFE scans your CSV headers for common fields like
-      <span class="affe-tag">jail_days</span>,
-      <span class="affe-tag">detention_days</span>,
-      <span class="affe-tag">fees</span>,
-      <span class="affe-tag">fines</span>,
-      <span class="affe-tag">lost_wages</span>, etc.
-      You can override any value before downloading.
-    </p>
-    <table class="affe-metrics-table">
-      <thead>
-        <tr>
-          <th>CIRI field</th>
-          <th>Meaning</th>
-          <th>Estimated from your CSVs</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><code class="affe-tag">cases_avoided</code></td>
-          <td>Number of people / cases in this scenario</td>
-          <td><input id="m-cases" type="number" min="0" step="1" value="0"/></td>
-        </tr>
-        <tr>
-          <td><code class="affe-tag">jail_days_avoided</code></td>
-          <td>Total detention / jail days that should not have happened</td>
-          <td><input id="m-jail-days" type="number" min="0" step="1" value="0"/></td>
-        </tr>
-        <tr>
-          <td><code class="affe-tag">fees_canceled_total</code></td>
-          <td>Sum of unconstitutional fees, fines, surcharges, costs</td>
-          <td><input id="m-fees" type="number" min="0" step="1" value="0"/></td>
-        </tr>
-        <tr>
-          <td><code class="affe-tag">lost_wage_months_equivalent</code></td>
-          <td>Approximate months of wages lost (optional helper)</td>
-          <td><input id="m-wage-months" type="number" min="0" step="0.1" value="0"/></td>
-        </tr>
-      </tbody>
-    </table>
-    <p class="affe-note">
-      When you download the CIRI template, these values are mapped into the standard
-      <code class="affe-tag">ciri/inputs.csv</code> structure. You can still adjust the final CSV before
-      running it in CIRI.
-    </p>
-  </section>
+      <p class="affe-mini">
+        To generate a new artifact, go to CFF, upload your funding CSV, then save the
+        <code>cff_artifact.json</code>. AFFE will pick it up automatically in this browser.
+      </p>
 
-  <section class="card">
-    <h2>3. Download CIRI-ready CSV</h2>
-    <p class="affe-note">
-      This button creates <code class="affe-tag">AFFE_CIRI_TEMPLATE.csv</code> with the same columns that
-      your CIRI calculator expects (including reasonable defaults for fields we can't infer).
-    </p>
-    <button id="btn-download" class="btn" disabled>Download AFFE_CIRI_TEMPLATE.csv</button>
-    <p id="status" class="affe-note"></p>
-    <p class="affe-note">
-      Next step: go to <a href="ciri/index.html">CIRI</a> and upload the template as your inputs file,
-      then download your <strong>Constitutional Recovery Receipt</strong>.
-    </p>
-  </section>
+      <p class="affe-mini">
+        Law & Doctrine anchors:
+        <br>– Use LAW corpus for the statutory rails behind each program (MCSAP, FMCSA, CPS grants).  
+        <br>– Use Doctrines for Constitutional Fidelity + Void ab initio framing when OFF_MISSION is systemic.
+      </p>
+    </section>
 
+    <!-- RIGHT: charts + table -->
+    <section class="affe-card">
+      <h2>Step 2 — Patterns & programs</h2>
+
+      <h3>2.1 · ON/OFF/UNCLEAR split</h3>
+      <canvas id="affe-chart"></canvas>
+
+      <h3>2.2 · Per-program view (top 20 by OFF_MISSION amount)</h3>
+      <div id="affe-table-container">
+        <!-- table injected here -->
+      </div>
+    </section>
+
+  </div>
 </main>
 
 <footer class="abe-footer">
-  <p>A.B.E. — American Butterfly Effect · AFFE module (v1 CSV-to-CIRI bridge)</p>
+  <p>
+    CC BY-NC 4.0 · DOI <a href="https://doi.org/10.5281/zenodo.17586107">10.5281/zenodo.17586107</a> · Integrity only — never for sale.
+  </p>
 </footer>
 
-<script>
-(function(){
-  const dropzone = document.getElementById('dropzone');
-  const input    = document.getElementById('file-input');
-  const fileList = document.getElementById('file-list');
-  const statusEl = document.getElementById('status');
-  const btnDl    = document.getElementById('btn-download');
-
-  const mCases  = document.getElementById('m-cases');
-  const mJail   = document.getElementById('m-jail-days');
-  const mFees   = document.getElementById('m-fees');
-  const mWageMo = document.getElementById('m-wage-months');
-
-  let hasData = false;
-
-  function parseCSV(text){
-    const lines = text.split(/\r?\n/).filter(l=>l.trim().length>0);
-    if(lines.length < 2) return [];
-    const headers = lines[0].split(',').map(h=>h.trim().toLowerCase());
-    return lines.slice(1).map(line=>{
-      const cells = line.split(',');
-      const row = {};
-      headers.forEach((h,i)=> row[h] = cells[i] ?? '');
-      return row;
-    });
-  }
-
-  function inferMetrics(rows){
-    let cases = 0;
-    let jailDays = 0;
-    let fees = 0;
-    let lostWages = 0;
-
-    const num = v => {
-      const n = Number((v||'').toString().replace(/[^0-9.\-]/g,'')); 
-      return isFinite(n) ? n : 0;
-    };
-
-    const detectField = (row, keys) => {
-      for(const k in row){
-        const lk = k.toLowerCase();
-        if(keys.some(key=> lk.includes(key))) return num(row[k]);
-      }
-      return 0;
-    };
-
-    rows.forEach(row=>{
-      cases += 1;
-      jailDays  += detectField(row,['jail','detention','days_in_custody','days_held']);
-      fees      += detectField(row,['fee','fine','surcharge','court_cost','assessment']);
-      lostWages += detectField(row,['lost_wages','lost-income','income_loss','earnings_lost']);
-    });
-
-    return {cases,jailDays,fees,lostWages};
-  }
-
-  function updateStatus(msg){
-    statusEl.textContent = msg || '';
-  }
-
-  function handleFiles(fileListObj){
-    const files = Array.from(fileListObj || []);
-    if(!files.length){
-      updateStatus('No files selected yet.');
-      return;
-    }
-    fileList.textContent = files.map(f=>f.name).join(', ');
-
-    let allRows = [];
-    let remaining = files.length;
-
-    files.forEach(file=>{
-      const reader = new FileReader();
-      reader.onload = e=>{
-        try{
-          const text = String(e.target.result || '');
-          const rows = parseCSV(text);
-          allRows = allRows.concat(rows);
-        }catch(err){
-          console.warn('AFFE parse error', err);
-        }finally{
-          remaining--;
-          if(remaining===0){
-            if(allRows.length===0){
-              updateStatus('No usable rows found. You can still enter values manually.');
-              btnDl.disabled = false;
-              hasData = true;
-              return;
-            }
-            const m = inferMetrics(allRows);
-            mCases.value  = m.cases;
-            mJail.value   = m.jailDays;
-            mFees.value   = m.fees.toFixed(0);
-            // rough: convert lost wages into months by dividing by 1 month of $3,000 if no better info
-            const months = m.lostWages > 0 ? (m.lostWages / 3000) : 0;
-            mWageMo.value = months.toFixed(1);
-            updateStatus('Metrics inferred. Review and adjust if needed, then download the template.');
-            btnDl.disabled = false;
-            hasData = true;
-          }
-        }
-      };
-      reader.readAsText(file);
-    });
-  }
-
-  dropzone.addEventListener('click', ()=> input.click());
-  dropzone.addEventListener('dragover', e=>{
-    e.preventDefault();
-    dropzone.classList.add('dragover');
-  });
-  dropzone.addEventListener('dragleave', e=>{
-    e.preventDefault();
-    dropzone.classList.remove('dragover');
-  });
-  dropzone.addEventListener('drop', e=>{
-    e.preventDefault();
-    dropzone.classList.remove('dragover');
-    handleFiles(e.dataTransfer.files);
-  });
-  input.addEventListener('change', ()=> handleFiles(input.files));
-
-  btnDl.addEventListener('click', ()=>{
-    const cases = Number(mCases.value)||0;
-    const jail  = Number(mJail.value)||0;
-    const fees  = Number(mFees.value)||0;
-    const wageMonths = Number(mWageMo.value)||0;
-
-    // CIRI header as used in your engine
-    const header = [
-      'cases_avoided',
-      'avg_cost_per_case',
-      'jail_days_avoided',
-      'cost_per_jail_day',
-      'fees_canceled_total',
-      'policy_corrections',
-      'avg_enforcement_cost_savings',
-      'households_restored',
-      'avg_monthly_market_spend',
-      'months_effective',
-      'employment_probability',
-      'avg_monthly_wage',
-      'expected_lawsuits',
-      'avg_payout',
-      'litigation_multiplier',
-      'transition_costs_one_time'
-    ];
-
-    // Conservative defaults; user can change in CIRI or by editing the CSV
-    const avgCaseCost   = 5000;   // placeholder
-    const costPerDay    = 120;    // placeholder jail-day cost
-    const policyCorr    = 0;
-    const enforceSave   = 0;
-    const households    = Math.max(1, Math.round(cases/1.5));
-    const monthlySpend  = 600;    // placeholder avg market spend
-    const monthsEff     = wageMonths > 0 ? wageMonths : 12;
-    const empProb       = 0.55;
-    const avgWage       = 2200;
-    const expLawsuits   = 0;
-    const avgPayout     = 0;
-    const litMult       = 1.0;
-    const transition    = 0;
-
-    const row = [
-      cases,
-      avgCaseCost,
-      jail,
-      costPerDay,
-      fees,
-      policyCorr,
-      enforceSave,
-      households,
-      monthlySpend,
-      monthsEff,
-      empProb,
-      avgWage,
-      expLawsuits,
-      avgPayout,
-      litMult,
-      transition
-    ];
-
-    const csv = [header.join(','), row.join(',')].join('\n');
-    const blob = new Blob([csv],{type:'text/csv'});
-    const url  = URL.createObjectURL(blob);
-    const a    = document.createElement('a');
-    a.href = url;
-    a.download = 'AFFE_CIRI_TEMPLATE.csv';
-    a.click();
-    URL.revokeObjectURL(url);
-    updateStatus('Template downloaded. Next: open CIRI and upload this file as your inputs CSV.');
-  });
-
-})();
-</script>
+<script src="affe/local.js"></script>
 </body>
 </html>
