@@ -4,6 +4,7 @@
 // - Optionally reads the last Intake artifact from localStorage.
 // - Builds a CDA scenario object, computes a 0–1 divergence score,
 //   renders JSON + plain-language summary, and produces an audit hash.
+// - Adds LAW corpus + Doctrine "anchor hints" in the summary.
 
 (function(){
   const byId = id => document.getElementById(id);
@@ -171,6 +172,101 @@
     return Math.max(0, Math.min(1, sum));
   }
 
+  // ---------- LAW + Doctrine hints ----------
+
+  function buildAnchors(scenario){
+    const flags = scenario.flags || {};
+    const cits  = scenario.citations || [];
+
+    const textMatch = (needle) =>
+      cits.some(c => String(c).toLowerCase().includes(needle.toLowerCase()));
+
+    const lawHints = [];
+    const docHints = [];
+
+    // LAW — FMCSR scope / 49 CFR 390.x
+    if (
+      flags.scope_noncommercial_treated_as_commercial ||
+      flags.preemption_conflict ||
+      flags.preemption_field ||
+      textMatch('390.3') ||
+      textMatch('390.5')
+    ){
+      lawHints.push(
+        'FMCSR Scope (49 CFR 390.3 / 390.5) — see LAW corpus → “FMCSR Scope Map” pack.'
+      );
+    }
+
+    // LAW — MCSAP rules / Part 350
+    if (
+      flags.mcsap_off_mission ||
+      flags.funding_conditions_ignored ||
+      textMatch('350.') ||
+      textMatch('MCSAP') ||
+      textMatch('motor carrier safety assistance program')
+    ){
+      lawHints.push(
+        'MCSAP Program Rules (49 CFR Part 350) — see LAW corpus → “MCSAP Program Rules” pack.'
+      );
+    }
+
+    // LAW — Title 49 transportation authority
+    if (
+      flags.ultra_vires_enforcement ||
+      flags.preemption_conflict ||
+      flags.preemption_field ||
+      textMatch('49 usc') ||
+      textMatch('title 49')
+    ){
+      lawHints.push(
+        'Title 49 Transportation Authority — see LAW corpus → “Title 49 — Transportation (Core FMCSA Scope)” pack.'
+      );
+    }
+
+    // Doctrine — Supremacy + Constitutional Fidelity
+    if (flags.preemption_conflict || flags.preemption_field){
+      docHints.push(
+        'Supremacy / Constitutional Fidelity — see “Constitutional Fidelity” doctrine page.'
+      );
+    }
+
+    // Doctrine — Void ab initio (when rights + funding misconduct combine)
+    if (
+      flags.mcsap_off_mission ||
+      flags.right_to_travel_burdened ||
+      flags.due_process_defects
+    ){
+      docHints.push(
+        'Void ab initio analysis — see “Void ab initio” doctrine for how unconstitutional doctrines collapse.'
+      );
+    }
+
+    // Doctrine — A.B.E. · CRRA
+    if (
+      flags.scope_noncommercial_treated_as_commercial ||
+      flags.ultra_vires_enforcement ||
+      flags.right_to_travel_burdened
+    ){
+      docHints.push(
+        'A.B.E. · CRRA · Rebuild Together — see ABE-CRRA doctrine for systemic remedy + restoration framing.'
+      );
+    }
+
+    // Always offer a base link if nothing was inferred
+    if (!lawHints.length){
+      lawHints.push(
+        'Open the Law viewer for controlling USC/CFR/funding: /abe---flag/law/index.html'
+      );
+    }
+    if (!docHints.length){
+      docHints.push(
+        'Open the Doctrines overview: /abe---flag/doctrine/index.html'
+      );
+    }
+
+    return { lawHints, docHints };
+  }
+
   // ---------- summary text ----------
 
   function buildSummary(scenario){
@@ -209,6 +305,27 @@
       lines.push('Notes:');
       lines.push(s.notes);
     }
+
+    // LAW + Doctrine anchors
+    const anchors = buildAnchors(s);
+    lines.push('');
+    lines.push('Law & doctrine anchors:');
+
+    if(anchors.lawHints && anchors.lawHints.length){
+      lines.push('  LAW corpus:');
+      anchors.lawHints.forEach(h => lines.push('    - ' + h));
+    }
+
+    if(anchors.docHints && anchors.docHints.length){
+      lines.push('  Doctrines:');
+      anchors.docHints.forEach(h => lines.push('    - ' + h));
+    }
+
+    lines.push('');
+    lines.push('Viewer shortcuts (if you are on the A.B.E. site):');
+    lines.push('  - Law viewer:       /abe---flag/law/index.html');
+    lines.push('  - Doctrines index:  /abe---flag/doctrine/index.html');
+    lines.push('  - Integration audit:/abe---flag/integration/index.html');
 
     return lines.join('\n');
   }
