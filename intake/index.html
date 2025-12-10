@@ -1,10 +1,11 @@
-8px<!doctype html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>Intake — Document & OCR Bridge | A.B.E.</title>
   <base href="/abe---flag/">
+  <!-- Optional shared styling; safe to keep -->
   <link rel="stylesheet" href="abe-patch/assets/abe-patch.css">
   <style>
     :root{
@@ -17,7 +18,17 @@
       --abe-pop:#fff750;
       --abe-border:rgba(255,255,255,.08);
     }
-    <body class="abe-page">;
+    body.abe-page{
+      margin:0;
+      background:radial-gradient(circle at top,#111827 0,#05060b 55%,#020309 100%);
+      color:var(--abe-ink);
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+    }
+
+    /* Header + home chip */
+    .abe-header{
+      border-bottom:1px solid var(--abe-border);
+      background:linear-gradient(90deg,#090c15,#111827);
     }
     .intake-wrap{
       max-width:1100px;
@@ -33,6 +44,28 @@
       color:var(--abe-muted);
       font-size:.98rem;
     }
+    .home-chip{
+      display:inline-flex;
+      align-items:center;
+      gap:.4rem;
+      padding:.35rem .9rem;
+      border-radius:999px;
+      border:1px solid var(--abe-border);
+      background:#050712;
+      color:var(--abe-ink);
+      text-decoration:none;
+      font-size:.9rem;
+      margin-bottom:.75rem;
+    }
+    .home-chip:hover{
+      text-decoration:none;
+      box-shadow:0 0 0 1px rgba(255,255,255,.06);
+    }
+
+    .abe-main{
+      padding:0 0 3rem;
+    }
+
     .intake-grid{
       display:grid;
       gap:1.25rem;
@@ -42,6 +75,7 @@
         grid-template-columns:3fr 2fr;
       }
     }
+
     .card-intake{
       background:linear-gradient(135deg,var(--abe-panel),#0b101a);
       border-radius:14px;
@@ -204,13 +238,20 @@
       opacity:.5;
       cursor:default;
     }
+    .abe-footer{
+      text-align:center;
+      padding:1.5rem 1rem 2rem;
+      color:var(--abe-muted);
+      font-size:.85rem;
+    }
+    .abe-footer a{color:var(--abe-accent);}
   </style>
 </head>
 <body class="abe-page">
 
 <header class="abe-header">
   <div class="intake-wrap intake-header">
-    <a href="/abe---flag/index.html" class="chip">← A.B.E. Home</a>
+    <a href="/abe---flag/index.html" class="home-chip">← A.B.E. Home</a>
     <h1>Intake — Document & OCR Bridge</h1>
     <p class="tagline">
       Upload a ticket, CPS letter, policy memo, or contract and let A.B.E. turn it into
@@ -299,19 +340,6 @@
     CC BY-NC 4.0 · DOI <a href="https://doi.org/10.5281/zenodo.17586107">10.5281/zenodo.17586107</a> · Integrity only — never for sale.
   </p>
 </footer>
-
-  <!-- Tesseract.js for OCR (images, scanned pages) -->
-<script src="https://unpkg.com/tesseract.js@5.0.0/dist/tesseract.min.js"></script>
-
-<!-- OPTIONAL: PDF.js for extracting text from PDFs 
-     (Only needed if you want PDFs to work right now) -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
-<script>
-  // PDF.js 2.x needs the worker URL set explicitly
-  if (window['pdfjsLib']) {
-    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
-  }
-</script>
 
 <script src="intake/intake.js"></script>
 <script>
