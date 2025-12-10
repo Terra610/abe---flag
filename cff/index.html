@@ -1,343 +1,304 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>CFF — Constitutional Funding Forensics | A.B.E.</title>
-<base href="/abe---flag/">
-<style>
-:root{
-  --bg:#0b0d12;--panel:#141820;--panel2:#0f131a;--ink:#e6e6e6;--muted:#9fb3c8;
-  --line:rgba(255,255,255,.08);--brand:#5ddfff;--accent:#ffa559;--ok:#4bd28f;--warn:#ffa559;--bad:#ff6b6b;
-}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
-a{color:#80bfff;text-decoration:none}
-a:hover{text-decoration:underline}
-header{padding:24px 20px;background:linear-gradient(90deg,#11151c,#1b1e25);border-bottom:1px solid var(--line)}
-.wrap{max-width:1100px;margin:0 auto;padding:0 20px}
-h1{margin:0 0 6px}
-.sub{color:var(--muted)}
-.badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
-.badge,.chip{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;border:1px solid var(--line);font-size:.88rem;color:var(--muted);background:rgba(0,0,0,.15)}
-main{max-width:1100px;margin:22px auto 40px;padding:0 20px}
-.grid{display:grid;gap:16px}
-.grid-2{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px}
-.tile{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:12px}
-h2{margin:0 0 .4rem;font-size:1.1rem}
-small,.muted{color:var(--muted);font-size:.9rem}
-strong.code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace}
-.kpi-label{font-size:.9rem;color:var(--muted)}
-.kpi-val{font-size:1.4rem;font-weight:700;margin-top:4px}
-.kpi-pill{display:inline-flex;align-items:center;gap:4px;border-radius:999px;border:1px solid var(--line);padding:2px 8px;font-size:.8rem;color:var(--muted);margin-top:4px}
-.status{display:inline-block;padding:2px 8px;border-radius:999px;border:1px solid var(--line);font-size:.8rem}
-.s-ok{background:rgba(75,210,143,.12);color:var(--ok);border-color:rgba(75,210,143,.4)}
-.s-warn{background:rgba(255,165,89,.12);color:var(--warn);border-color:rgba(255,165,89,.4)}
-.s-bad{background:rgba(255,107,107,.12);color:var(--bad);border-color:rgba(255,107,107,.4)}
-.btn{display:inline-flex;align-items:center;justify-content:center;padding:.5rem .8rem;border-radius:9px;border:1px solid var(--line);background:#0f131a;color:var(--ink);font-size:.9rem;cursor:pointer;text-decoration:none}
-.btn:hover{border-color:var(--brand)}
-.btn[disabled]{opacity:.45;cursor:not-allowed}
-table{width:100%;border-collapse:collapse;font-size:.9rem}
-th,td{border:1px solid var(--line);padding:6px 8px;text-align:left}
-th{background:var(--panel2);font-weight:500}
-tbody tr:nth-child(even){background:rgba(255,255,255,.01)}
-code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.85rem}
-.drop{border:1px dashed var(--line);border-radius:10px;padding:14px;text-align:center;font-size:.9rem;color:var(--muted);cursor:pointer;margin-top:8px}
-.drop.dragover{border-color:var(--brand);background:rgba(93,223,255,.06);color:var(--ink)}
-.note{font-size:.85rem;color:var(--muted);margin-top:6px}
-footer{margin:36px 0 22px;text-align:center;color:var(--muted);font-size:.9rem}
-@media (min-width:720px){
-  .grid-2{grid-template-columns:2fr 3fr}
-}
-</style>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>CFF — Constitutional Funding Forensics | A.B.E.</title>
+  <base href="/abe---flag/">
+  <link rel="stylesheet" href="abe-patch/assets/abe-patch.css"/>
+  <style>
+    .cff-wrap{
+      max-width:1100px;
+      margin:0 auto;
+      padding:1.5rem 1rem 3rem;
+    }
+    .cff-header h1{
+      margin:0 0 .25rem;
+      font-size:1.9rem;
+    }
+    .cff-header .tagline{
+      max-width:780px;
+      color:var(--muted);
+      font-size:.98rem;
+    }
+    .cff-grid{
+      display:grid;
+      gap:1.1rem;
+    }
+    @media(min-width:900px){
+      .cff-grid{
+        grid-template-columns:1.4fr 1.6fr;
+      }
+    }
+    .cff-card{
+      background:var(--panel);
+      border-radius:14px;
+      border:1px solid var(--line);
+      padding:1rem 1.1rem 1.2rem;
+      box-shadow:0 18px 40px rgba(0,0,0,.45);
+      min-height:0;
+    }
+    .cff-card h2{
+      margin:.1rem 0 .4rem;
+      font-size:1.15rem;
+    }
+    .cff-card h3{
+      margin:.35rem 0 .3rem;
+      font-size:1rem;
+    }
+    .cff-sub{
+      color:var(--muted);
+      font-size:.9rem;
+    }
+    .cff-upload{
+      margin-top:.4rem;
+      padding:.7rem .75rem;
+      border-radius:12px;
+      border:1px dashed var(--line);
+      background:#050712;
+      font-size:.88rem;
+    }
+    .cff-upload label{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:.45rem .9rem;
+      border-radius:999px;
+      border:1px solid var(--accent);
+      background:#050712;
+      color:var(--ink);
+      cursor:pointer;
+      gap:.35rem;
+      margin-bottom:.3rem;
+    }
+    .cff-upload input[type="file"]{
+      display:none;
+    }
+    .cff-file-name{
+      display:block;
+      font-size:.84rem;
+      color:var(--muted);
+      margin-top:.15rem;
+    }
+    .cff-mini{
+      font-size:.82rem;
+      color:var(--muted);
+      margin-top:.25rem;
+    }
+    .cff-status{
+      margin-top:.6rem;
+      font-size:.84rem;
+      color:var(--muted);
+    }
+    .cff-status-ok{color:#4bd28f;}
+    .cff-status-warn{color:#ffba5c;}
+    .cff-status-bad{color:#ff8585;}
+    .cff-kpi-row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:.6rem;
+      margin-top:.5rem;
+    }
+    .cff-kpi{
+      flex:1 1 140px;
+      min-width:140px;
+      max-width:220px;
+      background:#050712;
+      border-radius:10px;
+      border:1px solid var(--line);
+      padding:.45rem .55rem .5rem;
+      font-size:.85rem;
+    }
+    .cff-kpi-label{
+      color:var(--muted);
+      font-size:.82rem;
+    }
+    .cff-kpi-value{
+      font-weight:600;
+      font-size:1rem;
+      margin-top:.1rem;
+    }
+    .cff-kpi-tag{
+      font-size:.78rem;
+      color:var(--muted);
+      margin-top:.15rem;
+    }
+    pre{
+      margin:.45rem 0 .7rem;
+      background:#050712;
+      border-radius:10px;
+      border:1px solid var(--line);
+      padding:.6rem .7rem;
+      font-family:ui-monospace,SFMono-Regular,Consolas,monospace;
+      font-size:.82rem;
+      max-height:260px;
+      overflow:auto;
+      white-space:pre-wrap;
+      color:var(--ink);
+    }
+    table{
+      width:100%;
+      border-collapse:collapse;
+      margin-top:.4rem;
+      font-size:.82rem;
+    }
+    th,td{
+      border:1px solid var(--line);
+      padding:.3rem .35rem;
+    }
+    th{
+      text-align:left;
+      background:#090d18;
+    }
+    .cff-good{color:#4bd28f;}
+    .cff-off{color:#ff8585;}
+    .cff-unclear{color:#ffba5c;}
+    .btn-run{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      margin-top:.6rem;
+      padding:.42rem .95rem;
+      border-radius:999px;
+      border:1px solid var(--accent);
+      background:#050712;
+      color:var(--ink);
+      font-size:.88rem;
+      cursor:pointer;
+      gap:.4rem;
+    }
+    .btn-run:hover{
+      box-shadow:0 0 0 1px rgba(93,223,255,.36),0 0 18px rgba(93,223,255,.25);
+    }
+    .btn-download{
+      margin-top:.45rem;
+      padding:.36rem .85rem;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:#050712;
+      color:var(--ink);
+      font-size:.84rem;
+      cursor:pointer;
+    }
+    .btn-download:disabled{
+      opacity:.5;
+      cursor:default;
+    }
+    .cff-hash{
+      font-size:.8rem;
+      color:var(--muted);
+      margin-top:.3rem;
+    }
+  </style>
 </head>
-<body>
-<header>
-  <div class="wrap">
-    <div>
-      <a href="/abe---flag/" class="badge">← Home</a>
-      <h1>⚖️ CFF — Constitutional Funding Forensics</h1>
-      <div class="sub">Follow the money. Restore the law. All in your browser.</div>
-      <div class="badges" style="margin-top:8px">
-        <span class="chip">No uploads · Local only</span>
-        <a class="chip" href="/abe---flag/ciri/index.html">CIRI Engine</a>
-        <a class="chip" href="/abe---flag/integration/index.html">Integration</a>
-      </div>
-    </div>
+<body class="abe-page">
+
+<header class="abe-header">
+  <div class="cff-wrap cff-header">
+    <a href="/abe---flag/index.html" class="chip">← A.B.E. Home</a>
+    <h1>CFF — Constitutional Funding Forensics</h1>
+    <p class="tagline">
+      Upload a simple CSV of program line items and see which dollars are ON_MISSION, OFF_MISSION, or UNCLEAR —
+      based on how they match their own federal authority and funding rules.
+    </p>
+    <nav class="chip-row">
+      <a class="chip" href="intake/index.html">Intake</a>
+      <a class="chip" href="cda/index.html">CDA</a>
+      <a class="chip" href="ciri/index.html">CIRI</a>
+      <span class="chip chip-alt">CFF</span>
+      <a class="chip" href="law/index.html">Law Corpus</a>
+      <a class="chip" href="doctrine/index.html">Doctrines</a>
+      <a class="chip" href="integration/index.html">Integration</a>
+    </nav>
   </div>
 </header>
 
-<main class="wrap">
-  <section class="grid grid-2">
-    <div class="card">
-      <h2>1. Load Funding Data</h2>
-      <p class="muted">Use the example file (<code>cff/inputs.csv</code>) or drop in your own CSV with the required columns.</p>
-      <button id="btn-demo" class="btn">Use repo example (inputs.csv)</button>
-      <div id="drop" class="drop">
-        <strong>Drop your CSV here</strong><br/>
-        or tap to pick a file
-        <input id="file" type="file" accept=".csv,text/csv" style="display:none"/>
-      </div>
-      <div class="note">
-        Required columns:<br/>
-        <code>program_name, federal_authority_citation, fiscal_year, state_or_jurisdiction, agency, line_item_description, spend_category_code, amount_usd, notes</code>
-      </div>
-      <div id="load-status" class="note" style="margin-top:8px">No file loaded yet.</div>
-    </div>
+<main class="abe-main">
+  <div class="cff-wrap cff-grid">
 
-    <div class="card">
-      <h2>2. Forensic Summary</h2>
-      <div class="grid" style="gap:10px">
-        <div class="tile">
-          <div class="kpi-label">ON_MISSION (lawful spend)</div>
-          <div id="k-on" class="kpi-val">—</div>
-        </div>
-        <div class="tile">
-          <div class="kpi-label">OFF_MISSION (recoverable)</div>
-          <div id="k-off" class="kpi-val">—</div>
-          <div id="k-off-share" class="kpi-pill" style="display:none"></div>
-        </div>
-        <div class="tile">
-          <div class="kpi-label">UNCLEAR / mixed</div>
-          <div id="k-unclear" class="kpi-val">—</div>
-        </div>
-        <div class="tile">
-          <div class="kpi-label">Programs · States · Fiscal years</div>
-          <div id="k-meta" class="kpi-val">—</div>
-        </div>
-      </div>
-      <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
-        <button id="btn-send-ciri" class="btn" disabled>Send OFF_MISSION to CIRI (local only)</button>
-        <span id="send-status" class="note"></span>
-      </div>
-      <div class="note" style="margin-top:6px">
-        This writes a local note into <code>localStorage</code> on <em>this device only</em>.  
-        CIRI will read it and fold OFF_MISSION dollars into the recovery pool.
-      </div>
-    </div>
-  </section>
+    <!-- LEFT: upload + status -->
+    <section class="cff-card">
+      <h2>Step 1 — Upload funding lines</h2>
+      <p class="cff-sub">
+        CFF expects a CSV with at least these columns:
+      </p>
+      <pre>program_name, federal_authority_citation, state_or_jurisdiction,
+agency, line_item_description, spend_category_code, amount_usd</pre>
+      <p class="cff-mini">
+        <strong>spend_category_code</strong> must be one of:
+        <code>ON_MISSION</code>, <code>OFF_MISSION</code>, or <code>UNCLEAR</code>.
+        CFF totals these and produces a forensic summary + hash receipt.
+      </p>
 
-  <section class="card" style="margin-top:18px">
-    <h2>3. Program × State × Year Breakdown</h2>
-    <p class="muted">Quick pivot of ON/OFF/UNCLEAR spending. Use this to line up against statutory purpose and appropriations law.</p>
-    <div style="overflow:auto;margin-top:8px">
-      <table id="tbl" style="min-width:640px">
-        <thead>
-          <tr>
-            <th>Program</th>
-            <th>State/Jurisdiction</th>
-            <th>Fiscal Year</th>
-            <th>ON_MISSION</th>
-            <th>OFF_MISSION</th>
-            <th>UNCLEAR</th>
-          </tr>
-        </thead>
-        <tbody id="tbl-body">
-          <tr><td colspan="6" style="text-align:center;color:var(--muted)">Load a CSV to see the breakdown.</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </section>
+      <div class="cff-upload">
+        <label>
+          <span>📎 Choose CSV file</span>
+          <input id="cff-file" type="file" accept=".csv,text/csv">
+        </label>
+        <span id="cff-file-name" class="cff-file-name">No file selected</span>
+        <button id="cff-run" class="btn-run">
+          <span>🧮 Run CFF on this CSV</span>
+        </button>
+        <div id="cff-status" class="cff-status">Status: waiting for CSV…</div>
+      </div>
+
+      <p class="cff-mini">
+        Intake bridge: if your Intake artifact points to specific grants or programs,
+        use those names in <code>program_name</code> and <code>line_item_description</code>.
+        CFF does not phone home — everything happens in this tab.
+      </p>
+    </section>
+
+    <!-- RIGHT: results -->
+    <section class="cff-card">
+      <h2>Step 2 — Review totals & receipts</h2>
+
+      <h3>2.1 · Totals by category</h3>
+      <div class="cff-kpi-row">
+        <div class="cff-kpi">
+          <div class="cff-kpi-label">ON_MISSION</div>
+          <div id="kpi-on-count" class="cff-kpi-value">—</div>
+          <div id="kpi-on-amount" class="cff-kpi-tag">—</div>
+        </div>
+        <div class="cff-kpi">
+          <div class="cff-kpi-label">OFF_MISSION</div>
+          <div id="kpi-off-count" class="cff-kpi-value cff-off">—</div>
+          <div id="kpi-off-amount" class="cff-kpi-tag">—</div>
+        </div>
+        <div class="cff-kpi">
+          <div class="cff-kpi-label">UNCLEAR</div>
+          <div id="kpi-unc-count" class="cff-kpi-value cff-unclear">—</div>
+          <div id="kpi-unc-amount" class="cff-kpi-tag">—</div>
+        </div>
+      </div>
+
+      <h3>2.2 · Sample rows (top 20)</h3>
+      <div id="cff-table-container">
+        <!-- table injected here -->
+      </div>
+
+      <h3>2.3 · CFF artifact & hash</h3>
+      <button id="cff-download-json" class="btn-download" disabled>
+        ⬇ Download cff_artifact.json
+      </button>
+      <button id="cff-download-summary" class="btn-download" disabled>
+        ⬇ Download cff_summary.csv
+      </button>
+      <div id="cff-hash" class="cff-hash">
+        Audit hash: —  
+        (SHA-256 of the CFF artifact. Any tampering will change this value.)
+      </div>
+    </section>
+
+  </div>
 </main>
 
-<footer>
-  CC BY-NC 4.0 · DOI <a href="https://doi.org/10.5281/zenodo.17586107">10.5281/zenodo.17586107</a><br/>
-  Integrity only — never for sale.
+<footer class="abe-footer">
+  <p>
+    CC BY-NC 4.0 · DOI <a href="https://doi.org/10.5281/zenodo.17586107">10.5281/zenodo.17586107</a> · Integrity only — never for sale.
+  </p>
 </footer>
 
-<script>
-const fmtMoney = n => isFinite(n) ? '$' + Math.round(n).toLocaleString() : '—';
-const pct = (part,total) => total>0 ? (part*100/total).toFixed(1)+'%' : '—';
-
-const DEMO_PATH = '/abe---flag/cff/inputs.csv';
-const LS_KEY_TOTAL = 'ABE_CFF_OFF_MISSION_TOTAL';
-const LS_KEY_CTX   = 'ABE_CFF_CONTEXT';
-
-function parseCsv(text){
-  const lines = text.trim().split(/\r?\n/).filter(Boolean);
-  if(lines.length<2) return [];
-  const head = lines[0].split(',').map(s=>s.trim());
-  return lines.slice(1).map(line=>{
-    const cols = line.split(','); // simple split, assumes no embedded commas
-    const row = {};
-    head.forEach((h,i)=> row[h] = (cols[i]||'').trim());
-    row.amount_usd = Number(row.amount_usd || 0);
-    row.spend_category_code = (row.spend_category_code||'').trim().toUpperCase();
-    return row;
-  });
-}
-
-function summarize(rows){
-  const totals = {ON_MISSION:0,OFF_MISSION:0,UNCLEAR:0};
-  const meta = {programs:new Set(),states:new Set(),years:new Set()};
-  const agg = {}; // key: program|state|year
-
-  for(const r of rows){
-    const cat = ['ON_MISSION','OFF_MISSION','UNCLEAR'].includes(r.spend_category_code)
-      ? r.spend_category_code : 'UNCLEAR';
-    const amt = isFinite(r.amount_usd) ? r.amount_usd : 0;
-    totals[cat] += amt;
-
-    meta.programs.add(r.program_name||'?');
-    meta.states.add(r.state_or_jurisdiction||'?');
-    meta.years.add(String(r.fiscal_year||'?'));
-
-    const key = (r.program_name||'?')+'|'+(r.state_or_jurisdiction||'?')+'|'+(r.fiscal_year||'?');
-    if(!agg[key]) agg[key] = {program:r.program_name||'?',state:r.state_or_jurisdiction||'?',year:r.fiscal_year||'?',ON_MISSION:0,OFF_MISSION:0,UNCLEAR:0};
-    agg[key][cat] += amt;
-  }
-  return {totals,meta,agg:Object.values(agg)};
-}
-
-function renderSummary(summary){
-  const {totals,meta,agg} = summary;
-  const grand = totals.ON_MISSION + totals.OFF_MISSION + totals.UNCLEAR;
-
-  document.getElementById('k-on').textContent      = fmtMoney(totals.ON_MISSION);
-  document.getElementById('k-off').textContent     = fmtMoney(totals.OFF_MISSION);
-  document.getElementById('k-unclear').textContent = fmtMoney(totals.UNCLEAR);
-  document.getElementById('k-meta').textContent    =
-    `${meta.programs.size} prog · ${meta.states.size} state(s) · ${meta.years.size} FY`;
-
-  const pill = document.getElementById('k-off-share');
-  if(totals.OFF_MISSION>0 && grand>0){
-    pill.style.display = 'inline-flex';
-    pill.textContent = pct(totals.OFF_MISSION, grand)+' of total';
-  }else{
-    pill.style.display = 'none';
-  }
-
-  const body = document.getElementById('tbl-body');
-  if(!agg.length){
-    body.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--muted)">No rows after parsing.</td></tr>';
-  }else{
-    body.innerHTML = agg.map(r=>`
-      <tr>
-        <td>${r.program}</td>
-        <td>${r.state}</td>
-        <td>${r.year}</td>
-        <td>${fmtMoney(r.ON_MISSION)}</td>
-        <td>${fmtMoney(r.OFF_MISSION)}</td>
-        <td>${fmtMoney(r.UNCLEAR)}</td>
-      </tr>
-    `).join('');
-  }
-}
-
-function saveToLocalForCiri(summary){
-  const off = summary.totals.OFF_MISSION || 0;
-  const grand = summary.totals.ON_MISSION + summary.totals.OFF_MISSION + summary.totals.UNCLEAR;
-  try{
-    if(!(off>0)){
-      localStorage.removeItem(LS_KEY_TOTAL);
-      localStorage.removeItem(LS_KEY_CTX);
-      return {saved:false,off};
-    }
-    const ctx = {
-      source:'CFF',
-      generated_at:new Date().toISOString(),
-      total_spend:grand,
-      off_mission:off,
-      share: grand>0 ? off/grand : 0,
-      note:'OFF_MISSION dollars available for recovery; computed by CFF on this device only.'
-    };
-    localStorage.setItem(LS_KEY_TOTAL, String(off));
-    localStorage.setItem(LS_KEY_CTX, JSON.stringify(ctx));
-    return {saved:true,off};
-  }catch(e){
-    console.warn('Could not write CFF context to localStorage', e);
-    return {saved:false,off};
-  }
-}
-
-(function init(){
-  const btnDemo = document.getElementById('btn-demo');
-  const drop = document.getElementById('drop');
-  const fileInput = document.getElementById('file');
-  const loadStatus = document.getElementById('load-status');
-  const btnSend = document.getElementById('btn-send-ciri');
-  const sendStatus = document.getElementById('send-status');
-
-  let currentSummary = null;
-
-  async function loadDemo(){
-    try{
-      loadStatus.textContent = 'Loading repo example (cff/inputs.csv)…';
-      const r = await fetch(DEMO_PATH,{cache:'no-store'});
-      if(!r.ok) throw new Error('HTTP '+r.status);
-      const txt = await r.text();
-      const rows = parseCsv(txt);
-      if(!rows.length) throw new Error('No rows');
-      currentSummary = summarize(rows);
-      renderSummary(currentSummary);
-      loadStatus.textContent = `Loaded example file: ${rows.length.toLocaleString()} row(s).`;
-      btnSend.disabled = false;
-      sendStatus.textContent = '';
-    }catch(e){
-      console.error(e);
-      loadStatus.textContent = 'Could not load example CSV.';
-      currentSummary = null;
-      btnSend.disabled = true;
-    }
-  }
-
-  function handleFiles(files){
-    if(!files || !files.length) return;
-    const f = files[0];
-    if(!/\.csv$/i.test(f.name) && f.type.indexOf('csv')===-1){
-      loadStatus.textContent = 'Please provide a .csv file.';
-      return;
-    }
-    const reader = new FileReader();
-    reader.onload = ev=>{
-      try{
-        const txt = String(ev.target.result||'');
-        const rows = parseCsv(txt);
-        if(!rows.length) throw new Error('No rows');
-        currentSummary = summarize(rows);
-        renderSummary(currentSummary);
-        loadStatus.textContent = `Loaded ${f.name} · ${rows.length.toLocaleString()} row(s).`;
-        btnSend.disabled = false;
-        sendStatus.textContent = '';
-      }catch(err){
-        console.error(err);
-        loadStatus.textContent = 'Could not parse CSV. Check the header row against the README.';
-        currentSummary = null;
-        btnSend.disabled = true;
-      }
-    };
-    reader.onerror = ()=>{ loadStatus.textContent = 'Error reading file.'; };
-    reader.readAsText(f);
-  }
-
-  btnDemo.addEventListener('click', loadDemo);
-
-  drop.addEventListener('click', ()=>fileInput.click());
-  drop.addEventListener('dragover', e=>{e.preventDefault();drop.classList.add('dragover');});
-  drop.addEventListener('dragleave', e=>{e.preventDefault();drop.classList.remove('dragover');});
-  drop.addEventListener('drop', e=>{
-    e.preventDefault();
-    drop.classList.remove('dragover');
-    handleFiles(e.dataTransfer.files);
-  });
-  fileInput.addEventListener('change', e=>handleFiles(e.target.files));
-
-  btnSend.addEventListener('click', ()=>{
-    if(!currentSummary){
-      sendStatus.textContent = 'Load a CSV first.';
-      return;
-    }
-    const {saved,off} = saveToLocalForCiri(currentSummary);
-    if(saved){
-      sendStatus.textContent = `OFF_MISSION total ${fmtMoney(off)} sent to CIRI on this device. Open the CIRI page to see it folded into the recovery pool.`;
-    }else if(off>0){
-      sendStatus.textContent = 'Could not write to localStorage (browser restricted). CIRI will not see this handoff.';
-    }else{
-      sendStatus.textContent = 'OFF_MISSION total is zero; nothing to send.';
-    }
-  });
-})();
-</script>
+<script src="cff/local.js"></script>
 </body>
 </html>
