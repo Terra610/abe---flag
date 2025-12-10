@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>A.B.E. Doctrine Map</title>
+  <style>
+    :root{
+      --bg:#05060b;
+      --panel:#141820;
+      --panel-soft:#101521;
+      --line:rgba(255,255,255,.09);
+      --ink:#e6e6e6;
+      --muted:#9da9ba;
+      --accent:#5ddfff;
+      --warn:#ffd46b;
+      --bad:#ff7b7b;
+      --ok:#4bd28f;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      background:radial-gradient(circle at top,#141922 0,var(--bg) 55%,#020309 100%);
+      color:var(--ink);
+      font:15px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+    }
+    header{
+      padding:1rem 1rem .75rem;
+      border-bottom:1px solid var(--line);
+      background:#0f131b;
+    }
+    header .wrap{
+      max-width:1100px;
+      margin:0 auto;
+      display:flex;
+      flex-wrap:wrap;
+      gap:.75rem;
+      justify-content:space-between;
+      align-items:flex-start;
+    }
+    h1{
+      margin:0 0 .2rem;
+      font-size:1.5rem;
+      color:var(--accent);
+    }
+    .lead{
+      margin:0;
+      font-size:.92rem;
+      color:var(--muted);
+      max-width:640px;
+    }
+    .nav-row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:.4rem;
+    }
+    .chip{
+      display:inline-flex;
+      align-items:center;
+      padding:.3rem .7rem;
+      border-radius:999px;
+      border:1px solid var(--line);
+      font-size:.8rem;
+      color:var(--ink);
+      text-decoration:none;
+      background:#111521;
+    }
+    .chip:hover{
+      text-decoration:none;
+      background:#151a27;
+    }
+    a{color:var(--accent);text-decoration:none}
+    a:hover{text-decoration:underline}
+
+    main{
+      max-width:1100px;
+      margin:1.2rem auto 2.5rem;
+      padding:0 1rem;
+      display:grid;
+      gap:1rem;
+      grid-template-columns:minmax(0,1.5fr) minmax(0,1.4fr);
+    }
+    @media(max-width:900px){
+      main{grid-template-columns:minmax(0,1fr);}
+    }
+
+    .card{
+      background:var(--panel);
+      border-radius:12px;
+      border:1px solid var(--line);
+      padding:1rem 1.1rem 1.1rem;
+    }
+    .card h2{
+      margin:.1rem 0 .4rem;
+      font-size:1.05rem;
+      color:#e0ecff;
+    }
+    .card p{
+      margin:.1rem 0;
+      font-size:.9rem;
+      color:var(--muted);
+    }
+
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:.3rem;
+      padding:.12rem .6rem;
+      border-radius:999px;
+      border:1px solid var(--line);
+      font-size:.78rem;
+      color:var(--muted);
+    }
+    .pill-ok{border-color:var(--ok);color:var(--ok);}
+    .pill-warn{border-color:var(--warn);color:var(--warn);}
+    .pill-bad{border-color:var(--bad);color:var(--bad);}
+    .pill-core{border-color:var(--accent);color:var(--accent);}
+
+    ul.criteria{
+      margin:.4rem 0 .2rem;
+      padding-left:1.1rem;
+      font-size:.86rem;
+      color:var(--muted);
+    }
+
+    .category-list{
+      display:flex;
+      flex-direction:column;
+      gap:.5rem;
+      margin-top:.4rem;
+    }
+    .category-item{
+      padding:.45rem .6rem;
+      border-radius:10px;
+      background:#101521;
+      border:1px solid rgba(255,255,255,.06);
+      cursor:pointer;
+    }
+    .category-item:hover{
+      border-color:var(--accent);
+    }
+    .category-item strong{
+      font-size:.9rem;
+      color:#e0ecff;
+    }
+    .category-item span{
+      display:block;
+      font-size:.8rem;
+      color:var(--muted);
+      margin-top:.05rem;
+    }
+
+    .doctrine-list{
+      margin-top:.4rem;
+      max-height:420px;
+      overflow:auto;
+      padding-right:.1rem;
+    }
+    .doc-row{
+      border-radius:10px;
+      border:1px solid rgba(255,255,255,.06);
+      padding:.45rem .55rem;
+      margin-bottom:.4rem;
+      background:#101521;
+    }
+    .doc-row h3{
+      margin:0 0 .15rem;
+      font-size:.95rem;
+      color:#e6f0ff;
+    }
+    .doc-meta{
+      display:flex;
+      flex-wrap:wrap;
+      gap:.35rem;
+      margin-bottom:.26rem;
+    }
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      padding:.05rem .45rem;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      font-size:.74rem;
+      color:var(--muted);
+    }
+    .badge-core{border-color:var(--ok);color:var(--ok);}
+    .badge-ultra{border-color:var(--bad);color:var(--bad);}
+    .badge-driver{border-color:var(--accent);color:var(--accent);}
+    .badge-modern{border-color:var(--warn);color:var(--warn);}
+    .doc-uses{
+      font-size:.82rem;
+      color:var(--muted);
+      margin:.1rem 0 .05rem;
+    }
+    .doc-uses li{margin-left:1rem;}
+
+    pre{
+      margin:.4rem 0 0;
+      background:#050712;
+      border-radius:10px;
+      border:1px solid rgba(255,255,255,.09);
+      padding:.6rem .7rem;
+      max-height:260px;
+      overflow:auto;
+      font-size:.8rem;
+      font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      color:#e6e6e6;
+    }
+
+    footer{
+      margin:0 0 1rem;
+      text-align:center;
+      color:var(--muted);
+      font-size:.8rem;
+    }
+
+  </style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div>
+      <h1>A.B.E. Doctrine Map</h1>
+      <p class="lead">
+        A structured view of doctrines A.B.E. uses: which ones are anchored in the Constitution,
+        which are judge-made but text-aligned, and which are ultra vires or void ab initio candidates.
+      </p>
+    </div>
+    <div class="nav-row">
+      <a href="../index.html" class="chip">← A.B.E. Home</a>
+      <a href="./index.html" class="chip">Doctrines Overview</a>
+      <a href="./constitutional-fidelity.html" class="chip">Constitutional Fidelity</a>
+      <a href="./void-ab-initio.html" class="chip">Void ab initio</a>
+      <a href="./abe-crra.html" class="chip">A.B.E · CRRA</a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- LEFT: Doctrine Map summary -->
+  <section class="card">
+    <h2>Void ab initio — A.B.E. Conditions</h2>
+    <p>
+      A.B.E. treats a doctrine as <strong>void ab initio</strong> when it fails the rule of law:
+      when it contradicts text, erases remedies, or manufactures power the people never delegated.
+    </p>
+    <ul class="criteria" id="criteria-list">
+      <!-- filled from JSON -->
+    </ul>
+
+    <h2 style="margin-top:.8rem;">Doctrine Categories</h2>
+    <p>Select a category to filter doctrines on the right.</p>
+    <div class="category-list" id="category-list">
+      <!-- filled from JSON -->
+    </div>
+  </section>
+
+  <!-- RIGHT: Doctrine list + raw -->
+  <section class="card">
+    <h2>Doctrines</h2>
+    <p id="current-category" style="margin-bottom:.4rem;font-size:.88rem;color:var(--muted);">
+      Loading doctrine map…
+    </p>
+    <div class="doctrine-list" id="doctrine-list">
+      <!-- doctrine rows -->
+    </div>
+
+    <h2 style="margin-top:.7rem;">Raw JSON (excerpt)</h2>
+    <pre id="raw-json">Loading…</pre>
+  </section>
+</main>
+
+<footer>
+  A.B.E. Doctrine Map · CC BY-NC 4.0 · Integrity only — never for sale.
+</footer>
+
+<script>
+(function(){
+  const criteriaList = document.getElementById('criteria-list');
+  const catList = document.getElementById('category-list');
+  const docList = document.getElementById('doctrine-list');
+  const rawEl   = document.getElementById('raw-json');
+  const catLabel= document.getElementById('current-category');
+
+  let model = null;
+  let currentCatId = null;
+
+  function badgeForCategory(catId){
+    if(catId === 'core') return 'badge badge-core';
+    if(catId === 'judge_ultra_vires') return 'badge badge-ultra';
+    if(catId === 'driver_overreach') return 'badge badge-driver';
+    if(catId === 'modern_shift') return 'badge badge-modern';
+    return 'badge';
+  }
+
+  function renderCriteria(){
+    criteriaList.innerHTML = '';
+    (model.void_ab_initio_criteria || []).forEach(line=>{
+      const li = document.createElement('li');
+      li.textContent = line;
+      criteriaList.appendChild(li);
+    });
+  }
+
+  function renderCategories(){
+    catList.innerHTML = '';
+    (model.categories || []).forEach(cat=>{
+      const div = document.createElement('div');
+      div.className = 'category-item';
+      div.dataset.catId = cat.id;
+      const strong = document.createElement('strong');
+      strong.textContent = cat.name;
+      const span = document.createElement('span');
+      span.textContent = cat.description;
+      div.appendChild(strong);
+      div.appendChild(span);
+      div.addEventListener('click', ()=>{
+        currentCatId = cat.id;
+        renderDoctrines();
+      });
+      catList.appendChild(div);
+    });
+
+    // default to first
+    if(model.categories && model.categories.length){
+      currentCatId = model.categories[0].id;
+      renderDoctrines();
+    }
+  }
+
+  function renderDoctrines(){
+    docList.innerHTML = '';
+    if(!model || !Array.isArray(model.doctrines)){
+      docList.textContent = 'No doctrines found in doctrine_map.json';
+      return;
+    }
+    const allDocs = model.doctrines;
+    const filtered = currentCatId
+      ? allDocs.filter(d=>d.category === currentCatId)
+      : allDocs;
+
+    const catObj = (model.categories || []).find(c=>c.id===currentCatId) || null;
+    if(catObj){
+      catLabel.textContent = `Showing category: ${catObj.name} — ${catObj.description}`;
+    } else {
+      catLabel.textContent = 'Showing all doctrines.';
+    }
+
+    if(!filtered.length){
+      const p = document.createElement('p');
+      p.textContent = 'No doctrines under this category.';
+      p.style.fontSize = '.86rem';
+      p.style.color = '#9da9ba';
+      docList.appendChild(p);
+      return;
+    }
+
+    filtered.forEach(doc=>{
+      const row = document.createElement('div');
+      row.className = 'doc-row';
+
+      const h3 = document.createElement('h3');
+      h3.textContent = doc.name;
+      row.appendChild(h3);
+
+      const meta = document.createElement('div');
+      meta.className = 'doc-meta';
+
+      const catBadge = document.createElement('span');
+      catBadge.className = badgeForCategory(doc.category);
+      const catDef = (model.categories || []).find(c=>c.id===doc.category);
+      catBadge.textContent = catDef ? catDef.name : doc.category;
+      meta.appendChild(catBadge);
+
+      if(doc.status){
+        const st = document.createElement('span');
+        st.className = 'badge';
+        st.textContent = 'Status: '+doc.status;
+        meta.appendChild(st);
+      }
+
+      if(doc.abe_position){
+        const ap = document.createElement('span');
+        ap.className = 'badge';
+        ap.textContent = 'A.B.E.: '+doc.abe_position;
+        meta.appendChild(ap);
+      }
+
+      if(doc.source){
+        const src = document.createElement('span');
+        src.className = 'badge';
+        src.textContent = doc.source;
+        meta.appendChild(src);
+      }
+
+      row.appendChild(meta);
+
+      if(doc.uses && doc.uses.length){
+        const ul = document.createElement('ul');
+        ul.className = 'doc-uses';
+        doc.uses.forEach(u=>{
+          const li = document.createElement('li');
+          li.textContent = u;
+          ul.appendChild(li);
+        });
+        row.appendChild(ul);
+      }
+
+      docList.appendChild(row);
+    });
+  }
+
+  async function init(){
+    try{
+      const resp = await fetch('./doctrine_map.json',{cache:'no-store'});
+      if(!resp.ok) throw new Error('HTTP '+resp.status);
+      model = await resp.json();
+
+      renderCriteria();
+      renderCategories();
+      rawEl.textContent = JSON.stringify(model, null, 2);
+    }catch(e){
+      console.error(e);
+      catLabel.textContent = 'Could not load doctrine_map.json';
+      rawEl.textContent = '// Error loading doctrine_map.json';
+      criteriaList.innerHTML = '';
+      catList.innerHTML = '';
+      docList.textContent = 'No doctrine map available.';
+    }
+  }
+
+  init();
+})();
+</script>
+</body>
+  </html>
