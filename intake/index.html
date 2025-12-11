@@ -339,21 +339,16 @@
   </p>
 </footer>
 
-<!-- PDF.js for text PDFs -->
-<script src="https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
-<script>
-  if (window['pdfjsLib']) {
-    window['pdfjsLib'].GlobalWorkerOptions.workerSrc =
-      'https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js';
-  }
-</script>
+<!-- PDF.js for text-based PDFs -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.2.67/pdf.min.js"
+        integrity="sha512-VmXn9nTtPqBoXG5v8G/8FqV1n6C8r4UrY8K0C5mU7jWQqbgxFFf0uKFWysg+zGicPi5POifkqWg6x84yYj3rfg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 <!-- Tesseract.js for in-browser OCR -->
-<script src="https://unpkg.com/tesseract.js@5.0.3/dist/tesseract.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@4.1.1/dist/tesseract.min.js"></script>
 
 <!-- Intake logic -->
 <script src="intake/intake.js"></script>
-
 <script>
   // tiny helper: show chosen file names
   (function(){
@@ -369,6 +364,7 @@
       nameEl.textContent = names.join(', ');
     });
   })();
+</script>
 </script>
 </body>
 </html>
