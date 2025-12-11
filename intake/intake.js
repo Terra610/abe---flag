@@ -1,15 +1,17 @@
 // intake/intake.js
 // Runs entirely in-browser. No network calls with user data.
 // Uses PDF.js for text PDFs and Tesseract.js for images/scanned pages.
+// Also drops a copy of the intake artifact in localStorage so the
+// other A.B.E. modules can auto-detect it.
 
 (function () {
   const $ = id => document.getElementById(id);
 
-  // --- DOM hooks (match intake/index.html) ---
   const fileInput      = $('file-input');
   const textInput      = $('text-input');
   const docTypeSelect  = $('doc-type');
 
+  // Targets
   const tCIRI          = $('target-ciri');
   const tCDA           = $('target-cda');
   const tCFF           = $('target-cff');
@@ -20,9 +22,9 @@
 
   const normTextEl     = $('norm-text');
   const fieldsEl       = $('fields-json');
-  const btnDlIntake    = $('download-artifact');
 
-  // (optional, you don’t currently have this in HTML, so may be null)
+  const btnDlIntake    = $('download-artifact');
+  // Optional: only present if you later add a CIRI CSV download button
   const btnDlCiri      = $('dl-ciri-csv');
 
   let latestArtifact = null;
@@ -63,32 +65,23 @@
   // ---------- PDF text extraction (PDF.js) ----------
 
   async function extractTextFromPdfFile(file) {
-    const pdfjsLib = window.pdfjsLib;
-    if (!pdfjsLib || !pdfjsLib.getDocument) {
-      throw new Error('PDF.js not available in this page');
+    if (!window.pdfjsLib) {
+      console.warn('PDF.js not available; could not read PDF.');
+      return '';
     }
-
     const buf = await file.arrayBuffer();
     const uint8 = new Uint8Array(buf);
 
-    const loadingTask = pdfjsLib.getDocument({ data: uint8 });
+    const loadingTask = window.pdfjsLib.getDocument({ data: uint8 });
     const pdf = await loadingTask.promise;
 
     let allText = '';
-    const maxPages = Math.min(pdf.numPages, 50); // safety cap
-
-    for (let pageNum = 1; pageNum <= maxPages; pageNum++) {
+    for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
       const page = await pdf.getPage(pageNum);
       const content = await page.getTextContent();
       const strings = content.items.map(it => it.str);
       allText += strings.join(' ') + '\n\n';
     }
-
-    if (pdf.numPages > maxPages) {
-      allText += '\n\n[Intake note: truncated after ' + maxPages +
-                 ' pages for performance. You can split this PDF if needed.]';
-    }
-
     return allText;
   }
 
@@ -97,9 +90,11 @@
   async function ocrImageFile(file) {
     const T = window.Tesseract;
     if (!T || !T.recognize) {
-      throw new Error('Tesseract.js not available in this page');
+      // Do *not* crash intake if OCR engine fails to load.
+      console.warn('Tesseract.js not available; skipping OCR for image.');
+      setStatus('OCR engine not loaded — you can still paste or upload text.', 'warn');
+      return '';
     }
-    // This can be slow on phones for big images – that’s normal.
     const result = await T.recognize(file, 'eng');
     return result.data && result.data.text ? result.data.text : '';
   }
@@ -118,29 +113,25 @@
   async function extractTextFromFile(file) {
     const type = (file.type || '').toLowerCase();
 
-    try {
-      if (type.startsWith('image/')) {
-        return await ocrImageFile(file);
-      }
-
-      if (type === 'application/pdf') {
-        return await extractTextFromPdfFile(file);
-      }
-
-      // fallback: try text read
-      return await extractPlainTextFile(file);
-    } catch (e) {
-      console.error('extractTextFromFile error for', file.name, e);
-      // Bubble the error up so runIntake can show it to the user
-      throw e;
+    if (type.startsWith('image/')) {
+      return ocrImageFile(file);
     }
+
+    if (type === 'application/pdf') {
+      return extractTextFromPdfFile(file);
+    }
+
+    // fallback: try text read
+    return extractPlainTextFile(file);
   }
 
   // ---------- tiny heuristic extraction ----------
 
   function basicFieldGuess(normalizedText, docType) {
     const text = normalizedText || '';
-    const fields = {};
+    const fields = {
+      doc_type_guess: docType || 'generic_case_text'
+    };
 
     // Dollars
     const moneyMatches = text.match(/\$?\s?[\d,]+(\.\d{1,2})?/g) || [];
@@ -162,13 +153,16 @@
       if (apr) fields.possible_apr = apr[0];
     }
 
-    // For vehicle titles / registrations, try VIN + plate
+    // Vehicle title / registration: look for VIN-like patterns & CMV hints
     if (docType === 'vehicle_title_registration') {
-      const vinMatch = text.match(/\b[0-9A-HJ-NPR-Z]{17}\b/i);
-      if (vinMatch) fields.possible_vin = vinMatch[0];
-
-      const plateMatch = text.match(/\b[A-Z0-9]{1,8}\b/);
-      if (plateMatch) fields.possible_plate = plateMatch[0];
+      const vin = text.match(/\b[0-9A-HJ-NPR-Z]{11,17}\b/);
+      if (vin) fields.possible_vin = vin[0];
+      if (/commercial motor vehicle/i.test(text)) {
+        fields.possible_cmv_flag = true;
+      }
+      if (/not for hire|non[- ]commercial|private use only/i.test(text)) {
+        fields.possible_private_use_flag = true;
+      }
     }
 
     fields.preview_snippet = text.slice(0, 800);
@@ -211,16 +205,13 @@
   // ---------- main intake runner ----------
 
   async function runIntake() {
-    if (!btnRun) return;
-
     try {
-      btnRun.disabled = true;
+      if (btnRun) btnRun.disabled = true;
+      setStatus('Running OCR + parsing (local only)…', 'warn');
       latestArtifact = null;
       latestCiriCsv  = null;
       if (btnDlIntake) btnDlIntake.disabled = true;
       if (btnDlCiri)   btnDlCiri.disabled   = true;
-
-      setStatus('Running Intake & OCR (local only)…', 'warn');
 
       const files   = Array.from((fileInput && fileInput.files) || []);
       const pasted  = textInput ? (textInput.value || '') : '';
@@ -243,13 +234,19 @@
 
       if (files.length) {
         primaryFileName = files[0].name;
-        primaryFileHash = await hashFile(files[0]);
+        try {
+          primaryFileHash = await hashFile(files[0]);
+        } catch (e) {
+          console.warn('Could not hash file:', e);
+        }
 
-        // Extract each file sequentially to avoid overloading the browser
         for (const f of files) {
-          setStatus(`OCR / parsing: ${f.name}…`, 'warn');
-          const t = await extractTextFromFile(f);
-          if (t) combinedText += '\n\n' + t;
+          try {
+            const t = await extractTextFromFile(f);
+            if (t) combinedText += '\n\n' + t;
+          } catch (e) {
+            console.warn('Failed to read one file:', e);
+          }
         }
       }
 
@@ -287,7 +284,7 @@
         notes: ''
       };
 
-      // Create CIRI starter CSV if requested
+      // CIRI CSV starter row if target checked
       if (targets.includes('CIRI')) {
         const csv = buildCiriCsvRow(normalized);
         latestCiriCsv = csv;
@@ -305,22 +302,22 @@
         artifact.generated_outputs.ciri = { present: false };
       }
 
-      // Stubs for other modules (so Integration can see intentions)
-      artifact.generated_outputs.cda  = { present: false, requested: targets.includes('CDA')  };
-      artifact.generated_outputs.cff  = { present: false, requested: targets.includes('CFF')  };
-      artifact.generated_outputs.ccri = { present: false, requested: targets.includes('CCRI') };
+      // Stubs for other modules for now
+      artifact.generated_outputs.cda  = { present: targets.includes('CDA')  ? false : false };
+      artifact.generated_outputs.cff  = { present: targets.includes('CFF')  ? false : false };
+      artifact.generated_outputs.ccri = { present: targets.includes('CCRI') ? false : false };
 
       latestArtifact = artifact;
 
       if (normTextEl) normTextEl.textContent = normalized;
       if (fieldsEl)   fieldsEl.textContent   = JSON.stringify(extractedFields, null, 2);
 
-      setStatus('Intake complete — review text & download artifacts.', 'ok');
+      setStatus('Intake complete — review text & download artifacts, or open CIRI / CDA / CFF / CCRI.', 'ok');
 
       if (btnDlIntake) btnDlIntake.disabled = false;
       if (btnDlCiri)   btnDlCiri.disabled   = !latestCiriCsv;
 
-      // Store artifact so CIRI / CDA / others can pick it up automatically
+      // store artifact so other modules can auto-detect it
       try {
         localStorage.setItem('abe_intake_artifact', JSON.stringify(artifact));
       } catch (e) {
