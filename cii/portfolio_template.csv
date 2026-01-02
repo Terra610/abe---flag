@@ -1,0 +1,18 @@
+category,project_id,project_name,pct_of_category,unit_cost_usd,unit_name,priority,notes
+housing,HOU-01,Emergency rent stabilization,0.60,1200,household-month,1,Stops displacement fast
+housing,HOU-02,Security deposit bridge,0.40,1800,household,2,Helps people get into stable housing
+
+clinics,CLN-01,Primary care vouchers,0.70,150,visit,1,Immediate access
+clinics,CLN-02,Mental health sessions,0.30,120,session,2,Stabilization support
+
+food,FOO-01,Grocery support cards,1.00,250,household-month,1,Basic nutrition
+
+mobility,MOB-01,Repair-to-road grants,0.60,600,vehicle,1,Keep people mobile
+mobility,MOB-02,Transit passes,0.40,75,pass-month,2,Short-term mobility
+
+workforce,WRK-01,Job training stipends,0.60,500,participant,1,Skill lift
+workforce,WRK-02,Tools + certification fees,0.40,350,participant,2,Removes barriers
+
+legal_aid,LEG-01,Defense + expungement support,1.00,900,case,1,Converts relief into permanence
+
+admin_ops,OPS-01,Local ops & audit support,1.00,1,allocation,9,Keep it running + verifiable
