@@ -1,0 +1,54 @@
+{
+  "engine_id": "ABE_FLAG",
+  "engine_version": "1.0",
+  "description": "ABE Flag constitutional alignment engine (local-only)",
+  "firing_order": [
+    "intake",
+    "cae",
+    "divergence",
+    "ccri",
+    "ciri",
+    "cibs",
+    "cii",
+    "cff",
+    "affe",
+    "macro",
+    "integration"
+  ],
+  "modules": {
+    "intake": {
+      "required": false
+    },
+    "cae": {
+      "required": false
+    },
+    "divergence": {
+      "impl": "cda",
+      "required": true
+    },
+    "ccri": {
+      "required": false
+    },
+    "ciri": {
+      "required": true
+    },
+    "cibs": {
+      "required": true
+    },
+    "cii": {
+      "required": true
+    },
+    "cff": {
+      "required": false
+    },
+    "affe": {
+      "required": false
+    },
+    "macro": {
+      "required": false
+    },
+    "integration": {
+      "required": true
+    }
+  }
+}
