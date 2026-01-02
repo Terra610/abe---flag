@@ -1,0 +1,25 @@
+{
+  "cases_avoided": 5000,
+  "cost_per_case": 2000,
+
+  "jail_days_avoided": 1500,
+  "cost_per_jail_day": 120,
+
+  "fees_canceled_total": 25000000,
+
+  "enforcement_hours_avoided": 0,
+  "cost_per_enforcement_hour": 0,
+
+  "households_restored": 5000,
+  "market_access_value_per_household": 7200,
+
+  "people_impacted": 5000,
+  "employment_probability": 0.3,
+  "wage_uplift_per_person": 36000,
+
+  "litigation_risk_avoided": 15000000,
+
+  "transition_costs": 5000000,
+
+  "K": 100000000
+}
