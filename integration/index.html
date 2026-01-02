@@ -1,268 +1,59 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Integration / Audit — A.B.E.</title>
-  <base href="/abe---flag/">
-  <link rel="stylesheet" href="abe-patch/assets/abe-patch.css"/>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ABE Integration — Run Engine</title>
   <style>
-    .int-wrap{
-      max-width:1100px;
-      margin:0 auto;
-      padding:1.5rem 1rem 3rem;
-    }
-    .int-header h1{
-      margin:0 0 .25rem;
-      font-size:1.9rem;
-    }
-    .int-header .tagline{
-      max-width:720px;
-      color:var(--muted);
-      font-size:.98rem;
-    }
-    .int-grid{
-      display:grid;
-      gap:1rem;
-    }
-    @media(min-width:900px){
-      .int-grid{
-        grid-template-columns:1.4fr 1.6fr;
-      }
-    }
-    .int-card{
-      background:#10131c;
-      border-radius:14px;
-      border:1px solid var(--line);
-      padding:1rem 1.1rem 1.2rem;
-      box-shadow:0 18px 40px rgba(0,0,0,.4);
-      min-height:0;
-    }
-    .int-card h2{
-      margin:.1rem 0 .4rem;
-      font-size:1.1rem;
-    }
-    .int-card h3{
-      margin:.3rem 0 .35rem;
-      font-size:1rem;
-    }
-    .int-sub{
-      color:var(--muted);
-      font-size:.9rem;
-    }
-    .int-summary{
-      display:flex;
-      flex-wrap:wrap;
-      gap:.5rem 1.4rem;
-      margin-top:.6rem;
-      font-size:.88rem;
-      color:var(--muted);
-    }
-    .int-pill{
-      display:inline-flex;
-      align-items:center;
-      gap:.3rem;
-      padding:.12rem .6rem;
-      border-radius:999px;
-      border:1px solid var(--line);
-      font-size:.78rem;
-      color:var(--muted);
-    }
-    .int-pill-ok{border-color:#4bd28f;color:#4bd28f;}
-    .int-pill-warn{border-color:#ffba5c;color:#ffba5c;}
-    .int-pill-bad{border-color:#ff8585;color:#ff8585;}
-    .int-pill-law{border-color:#5ddfff;color:#5ddfff;}
-    .int-mod-list{
-      display:flex;
-      flex-wrap:wrap;
-      gap:.6rem;
-      margin-top:.6rem;
-    }
-    .int-mod{
-      flex:1 1 140px;
-      min-width:140px;
-      max-width:210px;
-      background:#050712;
-      border-radius:12px;
-      border:1px solid var(--line);
-      padding:.55rem .6rem .5rem;
-      cursor:pointer;
-      font-size:.86rem;
-    }
-    .int-mod:hover{
-      border-color:var(--accent);
-      box-shadow:0 0 0 1px rgba(93,223,255,.35);
-    }
-    .int-mod.active{
-      border-color:var(--accent);
-      box-shadow:0 0 0 1px rgba(93,223,255,.45);
-    }
-    .int-mod-name{
-      font-weight:600;
-      margin-bottom:.1rem;
-    }
-    .int-mod-status{
-      font-size:.8rem;
-      color:var(--muted);
-    }
-    .int-mod-status span{
-      font-weight:600;
-    }
-    .int-mod-status-ok span{color:#4bd28f;}
-    .int-mod-status-partial span{color:#ffba5c;}
-    .int-mod-status-mismatch span{color:#ff8585;}
-    .int-mod-status-unknown span{color:#9fb3c8;}
-    .int-detail{
-      background:#050712;
-      border-radius:10px;
-      border:1px solid var(--line);
-      padding:.6rem .7rem;
-      font-family:ui-monospace,SFMono-Regular,Consolas,monospace;
-      font-size:.82rem;
-      max-height:420px;
-      overflow:auto;
-      white-space:pre-wrap;
-    }
-    .int-legend{
-      margin-top:.5rem;
-      font-size:.84rem;
-      color:var(--muted);
-    }
-    .int-legend ul{
-      margin:.2rem 0 0;
-      padding-left:1.1rem;
-    }
-    .int-legend li{margin:.1rem 0;}
-    .int-section{
-      margin-top:.6rem;
-      font-size:.9rem;
-      color:var(--muted);
-    }
-    .int-section ol{
-      margin:.3rem 0 0;
-      padding-left:1.3rem;
-    }
-    .int-law-note{
-      margin-top:.4rem;
-      background:#050712;
-      border-radius:10px;
-      border:1px solid var(--line);
-      padding:.55rem .6rem;
-      font-size:.84rem;
-    }
-    .int-law-note a{
-      color:var(--accent);
-      text-decoration:none;
-    }
-    .int-law-note a:hover{text-decoration:underline;}
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 20px; }
+    .row { display:flex; gap:12px; flex-wrap: wrap; margin: 10px 0; }
+    button { padding: 10px 14px; cursor:pointer; }
+    .card { border: 1px solid #ddd; border-radius: 10px; padding: 12px; margin-top: 12px; }
+    .status { display:grid; grid-template-columns: 160px 100px 1fr; gap: 8px; align-items:center; }
+    .pill { padding: 2px 8px; border-radius: 999px; display:inline-block; border:1px solid #ccc; }
+    .ok { border-color: #2e7d32; }
+    .warn { border-color: #ed6c02; }
+    .fail { border-color: #d32f2f; }
+    .skip { border-color: #607d8b; }
+    .pending { border-color: #999; }
+    small { color:#555; }
+    pre { white-space: pre-wrap; word-break: break-word; }
   </style>
 </head>
-<body class="abe-page">
+<body>
 
-<header class="abe-header">
-  <div class="int-wrap int-header">
-    <a href="/abe---flag/index.html" class="chip">← A.B.E. Home</a>
-    <h1>Integration / Audit</h1>
-    <p class="tagline">
-      This page checks every tracked file in A.B.E. using <strong>SHA-256</strong>. It shows which modules are verified,
-      which are partial, and whether the <strong>Law corpus</strong> (USC/CFR/funding packs) matches the ledger.
-    </p>
-    <nav class="chip-row">
-      <span class="chip chip-alt">Integration</span>
-      <a class="chip" href="intake/index.html">Intake</a>
-      <a class="chip" href="cda/index.html">CDA</a>
-      <a class="chip" href="ciri/index.html">CIRI</a>
-      <a class="chip" href="law/index.html">Law Corpus</a>
-      <a class="chip" href="doctrine/index.html">Doctrines</a>
-    </nav>
+  <h1>ABE Integration</h1>
+  <p><strong>Local-only.</strong> No servers, no logins, no telemetry. Everything runs in your browser.</p>
+
+  <div class="card">
+    <h2>1) Optional: Upload files</h2>
+    <p><small>This does not send anything anywhere. Files stay on your device. (Intake runner can use these later.)</small></p>
+    <input id="fileInput" type="file" multiple />
+    <div id="fileList"></div>
   </div>
-</header>
 
-<main class="abe-main">
-  <div class="int-wrap int-grid">
-
-    <!-- LEFT: Summary + modules -->
-    <section class="int-card">
-      <h2>System Summary</h2>
-      <p class="int-sub">
-        Integration reads <code>system/map.json</code> and <code>system/ledger.json</code>,
-        recomputes SHA-256 for each tracked file in your browser, and compares the results.
-      </p>
-
-      <div class="int-summary">
-        <div id="int-last-check">Last check: —</div>
-        <div id="int-count-mod">Modules: —</div>
-        <div id="int-count-ok"   class="int-pill int-pill-ok">Verified: —</div>
-        <div id="int-count-warn" class="int-pill int-pill-warn">Partial: —</div>
-        <div id="int-count-bad"  class="int-pill int-pill-bad">Mismatch: —</div>
-        <div id="int-law-pill"   class="int-pill int-pill-law" style="display:none;">
-          LAW corpus: —
-        </div>
-      </div>
-
-      <h3 style="margin-top:.9rem;">Modules & Status</h3>
-      <div id="int-mod-list" class="int-mod-list">
-        <!-- populated by JS -->
-      </div>
-
-      <div class="int-legend">
-        <strong>Legend</strong>
-        <ul>
-          <li><span class="int-pill int-pill-ok">verified</span> all tracked files match the ledger.</li>
-          <li><span class="int-pill int-pill-warn">partial</span> some files tracked or pack coverage incomplete.</li>
-          <li><span class="int-pill int-pill-bad">mismatch</span> at least one tracked file hash disagrees.</li>
-          <li>untracked = present in <code>map.json</code> but not yet listed in <code>ledger.json</code>.</li>
-        </ul>
-      </div>
-
-      <div class="int-law-note" id="int-law-note">
-        LAW corpus note: Loading…
-      </div>
-    </section>
-
-    <!-- RIGHT: Detail + how-to -->
-    <section class="int-card">
-      <h2>Detail & Local Verification</h2>
-
-      <h3>Selected Module Details</h3>
-      <div id="int-detail" class="int-detail">
-        Select a module on the left to see which files are tracked,
-        their expected SHA-256, and the live recomputed hashes.
-      </div>
-
-      <div class="int-section">
-        <h3>How to Verify or Extend the Audit</h3>
-        <ol>
-          <li>
-            Open <code>system/ledger.json</code> in the repo. Each entry lists a
-            <code>path</code> and an expected <code>sha256</code>.
-          </li>
-          <li>
-            To track a new file, compute its SHA-256 on your own machine
-            (or with a trusted tool), add a new entry to <code>ledger.json</code>,
-            and commit it.
-          </li>
-          <li>
-            Refresh this page. Any mismatch will show as
-            <span class="int-pill int-pill-bad">mismatch</span> for that module.
-          </li>
-          <li>
-            The <strong>LAW corpus</strong> (USC/CFR/funding packs) is described in
-            <code>law/model.json</code> and hashed here under the <code>LAW</code> module.
-          </li>
-        </ol>
-      </div>
-    </section>
-
+  <div class="card">
+    <h2>2) Run Engine</h2>
+    <div class="row">
+      <button id="btnInit">Initialize Scenario</button>
+      <button id="btnRun">Run Engine</button>
+      <button id="btnReset">Reset Scenario</button>
+    </div>
+    <div id="engineStatus" class="card">
+      <h3>Module Status</h3>
+      <div id="statusGrid"></div>
+    </div>
   </div>
-</main>
 
-<footer class="abe-footer">
-  <p>
-    CC BY-NC 4.0 · DOI <a href="https://doi.org/10.5281/zenodo.17586107">10.5281/zenodo.17586107</a> · Integrity only — never for sale.
-  </p>
-</footer>
+  <div class="card">
+    <h2>3) Receipts</h2>
+    <div class="row">
+      <button id="btnReceipt">Download audit_certificate.json</button>
+      <button id="btnScenario">Download scenario.json</button>
+    </div>
+    <pre id="receiptPreview"></pre>
+  </div>
 
-<script src="integration/local.js"></script>
+  <script type="module" src="./orchestrator.js"></script>
 </body>
 </html>
