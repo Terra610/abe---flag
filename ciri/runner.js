@@ -1,11 +1,17 @@
 // ciri/runner.js
-// CIRI → economic recovery output (real math-ready, local-only)
-// Reads derived.divergence (required) + derived.ccri (optional)
-// Reads inputs.ciri_inputs (optional object). If missing, outputs remain zero but shape is stable.
+// CIRI → economic recovery output (repo-default baseline if user inputs missing)
+// Local-only, no backend. Works best under http(s) (GitHub Pages/local server).
 
 function num(x, fallback = 0) {
   const n = Number(x);
   return Number.isFinite(n) ? n : fallback;
+}
+
+async function loadRepoDefaults() {
+  // From /ciri/runner.js, this resolves to /ciri/default_inputs.json
+  const res = await fetch("./default_inputs.json", { cache: "no-store" });
+  if (!res.ok) throw new Error("Could not load ciri/default_inputs.json");
+  return await res.json();
 }
 
 export async function run(scenario, ctx = {}) {
@@ -13,9 +19,22 @@ export async function run(scenario, ctx = {}) {
   if (!divergence) throw new Error("Missing derived.divergence (CDA must run first).");
 
   const ccri = scenario?.derived?.ccri || null;
-  const inp = scenario?.inputs?.ciri_inputs || {}; // optional
 
-  // --------- Inputs (safe defaults) ----------
+  // Prefer user-provided inputs; otherwise load repo defaults
+  let inp = scenario?.inputs?.ciri_inputs;
+  let source = "user";
+
+  if (!inp || Object.keys(inp).length === 0) {
+    try {
+      inp = await loadRepoDefaults();
+      source = "repo_default";
+    } catch {
+      // Final fallback if fetch fails (e.g., file:// mode). Keep engine running.
+      inp = {};
+      source = "empty_fallback";
+    }
+  }
+
   const cases_avoided = num(inp.cases_avoided);
   const cost_per_case = num(inp.cost_per_case);
 
@@ -35,26 +54,19 @@ export async function run(scenario, ctx = {}) {
   const people_impacted = num(inp.people_impacted);
 
   const litigation_risk_avoided = num(inp.litigation_risk_avoided);
-
   const transition_costs = num(inp.transition_costs);
 
-  // K is the scale constant for the CIRI index curve. Default is 1,000,000 if not provided.
   const K = Math.max(1, num(inp.K, 1_000_000));
 
-  // --------- Component Calculations ----------
   const direct_case_cost_savings = cases_avoided * cost_per_case;
   const detention_cost_savings = jail_days_avoided * cost_per_jail_day;
   const enforcement_cost_savings = enforcement_hours_avoided * cost_per_enforcement_hour;
 
   const market_access_uplift = households_restored * market_access_value_per_household;
-
-  // Employment uplift is modeled as expected value: impacted * probability * uplift.
   const employment_wage_uplift = people_impacted * employment_probability * wage_uplift_per_person;
 
-  // Fees canceled is direct recovery
   const fees_savings = fees_canceled_total;
 
-  // Total recovery pool
   const R_T =
     direct_case_cost_savings +
     detention_cost_savings +
@@ -65,13 +77,8 @@ export async function run(scenario, ctx = {}) {
     litigation_risk_avoided -
     transition_costs;
 
-  // Ensure non-negative total recovery unless you explicitly want negatives
   const total_recovery = Math.max(0, R_T);
-
-  // CIRI index curve (bounded 0..1)
   const ciri_index = 1 - Math.exp(-total_recovery / K);
-
-  // Optional: ROI per case (avoid divide by zero)
   const roi_per_case = cases_avoided > 0 ? total_recovery / cases_avoided : 0;
 
   return {
@@ -81,7 +88,7 @@ export async function run(scenario, ctx = {}) {
     inputs_used: {
       divergence_present: true,
       ccri_present: !!ccri,
-      ciri_inputs_present: Object.keys(inp).length > 0
+      ciri_inputs_source: source
     },
     components: {
       direct_case_cost_savings,
@@ -98,6 +105,6 @@ export async function run(scenario, ctx = {}) {
     ciri_index,
     roi_per_case,
     notes:
-      "CIRI runner is live with stable math. Provide inputs.ciri_inputs to compute real recovery; otherwise outputs remain zero but schema stays stable."
+      "CIRI uses scenario.inputs.ciri_inputs if provided; otherwise loads ciri/default_inputs.json as baseline."
   };
 }
