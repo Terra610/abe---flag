@@ -285,7 +285,10 @@ High-level layout:
 
 ## 🔓 License
 
-**Creative Commons CC BY-NC 4.0**
+**© 2025 Terra Dawn Shouse  
+This work and all associated A.B.E. systems are licensed under a Creative Commons Attribution–NonCommercial 4.0 International License (CC BY-NC 4.0).  
+You are free to share and adapt this material for non-commercial use with attribution to Terra Dawn Shouse and A.B.E.  
+https://creativecommons.org/licenses/by-nc/4.0/**
 
 You may:
 
