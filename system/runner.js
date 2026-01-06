@@ -1,39 +1,38 @@
 // system/runner.js
-// system → Engine System Map (reads system/map.json)
+// SYSTEM → Engine System Map (reads system/map.json)
 // Local-only. Produces derived.systemmap for transparency + linkage.
 
 async function loadMap() {
-  const res = await fetch("./map.json", { cache: "no-store" });
-  if (!res.ok) throw new Error("Could not load system/map.json");
+  // IMPORTANT: Resolve map.json relative to this module file, not the calling page.
+  const url = new URL("./map.json", import.meta.url);
+  const res = await fetch(url, { cache: "no-store" });
+  if (!res.ok) throw new Error(`Could not load system/map.json (${res.status})`);
   return await res.json();
 }
 
 function makePlainEnglish(map) {
   // Junior-high friendly explanation
   const steps = [];
+  const flow = map?.flows || map?.flow || map?.data_flow || map?.pipeline || null;
 
-  // Support both old and new shapes:
-  // - new: map.flows = [{from,to,control,...}, ...]
-  // - old: map.flow / map.data_flow / map.pipeline = ["step", ...]
-  if (Array.isArray(map?.flows)) {
-    map.flows.forEach((f, i) => {
-      const from = f?.from ? String(f.from) : "(unknown)";
-      const to = f?.to ? String(f.to) : "(unknown)";
-      const control = f?.control ? ` — ${String(f.control)}` : "";
-      steps.push(`${i + 1}. ${from} → ${to}${control}`);
+  if (Array.isArray(flow)) {
+    flow.forEach((s, i) => {
+      if (typeof s === "string") steps.push(`${i + 1}. ${s}`);
+      else if (s && typeof s === "object") {
+        const from = s.from ? `From: ${s.from}` : "";
+        const to = s.to ? `To: ${s.to}` : "";
+        const control = s.control ? `How: ${s.control}` : "";
+        const line = [from, to, control].filter(Boolean).join(" • ");
+        steps.push(`${i + 1}. ${line || "Step"}`);
+      }
     });
-  } else {
-    const flow = map?.flow || map?.data_flow || map?.pipeline || null;
-    if (Array.isArray(flow)) {
-      flow.forEach((s, i) => steps.push(`${i + 1}. ${String(s)}`));
-    }
   }
 
   return {
-    headline: "ABE runs like an engine: modules fire in order, using the same uploaded data.",
+    headline: "ABE runs like an engine: modules fire in order using the same local scenario.",
     bullets: [
-      "You upload files once (or use defaults).",
-      "Each module reads specific inputs and writes specific outputs.",
+      "You can upload files once (or use a default scenario).",
+      "Each module reads inputs.* and writes derived.* deterministically.",
       "Integration runs the firing order automatically.",
       "SHA-256 receipts prove what ran and what was produced — without servers, logins, or tracking."
     ],
@@ -46,11 +45,11 @@ export async function run(scenario, ctx = {}) {
   const plain = makePlainEnglish(map);
 
   return {
-    module: "system",
-    module_version: "1.0",
+    module: "SYSTEM",
+    module_version: "1.1",
     generated_at: new Date().toISOString(),
     system_map: map,
     explain_like_im_12: plain,
-    notes: "Loaded from system/map.json. This output exists so Integration can hash + receipt the map state too."
+    notes: "Loaded from system/map.json (resolved via import.meta.url). Hash this output for chain-of-custody."
   };
 }
