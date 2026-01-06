@@ -5,29 +5,143 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>ABE Integration — Run Engine</title>
   <style>
-    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 20px; }
+    :root{
+      --bg:#0b0f14;
+      --card:#111824;
+      --card2:#0e1520;
+      --text:#e8eef7;
+      --muted:#a9b4c3;
+      --border:#243244;
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --focus: 0 0 0 3px rgba(122,162,255,.35);
+    }
+    *{ box-sizing:border-box; }
+    body{
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      margin: 20px;
+      background: var(--bg);
+      color: var(--text);
+    }
+    a{ color: var(--text); text-decoration: none; }
+    a:hover{ text-decoration: underline; }
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom: 14px;
+    }
+    .brand{
+      display:flex;
+      flex-direction:column;
+      gap:2px;
+    }
+    .brand h1{ margin:0; font-size: 20px; letter-spacing:.2px; }
+    .brand small{ color: var(--muted); }
     .row { display:flex; gap:12px; flex-wrap: wrap; margin: 10px 0; }
-    button { padding: 10px 14px; cursor:pointer; }
-    .card { border: 1px solid #ddd; border-radius: 10px; padding: 12px; margin-top: 12px; }
-    .status { display:grid; grid-template-columns: 160px 100px 1fr; gap: 8px; align-items:center; }
-    .pill { padding: 2px 8px; border-radius: 999px; display:inline-block; border:1px solid #ccc; }
+    button{
+      padding: 10px 14px;
+      cursor:pointer;
+      background: var(--card2);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      box-shadow: var(--shadow);
+    }
+    button:hover{ border-color:#3a4e6a; }
+    button:focus{ outline:none; box-shadow: var(--shadow), var(--focus); }
+    .ghost{
+      background: transparent;
+      box-shadow:none;
+    }
+    .card {
+      border: 1px solid var(--border);
+      background: var(--card);
+      border-radius: 14px;
+      padding: 14px;
+      margin-top: 12px;
+      box-shadow: var(--shadow);
+    }
+    .status {
+      display:grid;
+      grid-template-columns: 180px 100px 1fr;
+      gap: 10px;
+      align-items:center;
+      padding: 6px 0;
+      border-bottom: 1px solid rgba(255,255,255,.06);
+    }
+    .status:last-child{ border-bottom:none; }
+    .pill {
+      padding: 2px 10px;
+      border-radius: 999px;
+      display:inline-block;
+      border:1px solid var(--border);
+      font-size: 12px;
+      color: var(--text);
+      background: rgba(255,255,255,.03);
+      text-align:center;
+      min-width: 70px;
+    }
     .ok { border-color: #2e7d32; }
     .warn { border-color: #ed6c02; }
     .fail { border-color: #d32f2f; }
     .skip { border-color: #607d8b; }
-    .pending { border-color: #999; }
-    small { color:#555; }
-    pre { white-space: pre-wrap; word-break: break-word; }
+    .pending { border-color: #6b7a90; }
+    small { color: var(--muted); }
+    pre {
+      white-space: pre-wrap;
+      word-break: break-word;
+      background: rgba(255,255,255,.03);
+      border: 1px solid var(--border);
+      padding: 12px;
+      border-radius: 12px;
+      color: var(--text);
+      overflow:auto;
+    }
+    input[type="file"]{
+      padding: 10px;
+      border-radius: 12px;
+      border: 1px dashed var(--border);
+      background: rgba(255,255,255,.02);
+      color: var(--text);
+      width: 100%;
+      max-width: 560px;
+    }
+    .hint{
+      margin-top: 6px;
+      color: var(--muted);
+      line-height: 1.35;
+    }
   </style>
 </head>
 <body>
 
-  <h1>ABE Integration</h1>
-  <p><strong>Local-only.</strong> No servers, no logins, no telemetry. Everything runs in your browser.</p>
+  <div class="topbar">
+    <div class="brand">
+      <h1>ABE Integration</h1>
+      <small>Local-only • No servers • No logins • No telemetry • SHA-256 receipts</small>
+    </div>
+
+    <div class="row" style="margin:0;">
+      <button class="ghost" id="btnHome" title="Go to ABE home">Home</button>
+      <button class="ghost" id="btnStart" title="Go to Start Here">Start Here</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>0) Default Scenario (recommended)</h2>
+    <p class="hint">
+      Don’t upload anything for a verification run. This uses built-in defaults / stubs and still generates receipts.
+      You can upload later when Intake OCR is finished.
+    </p>
+    <div class="row">
+      <button id="btnDefault">Load Default Scenario</button>
+    </div>
+  </div>
 
   <div class="card">
     <h2>1) Optional: Upload files</h2>
-    <p><small>This does not send anything anywhere. Files stay on your device. (Intake runner can use these later.)</small></p>
+    <p class="hint">Files stay on your device. Integration only stores file metadata unless Intake parses them.</p>
     <input id="fileInput" type="file" multiple />
     <div id="fileList"></div>
   </div>
@@ -39,8 +153,9 @@
       <button id="btnRun">Run Engine</button>
       <button id="btnReset">Reset Scenario</button>
     </div>
-    <div id="engineStatus" class="card">
-      <h3>Module Status</h3>
+
+    <div class="card" style="background: rgba(255,255,255,.02);">
+      <h3 style="margin-top:0;">Module Status</h3>
       <div id="statusGrid"></div>
     </div>
   </div>
