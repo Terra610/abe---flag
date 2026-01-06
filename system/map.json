@@ -190,7 +190,7 @@
     "canonical_artifacts": {
       "inputs": [
         "inputs.intake",
-        "inputs.ciri_inputs",
+        "inputs.ciri",
         "inputs.ciri_prefill",
         "inputs.ciri_overrides",
         "inputs.macro_params"
