@@ -1,5 +1,6 @@
 // integration/orchestrator.js
 // ABE Flag Orchestrator (Mode B): Run Engine in-order, local-only, receipts + hashes.
+// Manifest-driven. No servers, no logins, no telemetry.
 
 import {
   getOrCreateScenario,
@@ -31,6 +32,8 @@ function pillClass(status) {
 function renderStatus() {
   const scenario = getOrCreateScenario();
   const grid = document.getElementById("statusGrid");
+  if (!grid) return;
+
   grid.innerHTML = "";
 
   const entries = Object.entries(scenario.module_status || {});
@@ -62,6 +65,8 @@ function renderStatus() {
 
 function listFiles(files) {
   const el = document.getElementById("fileList");
+  if (!el) return;
+
   el.innerHTML = "";
   if (!files || !files.length) return;
 
@@ -76,7 +81,6 @@ function listFiles(files) {
 
 function initScenario() {
   const s = getOrCreateScenario();
-  // Ensure module_status exists
   s.module_status = s.module_status || {};
   saveScenario(s);
   renderStatus();
@@ -84,15 +88,21 @@ function initScenario() {
 
 function setPendingFromManifest(manifest) {
   const s = getOrCreateScenario();
-  for (const k of manifest.firing_order) {
+  s.module_status = s.module_status || {};
+
+  for (const k of manifest.firing_order || []) {
     if (!s.module_status[k]) {
-      s.module_status[k] = { status: "PENDING", generated_at: new Date().toISOString(), notes: "" };
+      s.module_status[k] = {
+        status: "PENDING",
+        generated_at: new Date().toISOString(),
+        notes: ""
+      };
     }
   }
   saveScenario(s);
 }
 
-function hasRequiredPaths(scenario, paths = []) {
+function hasRequiredPaths(paths = []) {
   const missing = [];
   for (const p of paths) {
     const v = scenarioGet(p);
@@ -101,23 +111,23 @@ function hasRequiredPaths(scenario, paths = []) {
   return missing;
 }
 
-// Dynamic import runner; if missing, we SKIP.
+// Dynamic import runner; if missing, we SKIP (unless required).
 async function loadRunner(runnerPath) {
-  // runnerPath in manifest is relative to integration/ folder
+  // runnerPath in manifest is relative to integration/ folder (because this file lives in integration/)
   // Example: "../cda/runner.js"
   return import(runnerPath);
 }
 
 async function runEngine(files) {
   const manifest = await loadManifest();
+
   initScenario();
   setPendingFromManifest(manifest);
   renderStatus();
 
-  // Save file metadata + optional file handling reference (no uploads anywhere).
-  // If you later implement intake/runner.js, it can use scenario.inputs.intake_files_meta
+  // Save file metadata only (no uploads anywhere).
   if (files && files.length) {
-    const meta = Array.from(files).map(f => ({
+    const meta = Array.from(files).map((f) => ({
       name: f.name,
       size: f.size,
       type: f.type,
@@ -127,8 +137,8 @@ async function runEngine(files) {
   }
 
   // Run modules in order
-  for (const moduleKey of manifest.firing_order) {
-    const cfg = manifest.modules[moduleKey] || {};
+  for (const moduleKey of manifest.firing_order || []) {
+    const cfg = manifest.modules?.[moduleKey] || {};
     const required = !!cfg.required;
     const requires = cfg.requires || [];
     const produces = cfg.produces || [];
@@ -137,14 +147,14 @@ async function runEngine(files) {
     setModuleStatus(moduleKey, "RUNNING", "Running…");
     renderStatus();
 
-    // Check required inputs
-    const missing = hasRequiredPaths(getOrCreateScenario(), requires);
+    // Dependency check
+    const missing = hasRequiredPaths(requires);
     if (missing.length) {
       const note = `Missing required inputs: ${missing.join(", ")}`;
       if (required) {
         setModuleStatus(moduleKey, "FAIL", note);
         renderStatus();
-        break; // stop the engine on required failure
+        break;
       } else {
         setModuleStatus(moduleKey, "SKIP", note);
         renderStatus();
@@ -152,13 +162,18 @@ async function runEngine(files) {
       }
     }
 
+    // Runner existence
     if (!runnerPath) {
       const note = "No runner defined in manifest.";
-      if (required) setModuleStatus(moduleKey, "FAIL", note);
-      else setModuleStatus(moduleKey, "SKIP", note);
-      renderStatus();
-      if (required) break;
-      continue;
+      if (required) {
+        setModuleStatus(moduleKey, "FAIL", note);
+        renderStatus();
+        break;
+      } else {
+        setModuleStatus(moduleKey, "SKIP", note);
+        renderStatus();
+        continue;
+      }
     }
 
     // Load runner
@@ -167,20 +182,28 @@ async function runEngine(files) {
       mod = await loadRunner(runnerPath);
     } catch (e) {
       const note = `Runner not found: ${runnerPath}`;
-      if (required) setModuleStatus(moduleKey, "FAIL", note);
-      else setModuleStatus(moduleKey, "SKIP", note);
-      renderStatus();
-      if (required) break;
-      continue;
+      if (required) {
+        setModuleStatus(moduleKey, "FAIL", note);
+        renderStatus();
+        break;
+      } else {
+        setModuleStatus(moduleKey, "SKIP", note);
+        renderStatus();
+        continue;
+      }
     }
 
-    if (!mod.run || typeof mod.run !== "function") {
-      const note = `Runner missing export: run(scenario, ctx)`;
-      if (required) setModuleStatus(moduleKey, "FAIL", note);
-      else setModuleStatus(moduleKey, "SKIP", note);
-      renderStatus();
-      if (required) break;
-      continue;
+    if (!mod?.run || typeof mod.run !== "function") {
+      const note = "Runner missing export: run(scenario, ctx)";
+      if (required) {
+        setModuleStatus(moduleKey, "FAIL", note);
+        renderStatus();
+        break;
+      } else {
+        setModuleStatus(moduleKey, "SKIP", note);
+        renderStatus();
+        continue;
+      }
     }
 
     // Execute runner
@@ -188,23 +211,19 @@ async function runEngine(files) {
       const scenario = getOrCreateScenario();
       const out = await mod.run(scenario, { files });
 
-      // Write output
-if (out && typeof out === "object" && !Array.isArray(out) && out.__writes && typeof out.__writes === "object") {
-  for (const [p, v] of Object.entries(out.__writes)) {
-    scenarioSet(p, v);
-    await storeHash(p, v);
-  }
-} else if (produces.length >= 1) {
-  // HARD RULE: store the entire module output at the FIRST produced path only.
-  // This prevents endless produce-path mismatch loops.
-  scenarioSet(produces[0], out);
-  await storeHash(produces[0], out);
-} else {
-  if (out !== undefined) await storeHash(`module_output.${moduleKey}`, out);
-}
+      // WRITE CONTRACT (kills edit-loop of death):
+      // 1) If runner returns __writes, honor it (explicit multi-write).
+      // 2) Else if manifest has produces, write the full output to produces[0] only.
+      // 3) Else hash a module_output blob.
+      if (out && typeof out === "object" && !Array.isArray(out) && out.__writes && typeof out.__writes === "object") {
+        for (const [p, v] of Object.entries(out.__writes)) {
+          scenarioSet(p, v);
+          await storeHash(p, v);
         }
+      } else if (produces.length >= 1) {
+        scenarioSet(produces[0], out);
+        await storeHash(produces[0], out);
       } else {
-        // No produces configured; still hash a serialized output blob if present
         if (out !== undefined) await storeHash(`module_output.${moduleKey}`, out);
       }
 
@@ -242,47 +261,68 @@ if (out && typeof out === "object" && !Array.isArray(out) && out.__writes && typ
 
   // Show preview
   const pre = document.getElementById("receiptPreview");
-  pre.textContent = JSON.stringify(receipt, null, 2);
+  if (pre) pre.textContent = JSON.stringify(receipt, null, 2);
 
   return receipt;
 }
 
-// UI hooks
-document.getElementById("btnInit").addEventListener("click", () => {
-  initScenario();
-  alert("Scenario initialized.");
-});
+// UI hooks (guarded so page doesn't die if element missing)
+const btnInit = document.getElementById("btnInit");
+if (btnInit) {
+  btnInit.addEventListener("click", () => {
+    initScenario();
+    alert("Scenario initialized.");
+  });
+}
 
-document.getElementById("btnReset").addEventListener("click", () => {
-  resetScenario();
-  renderStatus();
-  document.getElementById("receiptPreview").textContent = "";
-  alert("Scenario reset.");
-});
+const btnReset = document.getElementById("btnReset");
+if (btnReset) {
+  btnReset.addEventListener("click", () => {
+    resetScenario();
+    renderStatus();
+    const pre = document.getElementById("receiptPreview");
+    if (pre) pre.textContent = "";
+    alert("Scenario reset.");
+  });
+}
 
-document.getElementById("btnRun").addEventListener("click", async () => {
-  const files = document.getElementById("fileInput").files;
-  try {
-    await runEngine(files);
-  } catch (e) {
-    alert(`Run failed: ${e?.message || e}`);
-  }
-});
+const btnRun = document.getElementById("btnRun");
+if (btnRun) {
+  btnRun.addEventListener("click", async () => {
+    const input = document.getElementById("fileInput");
+    const files = input?.files || null;
+    try {
+      await runEngine(files);
+    } catch (e) {
+      alert(`Run failed: ${e?.message || e}`);
+    }
+  });
+}
 
-document.getElementById("btnReceipt").addEventListener("click", () => {
-  const receipt = scenarioGet("receipts.audit_certificate");
-  if (!receipt) return alert("No receipt yet. Run Engine first.");
-  downloadJSON("audit_certificate.json", receipt);
-});
+const btnReceipt = document.getElementById("btnReceipt");
+if (btnReceipt) {
+  btnReceipt.addEventListener("click", () => {
+    const receipt = scenarioGet("receipts.audit_certificate");
+    if (!receipt) return alert("No receipt yet. Run Engine first.");
+    downloadJSON("audit_certificate.json", receipt);
+  });
+}
 
-document.getElementById("btnScenario").addEventListener("click", () => {
-  const s = getOrCreateScenario();
-  downloadJSON("scenario.json", s);
-});
+const btnScenario = document.getElementById("btnScenario");
+if (btnScenario) {
+  btnScenario.addEventListener("click", () => {
+    const s = getOrCreateScenario();
+    downloadJSON("scenario.json", s);
+  });
+}
 
-document.getElementById("fileInput").addEventListener("change", (e) => {
-  listFiles(e.target.files);
-});
+const fileInput = document.getElementById("fileInput");
+if (fileInput) {
+  fileInput.addEventListener("change", (e) => {
+    listFiles(e.target.files);
+  });
+}
 
 // Render on load
 renderStatus();
+```0
