@@ -86,6 +86,25 @@ function initScenario() {
   renderStatus();
 }
 
+function loadDefaultScenario() {
+  // Default inputs that let required modules run without user uploads.
+  // Keep this minimal + non-sensitive.
+  initScenario();
+
+  // If Intake runner already writes inputs.intake, great. If not, we give the engine something safe.
+  scenarioSet("inputs.intake", {
+    source: "default_scenario",
+    created_at: new Date().toISOString(),
+    notes: "Default scenario loaded (no user upload)."
+  });
+
+  // Optional: also store a hint to show in receipts
+  scenarioSet("inputs.default_loaded", true);
+
+  saveScenario(getOrCreateScenario());
+  renderStatus();
+}
+
 function setPendingFromManifest(manifest) {
   const s = getOrCreateScenario();
   s.module_status = s.module_status || {};
@@ -272,6 +291,14 @@ if (btnInit) {
   btnInit.addEventListener("click", () => {
     initScenario();
     alert("Scenario initialized.");
+  });
+}
+
+const btnDefault = document.getElementById("btnDefault");
+if (btnDefault) {
+  btnDefault.addEventListener("click", () => {
+    loadDefaultScenario();
+    alert("Default scenario loaded.");
   });
 }
 
