@@ -275,6 +275,21 @@ async function runEngine(files) {
   scenarioSet("receipts.audit_certificate", receipt);
   await storeHash("receipts.audit_certificate", receipt);
 
+// Build + store plain-language explanation (local-only)
+  try {
+    const { buildExplain } = await import("./explain_runner.js");
+    const explain = buildExplain(getOrCreateScenario());
+
+    scenarioSet("receipts.explain", explain);
+    await storeHash("receipts.explain", explain);
+
+    const explainPre = document.getElementById("explainPreview");
+    if (explainPre) explainPre.textContent = JSON.stringify(explain.plain_language, null, 2);
+  } catch (e) {
+    // Non-fatal: explanation is optional; engine integrity stays intact.
+    console.warn("Explain layer failed:", e);
+  }
+  
   const pre = document.getElementById("receiptPreview");
   if (pre) pre.textContent = JSON.stringify(receipt, null, 2);
 
