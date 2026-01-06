@@ -188,25 +188,20 @@ async function runEngine(files) {
       const scenario = getOrCreateScenario();
       const out = await mod.run(scenario, { files });
 
-      // Write output to produced paths
-      // Convention: if produces has exactly one path, we store the runner output there.
-      // If runner returns a map {path: value}, we store each.
-      if (out && typeof out === "object" && !Array.isArray(out) && out.__writes && typeof out.__writes === "object") {
-        // Advanced: runner returns { __writes: { "derived.x": {...}, ... } }
-        for (const [p, v] of Object.entries(out.__writes)) {
-          scenarioSet(p, v);
-          await storeHash(p, v);
-        }
-      } else if (produces.length === 1) {
-        scenarioSet(produces[0], out);
-        await storeHash(produces[0], out);
-      } else if (produces.length > 1 && out && typeof out === "object") {
-        // If produces multiple, runner should return keyed object: { producedPath1: obj1, producedPath2: obj2 }
-        for (const p of produces) {
-          if (p in out) {
-            scenarioSet(p, out[p]);
-            await storeHash(p, out[p]);
-          }
+      // Write output
+if (out && typeof out === "object" && !Array.isArray(out) && out.__writes && typeof out.__writes === "object") {
+  for (const [p, v] of Object.entries(out.__writes)) {
+    scenarioSet(p, v);
+    await storeHash(p, v);
+  }
+} else if (produces.length >= 1) {
+  // HARD RULE: store the entire module output at the FIRST produced path only.
+  // This prevents endless produce-path mismatch loops.
+  scenarioSet(produces[0], out);
+  await storeHash(produces[0], out);
+} else {
+  if (out !== undefined) await storeHash(`module_output.${moduleKey}`, out);
+}
         }
       } else {
         // No produces configured; still hash a serialized output blob if present
