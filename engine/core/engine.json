@@ -41,7 +41,7 @@
     "ccri": {
       "required": false,
       "runner": "../ccri/runner.js",
-      "produces": ["derived.ccri", "inputs.ciri_overrides"]
+      "produces": ["derived.ccri"]
     },
     "cff": {
       "required": false,
@@ -52,25 +52,25 @@
       "required": false,
       "runner": "../affe/runner.js",
       "requires": ["derived.cff"],
-      "produces": ["derived.affe", "inputs.ciri_prefill"]
+      "produces": ["derived.affe"]
     },
     "ciri": {
       "required": true,
       "runner": "../ciri/runner.js",
       "requires": ["derived.divergence"],
-      "produces": ["derived.ciri", "derived.ciri.total_recovery"]
+      "produces": ["derived.ciri"]
     },
     "cibs": {
       "required": true,
       "runner": "../cibs/runner.js",
       "requires": ["derived.ciri"],
-      "produces": ["derived.cibs", "derived.cibs.allocations"]
+      "produces": ["derived.cibs"]
     },
     "cii": {
       "required": true,
       "runner": "../cii/runner.js",
       "requires": ["derived.cibs"],
-      "produces": ["derived.cii", "derived.cii.portfolio"]
+      "produces": ["derived.cii"]
     },
     "macro": {
       "required": false,
