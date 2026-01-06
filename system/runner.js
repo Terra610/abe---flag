@@ -1,5 +1,5 @@
 // system/runner.js
-// SYSTEM → Engine System Map (reads system/map.json)
+// system → Engine System Map (reads system/map.json)
 // Local-only. Produces derived.systemmap for transparency + linkage.
 
 async function loadMap() {
@@ -11,10 +11,22 @@ async function loadMap() {
 function makePlainEnglish(map) {
   // Junior-high friendly explanation
   const steps = [];
-  const flow = map?.flow || map?.data_flow || map?.pipeline || null;
 
-  if (Array.isArray(flow)) {
-    flow.forEach((s, i) => steps.push(`${i + 1}. ${String(s)}`));
+  // Support both old and new shapes:
+  // - new: map.flows = [{from,to,control,...}, ...]
+  // - old: map.flow / map.data_flow / map.pipeline = ["step", ...]
+  if (Array.isArray(map?.flows)) {
+    map.flows.forEach((f, i) => {
+      const from = f?.from ? String(f.from) : "(unknown)";
+      const to = f?.to ? String(f.to) : "(unknown)";
+      const control = f?.control ? ` — ${String(f.control)}` : "";
+      steps.push(`${i + 1}. ${from} → ${to}${control}`);
+    });
+  } else {
+    const flow = map?.flow || map?.data_flow || map?.pipeline || null;
+    if (Array.isArray(flow)) {
+      flow.forEach((s, i) => steps.push(`${i + 1}. ${String(s)}`));
+    }
   }
 
   return {
@@ -34,7 +46,7 @@ export async function run(scenario, ctx = {}) {
   const plain = makePlainEnglish(map);
 
   return {
-    module: "SYSTEM",
+    module: "system",
     module_version: "1.0",
     generated_at: new Date().toISOString(),
     system_map: map,
