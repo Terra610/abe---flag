@@ -4,6 +4,7 @@
   "description": "ABE Flag - local-only constitutional alignment engine. Orchestrated via Integration.",
   "firing_order": [
     "intake",
+    "system",
     "cae",
     "divergence",
     "ccri",
@@ -16,9 +17,14 @@
   ],
   "modules": {
     "intake": {
-      "required": false,
+      "required": true,
       "runner": "../intake/runner.js",
       "produces": ["inputs.intake"]
+    },
+    "system": {
+      "required": false,
+      "runner": "../system/runner.js",
+      "produces": ["derived.systemmap"]
     },
     "cae": {
       "required": false,
@@ -35,7 +41,7 @@
     "ccri": {
       "required": false,
       "runner": "../ccri/runner.js",
-      "produces": ["derived.ccri"]
+      "produces": ["derived.ccri", "inputs.ciri_overrides"]
     },
     "cff": {
       "required": false,
@@ -46,25 +52,25 @@
       "required": false,
       "runner": "../affe/runner.js",
       "requires": ["derived.cff"],
-      "produces": ["derived.affe"]
+      "produces": ["derived.affe", "inputs.ciri_prefill"]
     },
     "ciri": {
       "required": true,
       "runner": "../ciri/runner.js",
       "requires": ["derived.divergence"],
-      "produces": ["derived.ciri"]
+      "produces": ["derived.ciri", "derived.ciri.total_recovery"]
     },
     "cibs": {
       "required": true,
       "runner": "../cibs/runner.js",
       "requires": ["derived.ciri"],
-      "produces": ["derived.cibs"]
+      "produces": ["derived.cibs", "derived.cibs.allocations"]
     },
     "cii": {
       "required": true,
       "runner": "../cii/runner.js",
       "requires": ["derived.cibs"],
-      "produces": ["derived.cii"]
+      "produces": ["derived.cii", "derived.cii.portfolio"]
     },
     "macro": {
       "required": false,
