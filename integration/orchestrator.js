@@ -88,17 +88,15 @@ function initScenario() {
 
 function loadDefaultScenario() {
   // Default inputs that let required modules run without user uploads.
-  // Keep this minimal + non-sensitive.
+  // Keep minimal + non-sensitive.
   initScenario();
 
-  // If Intake runner already writes inputs.intake, great. If not, we give the engine something safe.
   scenarioSet("inputs.intake", {
     source: "default_scenario",
     created_at: new Date().toISOString(),
     notes: "Default scenario loaded (no user upload)."
   });
 
-  // Optional: also store a hint to show in receipts
   scenarioSet("inputs.default_loaded", true);
 
   saveScenario(getOrCreateScenario());
@@ -130,10 +128,8 @@ function hasRequiredPaths(paths = []) {
   return missing;
 }
 
-// Dynamic import runner; if missing, we SKIP (unless required).
 async function loadRunner(runnerPath) {
-  // runnerPath in manifest is relative to integration/ folder (because this file lives in integration/)
-  // Example: "../cda/runner.js"
+  // runnerPath in manifest is relative to integration/ folder
   return import(runnerPath);
 }
 
@@ -142,6 +138,13 @@ async function runEngine(files) {
 
   initScenario();
   setPendingFromManifest(manifest);
+
+  // Auto-default: if user didn't upload anything and Intake hasn't populated inputs.intake,
+  // we still run deterministically with a safe default.
+  if (scenarioGet("inputs.intake") == null) {
+    loadDefaultScenario();
+  }
+
   renderStatus();
 
   // Save file metadata only (no uploads anywhere).
@@ -166,7 +169,6 @@ async function runEngine(files) {
     setModuleStatus(moduleKey, "RUNNING", "Running…");
     renderStatus();
 
-    // Dependency check
     const missing = hasRequiredPaths(requires);
     if (missing.length) {
       const note = `Missing required inputs: ${missing.join(", ")}`;
@@ -181,7 +183,6 @@ async function runEngine(files) {
       }
     }
 
-    // Runner existence
     if (!runnerPath) {
       const note = "No runner defined in manifest.";
       if (required) {
@@ -195,7 +196,6 @@ async function runEngine(files) {
       }
     }
 
-    // Load runner
     let mod;
     try {
       mod = await loadRunner(runnerPath);
@@ -225,15 +225,13 @@ async function runEngine(files) {
       }
     }
 
-    // Execute runner
     try {
       const scenario = getOrCreateScenario();
       const out = await mod.run(scenario, { files });
 
-      // WRITE CONTRACT (kills edit-loop of death):
-      // 1) If runner returns __writes, honor it (explicit multi-write).
-      // 2) Else if manifest has produces, write the full output to produces[0] only.
-      // 3) Else hash a module_output blob.
+      // WRITE CONTRACT (ends edit-loop of death):
+      // - honor __writes if provided
+      // - otherwise write entire output to produces[0] only
       if (out && typeof out === "object" && !Array.isArray(out) && out.__writes && typeof out.__writes === "object") {
         for (const [p, v] of Object.entries(out.__writes)) {
           scenarioSet(p, v);
@@ -274,18 +272,26 @@ async function runEngine(files) {
     derived_present: Object.keys(finalScenario.derived || {})
   };
 
-  // Store receipt + hash it
   scenarioSet("receipts.audit_certificate", receipt);
   await storeHash("receipts.audit_certificate", receipt);
 
-  // Show preview
   const pre = document.getElementById("receiptPreview");
   if (pre) pre.textContent = JSON.stringify(receipt, null, 2);
 
   return receipt;
 }
 
-// UI hooks (guarded so page doesn't die if element missing)
+/* =========================
+   UI HOOKS
+   ========================= */
+
+// Nav buttons (present in the updated integration/index.html)
+const btnHome = document.getElementById("btnHome");
+if (btnHome) btnHome.addEventListener("click", () => (window.location.href = "../index.html"));
+
+const btnStart = document.getElementById("btnStart");
+if (btnStart) btnStart.addEventListener("click", () => (window.location.href = "../start/index.html"));
+
 const btnInit = document.getElementById("btnInit");
 if (btnInit) {
   btnInit.addEventListener("click", () => {
@@ -350,6 +356,4 @@ if (fileInput) {
   });
 }
 
-// Render on load
 renderStatus();
-```0
