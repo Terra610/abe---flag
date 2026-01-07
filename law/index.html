@@ -4,9 +4,38 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>Law — Federal Authority Corpus | A.B.E.</title>
+
+  <!-- GitHub Pages / repo base -->
   <base href="/abe---flag/">
+
+  <!-- Global ABE theme -->
   <link rel="stylesheet" href="abe-patch/assets/abe-patch.css"/>
+
   <style>
+    /* =========================================================
+       LAW VIEWER — readability/contrast patch (dark-theme aligned)
+       Goal: no “dark text on dark card”, no “white page” surprises.
+       ========================================================= */
+
+    :root{
+      /* fallback colors if abe-patch vars are missing */
+      --abe-bg: #060814;
+      --abe-card: #10131c;
+      --abe-panel: #050712;
+      --abe-ink: #e9eef6;
+      --abe-muted: rgba(233,238,246,.72);
+      --abe-line: rgba(233,238,246,.12);
+      --abe-accent: #5ddfff;
+      --abe-focus: rgba(93,223,255,.35);
+    }
+
+    /* Force page background dark even if a device/theme tries to override */
+    body.abe-page{
+      background: var(--bg, var(--abe-bg));
+      color: var(--ink, var(--abe-ink));
+    }
+
+    /* Better default readable text */
     .law-wrap{
       max-width:1100px;
       margin:0 auto;
@@ -15,12 +44,14 @@
     .law-header h1{
       margin:0 0 .25rem;
       font-size:1.9rem;
+      color: var(--ink, var(--abe-ink));
     }
     .law-header .tagline{
       max-width:720px;
-      color:var(--muted);
+      color: var(--muted, var(--abe-muted));
       font-size:.98rem;
     }
+
     .law-grid{
       display:grid;
       gap:1rem;
@@ -30,26 +61,33 @@
         grid-template-columns:280px 1.3fr 1.8fr;
       }
     }
+
+    /* Cards */
     .law-card{
-      background:#10131c;
+      background: var(--abe-card);
       border-radius:14px;
-      border:1px solid var(--line);
+      border:1px solid var(--line, var(--abe-line));
       padding:.9rem 1rem 1rem;
       box-shadow:0 18px 40px rgba(0,0,0,.4);
       min-height:0;
+      color: var(--ink, var(--abe-ink));
     }
     .law-card h2{
       margin:.1rem 0 .4rem;
       font-size:1.05rem;
+      color: var(--ink, var(--abe-ink));
     }
     .law-card h3{
       margin:.2rem 0 .4rem;
       font-size:.98rem;
+      color: var(--ink, var(--abe-ink));
     }
     .law-sub{
-      color:var(--muted);
+      color: var(--muted, var(--abe-muted));
       font-size:.88rem;
     }
+
+    /* Pack list */
     .law-pack-list{
       list-style:none;
       margin:.4rem 0 0;
@@ -62,25 +100,38 @@
       width:100%;
       text-align:left;
       border-radius:10px;
-      border:1px solid var(--line);
+      border:1px solid var(--line, var(--abe-line));
       padding:.4rem .55rem;
-      background:#050712;
-      color:var(--ink);
+      background: var(--abe-panel);
+      color: var(--ink, var(--abe-ink));
       font-size:.88rem;
       cursor:pointer;
     }
-    .law-pack-btn.active{
-      border-color:var(--accent);
-      box-shadow:0 0 0 1px rgba(93,223,255,.3);
+    .law-pack-btn:hover{
+      border-color: rgba(93,223,255,.35);
+      box-shadow: 0 0 0 1px rgba(93,223,255,.18);
     }
+    .law-pack-btn.active{
+      border-color: var(--accent, var(--abe-accent));
+      box-shadow:0 0 0 2px rgba(93,223,255,.18);
+    }
+    .law-pack-btn:focus{
+      outline:none;
+      box-shadow: 0 0 0 3px var(--abe-focus);
+      border-color: var(--accent, var(--abe-accent));
+    }
+
+    /* Status */
     .law-status{
       margin-top:.4rem;
       font-size:.85rem;
-      color:var(--muted);
+      color: var(--muted, var(--abe-muted));
     }
     .law-status-ok{color:#4bd28f;}
     .law-status-warn{color:#ffba5c;}
     .law-status-bad{color:#ff8585;}
+
+    /* Node list */
     .law-node-list{
       list-style:none;
       margin:.3rem 0 0;
@@ -88,8 +139,8 @@
       max-height:460px;
       overflow:auto;
       border-radius:8px;
-      border:1px solid var(--line);
-      background:#050712;
+      border:1px solid var(--line, var(--abe-line));
+      background: var(--abe-panel);
     }
     .law-node{
       border-bottom:1px solid rgba(255,255,255,.06);
@@ -101,65 +152,93 @@
       padding:.45rem .55rem;
       background:transparent;
       border:none;
-      color:var(--ink);
+      color: var(--ink, var(--abe-ink));
       cursor:pointer;
       font-size:.88rem;
     }
     .law-node button:hover{
       background:rgba(255,255,255,.03);
     }
+    .law-node button:focus{
+      outline:none;
+      background:rgba(93,223,255,.08);
+      box-shadow: inset 0 0 0 1px rgba(93,223,255,.25);
+    }
     .law-node small{
       display:block;
-      color:var(--muted);
+      color: var(--muted, var(--abe-muted));
       font-size:.78rem;
     }
+
+    /* Detail panel */
     .law-detail{
-      background:#050712;
+      background: var(--abe-panel);
       border-radius:10px;
-      border:1px solid var(--line);
+      border:1px solid var(--line, var(--abe-line));
       padding:.6rem .7rem;
       font-family:ui-monospace,SFMono-Regular,Consolas,monospace;
       font-size:.82rem;
       max-height:480px;
       overflow:auto;
       white-space:pre-wrap;
+      color: var(--ink, var(--abe-ink));
     }
+
+    /* Pills */
     .law-pill{
       display:inline-flex;
       align-items:center;
       gap:.3rem;
       padding:.15rem .5rem;
       border-radius:999px;
-      border:1px solid var(--line);
+      border:1px solid var(--line, var(--abe-line));
       font-size:.75rem;
-      color:var(--muted);
+      color: var(--muted, var(--abe-muted));
       margin-right:.25rem;
       margin-bottom:.25rem;
     }
     .law-pill-usc{border-color:#5ddfff;}
     .law-pill-cfr{border-color:#ffba5c;}
     .law-pill-funding{border-color:#4bd28f;}
+
+    /* Links */
     .law-links{
       margin-top:.4rem;
       font-size:.84rem;
     }
     .law-links a{
-      color:var(--accent);
+      color: var(--accent, var(--abe-accent));
       text-decoration:none;
     }
     .law-links a:hover{text-decoration:underline;}
+
+    /* Search */
     .law-search{
       width:100%;
-      background:#050712;
+      background: var(--abe-panel);
       border-radius:999px;
-      border:1px solid var(--line);
+      border:1px solid var(--line, var(--abe-line));
       padding:.4rem .7rem;
-      color:var(--ink);
+      color: var(--ink, var(--abe-ink));
       font-size:.86rem;
       margin-top:.3rem;
     }
+    .law-search::placeholder{
+      color: rgba(233,238,246,.55);
+    }
+    .law-search:focus{
+      outline:none;
+      border-color: var(--accent, var(--abe-accent));
+      box-shadow: 0 0 0 3px rgba(93,223,255,.14);
+    }
+
+    /* Small improvement: chips readable on dark bg */
+    a.chip{
+      color: var(--ink, var(--abe-ink));
+    }
   </style>
 </head>
+
 <body class="abe-page">
 
 <header class="abe-header">
