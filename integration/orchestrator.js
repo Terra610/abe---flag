@@ -159,7 +159,6 @@ function buildPlainEnglish(finalScenario, receipt) {
   const skip = ran.filter(([, v]) => String(v?.status || "").toUpperCase() === "SKIP");
 
   const receiptHash = hashes?.["receipts.audit_certificate"] || null;
-  const explainHash = hashes?.["receipts.explain"] || null;
   const plainHash = hashes?.["derived.plain_english"] || null;
 
   const overall =
@@ -178,33 +177,27 @@ function buildPlainEnglish(finalScenario, receipt) {
     what_happened: [
       `Engine: ${engineId} v${engineVersion}`,
       `Modules completed: ${ok.length}/${ran.length || entries.length}`,
-      warn.length ? `Warnings: ${warn.length} (non-fatal)` : "Warnings: 0",
-      fail.length ? `Failures: ${fail.length} (engine may stop on required modules)` : "Failures: 0",
-      skip.length ? `Skipped: ${skip.length} (optional modules missing inputs)` : "Skipped: 0"
+      `Warnings: ${warn.length}`,
+      `Failures: ${fail.length}`,
+      `Skipped: ${skip.length}`
     ],
     what_to_download: [
       "audit_certificate.json = the official run receipt (module status + hashes).",
       "scenario.json = the full scenario store (inputs + derived outputs + hashes)."
     ],
     how_to_verify_hashes: [
-      "A hash is a fingerprint of an output file.",
+      "A hash is a fingerprint of an output.",
       "If the output changes, the hash changes.",
       "To verify: re-run the engine on the same inputs and compare hashes."
     ],
     key_hashes: {
       audit_certificate: receiptHash,
-      explain: explainHash,
       plain_english: plainHash
     },
     what_outputs_exist_now: {
       inputs_present: inputsPresent,
       derived_present: derivedPresent
-    },
-    next_steps: [
-      "If you want different results: change inputs (upload files or edit defaults) and run again.",
-      "If a module shows SKIP: it’s optional and missing inputs (not a failure).",
-      "If a module shows FAIL: fix that module’s inputs/runner and re-run."
-    ]
+    }
   };
 
   const technical = {
@@ -213,7 +206,6 @@ function buildPlainEnglish(finalScenario, receipt) {
     hashes,
     canonical_paths: {
       receipt_path: "receipts.audit_certificate",
-      explain_path: "receipts.explain",
       plain_english_path: "derived.plain_english"
     },
     produced_keys: {
@@ -377,21 +369,18 @@ async function runEngine(files) {
   scenarioSet("receipts.audit_certificate", receipt);
   await storeHash("receipts.audit_certificate", receipt);
 
-// Build + store plain-language explanation (local-only)
+  // Build + store derived.plain_english (local-only)
   try {
-    const { buildExplain } = await import("./explain_runner.js");
-    const explain = buildExplain(getOrCreateScenario());
+    const plain = buildPlainEnglish(getOrCreateScenario(), receipt);
+    scenarioSet("derived.plain_english", plain);
+    await storeHash("derived.plain_english", plain);
 
-    scenarioSet("receipts.explain", explain);
-    await storeHash("receipts.explain", explain);
-
-    const explainPre = document.getElementById("explainPreview");
-    if (explainPre) explainPre.textContent = JSON.stringify(explain.plain_language, null, 2);
+    const plainPre = document.getElementById("plainPreview");
+    if (plainPre) plainPre.textContent = JSON.stringify(plain.citizen_summary, null, 2);
   } catch (e) {
-    // Non-fatal: explanation is optional; engine integrity stays intact.
-    console.warn("Explain layer failed:", e);
+    console.warn("Plain-English builder failed:", e);
   }
-  
+
   const pre = document.getElementById("receiptPreview");
   if (pre) pre.textContent = JSON.stringify(receipt, null, 2);
 
@@ -432,6 +421,8 @@ if (btnReset) {
     renderStatus();
     const pre = document.getElementById("receiptPreview");
     if (pre) pre.textContent = "";
+    const plainPre = document.getElementById("plainPreview");
+    if (plainPre) plainPre.textContent = "";
     alert("Scenario reset.");
   });
 }
@@ -473,4 +464,6 @@ if (fileInput) {
   });
 }
 
+// Render on load
 renderStatus();
+```0
