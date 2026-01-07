@@ -1,317 +1,411 @@
 // law/viewer.js
-// Simple in-browser viewer for the Federal Authority Corpus.
-// No network calls leave the GitHub Pages origin; everything is static JSON.
+// ABE Law Viewer (Local-only)
+// Robust pack loader + entry normalizer so we don't get "No citation — (untitled)".
+// Works with: {entries:[]}, {rules:[]}, {items:[]}, root array [], or nested pack.entries.
 
-(function(){
-  const byId = id => document.getElementById(id);
+const $ = (id) => document.getElementById(id);
 
-  // ---------------------------------------------------------------------------
-  // Packs: keep in sync with law/model.json
-  // ---------------------------------------------------------------------------
-  const LAW_PACKS = [
-    {
-      id: 'title_49_transport',
-      label: 'Title 49 — Transportation (Core FMCSA Scope)',
-      file: 'law/title_49_transport.json',
-      notes: 'Definitions, general FMCSA authority, and transportation scope.',
-      kind: 'usc_cfr'
-    },
-    {
-      id: 'title_49_mcsap_fmcsa',
-      label: 'Title 49 — MCSAP & FMCSA Program Funding',
-      file: 'law/title_49_mcsap_fmcsa.json',
-      notes: 'Funding authority, program conditions, and matching requirements.',
-      kind: 'funding'
-    },
-    {
-      id: 'fmcsr_scope',
-      label: 'FMCSR Scope Map (49 CFR 390.3 / 390.5)',
-      file: 'law/fmcsr_scope.json',
-      notes: 'Commercial vs non-commercial coverage, exclusions, and definitions.',
-      kind: 'cfr'
-    },
-    {
-      id: 'mcsap_rules',
-      label: 'MCSAP Program Rules (49 CFR Part 350)',
-      file: 'law/mcsap_rules.json',
-      notes: 'State plan rules, off-mission limits, and spending conditions.',
-      kind: 'funding'
+const PACKS = [
+  {
+    id: "t49_transport",
+    label: "Title 49 — Transportation (Core FMCSA Scope)",
+    file: "law/title_49_transport.json",
+    tag: "USC"
+  },
+  {
+    id: "t49_mcsap_fmcsa",
+    label: "Title 49 — MCSAP & FMCSA Program Funding",
+    file: "law/title_49_mcsap_fmcsa.json",
+    tag: "Funding"
+  },
+  {
+    id: "fmcsr_scope",
+    label: "FMCSR Scope Map (49 CFR 390.3 / 390.5)",
+    file: "law/fmcsr_scope.json",
+    tag: "CFR"
+  },
+  {
+    id: "mcsap_rules",
+    label: "MCSAP Program Rules (49 CFR Part 350)",
+    file: "law/mcsap_rules.json",
+    tag: "CFR"
+  }
+];
+
+let STATE = {
+  packs: PACKS,
+  selectedPack: null,
+  rawPack: null,
+  entries: [],
+  filtered: [],
+  selectedEntry: null,
+  filter: ""
+};
+
+function pick(obj, keys) {
+  for (const k of keys) {
+    const v = k.split(".").reduce((acc, part) => (acc && acc[part] !== undefined ? acc[part] : undefined), obj);
+    if (v !== undefined && v !== null && String(v).trim() !== "") return v;
+  }
+  return null;
+}
+
+function asArray(v) {
+  if (!v) return [];
+  return Array.isArray(v) ? v : [v];
+}
+
+function normalizeTags(entry) {
+  const tags = []
+    .concat(asArray(pick(entry, ["tags", "tag", "category", "type"])))
+    .concat(asArray(pick(entry, ["meta.tags", "meta.tag", "meta.category", "meta.type"])))
+    .filter(Boolean)
+    .map(String);
+
+  // de-dupe
+  return Array.from(new Set(tags));
+}
+
+function normalizeCitation(entry) {
+  // Try common keys
+  const citation =
+    pick(entry, [
+      "citation",
+      "cite",
+      "cites",
+      "usc",
+      "cfr",
+      "authority",
+      "ref",
+      "reference",
+      "meta.citation",
+      "meta.cite",
+      "meta.ref",
+      "meta.reference"
+    ]) || "";
+
+  // If citation is object-ish, format it
+  if (citation && typeof citation === "object") {
+    // Try to build something readable
+    const t = pick(citation, ["title", "usc_title", "cfr_title"]);
+    const s = pick(citation, ["section", "sec", "part", "subpart", "chapter"]);
+    const raw = JSON.stringify(citation);
+    if (t && s) return `${t} § ${s}`;
+    return raw.length < 140 ? raw : "";
+  }
+
+  return String(citation).trim();
+}
+
+function normalizeTitle(entry) {
+  const title =
+    pick(entry, [
+      "title",
+      "name",
+      "heading",
+      "label",
+      "short_title",
+      "rule",
+      "topic",
+      "meta.title",
+      "meta.name",
+      "meta.heading",
+      "meta.label",
+      "meta.short_title"
+    ]) || "";
+
+  return String(title).trim();
+}
+
+function normalizeText(entry) {
+  // Prefer richer fields
+  const text =
+    pick(entry, [
+      "text",
+      "body",
+      "content",
+      "summary",
+      "notes",
+      "detail",
+      "description",
+      "preemption",
+      "supremacy",
+      "meta.text",
+      "meta.body",
+      "meta.content",
+      "meta.summary",
+      "meta.notes"
+    ]) || "";
+
+  if (typeof text === "object") return JSON.stringify(text, null, 2);
+  return String(text);
+}
+
+function normalizeLinks(entry) {
+  const linksRaw = pick(entry, ["links", "doctrine_links", "doctrines", "refs", "references", "meta.links"]) || [];
+  const links = [];
+
+  // Accept array of strings OR array of objects OR object map
+  if (Array.isArray(linksRaw)) {
+    for (const it of linksRaw) {
+      if (!it) continue;
+      if (typeof it === "string") links.push({ label: it, href: it });
+      else if (typeof it === "object") {
+        const href = pick(it, ["href", "url", "link"]);
+        const label = pick(it, ["label", "title", "name"]) || href || "Reference";
+        if (href) links.push({ label: String(label), href: String(href) });
+      }
     }
-  ];
+  } else if (typeof linksRaw === "object") {
+    for (const [k, v] of Object.entries(linksRaw)) {
+      if (typeof v === "string") links.push({ label: k, href: v });
+    }
+  }
 
-  // Doctrine slugs -> URLs (so we can add links in detail view)
-  const DOCTRINE_LINKS = {
-    constitutional_fidelity: 'doctrine/constitutional-fidelity.html',
-    void_ab_initio:          'doctrine/void-ab-initio.html',
-    abe_crra:                'doctrine/abe-crra.html'
+  return links;
+}
+
+function normalizeEntry(entry, i = 0) {
+  const citation = normalizeCitation(entry);
+  const title = normalizeTitle(entry);
+
+  // Strong fallback: generate a stable id-like citation so the list isn't blank
+  const stableId =
+    pick(entry, ["id", "key", "uid", "meta.id", "meta.key"]) ||
+    (citation ? citation : `ENTRY_${String(i + 1).padStart(3, "0")}`);
+
+  const tags = normalizeTags(entry);
+  const text = normalizeText(entry);
+  const links = normalizeLinks(entry);
+
+  return {
+    _raw: entry,
+    _id: String(stableId),
+    citation: citation || "(citation missing)",
+    title: title || "(untitled)",
+    tags,
+    text,
+    links
   };
+}
 
-  const statusEl   = byId('law-status');
-  const packListEl = byId('law-pack-list');
-  const nodeListEl = byId('law-node-list');
-  const detailEl   = byId('law-detail');
-  const linksEl    = byId('law-detail-links');
-  const searchEl   = byId('law-search');
+function extractEntries(packJson) {
+  // Accept a bunch of shapes:
+  // 1) root array []
+  // 2) { entries: [] }
+  // 3) { rules: [] }
+  // 4) { items: [] }
+  // 5) { pack: { entries: [] } }
+  if (Array.isArray(packJson)) return { entries: packJson, sourceKey: "root[]" };
 
-  let currentPack   = null;
-  let currentNodes  = [];
-  let currentFilter = '';
-
-  // ---------------------------------------------------------------------------
-  // helpers
-  // ---------------------------------------------------------------------------
-
-  function setStatus(text, kind){
-    if(!statusEl) return;
-    statusEl.textContent = `Status: ${text}`;
-    statusEl.className = 'law-status';
-    if(kind === 'ok')   statusEl.classList.add('law-status-ok');
-    if(kind === 'warn') statusEl.classList.add('law-status-warn');
-    if(kind === 'bad')  statusEl.classList.add('law-status-bad');
+  const keys = ["entries", "rules", "items", "provisions", "authority", "nodes"];
+  for (const k of keys) {
+    const v = packJson?.[k];
+    if (Array.isArray(v)) return { entries: v, sourceKey: k };
   }
 
-  function pillForType(type){
-    const span = document.createElement('span');
-    span.className = 'law-pill';
-    if(type === 'usc'){
-      span.classList.add('law-pill-usc');
-      span.textContent = 'USC';
-    } else if(type === 'cfr'){
-      span.classList.add('law-pill-cfr');
-      span.textContent = 'CFR';
-    } else if(type === 'funding'){
-      span.classList.add('law-pill-funding');
-      span.textContent = 'Funding';
+  const nested = packJson?.pack?.entries;
+  if (Array.isArray(nested)) return { entries: nested, sourceKey: "pack.entries" };
+
+  return { entries: [], sourceKey: "(none)" };
+}
+
+function setStatus(msg, cls = "") {
+  const el = $("law-status");
+  if (!el) return;
+  el.className = "law-status " + cls;
+  el.textContent = msg;
+}
+
+function renderPacks() {
+  const list = $("law-pack-list");
+  if (!list) return;
+
+  list.innerHTML = "";
+  for (const p of STATE.packs) {
+    const li = document.createElement("li");
+    const btn = document.createElement("button");
+    btn.className = "law-pack-btn" + (STATE.selectedPack?.id === p.id ? " active" : "");
+    btn.textContent = p.label;
+    btn.addEventListener("click", () => selectPack(p));
+    li.appendChild(btn);
+    list.appendChild(li);
+  }
+}
+
+function renderEntryList() {
+  const list = $("law-node-list");
+  if (!list) return;
+
+  list.innerHTML = "";
+
+  const rows = STATE.filtered.length ? STATE.filtered : [];
+  if (!rows.length) {
+    const li = document.createElement("li");
+    li.className = "law-node";
+    li.innerHTML = `<div style="padding:.6rem .6rem; color: var(--muted);">No entries match this filter.</div>`;
+    list.appendChild(li);
+    return;
+  }
+
+  for (const entry of rows) {
+    const li = document.createElement("li");
+    li.className = "law-node";
+
+    const btn = document.createElement("button");
+    btn.addEventListener("click", () => selectEntry(entry));
+
+    // This is the line that used to show "No citation — (untitled)"
+    btn.innerHTML = `
+      <div><strong>${escapeHtml(entry.citation)}</strong> — ${escapeHtml(entry.title)}</div>
+      <small>${escapeHtml(entry.tags.join(" · "))}</small>
+    `;
+
+    li.appendChild(btn);
+    list.appendChild(li);
+  }
+}
+
+function renderDetail(entry) {
+  const detail = $("law-detail");
+  const linksEl = $("law-detail-links");
+  if (detail) detail.textContent = "";
+  if (linksEl) linksEl.innerHTML = "";
+
+  if (!entry) {
+    if (detail) detail.textContent = "Select a pack and an entry to view details here.";
+    return;
+  }
+
+  const pills = entry.tags.map((t) => `<span class="law-pill">${escapeHtml(t)}</span>`).join(" ");
+
+  const block = [
+    pills ? pills : "",
+    "",
+    `${entry.citation} — ${entry.title}`,
+    "",
+    entry.text || "(no text available)"
+  ].join("\n");
+
+  if (detail) detail.textContent = block;
+
+  // Links (doctrines, references)
+  if (linksEl) {
+    if (entry.links && entry.links.length) {
+      linksEl.innerHTML =
+        `<div style="margin-top:.5rem;"><strong>References:</strong></div>` +
+        `<ul style="margin:.3rem 0 0; padding-left:1.1rem;">` +
+        entry.links
+          .map((l) => {
+            const href = safeHref(l.href);
+            return `<li><a href="${href}">${escapeHtml(l.label)}</a></li>`;
+          })
+          .join("") +
+        `</ul>`;
     } else {
-      span.textContent = type || 'Other';
+      linksEl.innerHTML = `<div class="law-sub" style="margin-top:.6rem;">No doctrine references attached yet. You can still cross-check this rule from the Doctrines page.</div>`;
     }
-    return span;
+  }
+}
+
+function applyFilter() {
+  const q = (STATE.filter || "").trim().toLowerCase();
+  if (!q) {
+    STATE.filtered = [...STATE.entries];
+    renderEntryList();
+    return;
   }
 
-  function matchesFilter(node){
-    if(!currentFilter) return true;
-    const f = currentFilter.toLowerCase();
+  STATE.filtered = STATE.entries.filter((e) => {
     const hay = [
-      node.citation,
-      node.title,
-      node.short_title,
-      (node.programs || []).join(' '),
-      (node.tags || []).join(' '),
-      node.scope?.summary
-    ].join(' ').toLowerCase();
-    return hay.includes(f);
-  }
+      e.citation,
+      e.title,
+      e.tags.join(" "),
+      e.text
+    ].join(" ").toLowerCase();
+    return hay.includes(q);
+  });
 
-  // ---------------------------------------------------------------------------
-  // renderers
-  // ---------------------------------------------------------------------------
+  renderEntryList();
+}
 
-  function renderPacks(){
-    if(!packListEl) return;
-    packListEl.innerHTML = '';
-    LAW_PACKS.forEach(pack=>{
-      const li = document.createElement('li');
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'law-pack-btn';
-      btn.textContent = pack.label;
-      btn.dataset.packId = pack.id;
-
-      btn.addEventListener('click', ()=>{
-        Array.from(packListEl.querySelectorAll('.law-pack-btn'))
-          .forEach(b=>b.classList.remove('active'));
-        btn.classList.add('active');
-        loadPack(pack);
-      });
-
-      li.appendChild(btn);
-      packListEl.appendChild(li);
-    });
-  }
-
-  function renderNodes(){
-    if(!nodeListEl) return;
-    nodeListEl.innerHTML = '';
-    if(!currentNodes.length){
-      const li = document.createElement('li');
-      li.className = 'law-node';
-      const span = document.createElement('span');
-      span.style.display = 'block';
-      span.style.padding = '.5rem .6rem';
-      span.textContent = currentPack
-        ? 'No entries match this filter.'
-        : 'Choose a pack to see entries.';
-      li.appendChild(span);
-      nodeListEl.appendChild(li);
-      return;
-    }
-
-    currentNodes.forEach(node=>{
-      const li = document.createElement('li');
-      li.className = 'law-node';
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.dataset.nodeId = node.id || '';
-      const title = node.short_title || node.title || '(untitled)';
-      const cite  = node.citation || '';
-
-      btn.innerHTML = `
-        <strong>${cite || 'No citation'}</strong> — ${title}
-        <small>${(node.programs || []).join(', ')}</small>
-      `;
-
-      btn.addEventListener('click', ()=> renderDetail(node));
-      li.appendChild(btn);
-      nodeListEl.appendChild(li);
-    });
-  }
-
-  function renderDetail(node){
-    if(!detailEl) return;
-    const lines = [];
-    const cite = node.citation || '(no citation)';
-    const title = node.title || node.short_title || '(untitled)';
-
-    lines.push(`${cite}`);
-    lines.push(title);
-    lines.push('');
-
-    if(node.scope && (node.scope.summary || node.scope.text)){
-      lines.push('Scope:');
-      if(node.scope.summary) lines.push('  ' + node.scope.summary);
-      if(node.scope.text)    lines.push('  ' + node.scope.text);
-      lines.push('');
-    }
-
-    if(node.preemption){
-      lines.push('Preemption / Supremacy:');
-      if(node.preemption.rule)  lines.push('  Rule: ' + node.preemption.rule);
-      if(node.preemption.notes) lines.push('  Notes: ' + node.preemption.notes);
-      lines.push('');
-    }
-
-    if(node.funding){
-      lines.push('Funding / Conditions:');
-      if(node.funding.program)  lines.push('  Program: ' + node.funding.program);
-      if(node.funding.section)  lines.push('  Section: ' + node.funding.section);
-      if(node.funding.notes)    lines.push('  Notes: ' + node.funding.notes);
-      lines.push('');
-    }
-
-    if(node.tags && node.tags.length){
-      lines.push('Tags: ' + node.tags.join(', '));
-      lines.push('');
-    }
-
-    if(node.notes){
-      lines.push('Notes:');
-      lines.push(node.notes);
-      lines.push('');
-    }
-
-    detailEl.innerHTML = '';
-    const topRow = document.createElement('div');
-    if(node.type){
-      topRow.appendChild(pillForType(node.type));
-    } else if(currentPack && currentPack.kind){
-      topRow.appendChild(pillForType(currentPack.kind));
-    }
-    if(node.programs && node.programs.length){
-      const p = document.createElement('span');
-      p.className = 'law-pill';
-      p.textContent = node.programs.join(', ');
-      topRow.appendChild(p);
-    }
-    detailEl.appendChild(topRow);
-
-    const pre = document.createElement('pre');
-    pre.textContent = lines.join('\n');
-    detailEl.appendChild(pre);
-
-    // Doctrine links & integration hints
-    if(linksEl){
-      linksEl.innerHTML = '';
-      const refs = node.doctrine_refs || [];
-      if(refs.length){
-        const span = document.createElement('span');
-        span.textContent = 'Related doctrines: ';
-        linksEl.appendChild(span);
-
-        refs.forEach((slug,idx)=>{
-          const href = DOCTRINE_LINKS[slug];
-          const a = document.createElement('a');
-          a.href = href || 'doctrine/index.html';
-          a.textContent = slug.replace(/_/g,' ');
-          if(idx > 0) linksEl.appendChild(document.createTextNode(' · '));
-          linksEl.appendChild(a);
-        });
-      } else {
-        linksEl.textContent = 'No doctrine references attached yet. You can still cross-check this rule from the Doctrines page.';
-      }
-    }
-  }
-
-  // ---------------------------------------------------------------------------
-  // loading
-  // ---------------------------------------------------------------------------
-
-  async function loadPack(pack){
-    try{
-      currentPack  = pack;
-      currentNodes = [];
-      if(detailEl) detailEl.textContent = 'Loading…';
-      if(nodeListEl) nodeListEl.innerHTML = '';
-      setStatus(`loading ${pack.label}…`, 'warn');
-
-      const res = await fetch(pack.file,{cache:'no-store'});
-      if(!res.ok){
-        throw new Error(`HTTP ${res.status}`);
-      }
-      const data = await res.json();
-
-      // Expect a top-level { nodes: [...] } or just [ ... ]
-      const nodes = Array.isArray(data) ? data : (data.nodes || []);
-      currentNodes = nodes.filter(n => matchesFilter(n));
-      renderNodes();
-      if(currentNodes[0]) renderDetail(currentNodes[0]);
-      setStatus(`loaded ${nodes.length} entries from ${pack.label}`, 'ok');
-
-      // Expose for other modules (Integration / CDA)
-      try{
-        window.ABE_LAW = window.ABE_LAW || {};
-        window.ABE_LAW[pack.id] = {
-          pack,
-          nodes,
-          getById: id => nodes.find(n => n.id === id || n.citation === id)
-        };
-      }catch(e){}
-    }catch(err){
-      console.error(err);
-      setStatus(`failed to load ${pack.label}: ${err.message || err}`, 'bad');
-      if(detailEl) detailEl.textContent = 'Could not load this authority pack.';
-    }
-  }
-
-  // ---------------------------------------------------------------------------
-  // init
-  // ---------------------------------------------------------------------------
-
+async function selectPack(pack) {
+  STATE.selectedPack = pack;
+  STATE.selectedEntry = null;
   renderPacks();
-  setStatus('choose a pack to begin.', 'warn');
+  renderDetail(null);
 
-  if(searchEl){
-    searchEl.addEventListener('input', ()=>{
-      currentFilter = searchEl.value.trim();
-      if(!currentPack || !currentNodes.length){
-        // if nothing loaded yet, filter applies once a pack is clicked
-        return;
-      }
-      // Re-filter from the underlying full list exposed via ABE_LAW
-      const store = window.ABE_LAW && window.ABE_LAW[currentPack.id];
-      const allNodes = store && store.nodes ? store.nodes : currentNodes;
-      currentNodes = allNodes.filter(n => matchesFilter(n));
-      renderNodes();
+  setStatus(`Status: loading pack…`, "law-status-warn");
+
+  let json;
+  try {
+    const res = await fetch(pack.file, { cache: "no-store" });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    json = await res.json();
+  } catch (e) {
+    STATE.rawPack = null;
+    STATE.entries = [];
+    STATE.filtered = [];
+    renderEntryList();
+    setStatus(`Status: failed to load pack (${pack.file})`, "law-status-bad");
+    return;
+  }
+
+  STATE.rawPack = json;
+
+  const extracted = extractEntries(json);
+  const normalized = extracted.entries.map((e, i) => normalizeEntry(e, i));
+
+  STATE.entries = normalized;
+  STATE.filtered = normalized;
+
+  // Helpful status to debug future mismatches
+  setStatus(
+    `Status: loaded ${normalized.length} entries from ${pack.label} (source: ${extracted.sourceKey})`,
+    normalized.length ? "law-status-ok" : "law-status-warn"
+  );
+
+  applyFilter();
+}
+
+function selectEntry(entry) {
+  STATE.selectedEntry = entry;
+  renderDetail(entry);
+}
+
+function escapeHtml(s) {
+  return String(s ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function safeHref(href) {
+  // Keep local-only safe browsing: allow relative links + https
+  const v = String(href || "").trim();
+  if (!v) return "#";
+  if (v.startsWith("http://") || v.startsWith("https://")) return v;
+  // allow local repo-relative
+  if (v.startsWith("/") || v.startsWith("./") || v.startsWith("../")) return v;
+  return "#";
+}
+
+function boot() {
+  renderPacks();
+  renderEntryList();
+  renderDetail(null);
+
+  const search = $("law-search");
+  if (search) {
+    search.addEventListener("input", (e) => {
+      STATE.filter = e.target.value || "";
+      applyFilter();
     });
   }
 
-})();
+  setStatus("Status: choose a pack to begin.");
+}
+
+boot();
