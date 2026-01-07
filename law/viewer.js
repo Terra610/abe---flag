@@ -1,14 +1,38 @@
 // law/viewer.js
-// ABE Law Viewer (Local-only) — v2.0.0 (CACHE BUSTER CHECK)
-// If you don't see v2.0.0 in the status line, you're not running this file.
+// ABE Law Viewer (Local-only) — v2.1.0 (auto-citation + string-entry support)
+// If you don't see v2.1.0 in the status line, you're not running this file.
 
 const $ = (id) => document.getElementById(id);
 
 const PACKS = [
-  { id: "t49_transport", label: "Title 49 — Transportation (Core FMCSA Scope)", file: "law/title_49_transport.json", tag: "USC" },
-  { id: "t49_mcsap_fmcsa", label: "Title 49 — MCSAP & FMCSA Program Funding", file: "law/title_49_mcsap_fmcsa.json", tag: "Funding" },
-  { id: "fmcsr_scope", label: "FMCSR Scope Map (49 CFR 390.3 / 390.5)", file: "law/fmcsr_scope.json", tag: "CFR" },
-  { id: "mcsap_rules", label: "MCSAP Program Rules (49 CFR Part 350)", file: "law/mcsap_rules.json", tag: "CFR" }
+  {
+    id: "t49_transport",
+    label: "Title 49 — Transportation (Core FMCSA Scope)",
+    file: "law/title_49_transport.json",
+    tag: "USC",
+    citeBase: "Title 49 — Transportation"
+  },
+  {
+    id: "t49_mcsap_fmcsa",
+    label: "Title 49 — MCSAP & FMCSA Program Funding",
+    file: "law/title_49_mcsap_fmcsa.json",
+    tag: "Funding",
+    citeBase: "Title 49 — MCSAP/Funding"
+  },
+  {
+    id: "fmcsr_scope",
+    label: "FMCSR Scope Map (49 CFR 390.3 / 390.5)",
+    file: "law/fmcsr_scope.json",
+    tag: "CFR",
+    citeBase: "49 CFR (FMCSR)"
+  },
+  {
+    id: "mcsap_rules",
+    label: "MCSAP Program Rules (49 CFR Part 350)",
+    file: "law/mcsap_rules.json",
+    tag: "CFR",
+    citeBase: "49 CFR Part 350"
+  }
 ];
 
 let STATE = {
@@ -22,7 +46,9 @@ let STATE = {
 
 function pick(obj, keys) {
   for (const k of keys) {
-    const v = k.split(".").reduce((acc, part) => (acc && acc[part] !== undefined ? acc[part] : undefined), obj);
+    const v = k
+      .split(".")
+      .reduce((acc, part) => (acc && acc[part] !== undefined ? acc[part] : undefined), obj);
     if (v !== undefined && v !== null && String(v).trim() !== "") return v;
   }
   return null;
@@ -33,19 +59,39 @@ function asArray(v) {
   return Array.isArray(v) ? v : [v];
 }
 
-function normalizeTags(entry) {
+function normalizeTags(entry, pack) {
   const tags = []
     .concat(asArray(pick(entry, ["tags", "tag", "category", "type"])))
     .concat(asArray(pick(entry, ["meta.tags", "meta.tag", "meta.category", "meta.type"])))
     .filter(Boolean)
     .map(String);
+
+  if (pack?.tag) tags.push(String(pack.tag));
+
   return Array.from(new Set(tags));
 }
 
 function normalizeCitation(entry) {
   const c = pick(entry, [
-    "citation", "cite", "cites", "usc", "cfr", "authority", "ref", "reference",
-    "meta.citation", "meta.cite", "meta.ref", "meta.reference"
+    "citation",
+    "cite",
+    "cites",
+    "usc",
+    "cfr",
+    "authority",
+    "ref",
+    "reference",
+    "citation_text",
+    "cite_text",
+    "ref_text",
+    "usc_section",
+    "usc_cite",
+    "cfr_part",
+    "cfr_section",
+    "meta.citation",
+    "meta.cite",
+    "meta.ref",
+    "meta.reference"
   ]);
 
   if (c && typeof c === "object") {
@@ -61,12 +107,37 @@ function normalizeCitation(entry) {
 
 function normalizeTitle(entry) {
   return String(
-    pick(entry, ["title", "name", "heading", "label", "short_title", "rule", "topic", "meta.title", "meta.name", "meta.heading", "meta.label"]) || ""
+    pick(entry, [
+      "title",
+      "name",
+      "heading",
+      "label",
+      "short_title",
+      "rule",
+      "topic",
+      "meta.title",
+      "meta.name",
+      "meta.heading",
+      "meta.label"
+    ]) || ""
   ).trim();
 }
 
 function normalizeText(entry) {
-  const t = pick(entry, ["text", "body", "content", "summary", "notes", "detail", "description", "preemption", "supremacy", "meta.text", "meta.notes"]);
+  const t = pick(entry, [
+    "text",
+    "body",
+    "content",
+    "summary",
+    "notes",
+    "detail",
+    "description",
+    "preemption",
+    "supremacy",
+    "meta.text",
+    "meta.notes",
+    "meta.summary"
+  ]);
   if (t && typeof t === "object") return JSON.stringify(t, null, 2);
   return String(t || "");
 }
@@ -104,21 +175,61 @@ function extractEntries(json) {
   return { entries: [], sourceKey: "(none)" };
 }
 
-function normalizeEntry(entry, i) {
-  const citation = normalizeCitation(entry);
-  const title = normalizeTitle(entry);
-  const tags = normalizeTags(entry);
+// Try to extract a citation from text if field is missing
+function extractCitationFromText(text) {
+  const t = String(text || "");
+
+  // USC patterns like: 49 U.S.C. § 31136 / 49 USC 31301
+  const usc = t.match(/\b\d+\s*U\.?\s*S\.?\s*C\.?\s*§?\s*\d+[a-zA-Z0-9\-]*/i);
+  if (usc) return usc[0].replace(/\s+/g, " ").trim();
+
+  // CFR patterns like: 49 CFR 390.3 / 49 C.F.R. Part 350
+  const cfr = t.match(/\b\d+\s*C\.?\s*F\.?\s*R\.?\s*(Part\s*\d+|\d+(\.\d+)*)/i);
+  if (cfr) return cfr[0].replace(/\s+/g, " ").trim();
+
+  return null;
+}
+
+function deriveTitleFromText(text) {
+  const t = String(text || "").trim();
+  if (!t) return null;
+  const firstLine = t.split("\n").map(s => s.trim()).find(Boolean);
+  if (!firstLine) return null;
+  return firstLine.length <= 72 ? firstLine : firstLine.slice(0, 72).trim() + "…";
+}
+
+function normalizeEntry(entry, i, pack) {
+  // ✅ FIX: allow string entries
+  if (typeof entry === "string") entry = { text: entry };
+
+  const tags = normalizeTags(entry, pack);
   const text = normalizeText(entry);
   const links = normalizeLinks(entry);
 
+  let citation = normalizeCitation(entry);
+  let title = normalizeTitle(entry);
+
+  // ✅ FIX: extract citation from text if missing
+  if (!citation) citation = extractCitationFromText(text);
+
+  // ✅ FIX: pack-based fallback citation
+  if (!citation) {
+    const base = pack?.citeBase || pack?.label || "Authority Pack";
+    citation = `${base} · Entry ${String(i + 1).padStart(3, "0")}`;
+  }
+
+  // ✅ FIX: derive title from text if missing
+  if (!title) title = deriveTitleFromText(text) || `(untitled entry ${String(i + 1).padStart(3, "0")})`;
+
   const stableId =
     pick(entry, ["id", "key", "uid", "meta.id", "meta.key"]) ||
-    (citation ? citation : `ENTRY_${String(i + 1).padStart(3, "0")}`);
+    citation ||
+    `ENTRY_${String(i + 1).padStart(3, "0")}`;
 
   return {
     _id: String(stableId),
-    citation: citation || "(citation missing)",
-    title: title || "(untitled)",
+    citation,
+    title,
     tags,
     text,
     links
@@ -254,7 +365,7 @@ async function selectPack(pack) {
   renderPacks();
   renderDetail(null);
 
-  setStatus(`ABE Law Viewer v2.0.0 — loading pack…`, "law-status-warn");
+  setStatus(`ABE Law Viewer v2.1.0 — loading pack…`, "law-status-warn");
 
   let json;
   try {
@@ -265,16 +376,16 @@ async function selectPack(pack) {
     STATE.entries = [];
     STATE.filtered = [];
     renderEntryList();
-    setStatus(`ABE Law Viewer v2.0.0 — failed to load ${pack.file}`, "law-status-bad");
+    setStatus(`ABE Law Viewer v2.1.0 — failed to load ${pack.file}`, "law-status-bad");
     return;
   }
 
   const extracted = extractEntries(json);
-  STATE.entries = extracted.entries.map((e, i) => normalizeEntry(e, i));
+  STATE.entries = extracted.entries.map((e, i) => normalizeEntry(e, i, pack));
   STATE.filtered = [...STATE.entries];
 
   setStatus(
-    `ABE Law Viewer v2.0.0 — loaded ${STATE.entries.length} entries (source: ${extracted.sourceKey})`,
+    `ABE Law Viewer v2.1.0 — loaded ${STATE.entries.length} entries (source: ${extracted.sourceKey})`,
     STATE.entries.length ? "law-status-ok" : "law-status-warn"
   );
 
@@ -294,7 +405,7 @@ function boot() {
     });
   }
 
-  setStatus("ABE Law Viewer v2.0.0 — choose a pack to begin.");
+  setStatus("ABE Law Viewer v2.1.0 — choose a pack to begin.");
 }
 
 boot();
