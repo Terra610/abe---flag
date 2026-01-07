@@ -1,41 +1,19 @@
 // law/viewer.js
-// ABE Law Viewer (Local-only)
-// Robust pack loader + entry normalizer so we don't get "No citation — (untitled)".
-// Works with: {entries:[]}, {rules:[]}, {items:[]}, root array [], or nested pack.entries.
+// ABE Law Viewer (Local-only) — v2.0.0 (CACHE BUSTER CHECK)
+// If you don't see v2.0.0 in the status line, you're not running this file.
 
 const $ = (id) => document.getElementById(id);
 
 const PACKS = [
-  {
-    id: "t49_transport",
-    label: "Title 49 — Transportation (Core FMCSA Scope)",
-    file: "law/title_49_transport.json",
-    tag: "USC"
-  },
-  {
-    id: "t49_mcsap_fmcsa",
-    label: "Title 49 — MCSAP & FMCSA Program Funding",
-    file: "law/title_49_mcsap_fmcsa.json",
-    tag: "Funding"
-  },
-  {
-    id: "fmcsr_scope",
-    label: "FMCSR Scope Map (49 CFR 390.3 / 390.5)",
-    file: "law/fmcsr_scope.json",
-    tag: "CFR"
-  },
-  {
-    id: "mcsap_rules",
-    label: "MCSAP Program Rules (49 CFR Part 350)",
-    file: "law/mcsap_rules.json",
-    tag: "CFR"
-  }
+  { id: "t49_transport", label: "Title 49 — Transportation (Core FMCSA Scope)", file: "law/title_49_transport.json", tag: "USC" },
+  { id: "t49_mcsap_fmcsa", label: "Title 49 — MCSAP & FMCSA Program Funding", file: "law/title_49_mcsap_fmcsa.json", tag: "Funding" },
+  { id: "fmcsr_scope", label: "FMCSR Scope Map (49 CFR 390.3 / 390.5)", file: "law/fmcsr_scope.json", tag: "CFR" },
+  { id: "mcsap_rules", label: "MCSAP Program Rules (49 CFR Part 350)", file: "law/mcsap_rules.json", tag: "CFR" }
 ];
 
 let STATE = {
   packs: PACKS,
   selectedPack: null,
-  rawPack: null,
   entries: [],
   filtered: [],
   selectedEntry: null,
@@ -61,125 +39,83 @@ function normalizeTags(entry) {
     .concat(asArray(pick(entry, ["meta.tags", "meta.tag", "meta.category", "meta.type"])))
     .filter(Boolean)
     .map(String);
-
-  // de-dupe
   return Array.from(new Set(tags));
 }
 
 function normalizeCitation(entry) {
-  // Try common keys
-  const citation =
-    pick(entry, [
-      "citation",
-      "cite",
-      "cites",
-      "usc",
-      "cfr",
-      "authority",
-      "ref",
-      "reference",
-      "meta.citation",
-      "meta.cite",
-      "meta.ref",
-      "meta.reference"
-    ]) || "";
+  const c = pick(entry, [
+    "citation", "cite", "cites", "usc", "cfr", "authority", "ref", "reference",
+    "meta.citation", "meta.cite", "meta.ref", "meta.reference"
+  ]);
 
-  // If citation is object-ish, format it
-  if (citation && typeof citation === "object") {
-    // Try to build something readable
-    const t = pick(citation, ["title", "usc_title", "cfr_title"]);
-    const s = pick(citation, ["section", "sec", "part", "subpart", "chapter"]);
-    const raw = JSON.stringify(citation);
+  if (c && typeof c === "object") {
+    const t = pick(c, ["title", "usc_title", "cfr_title"]);
+    const s = pick(c, ["section", "sec", "part", "subpart", "chapter"]);
     if (t && s) return `${t} § ${s}`;
-    return raw.length < 140 ? raw : "";
+    const raw = JSON.stringify(c);
+    return raw.length < 160 ? raw : "";
   }
 
-  return String(citation).trim();
+  return String(c || "").trim();
 }
 
 function normalizeTitle(entry) {
-  const title =
-    pick(entry, [
-      "title",
-      "name",
-      "heading",
-      "label",
-      "short_title",
-      "rule",
-      "topic",
-      "meta.title",
-      "meta.name",
-      "meta.heading",
-      "meta.label",
-      "meta.short_title"
-    ]) || "";
-
-  return String(title).trim();
+  return String(
+    pick(entry, ["title", "name", "heading", "label", "short_title", "rule", "topic", "meta.title", "meta.name", "meta.heading", "meta.label"]) || ""
+  ).trim();
 }
 
 function normalizeText(entry) {
-  // Prefer richer fields
-  const text =
-    pick(entry, [
-      "text",
-      "body",
-      "content",
-      "summary",
-      "notes",
-      "detail",
-      "description",
-      "preemption",
-      "supremacy",
-      "meta.text",
-      "meta.body",
-      "meta.content",
-      "meta.summary",
-      "meta.notes"
-    ]) || "";
-
-  if (typeof text === "object") return JSON.stringify(text, null, 2);
-  return String(text);
+  const t = pick(entry, ["text", "body", "content", "summary", "notes", "detail", "description", "preemption", "supremacy", "meta.text", "meta.notes"]);
+  if (t && typeof t === "object") return JSON.stringify(t, null, 2);
+  return String(t || "");
 }
 
 function normalizeLinks(entry) {
-  const linksRaw = pick(entry, ["links", "doctrine_links", "doctrines", "refs", "references", "meta.links"]) || [];
-  const links = [];
+  const raw = pick(entry, ["links", "doctrine_links", "doctrines", "refs", "references", "meta.links"]) || [];
+  const out = [];
 
-  // Accept array of strings OR array of objects OR object map
-  if (Array.isArray(linksRaw)) {
-    for (const it of linksRaw) {
+  if (Array.isArray(raw)) {
+    for (const it of raw) {
       if (!it) continue;
-      if (typeof it === "string") links.push({ label: it, href: it });
+      if (typeof it === "string") out.push({ label: it, href: it });
       else if (typeof it === "object") {
         const href = pick(it, ["href", "url", "link"]);
         const label = pick(it, ["label", "title", "name"]) || href || "Reference";
-        if (href) links.push({ label: String(label), href: String(href) });
+        if (href) out.push({ label: String(label), href: String(href) });
       }
     }
-  } else if (typeof linksRaw === "object") {
-    for (const [k, v] of Object.entries(linksRaw)) {
-      if (typeof v === "string") links.push({ label: k, href: v });
+  } else if (typeof raw === "object") {
+    for (const [k, v] of Object.entries(raw)) {
+      if (typeof v === "string") out.push({ label: k, href: v });
     }
   }
 
-  return links;
+  return out;
 }
 
-function normalizeEntry(entry, i = 0) {
+function extractEntries(json) {
+  if (Array.isArray(json)) return { entries: json, sourceKey: "root[]" };
+  const keys = ["entries", "rules", "items", "provisions", "authority", "nodes"];
+  for (const k of keys) {
+    if (Array.isArray(json?.[k])) return { entries: json[k], sourceKey: k };
+  }
+  if (Array.isArray(json?.pack?.entries)) return { entries: json.pack.entries, sourceKey: "pack.entries" };
+  return { entries: [], sourceKey: "(none)" };
+}
+
+function normalizeEntry(entry, i) {
   const citation = normalizeCitation(entry);
   const title = normalizeTitle(entry);
-
-  // Strong fallback: generate a stable id-like citation so the list isn't blank
-  const stableId =
-    pick(entry, ["id", "key", "uid", "meta.id", "meta.key"]) ||
-    (citation ? citation : `ENTRY_${String(i + 1).padStart(3, "0")}`);
-
   const tags = normalizeTags(entry);
   const text = normalizeText(entry);
   const links = normalizeLinks(entry);
 
+  const stableId =
+    pick(entry, ["id", "key", "uid", "meta.id", "meta.key"]) ||
+    (citation ? citation : `ENTRY_${String(i + 1).padStart(3, "0")}`);
+
   return {
-    _raw: entry,
     _id: String(stableId),
     citation: citation || "(citation missing)",
     title: title || "(untitled)",
@@ -189,25 +125,21 @@ function normalizeEntry(entry, i = 0) {
   };
 }
 
-function extractEntries(packJson) {
-  // Accept a bunch of shapes:
-  // 1) root array []
-  // 2) { entries: [] }
-  // 3) { rules: [] }
-  // 4) { items: [] }
-  // 5) { pack: { entries: [] } }
-  if (Array.isArray(packJson)) return { entries: packJson, sourceKey: "root[]" };
+function escapeHtml(s) {
+  return String(s ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
 
-  const keys = ["entries", "rules", "items", "provisions", "authority", "nodes"];
-  for (const k of keys) {
-    const v = packJson?.[k];
-    if (Array.isArray(v)) return { entries: v, sourceKey: k };
-  }
-
-  const nested = packJson?.pack?.entries;
-  if (Array.isArray(nested)) return { entries: nested, sourceKey: "pack.entries" };
-
-  return { entries: [], sourceKey: "(none)" };
+function safeHref(href) {
+  const v = String(href || "").trim();
+  if (!v) return "#";
+  if (v.startsWith("http://") || v.startsWith("https://")) return v;
+  if (v.startsWith("/") || v.startsWith("./") || v.startsWith("../")) return v;
+  return "#";
 }
 
 function setStatus(msg, cls = "") {
@@ -239,8 +171,7 @@ function renderEntryList() {
 
   list.innerHTML = "";
 
-  const rows = STATE.filtered.length ? STATE.filtered : [];
-  if (!rows.length) {
+  if (!STATE.filtered.length) {
     const li = document.createElement("li");
     li.className = "law-node";
     li.innerHTML = `<div style="padding:.6rem .6rem; color: var(--muted);">No entries match this filter.</div>`;
@@ -248,14 +179,13 @@ function renderEntryList() {
     return;
   }
 
-  for (const entry of rows) {
+  for (const entry of STATE.filtered) {
     const li = document.createElement("li");
     li.className = "law-node";
 
     const btn = document.createElement("button");
-    btn.addEventListener("click", () => selectEntry(entry));
+    btn.addEventListener("click", () => renderDetail(entry));
 
-    // This is the line that used to show "No citation — (untitled)"
     btn.innerHTML = `
       <div><strong>${escapeHtml(entry.citation)}</strong> — ${escapeHtml(entry.title)}</div>
       <small>${escapeHtml(entry.tags.join(" · "))}</small>
@@ -278,7 +208,6 @@ function renderDetail(entry) {
   }
 
   const pills = entry.tags.map((t) => `<span class="law-pill">${escapeHtml(t)}</span>`).join(" ");
-
   const block = [
     pills ? pills : "",
     "",
@@ -289,21 +218,17 @@ function renderDetail(entry) {
 
   if (detail) detail.textContent = block;
 
-  // Links (doctrines, references)
   if (linksEl) {
     if (entry.links && entry.links.length) {
       linksEl.innerHTML =
         `<div style="margin-top:.5rem;"><strong>References:</strong></div>` +
         `<ul style="margin:.3rem 0 0; padding-left:1.1rem;">` +
         entry.links
-          .map((l) => {
-            const href = safeHref(l.href);
-            return `<li><a href="${href}">${escapeHtml(l.label)}</a></li>`;
-          })
+          .map((l) => `<li><a href="${safeHref(l.href)}">${escapeHtml(l.label)}</a></li>`)
           .join("") +
         `</ul>`;
     } else {
-      linksEl.innerHTML = `<div class="law-sub" style="margin-top:.6rem;">No doctrine references attached yet. You can still cross-check this rule from the Doctrines page.</div>`;
+      linksEl.innerHTML = `<div class="law-sub" style="margin-top:.6rem;">No doctrine references attached yet.</div>`;
     }
   }
 }
@@ -317,12 +242,7 @@ function applyFilter() {
   }
 
   STATE.filtered = STATE.entries.filter((e) => {
-    const hay = [
-      e.citation,
-      e.title,
-      e.tags.join(" "),
-      e.text
-    ].join(" ").toLowerCase();
+    const hay = [e.citation, e.title, e.tags.join(" "), e.text].join(" ").toLowerCase();
     return hay.includes(q);
   });
 
@@ -331,11 +251,10 @@ function applyFilter() {
 
 async function selectPack(pack) {
   STATE.selectedPack = pack;
-  STATE.selectedEntry = null;
   renderPacks();
   renderDetail(null);
 
-  setStatus(`Status: loading pack…`, "law-status-warn");
+  setStatus(`ABE Law Viewer v2.0.0 — loading pack…`, "law-status-warn");
 
   let json;
   try {
@@ -343,53 +262,23 @@ async function selectPack(pack) {
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     json = await res.json();
   } catch (e) {
-    STATE.rawPack = null;
     STATE.entries = [];
     STATE.filtered = [];
     renderEntryList();
-    setStatus(`Status: failed to load pack (${pack.file})`, "law-status-bad");
+    setStatus(`ABE Law Viewer v2.0.0 — failed to load ${pack.file}`, "law-status-bad");
     return;
   }
 
-  STATE.rawPack = json;
-
   const extracted = extractEntries(json);
-  const normalized = extracted.entries.map((e, i) => normalizeEntry(e, i));
+  STATE.entries = extracted.entries.map((e, i) => normalizeEntry(e, i));
+  STATE.filtered = [...STATE.entries];
 
-  STATE.entries = normalized;
-  STATE.filtered = normalized;
-
-  // Helpful status to debug future mismatches
   setStatus(
-    `Status: loaded ${normalized.length} entries from ${pack.label} (source: ${extracted.sourceKey})`,
-    normalized.length ? "law-status-ok" : "law-status-warn"
+    `ABE Law Viewer v2.0.0 — loaded ${STATE.entries.length} entries (source: ${extracted.sourceKey})`,
+    STATE.entries.length ? "law-status-ok" : "law-status-warn"
   );
 
   applyFilter();
-}
-
-function selectEntry(entry) {
-  STATE.selectedEntry = entry;
-  renderDetail(entry);
-}
-
-function escapeHtml(s) {
-  return String(s ?? "")
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
-}
-
-function safeHref(href) {
-  // Keep local-only safe browsing: allow relative links + https
-  const v = String(href || "").trim();
-  if (!v) return "#";
-  if (v.startsWith("http://") || v.startsWith("https://")) return v;
-  // allow local repo-relative
-  if (v.startsWith("/") || v.startsWith("./") || v.startsWith("../")) return v;
-  return "#";
 }
 
 function boot() {
@@ -405,7 +294,7 @@ function boot() {
     });
   }
 
-  setStatus("Status: choose a pack to begin.");
+  setStatus("ABE Law Viewer v2.0.0 — choose a pack to begin.");
 }
 
 boot();
