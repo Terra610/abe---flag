@@ -1,24 +1,19 @@
 // intake/assistant.js
-// ABE Intake Assistant (local-only) — v1.0.0
-// No API. No backend. No logins. No tracking.
-// Reads selected files (metadata only) + (optional) local text extraction for .txt/.md/.json/.csv
-// Writes nothing by itself unless you call saveToScenario() from UI code.
+// Intake page logic (local-only)
+// Moves the old inline <script type="module"> block into a real module file.
 
-const $ = (id) => document.getElementById(id);
-
-export const INTAKE_ASSISTANT_VERSION = "1.0.0";
-
-// LocalStorage keys (kept consistent with your intake page)
-export const LS_KEYS = {
+const LS_KEYS = {
   INTAKE_ARTIFACT: "ABE_FLAG:intake_artifact",
   SCENARIO: "ABE_FLAG:scenario"
 };
 
-export function nowISO() {
+const $ = (id) => document.getElementById(id);
+
+function nowISO() {
   return new Date().toISOString();
 }
 
-export function loadJSON(key) {
+function loadJSON(key) {
   try {
     const raw = localStorage.getItem(key);
     return raw ? JSON.parse(raw) : null;
@@ -27,11 +22,11 @@ export function loadJSON(key) {
   }
 }
 
-export function saveJSON(key, obj) {
+function saveJSON(key, obj) {
   localStorage.setItem(key, JSON.stringify(obj, null, 2));
 }
 
-export function downloadJSON(filename, obj) {
+function downloadJSON(filename, obj) {
   const blob = new Blob([JSON.stringify(obj, null, 2)], { type: "application/json" });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
@@ -43,124 +38,62 @@ export function downloadJSON(filename, obj) {
   URL.revokeObjectURL(url);
 }
 
-export function fileMeta(filesLike) {
-  const files = Array.from(filesLike || []);
-  return files.map((f) => ({
-    name: f.name,
-    size: f.size,
-    type: f.type,
-    lastModified: f.lastModified
-  }));
+function setList(files) {
+  const el = $("fileList");
+  if (!el) return;
+
+  el.innerHTML = "";
+  if (!files || !files.length) return;
+
+  const ul = document.createElement("ul");
+  for (const f of files) {
+    const li = document.createElement("li");
+    li.textContent = `${f.name} (${Math.round(f.size / 1024)} KB)`;
+    ul.appendChild(li);
+  }
+  el.appendChild(ul);
 }
 
-function lower(s) {
-  return String(s || "").toLowerCase();
-}
+function classifyFile(name, type) {
+  const n = String(name || "").toLowerCase();
+  const t = String(type || "").toLowerCase();
 
-export function classifyFile(name, type) {
-  const n = lower(name);
-  const t = lower(type);
+  if (t.includes("pdf") || n.endsWith(".pdf"))
+    return { kind: "PDF", moduleHints: ["intake", "cda", "ciri", "cff", "ccri"], note: "PDF detected. OCR/parsing (optional) can be added later." };
 
-  if (t.includes("pdf") || n.endsWith(".pdf")) {
-    return { kind: "PDF", moduleHints: ["intake", "cda", "ciri", "cff", "ccri"], note: "PDF detected. OCR is optional and can be added later (local-only)." };
-  }
-  if (t.includes("image") || n.match(/\.(png|jpg|jpeg|webp|gif)$/)) {
-    return { kind: "Image", moduleHints: ["intake", "cda"], note: "Image detected. If it’s a scan/photo, OCR is needed to extract text (local-only)." };
-  }
-  if (n.endsWith(".csv")) {
-    return { kind: "CSV", moduleHints: ["ciri", "cibs", "cii", "cff"], note: "CSV detected. Often inputs/budgets/portfolios." };
-  }
-  if (n.endsWith(".json")) {
-    return { kind: "JSON", moduleHints: ["intake", "system", "law", "ccri"], note: "JSON detected. Often config/packs/structured inputs." };
-  }
-  if (n.endsWith(".txt") || n.endsWith(".md") || t.includes("text")) {
+  if (t.includes("image") || n.match(/\.(png|jpg|jpeg|webp|gif)$/))
+    return { kind: "Image", moduleHints: ["intake", "cda"], note: "Image detected. If it’s a scan/photo, OCR will be needed to extract text." };
+
+  if (n.endsWith(".csv"))
+    return { kind: "CSV", moduleHints: ["ciri", "cibs", "cii", "cff"], note: "CSV detected. If this is inputs/budgets/portfolios, it can drive downstream modules." };
+
+  if (n.endsWith(".json"))
+    return { kind: "JSON", moduleHints: ["intake", "system", "law", "ccri"], note: "JSON detected. Often config, packs, or structured inputs." };
+
+  if (n.endsWith(".txt") || t.includes("text"))
     return { kind: "Text", moduleHints: ["cda", "ciri", "cae"], note: "Text detected. Good for policies, notes, excerpts, citations." };
-  }
+
   return { kind: "File", moduleHints: ["intake"], note: "Unknown type. It can still be indexed and hashed later." };
 }
 
-function safeSlice(s, max = 1200) {
-  const str = String(s || "");
-  if (str.length <= max) return str;
-  return str.slice(0, max) + "\n…(truncated)…";
-}
-
-/**
- * Optional local extraction (NO OCR):
- * - Reads only text-like files: .txt, .md, .json, .csv
- * - PDF/image extraction is intentionally not done here (to keep it simple + local-only + predictable)
- */
-export async function extractLocalText(filesLike, opts = {}) {
-  const files = Array.from(filesLike || []);
-  const maxBytes = typeof opts.maxBytes === "number" ? opts.maxBytes : 200_000; // ~200KB per file
-  const results = [];
-
-  for (const f of files) {
-    const name = lower(f.name);
-    const isTexty =
-      name.endsWith(".txt") ||
-      name.endsWith(".md") ||
-      name.endsWith(".csv") ||
-      name.endsWith(".json") ||
-      lower(f.type).startsWith("text/") ||
-      lower(f.type).includes("json") ||
-      lower(f.type).includes("csv");
-
-    if (!isTexty) continue;
-
-    try {
-      if (f.size > maxBytes) {
-        results.push({
-          name: f.name,
-          ok: false,
-          reason: `Skipped text read (file too large: ${Math.round(f.size / 1024)} KB).`
-        });
-        continue;
-      }
-
-      const text = await f.text();
-      results.push({
-        name: f.name,
-        ok: true,
-        extracted: safeSlice(text, 2500)
-      });
-    } catch (e) {
-      results.push({
-        name: f.name,
-        ok: false,
-        reason: e?.message || String(e)
-      });
-    }
-  }
-
-  return results;
-}
-
-export function buildAssistant(intakeArtifact, extractedSnippets = []) {
+function buildAssistant(intakeArtifact) {
   const files = intakeArtifact?.files || [];
-  const out = {
-    module: "INTAKE_ASSISTANT",
-    module_version: INTAKE_ASSISTANT_VERSION,
-    generated_at: nowISO(),
-    local_only: true,
-    headline: "",
-    what_you_uploaded: [],
-    likely_modules_to_care: [],
-    next_steps: [],
-    file_notes: [],
-    extracted_snippets: [],
-    warnings: []
-  };
-
   if (!files.length) {
-    out.headline = "No uploads yet.";
-    out.next_steps = [
-      "Upload documents here (local-only), or run a default scenario in Integration.",
-      "If you upload PDFs or photos, OCR can be added later (still local-only).",
-      "When ready: Integration → Run Engine → download receipt + scenario."
-    ];
-    out.warnings = ["Nothing is uploaded yet, so the assistant has nothing to classify."];
-    return out;
+    return {
+      headline: "No uploads yet.",
+      steps: [
+        "Click Upload and select any documents you want the engine to consider.",
+        "Or skip uploads and run a default scenario on the Integration page."
+      ],
+      modules: {
+        intake: "Collects local file metadata now. Later can OCR/parse locally.",
+        divergence_cda: "Uses practices/statutes/docs to produce divergence signals.",
+        ciri: "Uses divergence + inputs to calculate recoverable value and ROI.",
+        cibs: "Allocates recovered value into community budget categories.",
+        cii: "Builds/validates a project portfolio against the budget."
+      },
+      warnings: ["Nothing is uploaded yet, so the assistant has nothing to classify."]
+    };
   }
 
   const byKind = {};
@@ -174,182 +107,187 @@ export function buildAssistant(intakeArtifact, extractedSnippets = []) {
     if (c.note) notes.push(`${f.name}: ${c.note}`);
   }
 
-  out.headline = "Assistant summary (local-only)";
-  out.what_you_uploaded = Object.entries(byKind)
-    .sort((a, b) => b[1] - a[1])
-    .map(([k, v]) => `${k}: ${v}`);
-
-  out.likely_modules_to_care = Object.entries(moduleHits)
+  const topModules = Object.entries(moduleHits)
     .sort((a, b) => b[1] - a[1])
     .map(([k, v]) => `${k} (${v})`);
 
-  out.next_steps = [
-    "If these are tickets/policies/contracts: go to Integration and click Run Engine.",
-    "Download audit_certificate.json for proof and scenario.json for the full local record.",
-    "If you need text extraction from PDFs/images, add OCR later (still local-only)."
+  const kinds = Object.entries(byKind)
+    .sort((a, b) => b[1] - a[1])
+    .map(([k, v]) => `${k}: ${v}`);
+
+  const nextSteps = [
+    "If these are tickets/policies: run Integration → it will generate receipts + hashes.",
+    "If you want OCR: Intake module can add in-browser OCR later (still local-only).",
+    "If you want to prove integrity: download scenario.json + audit_certificate.json from Integration."
   ];
 
-  out.file_notes = notes.slice(0, 24);
-
-  // Include extraction results if any
-  if (Array.isArray(extractedSnippets) && extractedSnippets.length) {
-    out.extracted_snippets = extractedSnippets.slice(0, 12);
+  const warnings = [];
+  const hasPdf = files.some(
+    (f) => String(f.type || "").toLowerCase().includes("pdf") || String(f.name || "").toLowerCase().endsWith(".pdf")
+  );
+  const hasImage = files.some((f) => String(f.type || "").toLowerCase().includes("image"));
+  if (hasPdf || hasImage) {
+    warnings.push("Some uploads may require OCR to extract text. OCR can be added later and still remain local-only.");
   }
 
-  const hasPdfOrImage = files.some((f) => {
-    const n = lower(f.name);
-    const t = lower(f.type);
-    return n.endsWith(".pdf") || t.includes("pdf") || t.includes("image");
-  });
-  if (hasPdfOrImage) {
-    out.warnings.push("Some uploads are PDFs/images. This assistant does not OCR by default. OCR can be added later (local-only).");
+  return {
+    headline: "Assistant summary (local-only)",
+    what_you_uploaded: kinds,
+    likely_modules_to_care: topModules.length ? topModules : ["intake"],
+    next_steps: nextSteps,
+    file_notes: notes.slice(0, 18),
+    warnings
+  };
+}
+
+function updateUI() {
+  const artifact = loadJSON(LS_KEYS.INTAKE_ARTIFACT) || { created_at: null, updated_at: null, files: [] };
+
+  const countEl = $("intakeCount");
+  const updatedEl = $("intakeUpdated");
+  if (countEl) countEl.textContent = String(artifact.files?.length || 0);
+  if (updatedEl) updatedEl.textContent = artifact.updated_at || "—";
+
+  const notice = $("intakeNotice");
+  const ok = $("intakeOk");
+  if (notice) notice.style.display = "none";
+  if (ok) ok.style.display = "none";
+
+  if (!(artifact.files && artifact.files.length)) {
+    if (notice) {
+      notice.style.display = "block";
+      notice.innerHTML = `<strong>Nothing uploaded yet.</strong><br/>That’s fine. You can upload files here, or run a default scenario in Integration.`;
+    }
+  } else {
+    if (ok) {
+      ok.style.display = "block";
+      ok.innerHTML = `<strong>Ready.</strong><br/>Your files are indexed locally. Next: open Integration and click <strong>Run Engine</strong>.`;
+    }
   }
 
-  return out;
+  const assistant = buildAssistant(artifact);
+  const ap = $("assistantPreview");
+  if (ap) ap.textContent = JSON.stringify(assistant, null, 2);
 }
 
-/**
- * Build + store intake_artifact.json in localStorage (metadata only).
- * filesLike: FileList from <input type="file" multiple>
- */
-export function storeIntakeArtifact(filesLike) {
-  const meta = fileMeta(filesLike);
-  const existing = loadJSON(LS_KEYS.INTAKE_ARTIFACT);
+function saveToScenario() {
+  const scenario =
+    loadJSON(LS_KEYS.SCENARIO) || {
+      engine: { engine_id: "ABE_FLAG", engine_version: "1.0" },
+      created_at: nowISO(),
+      updated_at: nowISO(),
+      inputs: {},
+      derived: {},
+      module_status: {},
+      hashes: {}
+    };
 
-  const artifact = {
-    module: "INTAKE",
-    module_version: "1.0",
-    created_at: existing?.created_at || nowISO(),
-    updated_at: nowISO(),
-    files: meta,
-    notes: "Local-only intake index. No OCR performed here."
-  };
-
-  saveJSON(LS_KEYS.INTAKE_ARTIFACT, artifact);
-  return artifact;
-}
-
-/**
- * Save Intake into Scenario localStorage (so Integration can use it)
- */
-export function saveIntakeToScenario() {
-  const scenario = loadJSON(LS_KEYS.SCENARIO) || {
-    engine: { engine_id: "ABE_FLAG", engine_version: "1.0" },
-    created_at: nowISO(),
-    updated_at: nowISO(),
-    inputs: {},
-    derived: {},
-    module_status: {},
-    hashes: {}
-  };
-
-  const artifact = loadJSON(LS_KEYS.INTAKE_ARTIFACT) || { files: [], updated_at: nowISO() };
+  const artifact = loadJSON(LS_KEYS.INTAKE_ARTIFACT) || { created_at: null, updated_at: null, files: [] };
 
   scenario.inputs = scenario.inputs || {};
   scenario.inputs.intake_files_meta = artifact.files || [];
-  scenario.inputs.intake = scenario.inputs.intake || {
-    source: "intake_page",
-    created_at: nowISO(),
-    notes: "Saved from intake UI (local-only)."
-  };
+  scenario.inputs.intake =
+    scenario.inputs.intake || {
+      source: "intake_page",
+      created_at: nowISO(),
+      notes: "Saved from intake/index.html (local-only)."
+    };
   scenario.updated_at = nowISO();
 
   saveJSON(LS_KEYS.SCENARIO, scenario);
-  return scenario;
+  alert("Saved to local scenario store (local-only). Now open Integration and run.");
 }
 
-/**
- * Wire up the Intake UI (optional helper).
- * Expects these IDs (same as the HTML I gave you):
- * - fileInput, fileList, intakeCount, intakeUpdated, assistantPreview
- * - btnDownloadIntake, btnSaveToScenario, btnRefreshAssistant, btnCopyAssistant
- */
-export function attachIntakeAssistantUI(opts = {}) {
-  const fileInputId = opts.fileInputId || "fileInput";
+function wireUI() {
+  // Nav buttons
+  const btnHome = $("btnHome");
+  if (btnHome) btnHome.addEventListener("click", () => (window.location.href = "index.html"));
 
-  const fileInput = $(fileInputId);
-  if (!fileInput) {
-    console.warn("Intake assistant: file input not found:", fileInputId);
-    return;
+  const btnStart = $("btnStart");
+  if (btnStart) btnStart.addEventListener("click", () => (window.location.href = "start/index.html"));
+
+  const btnOpenIntegration = $("btnOpenIntegration");
+  if (btnOpenIntegration) btnOpenIntegration.addEventListener("click", () => (window.location.href = "integration/index.html"));
+
+  // Clear intake
+  const btnClear = $("btnClear");
+  if (btnClear) {
+    btnClear.addEventListener("click", () => {
+      if (!confirm("Clear local intake artifacts? (This does NOT delete your actual files.)")) return;
+      localStorage.removeItem(LS_KEYS.INTAKE_ARTIFACT);
+      updateUI();
+    });
   }
 
-  const renderFileList = (files) => {
-    const el = $("fileList");
-    if (!el) return;
-    el.innerHTML = "";
-    if (!files || !files.length) return;
+  // File input
+  const fileInput = $("fileInput");
+  if (fileInput) {
+    fileInput.addEventListener("change", (e) => {
+      const files = Array.from(e.target.files || []);
+      setList(files);
 
-    const ul = document.createElement("ul");
-    for (const f of files) {
-      const li = document.createElement("li");
-      li.textContent = `${f.name} (${Math.round(f.size / 1024)} KB)`;
-      ul.appendChild(li);
-    }
-    el.appendChild(ul);
-  };
+      const meta = files.map((f) => ({
+        name: f.name,
+        size: f.size,
+        type: f.type,
+        lastModified: f.lastModified
+      }));
 
-  const refresh = async () => {
-    const artifact = loadJSON(LS_KEYS.INTAKE_ARTIFACT) || { files: [], updated_at: null };
-    const countEl = $("intakeCount");
-    const updEl = $("intakeUpdated");
-    if (countEl) countEl.textContent = String(artifact.files?.length || 0);
-    if (updEl) updEl.textContent = artifact.updated_at || "—";
+      const existing = loadJSON(LS_KEYS.INTAKE_ARTIFACT);
 
-    const assistantPre = $("assistantPreview");
-    if (assistantPre) {
-      const extracted = opts.readTextSnippets
-        ? await extractLocalText(fileInput.files, { maxBytes: 200_000 })
-        : [];
-      const assistant = buildAssistant(artifact, extracted);
-      assistantPre.textContent = JSON.stringify(assistant, null, 2);
-    }
-  };
+      const artifact = {
+        module: "INTAKE",
+        module_version: "1.0",
+        created_at: existing?.created_at || nowISO(),
+        updated_at: nowISO(),
+        files: meta,
+        notes: "Local-only intake index. No OCR performed here."
+      };
 
-  // File selection
-  fileInput.addEventListener("change", async (e) => {
-    renderFileList(e.target.files);
-    storeIntakeArtifact(e.target.files);
-    await refresh();
-  });
+      saveJSON(LS_KEYS.INTAKE_ARTIFACT, artifact);
+      updateUI();
+    });
+  }
 
-  // Buttons (optional)
-  const btnDownload = $("btnDownloadIntake");
-  if (btnDownload) {
-    btnDownload.addEventListener("click", () => {
+  // Save to scenario
+  const btnSaveToScenario = $("btnSaveToScenario");
+  if (btnSaveToScenario) btnSaveToScenario.addEventListener("click", saveToScenario);
+
+  // Download intake
+  const btnDownloadIntake = $("btnDownloadIntake");
+  if (btnDownloadIntake) {
+    btnDownloadIntake.addEventListener("click", () => {
       const artifact = loadJSON(LS_KEYS.INTAKE_ARTIFACT) || { module: "INTAKE", files: [], updated_at: nowISO() };
       downloadJSON("intake_artifact.json", artifact);
     });
   }
 
-  const btnSave = $("btnSaveToScenario");
-  if (btnSave) {
-    btnSave.addEventListener("click", () => {
-      saveIntakeToScenario();
-      alert("Saved intake into local scenario store. Now open Integration and Run Engine.");
-    });
-  }
+  // Refresh assistant
+  const btnRefreshAssistant = $("btnRefreshAssistant");
+  if (btnRefreshAssistant) btnRefreshAssistant.addEventListener("click", updateUI);
 
-  const btnRefresh = $("btnRefreshAssistant");
-  if (btnRefresh) {
-    btnRefresh.addEventListener("click", async () => {
-      await refresh();
-    });
-  }
-
-  const btnCopy = $("btnCopyAssistant");
-  if (btnCopy) {
-    btnCopy.addEventListener("click", async () => {
+  // Copy assistant
+  const btnCopyAssistant = $("btnCopyAssistant");
+  if (btnCopyAssistant) {
+    btnCopyAssistant.addEventListener("click", async () => {
       try {
         const text = $("assistantPreview")?.textContent || "";
         await navigator.clipboard.writeText(text);
         alert("Copied assistant guidance.");
       } catch {
-        alert("Clipboard blocked. You can still select and copy manually.");
+        alert("Could not copy (browser blocked clipboard). You can still select text and copy manually.");
       }
     });
   }
-
-  // Boot refresh
-  refresh();
 }
-```0
+
+function boot() {
+  wireUI();
+  updateUI();
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", boot);
+} else {
+  boot();
+}
