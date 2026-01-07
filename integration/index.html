@@ -199,7 +199,7 @@
       <a class="chip" href="index.html">← A.B.E. Home</a>
       <h1>Integration / Audit</h1>
       <p class="tagline">
-        Run the A.B.E. engine locally (in-order), generate SHA-256 hashes, and export a plain-language receipt.
+        Run the A.B.E. engine locally (in-order), generate SHA-256 hashes, and export a human-readable explanation + audit receipt.
         No servers. No logins. No tracking.
       </p>
 
@@ -219,6 +219,10 @@
         <!-- Downloads -->
         <button class="chip" id="btnReceipt" type="button">Download Receipt</button>
         <button class="chip" id="btnScenario" type="button">Download Scenario</button>
+
+        <!-- NEW: Explain + Plain-English downloads (orchestrator can hook these later) -->
+        <button class="chip" id="btnExplain" type="button" title="Downloads receipts.explain if present">Download Explain</button>
+        <button class="chip" id="btnPlain" type="button" title="Downloads derived.plain_english if present">Download Plain-English</button>
       </div>
 
       <div class="filebox">
@@ -239,25 +243,29 @@
           <div id="statusGrid">No scenario initialized yet.</div>
 
           <p class="footerNote">
-            Tip: If you see <strong>SKIP</strong>, it’s usually optional modules missing inputs (not a failure).
+            Tip: <strong>SKIP</strong> is usually optional modules missing inputs (not a failure). <strong>FAIL</strong> means the engine stopped on a required dependency.
           </p>
         </section>
 
-        <!-- RIGHT: Receipt + Plain English -->
+        <!-- RIGHT: Outputs -->
         <section class="card">
           <h2>Run Outputs</h2>
-          <p class="sub">Receipt is the technical proof; Plain-English is for humans.</p>
+          <p class="sub">Explain = “what it means for me.” Plain-English = run receipt in simple language. Audit Certificate = technical proof.</p>
 
-          <div class="twoCol">
+          <div class="twoCol" style="margin-bottom:1rem;">
             <div>
-              <h2 style="font-size:1rem;margin:.2rem 0 .4rem;">Plain-English Preview</h2>
-              <!-- orchestrator.js writes here if present -->
-              <pre id="explainPreview" class="preview">Run the engine to generate plain-language output.</pre>
+              <h2 style="font-size:1rem;margin:.2rem 0 .4rem;">Explain Preview (What it means for me)</h2>
+              <pre id="explainPreview" class="preview">Run the engine to generate the explain layer.</pre>
             </div>
             <div>
-              <h2 style="font-size:1rem;margin:.2rem 0 .4rem;">Audit Certificate Preview</h2>
-              <pre id="receiptPreview" class="preview">Run the engine to generate the audit certificate.</pre>
+              <h2 style="font-size:1rem;margin:.2rem 0 .4rem;">Plain-English Preview (Receipt in human terms)</h2>
+              <pre id="plainPreview" class="preview">Run the engine to generate derived.plain_english.</pre>
             </div>
+          </div>
+
+          <div>
+            <h2 style="font-size:1rem;margin:.2rem 0 .4rem;">Audit Certificate Preview</h2>
+            <pre id="receiptPreview" class="preview">Run the engine to generate the audit certificate.</pre>
           </div>
 
           <p class="footerNote">
@@ -265,6 +273,10 @@
           </p>
         </section>
       </div>
+
+      <p class="footerNote" style="margin-top:1.2rem;">
+        Everything here runs locally in your browser. If you refresh and outputs “disappear,” your browser may have cleared local storage.
+      </p>
     </div>
   </main>
 
@@ -276,5 +288,28 @@
 
   <!-- Orchestrator -->
   <script type="module" src="integration/orchestrator.js"></script>
+
+  <!-- Local-only download buttons for explain/plain (doesn't touch orchestrator) -->
+  <script type="module">
+    import { scenarioGet, downloadJSON, getOrCreateScenario } from "engine/core/session.js";
+
+    const btnExplain = document.getElementById("btnExplain");
+    if (btnExplain) {
+      btnExplain.addEventListener("click", () => {
+        const explain = scenarioGet("receipts.explain");
+        if (!explain) return alert("No receipts.explain found yet. Run Engine first.");
+        downloadJSON("explain.json", explain);
+      });
+    }
+
+    const btnPlain = document.getElementById("btnPlain");
+    if (btnPlain) {
+      btnPlain.addEventListener("click", () => {
+        const plain = scenarioGet("derived.plain_english");
+        if (!plain) return alert("No derived.plain_english found yet. Run Engine first.");
+        downloadJSON("plain_english.json", plain);
+      });
+    }
+  </script>
 </body>
 </html>
