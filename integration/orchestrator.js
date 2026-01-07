@@ -128,6 +128,108 @@ function hasRequiredPaths(paths = []) {
   return missing;
 }
 
+/* =========================
+   PLAIN ENGLISH RECEIPT BUILDER
+   Writes: derived.plain_english
+   Format: Citizen Summary first, Technical Appendix second
+   ========================= */
+
+function safeKeys(obj) {
+  try {
+    return Object.keys(obj || {});
+  } catch {
+    return [];
+  }
+}
+
+function buildPlainEnglish(finalScenario, receipt) {
+  const engineId = receipt?.engine?.engine_id || finalScenario?.engine?.engine_id || "ABE_FLAG";
+  const engineVersion = receipt?.engine?.engine_version || finalScenario?.engine?.engine_version || "1.0";
+
+  const status = receipt?.module_status || finalScenario?.module_status || {};
+  const hashes = receipt?.hashes || finalScenario?.hashes || {};
+  const inputsPresent = receipt?.inputs_present || safeKeys(finalScenario?.inputs);
+  const derivedPresent = receipt?.derived_present || safeKeys(finalScenario?.derived);
+
+  const entries = Object.entries(status);
+  const ran = entries.filter(([, v]) => String(v?.status || "").toUpperCase() !== "PENDING");
+  const ok = ran.filter(([, v]) => String(v?.status || "").toUpperCase() === "OK");
+  const warn = ran.filter(([, v]) => String(v?.status || "").toUpperCase() === "WARN");
+  const fail = ran.filter(([, v]) => String(v?.status || "").toUpperCase() === "FAIL");
+  const skip = ran.filter(([, v]) => String(v?.status || "").toUpperCase() === "SKIP");
+
+  const receiptHash = hashes?.["receipts.audit_certificate"] || null;
+  const explainHash = hashes?.["receipts.explain"] || null;
+  const plainHash = hashes?.["derived.plain_english"] || null;
+
+  const overall =
+    fail.length ? "FAIL" :
+    warn.length ? "WARN" :
+    ok.length ? "OK" :
+    "UNKNOWN";
+
+  const citizen = {
+    headline: `ABE Engine Run: ${overall}`,
+    what_this_is: [
+      "This page ran a local-only engine in your browser.",
+      "Nothing was uploaded. No accounts. No tracking.",
+      "The engine produces outputs and hashes them so you can prove what ran."
+    ],
+    what_happened: [
+      `Engine: ${engineId} v${engineVersion}`,
+      `Modules completed: ${ok.length}/${ran.length || entries.length}`,
+      warn.length ? `Warnings: ${warn.length} (non-fatal)` : "Warnings: 0",
+      fail.length ? `Failures: ${fail.length} (engine may stop on required modules)` : "Failures: 0",
+      skip.length ? `Skipped: ${skip.length} (optional modules missing inputs)` : "Skipped: 0"
+    ],
+    what_to_download: [
+      "audit_certificate.json = the official run receipt (module status + hashes).",
+      "scenario.json = the full scenario store (inputs + derived outputs + hashes)."
+    ],
+    how_to_verify_hashes: [
+      "A hash is a fingerprint of an output file.",
+      "If the output changes, the hash changes.",
+      "To verify: re-run the engine on the same inputs and compare hashes."
+    ],
+    key_hashes: {
+      audit_certificate: receiptHash,
+      explain: explainHash,
+      plain_english: plainHash
+    },
+    what_outputs_exist_now: {
+      inputs_present: inputsPresent,
+      derived_present: derivedPresent
+    },
+    next_steps: [
+      "If you want different results: change inputs (upload files or edit defaults) and run again.",
+      "If a module shows SKIP: it’s optional and missing inputs (not a failure).",
+      "If a module shows FAIL: fix that module’s inputs/runner and re-run."
+    ]
+  };
+
+  const technical = {
+    overall_status: overall,
+    module_status: status,
+    hashes,
+    canonical_paths: {
+      receipt_path: "receipts.audit_certificate",
+      explain_path: "receipts.explain",
+      plain_english_path: "derived.plain_english"
+    },
+    produced_keys: {
+      inputs_present: inputsPresent,
+      derived_present: derivedPresent
+    }
+  };
+
+  return {
+    generated_at: new Date().toISOString(),
+    engine: { engine_id: engineId, engine_version: engineVersion },
+    citizen_summary: citizen,
+    technical_appendix: technical
+  };
+}
+
 async function loadRunner(runnerPath) {
   // runnerPath in manifest is relative to integration/ folder
   return import(runnerPath);
