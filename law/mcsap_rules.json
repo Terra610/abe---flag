@@ -16,7 +16,7 @@
       "summary": "Provides grants to States to assist in enforcement of commercial motor vehicle safety regulations and standards, primarily for CMVs and their drivers.",
       "full_text_available": false,
       "full_text_ref": "49 USC 31102; 49 CFR 350",
-      "scope_tags": [
+      "tags": [
         "funding_mcsap",
         "funding_conditions",
         "commercial_driver",
@@ -37,10 +37,10 @@
       "jurisdiction": "federal",
       "citation": "49 CFR 350 (compatibility / CMV focus)",
       "title": "MCSAP — Non-commercial DMV/traffic operations",
-      "summary": "Clarifies that non-commercial private passenger vehicles and their drivers are outside the core scope of CMV-focused MCSAP enforcement.",
+      "summary": "Non-commercial private passenger vehicles and their drivers are outside the core CMV-focused purpose of MCSAP enforcement.",
       "full_text_available": false,
-      "full_text_ref": "Compatibility discussions under 49 CFR Part 350 and FMCSA guidance",
-      "scope_tags": [
+      "full_text_ref": "49 CFR Part 350 and FMCSA guidance",
+      "tags": [
         "funding_mcsap",
         "funding_conditions",
         "noncommercial_driver",
