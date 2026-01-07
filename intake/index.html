@@ -3,151 +3,571 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Intake & OCR (Local) | A.B.E.</title>
+  <title>Intake & AI Assistant | A.B.E.</title>
 
+  <!-- GitHub Pages base -->
   <base href="/abe---flag/">
+
+  <!-- Global dark theme patch -->
   <link rel="stylesheet" href="abe-patch/assets/abe-patch.css"/>
 
   <style>
-    .wrap{max-width:1100px;margin:0 auto;padding:1.4rem 1rem 3rem;}
-    .header h1{margin:.2rem 0 .25rem;font-size:1.85rem;line-height:1.15;}
-    .tagline{max-width:880px;color:var(--muted);margin:.2rem 0 1rem;}
-    .chip-row{display:flex;flex-wrap:wrap;gap:.5rem;margin:.5rem 0 0;}
+    .wrap{
+      max-width:1100px;
+      margin:0 auto;
+      padding:1.4rem 1rem 3rem;
+    }
+
+    .header h1{
+      margin:.2rem 0 .25rem;
+      font-size:1.85rem;
+      line-height:1.15;
+    }
+    .tagline{
+      max-width:860px;
+      color:var(--muted);
+      margin:.2rem 0 1rem;
+    }
+
+    .toolbar{
+      display:flex;
+      flex-wrap:wrap;
+      gap:.5rem;
+      align-items:center;
+      margin: .75rem 0 1rem;
+    }
+
     .chip{
-      display:inline-flex;align-items:center;gap:.45rem;
-      padding:.45rem .75rem;border-radius:999px;border:1px solid var(--line);
-      background:#0b0f19;color:var(--ink);text-decoration:none;font-size:.9rem;cursor:pointer;
+      display:inline-flex;
+      align-items:center;
+      gap:.45rem;
+      padding:.45rem .75rem;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:#0b0f19;
+      color:var(--ink);
+      text-decoration:none;
+      font-size:.9rem;
+      cursor:pointer;
       user-select:none;
     }
-    .chip:hover{border-color: rgba(93,223,255,.55);}
-    .chip.alt{border-color: rgba(93,223,255,.35);box-shadow:0 0 0 1px rgba(93,223,255,.15) inset;}
-    .chip.danger{border-color: rgba(255,133,133,.35);}
+    .chip:hover{ border-color: rgba(93,223,255,.55); }
+    .chip.alt{
+      border-color: rgba(93,223,255,.35);
+      box-shadow:0 0 0 1px rgba(93,223,255,.15) inset;
+    }
+    .chip.danger{
+      border-color: rgba(255,133,133,.35);
+    }
 
-    .grid{display:grid;gap:1rem;}
-    @media(min-width:980px){.grid{grid-template-columns:1.1fr .9fr;}}
+    .grid{
+      display:grid;
+      gap:1rem;
+    }
+    @media(min-width:980px){
+      .grid{
+        grid-template-columns: 1.05fr 1.15fr;
+      }
+    }
 
     .card{
-      background:#10131c;border:1px solid var(--line);border-radius:16px;
-      padding:1rem 1rem 1.05rem;box-shadow:0 18px 40px rgba(0,0,0,.4);min-height:0;
+      background:#10131c;
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:1rem 1rem 1.05rem;
+      box-shadow:0 18px 40px rgba(0,0,0,.4);
+      min-height:0;
     }
-    .card h2{margin:.1rem 0 .35rem;font-size:1.05rem;}
-    .sub{color:var(--muted);font-size:.9rem;margin:.1rem 0 .75rem;}
-    .box{
-      padding:.65rem .75rem;border:1px solid var(--line);border-radius:14px;
-      background:#0b0f19;box-shadow:0 18px 40px rgba(0,0,0,.35);
+    .card h2{
+      margin:.1rem 0 .35rem;
+      font-size:1.05rem;
     }
-    .row{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin:.6rem 0;}
-    label{color:var(--muted);font-size:.92rem;}
-    input[type="file"]{color:var(--ink);max-width:100%;}
-    textarea{
-      width:100%;min-height:160px;resize:vertical;
-      background:#050712;border:1px solid rgba(255,255,255,.08);
-      border-radius:12px;color:var(--ink);padding:.7rem .75rem;
-      font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;
-      font-size:.85rem;line-height:1.35;
+    .sub{
+      color:var(--muted);
+      font-size:.9rem;
+      margin:.1rem 0 .75rem;
     }
+
+    .filebox{
+      display:flex;
+      flex-wrap:wrap;
+      gap:.6rem;
+      align-items:flex-start;
+      padding:.65rem .75rem;
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:#0b0f19;
+      box-shadow:0 18px 40px rgba(0,0,0,.35);
+      margin: .5rem 0 1rem;
+    }
+    .filebox label{
+      color:var(--muted);
+      font-size:.9rem;
+      margin-right:.25rem;
+    }
+    input[type="file"]{
+      color:var(--ink);
+      max-width:100%;
+    }
+
+    #fileList{
+      width:100%;
+      margin-top:.35rem;
+      color:var(--muted);
+      font-size:.9rem;
+    }
+    #fileList ul{ margin:.35rem 0 0; padding-left:1.2rem; }
+    #fileList li{ margin:.15rem 0; }
+
+    .kv{
+      display:grid;
+      grid-template-columns: 170px 1fr;
+      gap:.35rem .75rem;
+      padding:.7rem .75rem;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.08);
+      background:#050712;
+    }
+    @media(max-width:560px){
+      .kv{ grid-template-columns: 1fr; }
+    }
+    .k{ color:var(--muted); font-size:.88rem; }
+    .v{ color:var(--ink); font-size:.92rem; overflow-wrap:anywhere; }
+
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:.18rem .55rem;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.12);
+      font-size:.78rem;
+      letter-spacing:.02em;
+      width:fit-content;
+      margin-right:.35rem;
+      margin-bottom:.35rem;
+    }
+    .pill.ok{ border-color: rgba(75,210,143,.45); color:#a9f3d1; }
+    .pill.warn{ border-color: rgba(255,186,92,.5); color:#ffe1b3; }
+    .pill.fail{ border-color: rgba(255,133,133,.5); color:#ffd0d0; }
+    .pill.note{ border-color: rgba(93,223,255,.35); color:#c7f4ff; }
+
     pre.preview{
-      margin:0;padding:.75rem .8rem;border-radius:12px;border:1px solid rgba(255,255,255,.08);
-      background:#050712;color:var(--ink);overflow:auto;max-height:360px;
-      font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;
-      font-size:.82rem;white-space:pre-wrap;word-break:break-word;
+      margin:0;
+      padding:.75rem .8rem;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.08);
+      background:#050712;
+      color:var(--ink);
+      overflow:auto;
+      max-height:360px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      font-size:.82rem;
+      white-space:pre-wrap;
+      word-break:break-word;
     }
-    .list{margin:.3rem 0 0;padding-left:1.2rem;color:var(--muted);font-size:.92rem;}
-    .hint{color:var(--muted);font-size:.88rem;margin-top:.55rem;}
-    .kbd{
-      display:inline-block;border:1px solid rgba(255,255,255,.16);border-bottom-width:2px;
-      padding:.05rem .35rem;border-radius:8px;background:#0b0f19;font-size:.82rem;color:var(--ink);
+
+    .row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:.5rem;
+      align-items:center;
+      margin:.6rem 0 0;
     }
+
+    .miniBtn{
+      display:inline-flex;
+      align-items:center;
+      gap:.45rem;
+      padding:.45rem .7rem;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.12);
+      background:#0b0f19;
+      color:var(--ink);
+      cursor:pointer;
+      font-size:.9rem;
+    }
+    .miniBtn:hover{ border-color: rgba(93,223,255,.55); }
+
+    .hint{
+      margin-top:.65rem;
+      color:var(--muted);
+      font-size:.9rem;
+    }
+
+    .warnBox{
+      margin-top:.75rem;
+      padding:.7rem .75rem;
+      border-radius:14px;
+      border:1px solid rgba(255,186,92,.28);
+      background: rgba(255,186,92,.06);
+      color: var(--ink);
+    }
+
+    .okBox{
+      margin-top:.75rem;
+      padding:.7rem .75rem;
+      border-radius:14px;
+      border:1px solid rgba(75,210,143,.28);
+      background: rgba(75,210,143,.06);
+      color: var(--ink);
+    }
+
+    .footerNote{
+      margin-top:1rem;
+      color:var(--muted);
+      font-size:.9rem;
+    }
+    .footerNote a{
+      color:var(--accent);
+      text-decoration:none;
+    }
+    .footerNote a:hover{ text-decoration:underline; }
   </style>
 </head>
 
 <body class="abe-page">
-<header class="abe-header">
-  <div class="wrap header">
-    <a class="chip" href="index.html">← A.B.E. Home</a>
-    <h1>Intake & OCR Bridge (Local-only)</h1>
-    <p class="tagline">
-      Upload documents <strong>locally</strong> (nothing leaves your device). Intake builds a single, shared
-      <strong>inputs.intake</strong> artifact that the rest of the engine can consume (CDA/CFF/CCRI/CIRI).
-    </p>
-
-    <nav class="chip-row">
-      <a class="chip" href="law/index.html">Law Corpus</a>
-      <a class="chip" href="cda/index.html">CDA</a>
-      <a class="chip" href="cff/index.html">CFF</a>
-      <a class="chip alt" href="integration/index.html">Integration</a>
-    </nav>
-  </div>
-</header>
-
-<main class="abe-main">
-  <div class="wrap grid">
-
-    <!-- LEFT: Intake Builder -->
-    <section class="card">
-      <h2>1) Upload Files (Optional)</h2>
-      <p class="sub">
-        This stores file metadata and (when possible) reads text locally for preview. PDFs/images are stored as metadata only unless you paste text below.
+  <header class="abe-header">
+    <div class="wrap header">
+      <a class="chip" href="index.html">← A.B.E. Home</a>
+      <h1>Intake & Assistant</h1>
+      <p class="tagline">
+        Upload documents locally (tickets, policies, reports, contracts). Nothing leaves your device.
+        This page helps you understand what you uploaded and what the engine will do next.
       </p>
 
-      <div class="box">
-        <div class="row">
-          <label for="fileInput"><strong>Choose files:</strong></label>
-          <input id="fileInput" type="file" multiple />
-        </div>
+      <div class="toolbar" role="toolbar" aria-label="Intake controls">
+        <button class="chip" id="btnHome" type="button">Home</button>
+        <button class="chip" id="btnStart" type="button">Start</button>
+        <button class="chip alt" id="btnOpenIntegration" type="button">Go to Integration / Run</button>
+        <button class="chip danger" id="btnClear" type="button">Clear Local Intake</button>
+      </div>
+
+      <div class="filebox">
+        <label for="fileInput"><strong>Upload files (local-only):</strong></label>
+        <input id="fileInput" type="file" multiple />
         <div id="fileList"></div>
-
-        <div class="row">
-          <button class="chip alt" id="btnBuild" type="button">Build / Update inputs.intake</button>
-          <button class="chip" id="btnDownloadIntake" type="button">Download intake_artifact.json</button>
-          <button class="chip danger" id="btnClear" type="button">Clear Intake</button>
-        </div>
-
-        <p class="hint">
-          Tip: If you have a PDF and no OCR yet, open it and paste the key text below.
-          Use <span class="kbd">Ctrl</span> + <span class="kbd">F</span> inside the PDF viewer to find citations.
-        </p>
       </div>
+    </div>
+  </header>
 
-      <h2 style="margin-top:1rem;">2) Paste Text (Optional but powerful)</h2>
-      <p class="sub">
-        This is your “no-server OCR.” Paste ticket text, policy language, funding memos, contracts, etc.
-        Intake will store it under <strong>inputs.intake.pasted_text</strong>.
-      </p>
-      <textarea id="pastedText" placeholder="Paste text here (local-only). Example: citation lines, officer notes, docket text, funding line items..."></textarea>
+  <main class="abe-main">
+    <div class="wrap">
+      <div class="grid">
 
-      <h2 style="margin-top:1rem;">3) Preview: inputs.intake</h2>
-      <pre id="intakePreview" class="preview">No intake artifact built yet.</pre>
-    </section>
+        <!-- LEFT: Intake snapshot -->
+        <section class="card">
+          <h2>What you uploaded</h2>
+          <p class="sub">
+            This is a simple snapshot of your intake. The engine can run with uploads, or with a safe default scenario.
+          </p>
 
-    <!-- RIGHT: AI Assistant (Local, Deterministic) -->
-    <section class="card">
-      <h2>Intake “AI Assistant” (Local)</h2>
-      <p class="sub">
-        This is a local helper that explains what to upload and what each document type feeds.
-        It does not phone home. It does not guess facts. It only summarizes what <em>you</em> provided.
-      </p>
+          <div class="kv" style="margin-bottom:.75rem;">
+            <div class="k">Storage</div>
+            <div class="v"><span class="pill note">Local-only</span> Stored in your browser’s local storage (not a server).</div>
 
-      <div class="box">
-        <div class="row">
-          <button class="chip alt" id="btnAdvise" type="button">Explain what to upload</button>
-          <button class="chip alt" id="btnExplainIntake" type="button">Explain my current intake</button>
-        </div>
-        <pre id="assistantOut" class="preview">Click a button to get guidance.</pre>
+            <div class="k">Files found</div>
+            <div class="v" id="intakeCount">0</div>
+
+            <div class="k">Last updated</div>
+            <div class="v" id="intakeUpdated">—</div>
+
+            <div class="k">Next step</div>
+            <div class="v">
+              <span class="pill ok">Run</span> Open Integration and click <strong>Run Engine</strong>.
+            </div>
+          </div>
+
+          <div id="intakeNotice" class="warnBox" style="display:none;"></div>
+          <div id="intakeOk" class="okBox" style="display:none;"></div>
+
+          <div class="row">
+            <button class="miniBtn" id="btnSaveToScenario" type="button">Save Intake into Scenario</button>
+            <button class="miniBtn" id="btnDownloadIntake" type="button">Download intake_artifact.json</button>
+          </div>
+
+          <p class="hint">
+            <strong>Note:</strong> This assistant does not “judge people.” It only helps structure documents and explain what the engine is doing.
+          </p>
+
+          <p class="footerNote">
+            Want the proof layer? Go to <a href="integration/index.html">Integration / Audit</a>.
+          </p>
+        </section>
+
+        <!-- RIGHT: Assistant panel -->
+        <section class="card">
+          <h2>Assistant (local-only)</h2>
+          <p class="sub">
+            Plain-English guidance: what your files likely are, what modules will care, and what to do next.
+          </p>
+
+          <div style="margin-bottom:.6rem;">
+            <span class="pill note">No API</span>
+            <span class="pill note">No logins</span>
+            <span class="pill note">No tracking</span>
+            <span class="pill ok">Deterministic</span>
+          </div>
+
+          <pre id="assistantPreview" class="preview">Upload files to see assistant guidance.</pre>
+
+          <div class="row">
+            <button class="miniBtn" id="btnRefreshAssistant" type="button">Refresh Assistant</button>
+            <button class="miniBtn" id="btnCopyAssistant" type="button">Copy Guidance</button>
+          </div>
+
+          <p class="footerNote">
+            Tip: if you don’t have documents yet, you can still run a safe default scenario in Integration.
+          </p>
+        </section>
+
       </div>
+    </div>
+  </main>
 
-      <p class="hint">
-        Non-negotiables enforced: local-only, no tracking, no logins, no people-scoring, integrity-first.
-      </p>
-    </section>
+  <footer class="abe-footer">
+    <p>
+      A.B.E. — Intake · CC BY-NC 4.0 · Local-only (no tracking).
+    </p>
+  </footer>
 
-  </div>
-</main>
+  <script type="module">
+    // Intake page script (inline, local-only)
+    // Writes scenario-like artifacts into localStorage, but does NOT require Integration to exist.
 
-<footer class="abe-footer">
-  <p>A.B.E. — Intake & OCR Bridge · CC BY-NC 4.0 · Local-only.</p>
-</footer>
+    const LS_KEYS = {
+      INTAKE_ARTIFACT: "ABE_FLAG:intake_artifact",
+      SCENARIO: "ABE_FLAG:scenario"
+    };
 
-<script type="module" src="intake/intake_ui.js"></script>
+    const $ = (id) => document.getElementById(id);
+
+    function nowISO(){ return new Date().toISOString(); }
+
+    function loadJSON(key){
+      try{
+        const raw = localStorage.getItem(key);
+        return raw ? JSON.parse(raw) : null;
+      }catch{
+        return null;
+      }
+    }
+
+    function saveJSON(key, obj){
+      localStorage.setItem(key, JSON.stringify(obj, null, 2));
+    }
+
+    function downloadJSON(filename, obj){
+      const blob = new Blob([JSON.stringify(obj, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    function setList(files){
+      const el = $("fileList");
+      el.innerHTML = "";
+      if (!files || !files.length) return;
+
+      const ul = document.createElement("ul");
+      for (const f of files){
+        const li = document.createElement("li");
+        li.textContent = `${f.name} (${Math.round(f.size/1024)} KB)`;
+        ul.appendChild(li);
+      }
+      el.appendChild(ul);
+    }
+
+    function classifyFile(name, type){
+      const n = String(name || "").toLowerCase();
+      const t = String(type || "").toLowerCase();
+
+      if (t.includes("pdf") || n.endsWith(".pdf")) return { kind:"PDF", moduleHints:["intake","cda","ciri","cff","ccri"], note:"PDF detected. OCR/parsing (optional) can be added later." };
+      if (t.includes("image") || n.match(/\.(png|jpg|jpeg|webp|gif)$/)) return { kind:"Image", moduleHints:["intake","cda"], note:"Image detected. If it’s a scan/photo, OCR will be needed to extract text." };
+      if (n.endsWith(".csv")) return { kind:"CSV", moduleHints:["ciri","cibs","cii","cff"], note:"CSV detected. If this is inputs/budgets/portfolios, it can drive downstream modules." };
+      if (n.endsWith(".json")) return { kind:"JSON", moduleHints:["intake","system","law","ccri"], note:"JSON detected. Often config, packs, or structured inputs." };
+      if (n.endsWith(".txt") || t.includes("text")) return { kind:"Text", moduleHints:["cda","ciri","cae"], note:"Text detected. Good for policies, notes, excerpts, citations." };
+
+      return { kind:"File", moduleHints:["intake"], note:"Unknown type. It can still be indexed and hashed later." };
+    }
+
+    function buildAssistant(intakeArtifact){
+      const files = intakeArtifact?.files || [];
+      if (!files.length){
+        return {
+          headline: "No uploads yet.",
+          steps: [
+            "Click Upload and select any documents you want the engine to consider.",
+            "Or skip uploads and run a default scenario on the Integration page."
+          ],
+          modules: {
+            intake: "Collects local file metadata now. Later can OCR/parse locally.",
+            divergence_cda: "Uses practices/statutes/docs to produce divergence signals.",
+            ciri: "Uses divergence + inputs to calculate recoverable value and ROI.",
+            cibs: "Allocates recovered value into community budget categories.",
+            cii: "Builds/validates a project portfolio against the budget."
+          },
+          warnings: ["Nothing is uploaded yet, so the assistant has nothing to classify."]
+        };
+      }
+
+      const byKind = {};
+      const moduleHits = {};
+      const notes = [];
+
+      for (const f of files){
+        const c = classifyFile(f.name, f.type);
+        byKind[c.kind] = (byKind[c.kind] || 0) + 1;
+        for (const m of c.moduleHints){
+          moduleHits[m] = (moduleHits[m] || 0) + 1;
+        }
+        if (c.note) notes.push(`${f.name}: ${c.note}`);
+      }
+
+      const topModules = Object.entries(moduleHits)
+        .sort((a,b)=>b[1]-a[1])
+        .map(([k,v])=>`${k} (${v})`);
+
+      const kinds = Object.entries(byKind)
+        .sort((a,b)=>b[1]-a[1])
+        .map(([k,v])=>`${k}: ${v}`);
+
+      const nextSteps = [
+        "If these are tickets/policies: run Integration → it will generate receipts + hashes.",
+        "If you want OCR: Intake module can add in-browser OCR later (still local-only).",
+        "If you want to prove integrity: download scenario.json + audit_certificate.json from Integration."
+      ];
+
+      // Gentle warnings (not scary)
+      const warnings = [];
+      const hasPdf = files.some(f => String(f.type||"").toLowerCase().includes("pdf") || String(f.name||"").toLowerCase().endsWith(".pdf"));
+      const hasImage = files.some(f => String(f.type||"").toLowerCase().includes("image"));
+      if (hasPdf || hasImage){
+        warnings.push("Some uploads may require OCR to extract text. OCR can be added later and still remain local-only.");
+      }
+
+      return {
+        headline: "Assistant summary (local-only)",
+        what_you_uploaded: kinds,
+        likely_modules_to_care: topModules.length ? topModules : ["intake"],
+        next_steps: nextSteps,
+        file_notes: notes.slice(0, 18), // avoid giant walls
+        warnings
+      };
+    }
+
+    function updateUI(){
+      const artifact = loadJSON(LS_KEYS.INTAKE_ARTIFACT) || { created_at: null, updated_at: null, files: [] };
+
+      $("intakeCount").textContent = String(artifact.files?.length || 0);
+      $("intakeUpdated").textContent = artifact.updated_at || "—";
+
+      const notice = $("intakeNotice");
+      const ok = $("intakeOk");
+      notice.style.display = "none";
+      ok.style.display = "none";
+
+      if (!(artifact.files && artifact.files.length)){
+        notice.style.display = "block";
+        notice.innerHTML = `<strong>Nothing uploaded yet.</strong><br/>That’s fine. You can upload files here, or run a default scenario in Integration.`;
+      } else {
+        ok.style.display = "block";
+        ok.innerHTML = `<strong>Ready.</strong><br/>Your files are indexed locally. Next: open Integration and click <strong>Run Engine</strong>.`;
+      }
+
+      const assistant = buildAssistant(artifact);
+      $("assistantPreview").textContent = JSON.stringify(assistant, null, 2);
+    }
+
+    function saveToScenario(){
+      // Minimal, compatible with your Integration expectations.
+      const scenario = loadJSON(LS_KEYS.SCENARIO) || {
+        engine: { engine_id: "ABE_FLAG", engine_version: "1.0" },
+        created_at: nowISO(),
+        updated_at: nowISO(),
+        inputs: {},
+        derived: {},
+        module_status: {},
+        hashes: {}
+      };
+
+      const artifact = loadJSON(LS_KEYS.INTAKE_ARTIFACT) || { created_at: null, updated_at: null, files: [] };
+
+      scenario.inputs = scenario.inputs || {};
+      scenario.inputs.intake_files_meta = artifact.files || [];
+      scenario.inputs.intake = scenario.inputs.intake || {
+        source: "intake_page",
+        created_at: nowISO(),
+        notes: "Saved from intake/index.html (local-only)."
+      };
+      scenario.updated_at = nowISO();
+
+      saveJSON(LS_KEYS.SCENARIO, scenario);
+      alert("Saved to local scenario store (local-only). Now open Integration and run.");
+    }
+
+    // UI hooks
+    $("btnHome").addEventListener("click", () => (window.location.href = "index.html"));
+    $("btnStart").addEventListener("click", () => (window.location.href = "start/index.html"));
+    $("btnOpenIntegration").addEventListener("click", () => (window.location.href = "integration/index.html"));
+
+    $("btnClear").addEventListener("click", () => {
+      if (!confirm("Clear local intake artifacts? (This does NOT delete your actual files.)")) return;
+      localStorage.removeItem(LS_KEYS.INTAKE_ARTIFACT);
+      updateUI();
+    });
+
+    $("fileInput").addEventListener("change", (e) => {
+      const files = Array.from(e.target.files || []);
+      setList(files);
+
+      const meta = files.map(f => ({
+        name: f.name,
+        size: f.size,
+        type: f.type,
+        lastModified: f.lastModified
+      }));
+
+      const artifact = {
+        module: "INTAKE",
+        module_version: "1.0",
+        created_at: loadJSON(LS_KEYS.INTAKE_ARTIFACT)?.created_at || nowISO(),
+        updated_at: nowISO(),
+        files: meta,
+        notes: "Local-only intake index. No OCR performed here."
+      };
+
+      saveJSON(LS_KEYS.INTAKE_ARTIFACT, artifact);
+      updateUI();
+    });
+
+    $("btnSaveToScenario").addEventListener("click", saveToScenario);
+
+    $("btnDownloadIntake").addEventListener("click", () => {
+      const artifact = loadJSON(LS_KEYS.INTAKE_ARTIFACT) || { module:"INTAKE", files:[], updated_at: nowISO() };
+      downloadJSON("intake_artifact.json", artifact);
+    });
+
+    $("btnRefreshAssistant").addEventListener("click", updateUI);
+
+    $("btnCopyAssistant").addEventListener("click", async () => {
+      try{
+        const text = $("assistantPreview").textContent || "";
+        await navigator.clipboard.writeText(text);
+        alert("Copied assistant guidance.");
+      }catch{
+        alert("Could not copy (browser blocked clipboard). You can still select text and copy manually.");
+      }
+    });
+
+    // Boot
+    updateUI();
+  </script>
 </body>
 </html>
+```0
