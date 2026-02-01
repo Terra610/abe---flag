@@ -5,13 +5,41 @@
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>Intake & AI Assistant | A.B.E.</title>
 
-  <!-- GitHub Pages base -->
-  <base href="/abe---flag/">
-
-  <!-- Global dark theme patch -->
-  <link rel="stylesheet" href="abe-patch/assets/abe-patch.css"/>
+  <!-- Optional global theme patch (kept, but page no longer depends on it) -->
+  <link rel="stylesheet" href="../abe-patch/assets/abe-patch.css"/>
 
   <style>
+    :root{
+      /* Match your root theme */
+      --bg:#0b0d12;
+      --panel:#151923;
+      --ink:#e6e8ee;
+      --muted:#8fa2b7;
+      --accent:#ffd857;
+      --accentGlow:#ffe892;
+      --link:#5ddfff;
+
+      /* Used throughout this file */
+      --line: rgba(255,255,255,.10);
+    }
+
+    /* ✅ Prevent any white background fallback */
+    html, body{
+      height:100%;
+      margin:0;
+      padding:0;
+      background:var(--bg);
+      color:var(--ink);
+    }
+
+    body{
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    a{ color: var(--link); }
+
     .wrap{
       max-width:1100px;
       margin:0 auto;
@@ -34,7 +62,7 @@
       flex-wrap:wrap;
       gap:.5rem;
       align-items:center;
-      margin: .75rem 0 1rem;
+      margin:.75rem 0 1rem;
     }
 
     .chip{
@@ -65,9 +93,7 @@
       gap:1rem;
     }
     @media(min-width:980px){
-      .grid{
-        grid-template-columns: 1.05fr 1.15fr;
-      }
+      .grid{ grid-template-columns: 1.05fr 1.15fr; }
     }
 
     .card{
@@ -98,7 +124,7 @@
       border-radius:14px;
       background:#0b0f19;
       box-shadow:0 18px 40px rgba(0,0,0,.35);
-      margin: .5rem 0 1rem;
+      margin:.5rem 0 1rem;
     }
     .filebox label{
       color:var(--muted);
@@ -223,13 +249,27 @@
       text-decoration:none;
     }
     .footerNote a:hover{ text-decoration:underline; }
+
+    /* Header/footer containers so page looks correct even without external CSS */
+    header{
+      border-bottom:1px solid rgba(255,255,255,.08);
+      background:#0f131b;
+    }
+    footer{
+      border-top:1px solid rgba(255,255,255,.08);
+      background:#0f131b;
+      padding:1rem;
+      text-align:center;
+      color:var(--muted);
+      font-size:.9rem;
+    }
   </style>
 </head>
 
 <body class="abe-page">
   <header class="abe-header">
     <div class="wrap header">
-      <a class="chip" href="index.html">← A.B.E. Home</a>
+      <a class="chip" href="../index.html">← A.B.E. Home</a>
       <h1>Intake & Assistant</h1>
       <p class="tagline">
         Upload documents locally (tickets, policies, reports, contracts). Nothing leaves your device.
@@ -291,7 +331,7 @@
           </p>
 
           <p class="footerNote">
-            Want the proof layer? Go to <a href="integration/index.html">Integration / Audit</a>.
+            Want the proof layer? Go to <a href="../integration/index.html">Integration / Audit</a>.
           </p>
         </section>
 
@@ -326,11 +366,10 @@
   </main>
 
   <footer class="abe-footer">
-    <p>
-      A.B.E. — Intake · CC BY-NC 4.0 · Local-only (no tracking).
-    </p>
+    <p>A.B.E. — Intake · CC BY-NC 4.0 · Local-only (no tracking).</p>
   </footer>
 
-  <script type="module" src="intake/assistant.js"></script>
+  <!-- ✅ Correct relative module path from /intake/ -->
+  <script type="module" src="./assistant.js"></script>
 </body>
 </html>
