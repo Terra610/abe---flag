@@ -13,10 +13,16 @@ import {
   downloadJSON
 } from "../engine/core/session.js";
 
-async function loadManifest() {
-  const res = await fetch("../engine/core/engine.json", { cache: "no-store" });
-  if (!res.ok) throw new Error("Failed to load engine manifest.");
+async function loadEngineManifest() {
+  const manifestURL = new URL("../engine/core/engine.json", import.meta.url);
+
+  const res = await fetch(manifestURL, { cache: "no-store" });
+  if (!res.ok) {
+    throw new Error("Engine manifest cannot be found");
+  }
+
   return res.json();
+}
 }
 
 function pillClass(status) {
