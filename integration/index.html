@@ -5,14 +5,10 @@
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>Integration / Audit | A.B.E.</title>
 
-  <!-- GitHub Pages base -->
-  <base href="/abe---flag/">
-
-  <!-- Global dark theme patch (your project) -->
-  <link rel="stylesheet" href="abe-patch/assets/abe-patch.css"/>
+  <!-- Dark theme -->
+  <link rel="stylesheet" href="../abe-patch/assets/abe-patch.css"/>
 
   <style>
-    /* Integration page layout (keeps ABE dark theme + readable contrast) */
     .wrap{
       max-width:1100px;
       margin:0 auto;
@@ -24,6 +20,7 @@
       font-size:1.85rem;
       line-height:1.15;
     }
+
     .tagline{
       max-width:860px;
       color:var(--muted);
@@ -52,11 +49,13 @@
       cursor:pointer;
       user-select:none;
     }
+
     .chip:hover{ border-color: rgba(93,223,255,.55); }
     .chip.alt{
       border-color: rgba(93,223,255,.35);
       box-shadow:0 0 0 1px rgba(93,223,255,.15) inset;
     }
+
     .chip.danger{
       border-color: rgba(255,133,133,.35);
     }
@@ -73,28 +72,17 @@
       box-shadow:0 18px 40px rgba(0,0,0,.35);
       margin: .5rem 0 1rem;
     }
-    .filebox label{
-      color:var(--muted);
-      font-size:.9rem;
-      margin-right:.25rem;
-    }
+
     input[type="file"]{
       color:var(--ink);
       max-width:100%;
     }
-    #fileList{
-      width:100%;
-      margin-top:.35rem;
-      color:var(--muted);
-      font-size:.9rem;
-    }
-    #fileList ul{ margin:.35rem 0 0; padding-left:1.2rem; }
-    #fileList li{ margin:.15rem 0; }
 
     .grid{
       display:grid;
       gap:1rem;
     }
+
     @media(min-width:980px){
       .grid{
         grid-template-columns: 1.05fr 1.15fr;
@@ -107,55 +95,8 @@
       border-radius:16px;
       padding:1rem 1rem 1.05rem;
       box-shadow:0 18px 40px rgba(0,0,0,.4);
-      min-height:0;
-    }
-    .card h2{
-      margin:.1rem 0 .35rem;
-      font-size:1.05rem;
-    }
-    .sub{
-      color:var(--muted);
-      font-size:.9rem;
-      margin:.1rem 0 .75rem;
     }
 
-    /* Status grid */
-    #statusGrid{
-      display:grid;
-      gap:.35rem;
-    }
-    .status{
-      display:grid;
-      grid-template-columns: 140px 92px 1fr;
-      gap:.5rem;
-      align-items:center;
-      padding:.55rem .6rem;
-      border:1px solid rgba(255,255,255,.06);
-      border-radius:12px;
-      background:#050712;
-    }
-    @media(max-width:520px){
-      .status{ grid-template-columns: 1fr; }
-    }
-
-    .pill{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      padding:.18rem .55rem;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.12);
-      font-size:.78rem;
-      letter-spacing:.02em;
-      width:fit-content;
-    }
-    .pill.ok{ border-color: rgba(75,210,143,.45); color:#a9f3d1; }
-    .pill.warn{ border-color: rgba(255,186,92,.5); color:#ffe1b3; }
-    .pill.fail{ border-color: rgba(255,133,133,.5); color:#ffd0d0; }
-    .pill.skip{ border-color: rgba(170,170,170,.35); color:#d3d7df; }
-    .pill.pending{ border-color: rgba(93,223,255,.35); color:#c7f4ff; }
-
-    /* Previews */
     pre.preview{
       margin:0;
       padding:.75rem .8rem;
@@ -165,19 +106,10 @@
       color:var(--ink);
       overflow:auto;
       max-height:360px;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      font-family: ui-monospace, monospace;
       font-size:.82rem;
       white-space:pre-wrap;
       word-break:break-word;
-    }
-
-    .twoCol{
-      display:grid;
-      gap:1rem;
-      grid-template-columns: 1fr;
-    }
-    @media(min-width:980px){
-      .twoCol{ grid-template-columns: 1fr 1fr; }
     }
 
     .footerNote{
@@ -185,131 +117,98 @@
       color:var(--muted);
       font-size:.9rem;
     }
-    .footerNote a{
-      color:var(--accent);
-      text-decoration:none;
-    }
-    .footerNote a:hover{ text-decoration:underline; }
   </style>
 </head>
 
 <body class="abe-page">
-  <header class="abe-header">
-    <div class="wrap header">
-      <a class="chip" href="index.html">← A.B.E. Home</a>
-      <h1>Integration / Audit</h1>
-      <p class="tagline">
-        Run the A.B.E. engine locally (in-order), generate SHA-256 hashes, and export a human-readable explanation + audit receipt.
-        No servers. No logins. No tracking.
-      </p>
 
-      <div class="toolbar" role="toolbar" aria-label="Integration controls">
-        <!-- Nav -->
-        <button class="chip" id="btnHome" type="button">Home</button>
-        <button class="chip" id="btnStart" type="button">Start</button>
-
-        <!-- Scenario -->
-        <button class="chip alt" id="btnInit" type="button">Init Scenario</button>
-        <button class="chip alt" id="btnDefault" type="button">Load Default</button>
-        <button class="chip danger" id="btnReset" type="button">Reset</button>
-
-        <!-- Run -->
-        <button class="chip alt" id="btnRun" type="button">Run Engine</button>
-
-        <!-- Downloads -->
-        <button class="chip" id="btnReceipt" type="button">Download Receipt</button>
-        <button class="chip" id="btnScenario" type="button">Download Scenario</button>
-
-        <!-- NEW: Explain + Plain-English downloads (orchestrator can hook these later) -->
-        <button class="chip" id="btnExplain" type="button" title="Downloads receipts.explain if present">Download Explain</button>
-        <button class="chip" id="btnPlain" type="button" title="Downloads derived.plain_english if present">Download Plain-English</button>
-      </div>
-
-      <div class="filebox">
-        <label for="fileInput"><strong>Optional upload:</strong></label>
-        <input id="fileInput" type="file" multiple />
-        <div id="fileList"></div>
-      </div>
-    </div>
-  </header>
-
-  <main class="abe-main">
-    <div class="wrap">
-      <div class="grid">
-        <!-- LEFT: Status -->
-        <section class="card">
-          <h2>Module Status</h2>
-          <p class="sub">This shows what ran, what was skipped, and what failed (if anything).</p>
-          <div id="statusGrid">No scenario initialized yet.</div>
-
-          <p class="footerNote">
-            Tip: <strong>SKIP</strong> is usually optional modules missing inputs (not a failure). <strong>FAIL</strong> means the engine stopped on a required dependency.
-          </p>
-        </section>
-
-        <!-- RIGHT: Outputs -->
-        <section class="card">
-          <h2>Run Outputs</h2>
-          <p class="sub">Explain = “what it means for me.” Plain-English = run receipt in simple language. Audit Certificate = technical proof.</p>
-
-          <div class="twoCol" style="margin-bottom:1rem;">
-            <div>
-              <h2 style="font-size:1rem;margin:.2rem 0 .4rem;">Explain Preview (What it means for me)</h2>
-              <pre id="explainPreview" class="preview">Run the engine to generate the explain layer.</pre>
-            </div>
-            <div>
-              <h2 style="font-size:1rem;margin:.2rem 0 .4rem;">Plain-English Preview (Receipt in human terms)</h2>
-              <pre id="plainPreview" class="preview">Run the engine to generate derived.plain_english.</pre>
-            </div>
-          </div>
-
-          <div>
-            <h2 style="font-size:1rem;margin:.2rem 0 .4rem;">Audit Certificate Preview</h2>
-            <pre id="receiptPreview" class="preview">Run the engine to generate the audit certificate.</pre>
-          </div>
-
-          <p class="footerNote">
-            Want to inspect authority packs? Open <a href="law/index.html">Law — Federal Authority Corpus</a>.
-          </p>
-        </section>
-      </div>
-
-      <p class="footerNote" style="margin-top:1.2rem;">
-        Everything here runs locally in your browser. If you refresh and outputs “disappear,” your browser may have cleared local storage.
-      </p>
-    </div>
-  </main>
-
-  <footer class="abe-footer">
-    <p>
-      A.B.E. — Integration / Audit · CC BY-NC 4.0 · Local-only integrity engine (no tracking).
+<header class="abe-header">
+  <div class="wrap header">
+    <a class="chip" href="../index.html">← A.B.E. Home</a>
+    <h1>Integration / Audit</h1>
+    <p class="tagline">
+      Run the A.B.E. engine locally. Generate hashes, receipts, and human-readable explain output.
+      No servers. No tracking.
     </p>
-  </footer>
 
-  <!-- Orchestrator -->
-  <script type="module" src="integration/orchestrator.js"></script>
+    <div class="toolbar">
+      <button class="chip alt" id="btnRun" type="button">Run Engine</button>
+      <button class="chip" id="btnReceipt" type="button">Download Receipt</button>
+      <button class="chip" id="btnExplain" type="button">Download Explain</button>
+      <button class="chip" id="btnPlain" type="button">Download Plain-English</button>
+    </div>
 
-  <!-- Local-only download buttons for explain/plain (doesn't touch orchestrator) -->
-  <script type="module">
-    import { scenarioGet, downloadJSON, getOrCreateScenario } from "engine/core/session.js";
+    <div class="filebox">
+      <input id="fileInput" type="file" multiple />
+    </div>
+  </div>
+</header>
 
-    const btnExplain = document.getElementById("btnExplain");
-    if (btnExplain) {
-      btnExplain.addEventListener("click", () => {
-        const explain = scenarioGet("receipts.explain");
-        if (!explain) return alert("No receipts.explain found yet. Run Engine first.");
-        downloadJSON("explain.json", explain);
-      });
-    }
+<main class="abe-main">
+  <div class="wrap">
+    <div class="grid">
 
-    const btnPlain = document.getElementById("btnPlain");
-    if (btnPlain) {
-      btnPlain.addEventListener("click", () => {
-        const plain = scenarioGet("derived.plain_english");
-        if (!plain) return alert("No derived.plain_english found yet. Run Engine first.");
-        downloadJSON("plain_english.json", plain);
-      });
-    }
-  </script>
+      <section class="card">
+        <h2>Explain Preview</h2>
+        <pre id="explainPreview" class="preview">
+Run the engine to generate the explain layer.
+        </pre>
+      </section>
+
+      <section class="card">
+        <h2>Plain-English Preview</h2>
+        <pre id="plainPreview" class="preview">
+Run the engine to generate derived.plain_english.
+        </pre>
+      </section>
+
+      <section class="card">
+        <h2>Audit Certificate</h2>
+        <pre id="receiptPreview" class="preview">
+Run the engine to generate the audit certificate.
+        </pre>
+      </section>
+
+    </div>
+
+    <p class="footerNote">
+      Inspect authority packs in <a href="../law/index.html">Law — Federal Authority Corpus</a>.
+    </p>
+  </div>
+</main>
+
+<footer class="abe-footer">
+  <p>
+    A.B.E. — Integration / Audit · CC BY-NC 4.0 · Local-only integrity engine.
+  </p>
+</footer>
+
+<!-- Orchestrator -->
+<script type="module" src="./orchestrator.js"></script>
+
+<!-- Explain / Plain Download Layer -->
+<script type="module">
+  import { scenarioGet, downloadJSON } from "../engine/core/session.js";
+
+  const btnExplain = document.getElementById("btnExplain");
+  const btnPlain = document.getElementById("btnPlain");
+
+  if (btnExplain) {
+    btnExplain.addEventListener("click", () => {
+      const explain = scenarioGet("receipts.explain");
+      if (!explain) return alert("Run Engine first.");
+      downloadJSON("explain.json", explain);
+    });
+  }
+
+  if (btnPlain) {
+    btnPlain.addEventListener("click", () => {
+      const plain = scenarioGet("derived.plain_english");
+      if (!plain) return alert("Run Engine first.");
+      downloadJSON("plain_english.json", plain);
+    });
+  }
+</script>
+
 </body>
 </html>
