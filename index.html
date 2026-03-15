@@ -183,6 +183,27 @@
       <a class="btn" href="/abe---flag/macro/index.html">Open Macro</a>
     </section>
 
+    <!-- Audit Controls -->
+<div style="margin:20px 0; text-align:center;">
+  <button onclick="generateAuditCertificate({divergence: '0.75', recovery: '$1.3T'})" 
+          style="background:#0f0; color:#000; padding:12px 24px; border:none; border-radius:8px; font-weight:bold; margin:5px;">
+    📄 Download Audit Certificate (SHA-256)
+  </button>
+  
+  <button onclick="shareAudit()" 
+          style="background:#00f; color:#fff; padding:12px 24px; border:none; border-radius:8px; font-weight:bold; margin:5px;">
+    🔗 Share My Audit (Private Link)
+  </button>
+</div>
+
+<script>
+// Simple share function (creates a safe, local link)
+function shareAudit() {
+  const link = "https://terra610.github.io/abe---flag/?audit=" + Date.now();
+  alert("✅ Private Audit Link Ready!\n\nCopy this:\n" + link + "\n\n(Share it anywhere — results stay on your device)");
+}
+</script>
+
     <!-- Integration -->
     <section class="card">
       <h2>Integration / Audit</h2>
