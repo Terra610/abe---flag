@@ -1,0 +1,50 @@
+{
+  "version": "2.0.0",
+  "name": "ABE Engine",
+  "description": "Constitutional Divergence & Economic Recovery Engine",
+  "modules": {
+    "intake": {
+      "path": "modules/intake/index.js",
+      "status": "active",
+      "description": "OCR + document intake"
+    },
+    "cda": {
+      "path": "modules/cda/analyzer.js",
+      "status": "active",
+      "description": "Constitutional Divergence Audit"
+    },
+    "ciri": {
+      "path": "modules/ciri/roi.js",
+      "status": "active",
+      "description": "Impact & ROI Modeling"
+    },
+    "cffs": {
+      "path": "modules/cffs/forensics.js",
+      "status": "active",
+      "description": "Funding Forensics & Reallocation"
+    },
+    "cibs": {
+      "path": "modules/cibs/budget.js",
+      "status": "active",
+      "description": "Community Investment & Budget"
+    },
+    "macro": {
+      "path": "modules/macro/cascade.js",
+      "status": "active",
+      "description": "National/Global Cascade Modeling"
+    },
+    "audit": {
+      "path": "modules/audit/cert.js",
+      "status": "active",
+      "description": "SHA-256 Audit Certificates"
+    }
+  },
+  "core": {
+    "engine": "engine/core/engine.json",
+    "anchors": "data/anchors/constitution.json"
+  },
+  "aiAssistant": {
+    "enabled": true,
+    "path": "modules/ai/assistant.js"
+  }
+}
