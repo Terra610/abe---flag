@@ -204,6 +204,32 @@
       <a class="btn" href="/abe---flag/system/index.html">View System Map</a>
     </section>
 
+<!-- ABE AI Assistant -->
+<div id="abe-chat" style="position:fixed; bottom:20px; right:20px; width:320px; background:#111; border-radius:12px; padding:12px; box-shadow:0 4px 20px rgba(0,0,0,0.5); color:#fff; font-family:sans-serif; z-index:9999;">
+  <div id="chat-header" style="font-weight:bold; margin-bottom:8px;">🦋 ABE Assistant — Ask me anything</div>
+  <div id="chat-messages" style="height:180px; overflow-y:auto; margin-bottom:8px; padding:8px; background:#222; border-radius:8px;"></div>
+  <input id="chat-input" type="text" placeholder="Type here... (e.g. 'explain CDA' or 'total savings')" style="width:100%; padding:8px; border:none; border-radius:6px; background:#333; color:#fff;">
+</div>
+
+<script src="modules/ai/assistant.js"></script>
+<script>
+// Simple chat UI (add this after the script src)
+const input = document.getElementById('chat-input');
+const messagesDiv = document.getElementById('chat-messages');
+
+input.addEventListener('keypress', async (e) => {
+  if (e.key === 'Enter' && input.value.trim()) {
+    const userText = input.value.trim();
+    messagesDiv.innerHTML += `<div style="margin:4px 0; text-align:right;">${userText}</div>`;
+    
+    const reply = await window.abeAssistant.respond(userText);
+    messagesDiv.innerHTML += `<div style="margin:4px 0; color:#0f0;">${reply}</div>`;
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    input.value = '';
+  }
+});
+</script>
+
   </div>
 </main>
 
