@@ -1,4 +1,4 @@
-<!doctype html>
+ <!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8"/>
@@ -147,6 +147,32 @@ Run the engine to generate the audit certificate.
     });
   }
 </script>
+<style>
+  /* Mobile keyboard & touch tweaks */
+  input, textarea, #chat-input {
+    font-size: 16px !important; /* prevents auto-zoom on iOS/Android */
+    padding: 14px !important;
+    min-height: 48px !important;
+  }
+  
+  button, .chip {
+    min-height: 48px !important;
+    touch-action: manipulation !important;
+  }
+  
+  .filebox input[type="file"] {
+    padding: 12px !important;
+  }
+</style>
 
+<script>
+// Auto-save on every engine run (hooks into your existing "Run Engine" button)
+document.getElementById("btnRun").addEventListener("click", () => {
+  // Your existing run logic...
+  // Then auto-save:
+  const sampleData = { divergence: "0.75", recovery: "1.3T" }; // replace with real data from your engine
+  autoSaveAudit(sampleData);
+});
+</script>
 </body>
 </html>
