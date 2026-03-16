@@ -74,6 +74,7 @@
       <button class="chip" id="btnReceipt" type="button">Download Receipt</button>
       <button class="chip" id="btnExplain" type="button">Download Explain</button>
       <button class="chip" id="btnPlain" type="button">Download Plain-English</button>
+     <button class="chip" id="btnLoadLast" type="button">📂 Load Last Audit</button>
     </div>
 
     <div class="filebox">
@@ -173,6 +174,77 @@ document.getElementById("btnRun").addEventListener("click", () => {
   const sampleData = { divergence: "0.75", recovery: "1.3T" }; // replace with real data from your engine
   autoSaveAudit(sampleData);
 });
+ 
+<script>
+ // ABE Auto-Save — Local only, never loses an audit
+function autoSaveAudit(runData) {
+  const key = "abe_last_audit_" + Date.now();
+  const save = {
+    timestamp: new Date().toISOString(),
+    divergence: runData.divergence || "N/A",
+    recovery: runData.recovery || "N/A",
+    certificate: runData.sha256 || "pending"
+  };
+  
+  localStorage.setItem(key, JSON.stringify(save));
+  console.log("✅ Audit auto-saved locally");
+  
+  // Optional: Show a tiny toast
+  const toast = document.createElement("div");
+  toast.textContent = "Audit saved locally";
+  toast.style.cssText = "position:fixed; bottom:80px; left:50%; transform:translateX(-50%); background:#0f0; color:#000; padding:8px 16px; border-radius:8px; font-size:0.85rem;";
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 2000);
+}
+
+// Hook into existing run button (add this to your orchestrator or index if needed)
+window.autoSaveAudit = autoSaveAudit;
+ <style>
+  /* Mobile keyboard & touch tweaks */
+  input, textarea, #chat-input {
+    font-size: 16px !important; /* prevents auto-zoom on iOS/Android */
+    padding: 14px !important;
+    min-height: 48px !important;
+  }
+  
+  button, .chip {
+    min-height: 48px !important;
+    touch-action: manipulation !important;
+  }
+  
+  .filebox input[type="file"] {
+    padding: 12px !important;
+  }
+</style>
+
+<script>
+// Auto-save on every engine run (hooks into your existing "Run Engine" button)
+document.getElementById("btnRun").addEventListener("click", () => {
+  // Your existing run logic...
+  // Then auto-save:
+  const sampleData = { divergence: "0.75", recovery: "1.3T" }; // replace with real data from your engine
+  autoSaveAudit(sampleData);
+ <!-- Load Last Audit + Mobile Tweaks -->
+
+                                                  <script>
+  // Load Last Audit
+  document.getElementById("btnLoadLast").addEventListener("click", () => {
+    const keys = Object.keys(localStorage).filter(k => k.startsWith("abe_last_audit_"));
+    if (keys.length === 0) return alert("No saved audit yet. Run the engine first.");
+    
+    const latestKey = keys.sort().pop();
+    const saved = JSON.parse(localStorage.getItem(latestKey));
+    
+    alert(`✅ Loaded last audit!\nDivergence: ${saved.divergence}\nRecovery: ${saved.recovery}\nTime: ${saved.timestamp}`);
+    // You can expand this later to populate previews automatically
+  });
+
+  // Mobile keyboard & touch polish
+  const inputs = document.querySelectorAll("input, textarea, #chat-input");
+  inputs.forEach(el => {
+    el.style.fontSize = "16px";
+    el.style.minHeight = "48px";
+  });
 </script>
 </body>
 </html>
