@@ -371,5 +371,14 @@
 
   <!-- ✅ Correct relative module path from /intake/ -->
   <script type="module" src="./assistant.js"></script>
+  <script>
+  // FIXED: Go to Integration / Run button
+  const btnIntegration = document.getElementById("btnOpenIntegration");
+  if (btnIntegration) {
+    btnIntegration.addEventListener("click", () => {
+      window.location.href = "../integration/index.html";
+    });
+  }
+  </script>
 </body>
 </html>
