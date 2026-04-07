@@ -1,97 +1,101 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>A.B.E. — American Butterfly Effect</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <!-- THIS IS THE MAIN FIX FOR ALL 404s -->
+  <base href="/abe---flag/">
 
-<style>
-  :root {
-    --bg: #0b0d12;
-    --panel: #151923;
-    --ink: #e6e8ee;
-    --muted: #8fa2b7;
-    --accent: #ffd857; /* yellow-gold accent */
-    --accentGlow: #ffe892;
-    --link: #5ddfff;
-  }
+  <title>A.B.E. — American Butterfly Effect</title>
 
-  body {
-    margin: 0;
-    background: var(--bg);
-    color: var(--ink);
-    font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-  }
+  <style>
+    :root {
+      --bg: #0b0d12;
+      --panel: #151923;
+      --ink: #e6e8ee;
+      --muted: #8fa2b7;
+      --accent: #ffd857;
+      --accentGlow: #ffe892;
+      --link: #5ddfff;
+    }
 
-  header {
-    padding: 1.5rem 1rem;
-    text-align: center;
-    border-bottom: 1px solid rgba(255,255,255,.08);
-    background: #0f131b;
-  }
-  h1 {
-    margin: 0;
-    font-size: 1.9rem;
-    color: #bfeaff;
-  }
-  .tagline {
-    margin-top: .3rem;
-    font-size: 1rem;
-    color: var(--muted);
-  }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    }
 
-  .wrap {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 1.25rem;
-  }
+    header {
+      padding: 1.5rem 1rem;
+      text-align: center;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      background: #0f131b;
+    }
+    h1 {
+      margin: 0;
+      font-size: 1.9rem;
+      color: #bfeaff;
+    }
+    .tagline {
+      margin-top: .3rem;
+      font-size: 1rem;
+      color: var(--muted);
+    }
 
-  .grid {
-    display: grid;
-    gap: 1.25rem;
-  }
-  @media(min-width:900px){
-    .grid { grid-template-columns: repeat(3, 1fr); }
-  }
+    .wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 1.25rem;
+    }
 
-  .card {
-    background: var(--panel);
-    border: 1px solid rgba(255,255,255,.06);
-    padding: 1.2rem;
-    border-radius: 12px;
-  }
-  .card h2 {
-    margin-top: 0;
-    font-size: 1.2rem;
-    color: #cfefff;
-  }
-  .card p { color: var(--muted); font-size: .92rem; }
+    .grid {
+      display: grid;
+      gap: 1.25rem;
+    }
+    @media(min-width:900px){
+      .grid { grid-template-columns: repeat(3, 1fr); }
+    }
 
-  .btn {
-    display: inline-block;
-    padding: .55rem 1.1rem;
-    border-radius: 10px;
-    border: 1px solid var(--accent);
-    background: rgba(255,216,87,.12);
-    color: var(--accent);
-    text-decoration: none;
-    font-weight: 600;
-    box-shadow: 0 0 6px rgba(255,216,87,.4);
-    transition: all .18s ease;
-    font-size: .94rem;
-  }
-  .btn:hover {
-    background: rgba(255,216,87,.18);
-    box-shadow: 0 0 9px rgba(255,216,87,.6);
-  }
+    .card {
+      background: var(--panel);
+      border: 1px solid rgba(255,255,255,.06);
+      padding: 1.2rem;
+      border-radius: 12px;
+    }
+    .card h2 {
+      margin-top: 0;
+      font-size: 1.2rem;
+      color: #cfefff;
+    }
+    .card p { color: var(--muted); font-size: .92rem; }
 
-  footer {
-    margin: 3rem 0 1.5rem;
-    text-align: center;
-    color: var(--muted);
-    font-size: .85rem;
-  }
-</style>
+    .btn {
+      display: inline-block;
+      padding: .55rem 1.1rem;
+      border-radius: 10px;
+      border: 1px solid var(--accent);
+      background: rgba(255,216,87,.12);
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      box-shadow: 0 0 6px rgba(255,216,87,.4);
+      transition: all .18s ease;
+      font-size: .94rem;
+    }
+    .btn:hover {
+      background: rgba(255,216,87,.18);
+      box-shadow: 0 0 9px rgba(255,216,87,.6);
+    }
+
+    footer {
+      margin: 3rem 0 1.5rem;
+      text-align: center;
+      color: var(--muted);
+      font-size: .85rem;
+    }
+  </style>
 </head>
 
 <body>
@@ -183,27 +187,6 @@
       <a class="btn" href="/abe---flag/macro/index.html">Open Macro</a>
     </section>
 
-    <!-- Audit Controls -->
-<div style="margin:20px 0; text-align:center;">
-  <button onclick="generateAuditCertificate({divergence: '0.75', recovery: '$1.3T'})" 
-          style="background:#0f0; color:#000; padding:12px 24px; border:none; border-radius:8px; font-weight:bold; margin:5px;">
-    📄 Download Audit Certificate (SHA-256)
-  </button>
-  
-  <button onclick="shareAudit()" 
-          style="background:#00f; color:#fff; padding:12px 24px; border:none; border-radius:8px; font-weight:bold; margin:5px;">
-    🔗 Share My Audit (Private Link)
-  </button>
-</div>
-
-<script>
-// Simple share function (creates a safe, local link)
-function shareAudit() {
-  const link = "https://terra610.github.io/abe---flag/?audit=" + Date.now();
-  alert("✅ Private Audit Link Ready!\n\nCopy this:\n" + link + "\n\n(Share it anywhere — results stay on your device)");
-}
-</script>
-
     <!-- Integration -->
     <section class="card">
       <h2>Integration / Audit</h2>
@@ -218,38 +201,12 @@ function shareAudit() {
       <a class="btn" href="/abe---flag/doctrine/index.html">Open Doctrines</a>
     </section>
 
-    <!-- System -->
+    <!-- System Map -->
     <section class="card">
       <h2>System Map</h2>
       <p>The canonical pipeline: Intake → CDA → CDI → CIRI → CIBS → CII → Integration.</p>
-      <a class="btn" href="/abe---flag/system/index.html">View System Map</a>
+      <a class="btn" href="/abe---flag/system-map.html">View System Map</a>
     </section>
-
-<!-- ABE AI Assistant -->
-<div id="abe-chat" style="position:fixed; bottom:20px; right:20px; width:320px; background:#111; border-radius:12px; padding:12px; box-shadow:0 4px 20px rgba(0,0,0,0.5); color:#fff; font-family:sans-serif; z-index:9999;">
-  <div id="chat-header" style="font-weight:bold; margin-bottom:8px;">🦋 ABE Assistant — Ask me anything</div>
-  <div id="chat-messages" style="height:180px; overflow-y:auto; margin-bottom:8px; padding:8px; background:#222; border-radius:8px;"></div>
-  <input id="chat-input" type="text" placeholder="Type here... (e.g. 'explain CDA' or 'total savings')" style="width:100%; padding:8px; border:none; border-radius:6px; background:#333; color:#fff;">
-</div>
-
-<script src="modules/ai/assistant.js"></script>
-<script>
-// Simple chat UI (add this after the script src)
-const input = document.getElementById('chat-input');
-const messagesDiv = document.getElementById('chat-messages');
-
-input.addEventListener('keypress', async (e) => {
-  if (e.key === 'Enter' && input.value.trim()) {
-    const userText = input.value.trim();
-    messagesDiv.innerHTML += `<div style="margin:4px 0; text-align:right;">${userText}</div>`;
-    
-    const reply = await window.abeAssistant.respond(userText);
-    messagesDiv.innerHTML += `<div style="margin:4px 0; color:#0f0;">${reply}</div>`;
-    messagesDiv.scrollTop = messagesDiv.scrollHeight;
-    input.value = '';
-  }
-});
-</script>
 
   </div>
 </main>
