@@ -1,7 +1,7 @@
 // engine/modules/cda/index.js
 // CDA — Constitutional Divergence Analyzer
 // Self-contained module (logic + UI)
-// Expanded with Justice Monopoly, Credit, Eviction/Coercive Control, and 2σ–4σ layer
+// Includes 0-1 + 2σ–4σ, Justice Monopoly, Credit, Eviction/Coercive Control
 
 import { getOrCreateScenario, writeDerived, setModuleStatus } from "../core/session.js";
 
@@ -23,14 +23,14 @@ export async function run(scenario) {
     module: "CDA",
     module_version: "1.0",
     generated_at: new Date().toISOString(),
-    divergence_01: divergence01,                    // Original 0-1 scale
-    divergence_sigma: sigmaScore,                   // 2σ–4σ layer
+    divergence_01: divergence01,
+    divergence_sigma: sigmaScore,
     justice_monopoly: justiceMonopoly,
     credit_access: creditAccess,
     eviction_coercive_control: evictionCoercive,
     overall_severity: Math.max(divergence01, (sigmaScore - 1) / 3),
     interpretation: getSigmaInterpretation(sigmaScore),
-    notes: "Divergence analysis includes justice monopoly, credit barriers, and eviction harm."
+    notes: "Divergence analysis includes justice monopoly, credit barriers, eviction/coercive control, and animal displacement."
   };
 
   writeDerived("cda", cdaOutput);
@@ -42,7 +42,7 @@ export async function run(scenario) {
 // ==================== YOUR ORIGINAL 0-1 FORMULA (KEEP EXACTLY AS-IS) ====================
 function calculateOriginalDivergence01(inputs) {
   // ← YOUR ORIGINAL CDA DIVERGENCE FORMULA GOES HERE — DO NOT MODIFY
-  // Example placeholder — replace with your actual implementation
+  // Replace this placeholder with your actual implementation
   return 0.68;
 }
 
@@ -55,7 +55,7 @@ function calculateSigmaDivergence(inputs) {
     animalDisplacement: inputs.animalDisplacementFlag || 0
   };
   const raw = Object.values(factors).reduce((a, b) => a + b, 0) / Object.keys(factors).length;
-  return Math.min(4, 2 + (raw * 2));   // maps to 2σ–4σ range
+  return Math.min(4, 2 + (raw * 2));   // 2σ to 4σ range
 }
 
 function getSigmaInterpretation(sigma) {
