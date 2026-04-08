@@ -1,219 +1,128 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  
-  <!-- THIS IS THE MAIN FIX FOR ALL 404s -->
-  <base href="/abe---flag/">
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>A.B.E. — American Butterfly Effect</title>
-
-  <style>
-    :root {
-      --bg: #0b0d12;
-      --panel: #151923;
-      --ink: #e6e8ee;
-      --muted: #8fa2b7;
-      --accent: #ffd857;
-      --accentGlow: #ffe892;
-      --link: #5ddfff;
-    }
-
-    body {
-      margin: 0;
-      background: var(--bg);
-      color: var(--ink);
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-    }
-
-    header {
-      padding: 1.5rem 1rem;
-      text-align: center;
-      border-bottom: 1px solid rgba(255,255,255,.08);
-      background: #0f131b;
-    }
-    h1 {
-      margin: 0;
-      font-size: 1.9rem;
-      color: #bfeaff;
-    }
-    .tagline {
-      margin-top: .3rem;
-      font-size: 1rem;
-      color: var(--muted);
-    }
-
-    .wrap {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 1.25rem;
-    }
-
-    .grid {
-      display: grid;
-      gap: 1.25rem;
-    }
-    @media(min-width:900px){
-      .grid { grid-template-columns: repeat(3, 1fr); }
-    }
-
-    .card {
-      background: var(--panel);
-      border: 1px solid rgba(255,255,255,.06);
-      padding: 1.2rem;
-      border-radius: 12px;
-    }
-    .card h2 {
-      margin-top: 0;
-      font-size: 1.2rem;
-      color: #cfefff;
-    }
-    .card p { color: var(--muted); font-size: .92rem; }
-
-    .btn {
-      display: inline-block;
-      padding: .55rem 1.1rem;
-      border-radius: 10px;
-      border: 1px solid var(--accent);
-      background: rgba(255,216,87,.12);
-      color: var(--accent);
-      text-decoration: none;
-      font-weight: 600;
-      box-shadow: 0 0 6px rgba(255,216,87,.4);
-      transition: all .18s ease;
-      font-size: .94rem;
-    }
-    .btn:hover {
-      background: rgba(255,216,87,.18);
-      box-shadow: 0 0 9px rgba(255,216,87,.6);
-    }
-
-    footer {
-      margin: 3rem 0 1.5rem;
-      text-align: center;
-      color: var(--muted);
-      font-size: .85rem;
-    }
-  </style>
+  <link rel="stylesheet" href="assets/theme.css">
+  <script src="engine/core/session.js"></script>
 </head>
-
 <body>
-<header>
-  <h1>A.B.E. — American Butterfly Effect</h1>
-  <p class="tagline">Constitution → Integrity → Recovery · All local · CC BY-NC 4.0</p>
-</header>
-
-<main class="wrap">
-
-  <!-- PRIMARY ACTION -->
-  <div style="text-align:center;margin-bottom:2rem;">
-    <a href="/abe---flag/intake/index.html" class="btn" style="font-size:1.05rem;padding:.75rem 1.5rem;">
-      Start Here — Intake & OCR
-    </a>
+  <div class="header">
+    <h1>A.B.E. — American Butterfly Effect</h1>
+    <div class="global-controls">
+      <button onclick="goHome()">Home</button>
+      <button onclick="resetAll()">Reset</button>
+      <button onclick="clearData()">Clear Data</button>
+      <button onclick="downloadAuditHash()">Download Audit Hash</button>
+    </div>
   </div>
 
-  <!-- MODULE GRID -->
-  <div class="grid">
-
-    <!-- Intake -->
-    <section class="card">
-      <h2>Intake + OCR</h2>
-      <p>Upload any document <em>(PDF, image, memo, ticket, loan contract)</em>.  
-         OCR + normalization runs entirely in your browser. Produces CIRI/CDA/CFF/CCRI-ready data.</p>
-      <a class="btn" href="/abe---flag/intake/index.html">Open Intake</a>
-    </section>
-
-    <!-- CDA -->
-    <section class="card">
-      <h2>CDA — Divergence Analyzer</h2>
-      <p>Maps statutes, enforcement practices, and policies against controlling constitutional authority.</p>
-      <a class="btn" href="/abe---flag/cda/index.html">Open CDA</a>
-    </section>
-
-    <!-- CIRI -->
-    <section class="card">
-      <h2>CIRI — Integrity & ROI</h2>
-      <p>Computes economic recovery from ending unconstitutional practices: cases, jail days, fees, employment.</p>
-      <a class="btn" href="/abe---flag/ciri/index.html">Open CIRI</a>
-    </section>
-
-    <!-- CIBS -->
-    <section class="card">
-      <h2>CIBS — Community Budget</h2>
-      <p>Allocates recovery funds automatically into audited community investment categories.</p>
-      <a class="btn" href="/abe---flag/cibs/index.html">Open CIBS</a>
-    </section>
-
-    <!-- CII -->
-    <section class="card">
-      <h2>CII — Project Portfolios</h2>
-      <p>Shows real programs funded by recovered value: housing, mobility, clinics, childcare.</p>
-      <a class="btn" href="/abe---flag/cii/index.html">Open CII</a>
-    </section>
-
-    <!-- CFF -->
-    <section class="card">
-      <h2>CFF — Funding Forensics</h2>
-      <p>Classifies line items as ON-MISSION / OFF-MISSION relative to the funding statute & federal programs.</p>
-      <a class="btn" href="/abe---flag/cff/index.html">Open CFF</a>
-    </section>
-
-    <!-- AFFE -->
-    <section class="card">
-      <h2>AFFE — Funding & Fidelity Explorer</h2>
-      <p>Explore how funding changes when drift ends; visualize alignment and impact across agencies.</p>
-      <a class="btn" href="/abe---flag/affe/index.html">Open AFFE</a>
-    </section>
-
-    <!-- CCRI -->
-    <section class="card">
-      <h2>CCRI — Credit Integrity</h2>
-      <p>Evaluates lending, auto finance, and DMV/DOT data spillover for constitutional and economic impact.</p>
-      <a class="btn" href="/abe---flag/ccri/index.html">Open CCRI</a>
-    </section>
-
-    <!-- Learn -->
-    <section class="card">
-      <h2>Learn</h2>
-      <p>Small interactive examples that teach how CIRI, CIBS, and Macro work — based on doctrine values.</p>
-      <a class="btn" href="/abe---flag/learn/index.html">Learn A.B.E.</a>
-    </section>
-
-    <!-- Macro -->
-    <section class="card">
-      <h2>Macro Cascade</h2>
-      <p>National-scale modeling: what happens when multiple communities correct divergence at once.</p>
-      <a class="btn" href="/abe---flag/macro/index.html">Open Macro</a>
-    </section>
-
-    <!-- Integration -->
-    <section class="card">
-      <h2>Integration / Audit</h2>
-      <p>Runs SHA-256 integrity checks for every module. Produces a public audit certificate.</p>
-      <a class="btn" href="/abe---flag/integration/index.html">Open Audit Layer</a>
-    </section>
-
-    <!-- Doctrines -->
-    <section class="card">
-      <h2>Doctrines & CRRA</h2>
-      <p>The constitutional backbone: supremacy, non-delegation, CRRA, ABE doctrine, and jurisdiction rules.</p>
-      <a class="btn" href="/abe---flag/doctrine/index.html">Open Doctrines</a>
-    </section>
-
-    <!-- System Map -->
-    <section class="card">
-      <h2>System Map</h2>
-      <p>The canonical pipeline: Intake → CDA → CDI → CIRI → CIBS → CII → Integration.</p>
-      <a class="btn" href="/abe---flag/system-map.html">View System Map</a>
-    </section>
-
+  <div class="module-nav">
+    <button onclick="loadModule('intake')">Intake</button>
+    <button onclick="loadModule('cae')">CAE</button>
+    <button onclick="loadModule('cda')">CDA</button>
+    <button onclick="loadModule('ccri')">CCRI</button>
+    <button onclick="loadModule('cff')">CFF</button>
+    <button onclick="loadModule('affe')">AFFE</button>
+    <button onclick="loadModule('ciri')">CIRI</button>
+    <button onclick="loadModule('cibs')">CIBS</button>
+    <button onclick="loadModule('cii')">CII</button>
+    <button onclick="loadModule('macro')">Macro</button>
+    <button onclick="loadModule('doctrines')">Doctrines</button>
   </div>
-</main>
 
-<footer>
-  CC BY-NC 4.0 · Integrity only — never for sale · DOI: 10.5281/zenodo.17586107
-</footer>
+  <div id="module-container" class="module-container"></div>
 
+  <!-- Global AI Assistant -->
+  <div class="ai-assistant">
+    <h3>ABE Assistant</h3>
+    <div id="ai-chat" class="ai-chat"></div>
+    <input type="text" id="ai-input" placeholder="Ask about any output..." onkeypress="if(event.key === 'Enter') askAI()">
+    <button onclick="askAI()">Ask</button>
+  </div>
+
+  <script>
+    // Global dark theme is in assets/theme.css
+
+    let currentModule = null;
+
+    function loadModule(moduleName) {
+      currentModule = moduleName;
+      const container = document.getElementById('module-container');
+      container.innerHTML = `<div class="loading">Loading ${moduleName.toUpperCase()}...</div>`;
+
+      import(`./engine/modules/${moduleName}/index.js`)
+        .then(mod => {
+          container.innerHTML = '';
+          mod.renderUI(container);
+        })
+        .catch(err => {
+          container.innerHTML = `<div class="error">Failed to load ${moduleName}: ${err.message}</div>`;
+        });
+    }
+
+    function goHome() {
+      document.getElementById('module-container').innerHTML = `
+        <div class="module-box welcome">
+          <h2>Welcome to A.B.E.</h2>
+          <p>The American Butterfly Effect — Constitution • Integrity • Recovery • All Local</p>
+          <p>Select a module from the navigation above to begin.</p>
+        </div>
+      `;
+    }
+
+    function resetAll() {
+      if (confirm("Reset all data? This will clear the current scenario.")) {
+        localStorage.clear();
+        goHome();
+      }
+    }
+
+    function clearData() {
+      if (confirm("Clear current module data?")) {
+        localStorage.removeItem('ABE_FLAG_SCENARIO_V1');
+        loadModule(currentModule || 'intake');
+      }
+    }
+
+    async function downloadAuditHash() {
+      const s = getOrCreateScenario();
+      const hash = await hashObject(s);
+      const filename = `ABE_Audit_${new Date().toISOString().slice(0,19)}.txt`;
+      downloadTextFile(filename, `ABE Audit Hash:\n${hash}\n\nGenerated at: ${new Date().toISOString()}`);
+    }
+
+    function downloadTextFile(filename, text) {
+      const blob = new Blob([text], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    // AI Assistant
+    function askAI() {
+      const input = document.getElementById('ai-input');
+      const chat = document.getElementById('ai-chat');
+      if (!input.value.trim()) return;
+
+      chat.innerHTML += `<p><strong>You:</strong> ${input.value}</p>`;
+      
+      // Simple local response (expand later)
+      const response = `ABE Assistant: This is about constitutional alignment. Check the divergence score in CDA or ROI in CIRI. What specific module output would you like explained?`;
+      chat.innerHTML += `<p><strong>ABE:</strong> ${response}</p>`;
+      
+      input.value = '';
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    // Initialize
+    window.onload = () => {
+      goHome();
+    };
+  </script>
 </body>
 </html>
