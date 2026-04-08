@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>A.B.E. — American Butterfly Effect</title>
+  <link rel="stylesheet" href="assets/theme.css">
+</head>
+<body>
+  <div class="header">
+    <h1>A.B.E. — American Butterfly Effect</h1>
+    <div class="tagline">Constitution • Integrity • Recovery • All Local</div>
+    <div class="global-controls">
+      <button onclick="goHome()">Home</button>
+      <button onclick="resetAll()">Reset</button>
+      <button onclick="clearData()">Clear Data</button>
+      <button onclick="downloadAuditHash()">Download Audit Hash</button>
+    </div>
+  </div>
+
+  <div class="module-nav">
+    <button onclick="loadModule('intake')">Intake</button>
+    <button onclick="loadModule('cae')">CAE</button>
+    <button onclick="loadModule('cda')">CDA</button>
+    <button onclick="loadModule('ccri')">CCRI</button>
+    <button onclick="loadModule('cff')">CFF</button>
+    <button onclick="loadModule('affe')">AFFE</button>
+    <button onclick="loadModule('ciri')">CIRI</button>
+    <button onclick="loadModule('cibs')">CIBS</button>
+    <button onclick="loadModule('cii')">CII</button>
+    <button onclick="loadModule('macro')">Macro</button>
+    <button onclick="loadModule('doctrines')">Doctrines</button>
+  </div>
+
+  <div id="module-container" class="module-container"></div>
+
+  <!-- Global AI Assistant -->
+  <div class="ai-assistant">
+    <h3>ABE Assistant</h3>
+    <div id="ai-chat" class="ai-chat"></div>
+    <input type="text" id="ai-input" placeholder="Ask about any output..." onkeypress="if(event.key === 'Enter') askAI()">
+    <button onclick="askAI()">Ask</button>
+  </div>
+
+  <script src="engine/core/session.js"></script>
+  <script>
+    let currentModule = null;
+
+    async function loadModule(moduleName) {
+      currentModule = moduleName;
+      const container = document.getElementById('module-container');
+      container.innerHTML = `<div class="loading">Loading ${moduleName.toUpperCase()}...</div>`;
+
+      // Load the module's index.js
+      const script = document.createElement('script');
+      script.src = `engine/modules/${moduleName}/index.js`;
+      script.onload = () => {
+        // The module should have a global renderUI function
+        if (typeof window.renderUI === 'function') {
+          container.innerHTML = '';
+          window.renderUI(container);
+        } else {
+          container.innerHTML = `<div class="error">Module ${moduleName} loaded but renderUI not found.</div>`;
+        }
+      };
+      script.onerror = () => {
+        container.innerHTML = `<div class="error">Failed to load ${moduleName} at engine/modules/${moduleName}/index.js</div>`;
+      };
+      document.head.appendChild(script);
+    }
+
+    function goHome() {
+      document.getElementById('module-container').innerHTML = `
+        <div class="module-box welcome">
+          <h2>Welcome to A.B.E.</h2>
+          <p>Select a module from the navigation above.</p>
+        </div>
+      `;
+    }
+
+    function resetAll() { if (confirm("Reset all data?")) { localStorage.clear(); goHome(); } }
+    function clearData() { if (confirm("Clear current data?")) { localStorage.removeItem('ABE_FLAG_SCENARIO_V1'); loadModule('intake'); } }
+
+    async function downloadAuditHash() {
+      const s = getOrCreateScenario();
+      const hash = await hashObject(s);
+      const filename = `ABE_Audit_${new Date().toISOString().slice(0,19)}.txt`;
+      const blob = new Blob([`ABE Audit Hash:\n${hash}`], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    // Simple AI Assistant
+    function askAI() {
+      const input = document.getElementById('ai-input');
+      const chat = document.getElementById('ai-chat');
+      if (!input.value.trim()) return;
+      chat.innerHTML += `<p><strong>You:</strong> ${input.value}</p>`;
+      const response = "ABE Assistant: This relates to constitutional alignment. Check divergence in CDA or ROI in CIRI.";
+      chat.innerHTML += `<p><strong>ABE:</strong> ${response}</p>`;
+      input.value = '';
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    window.onload = goHome;
+  </script>
+</body>
+</html>
