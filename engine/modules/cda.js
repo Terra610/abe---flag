@@ -62,4 +62,4 @@ function calculateCreditworthinessDivergence(data) {
 
 function calculateEvictionCoerciveControlDivergence(data) {
   return ((data.retaliatoryEvictionFlag || 0) + (data.coerciveControlEvidence || 0) + (data.animalDisplacementFlag || 0)) / 3;
-}
+                                                                              }
