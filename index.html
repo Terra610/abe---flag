@@ -10,6 +10,7 @@
 <body>
   <div class="header">
     <h1>A.B.E. — American Butterfly Effect</h1>
+    <div class="tagline">Constitution • Integrity • Recovery • All Local</div>
     <div class="global-controls">
       <button onclick="goHome()">Home</button>
       <button onclick="resetAll()">Reset</button>
@@ -38,51 +39,45 @@
   <div class="ai-assistant">
     <h3>ABE Assistant</h3>
     <div id="ai-chat" class="ai-chat"></div>
-    <input type="text" id="ai-input" placeholder="Ask about any output..." onkeypress="if(event.key === 'Enter') askAI()">
+    <input type="text" id="ai-input" placeholder="Ask about any output or constitutional question..." onkeypress="if(event.key === 'Enter') askAI()">
     <button onclick="askAI()">Ask</button>
   </div>
 
   <script>
-    // Global dark theme is in assets/theme.css
-
-    let currentModule = null;
-
-    function loadModule(moduleName) {
-      currentModule = moduleName;
+    async function loadModule(moduleName) {
       const container = document.getElementById('module-container');
       container.innerHTML = `<div class="loading">Loading ${moduleName.toUpperCase()}...</div>`;
 
-      import(`./engine/modules/${moduleName}/index.js`)
-        .then(mod => {
-          container.innerHTML = '';
-          mod.renderUI(container);
-        })
-        .catch(err => {
-          container.innerHTML = `<div class="error">Failed to load ${moduleName}: ${err.message}</div>`;
-        });
+      try {
+        const mod = await import(`./engine/modules/${moduleName}/index.js`);
+        container.innerHTML = '';
+        mod.renderUI(container);
+      } catch (err) {
+        container.innerHTML = `<div class="error">Failed to load ${moduleName}.<br>Error: ${err.message}</div>`;
+      }
     }
 
     function goHome() {
       document.getElementById('module-container').innerHTML = `
         <div class="module-box welcome">
           <h2>Welcome to A.B.E.</h2>
-          <p>The American Butterfly Effect — Constitution • Integrity • Recovery • All Local</p>
+          <p>The American Butterfly Effect — turning constitutional realignment into measurable peace and prosperity for all.</p>
           <p>Select a module from the navigation above to begin.</p>
         </div>
       `;
     }
 
     function resetAll() {
-      if (confirm("Reset all data? This will clear the current scenario.")) {
+      if (confirm("Reset all scenario data?")) {
         localStorage.clear();
         goHome();
       }
     }
 
     function clearData() {
-      if (confirm("Clear current module data?")) {
+      if (confirm("Clear current data?")) {
         localStorage.removeItem('ABE_FLAG_SCENARIO_V1');
-        loadModule(currentModule || 'intake');
+        loadModule('intake');
       }
     }
 
@@ -103,18 +98,17 @@
       URL.revokeObjectURL(url);
     }
 
-    // AI Assistant
+    // Simple AI Assistant (respects guardrails)
     function askAI() {
       const input = document.getElementById('ai-input');
       const chat = document.getElementById('ai-chat');
       if (!input.value.trim()) return;
 
       chat.innerHTML += `<p><strong>You:</strong> ${input.value}</p>`;
-      
-      // Simple local response (expand later)
-      const response = `ABE Assistant: This is about constitutional alignment. Check the divergence score in CDA or ROI in CIRI. What specific module output would you like explained?`;
+
+      const response = "ABE Assistant: This relates to constitutional alignment. Check the divergence score in CDA or the ROI in CIRI. The framework is deterministic, private, and non-commercial. What specific output would you like explained?";
+
       chat.innerHTML += `<p><strong>ABE:</strong> ${response}</p>`;
-      
       input.value = '';
       chat.scrollTop = chat.scrollHeight;
     }
