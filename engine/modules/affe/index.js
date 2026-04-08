@@ -1,6 +1,6 @@
 // engine/modules/affe/index.js
 // AFFE — American Funding & Fidelity Explorer
-// Self-contained (logic + UI)
+// Self-contained (logic + UI + parser)
 
 import { getOrCreateScenario, writeDerived, setModuleStatus } from "../core/session.js";
 
@@ -8,14 +8,18 @@ export async function run(scenario) {
   const s = scenario || getOrCreateScenario();
   const divergence = s.derived?.divergence || {};
 
+  // Parser step - processes raw funding data
+  const parsedFunding = parseFundingData(s.inputs?.intake || {});
+
   const affeOutput = {
     module: "AFFE",
     generated_at: new Date().toISOString(),
     funding_fidelity: {
-      on_mission_percentage: 0.62,
-      off_mission_percentage: 0.38,
-      unclear_percentage: 0.00
+      on_mission_percentage: parsedFunding.onMissionPct || 0.62,
+      off_mission_percentage: parsedFunding.offMissionPct || 0.38,
+      unclear_percentage: parsedFunding.unclearPct || 0.00
     },
+    parsed_data_summary: parsedFunding.summary,
     divergence_01: divergence.divergence_01 || 0,
     divergence_sigma: divergence.divergence_sigma || 2,
     notes: "Funding classified as on-mission vs off-mission. Off-mission spending is the primary source of constitutional capital."
@@ -25,6 +29,27 @@ export async function run(scenario) {
   setModuleStatus("affe", "OK", "Funding fidelity analysis complete");
 
   return affeOutput;
+}
+
+// Parser functionality (moved from old affe-parser.js)
+function parseFundingData(intakeData) {
+  const text = intakeData?.text_normalized || intakeData?.pasted_text || "";
+
+  // Simple heuristic parser for funding classification
+  const onMissionKeywords = /constitution|authorized|public safety|infrastructure|education|health/i;
+  const offMissionKeywords = /private|commercial|subsidy|grant|ethanol|corporate/i;
+
+  const onMissionMatches = (text.match(onMissionKeywords) || []).length;
+  const offMissionMatches = (text.match(offMissionKeywords) || []).length;
+
+  const totalMatches = onMissionMatches + offMissionMatches || 1;
+
+  return {
+    onMissionPct: Math.round((onMissionMatches / totalMatches) * 100) / 100,
+    offMissionPct: Math.round((offMissionMatches / totalMatches) * 100) / 100,
+    unclearPct: 0.00,
+    summary: `Parsed ${onMissionMatches} on-mission and ${offMissionMatches} off-mission indicators from intake text.`
+  };
 }
 
 export function renderUI(container) {
@@ -61,4 +86,4 @@ export function renderUI(container) {
     btn.disabled = false;
     btn.textContent = 'Run Funding Fidelity Analysis';
   });
-                       }
+}
