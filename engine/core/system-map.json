@@ -1,7 +1,7 @@
 {
   "engine_id": "ABE_FLAG",
   "engine_version": "1.0",
-  "description": "ABE Flag - local-only constitutional alignment engine. Orchestrated via Integration.",
+  "description": "ABE Flag - local-only constitutional alignment engine.",
   "firing_order": [
     "intake",
     "system",
@@ -18,65 +18,66 @@
   "modules": {
     "intake": {
       "required": true,
-      "runner": "../intake/runner.js",
+      "runner": "../intake/index.js",
       "produces": ["inputs.intake"]
     },
     "system": {
       "required": false,
-      "runner": "../system/runner.js",
+      "runner": "../system/index.js",
       "produces": ["derived.systemmap"]
     },
     "cae": {
       "required": false,
-      "runner": "../cae/runner.js",
+      "runner": "../cae/index.js",
       "produces": ["derived.cae"]
     },
     "divergence": {
       "required": true,
       "impl": "cda",
-      "runner": "../cda/runner.js",
+      "runner": "../cda/index.js",
       "requires": ["inputs.intake"],
       "produces": ["derived.divergence"]
     },
     "ccri": {
       "required": false,
-      "runner": "../ccri/runner.js",
+      "runner": "../ccri/index.js",
       "produces": ["derived.ccri"]
     },
     "cff": {
       "required": false,
-      "runner": "../cff/runner.js",
+      "runner": "../cff/index.js",
       "produces": ["derived.cff"]
     },
     "affe": {
       "required": false,
-      "runner": "../affe/runner.js",
+      "runner": "../affe/index.js",
       "requires": ["derived.cff"],
       "produces": ["derived.affe"]
     },
     "ciri": {
       "required": true,
-      "runner": "../ciri/runner.js",
+      "runner": "../ciri/index.js",
       "requires": ["derived.divergence"],
       "produces": ["derived.ciri"]
     },
     "cibs": {
       "required": true,
-      "runner": "../cibs/runner.js",
+      "runner": "../cibs/index.js",
       "requires": ["derived.ciri"],
       "produces": ["derived.cibs"]
     },
     "cii": {
       "required": true,
-      "runner": "../cii/runner.js",
+      "runner": "../cii/index.js",
       "requires": ["derived.cibs"],
       "produces": ["derived.cii"]
     },
     "macro": {
       "required": false,
-      "runner": "../macro/runner.js",
+      "runner": "../macro/index.js",
       "requires": ["derived.ciri"],
       "produces": ["derived.macro"]
     }
   }
 }
+
