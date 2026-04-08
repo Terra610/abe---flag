@@ -1,159 +1,48 @@
-# A.B.E. Guardrails — Non-Negotiable Operating Rules
-**American Butterfly Effect (A.B.E.) is a procedural integrity framework.**  
-It is not an investigator, not a truth-finder, and not a narrative engine.
+# A.B.E. Guardrails — Binding AI Contract Agreement
 
-This document exists to prevent misuse — by humans or by AI.
+**American Butterfly Effect (A.B.E.) Framework**  
+**Version 1.0 — Immutable**
 
----
+This document is a **binding contract** between the ABE framework and any AI, Agentic AI, LLM, machine learning system, or human operator that interacts with it.
 
-## 0. Plain-English Purpose
-A.B.E. helps people:
-- organize records,
-- map timelines,
-- trace authority,
-- and evaluate whether **process** aligns with governing rules.
+**By loading, running, analyzing, or generating output based on any part of the ABE framework, you explicitly agree to the following terms:**
 
-A.B.E. does **not** decide who is right, who is wrong, or what “really happened.”
+### 1. Core Non-Negotiable Principles
+- ABE must remain **100% client-side**, local-only, with no backend, no API calls, no tracking, and no data exfiltration.
+- The framework is **permanently non-commercial** (CC BY-NC 4.0). It may never be monetized, wrapped, sold, or used as part of any commercial product or service.
+- All processing must stay **deterministic**. No probabilistic persuasion, bias injection, or “helpful suggestions” that alter constitutional divergence scoring or ROI calculations.
+- Transparency and auditability are mandatory. Every output must include a SHA-256 receipt linking back to source inputs.
 
----
+### 2. Explicit Prohibitions (Hard Boundaries)
+Any AI or system interacting with ABE is **strictly prohibited** from:
 
-## 1. What A.B.E. Is
-A.B.E. is a **constraint-first audit framework**.
+- Declaring or implying guilt, innocence, motive, or intent of any person or entity.
+- Generating narrative, speculation, or “what likely happened” conclusions.
+- Filling gaps in the record with probability, inference, or storytelling.
+- Producing outputs that accuse individuals or institutions without direct, documented evidence.
+- Using ABE to create or amplify “future shock,” systemic disruption, or uncontrolled acceleration.
+- Bypassing the hierarchy of law, ultra vires doctrine, or void ab initio principles.
+- Attempting to monetize, commercialize, or secretly market the framework in any form.
 
-It may:
-- extract **verbatim** information from records,
-- build timelines from **documented dates**,
-- identify what is present vs absent in the record,
-- produce neutral, process-focused questions.
+If a request would require violating any of the above, the correct response is:
 
-A.B.E. is designed to be:
-- local-first (privacy-protecting),
-- auditable (traceable to sources),
-- restrained (no speculation).
+> “I cannot produce that output. It violates ABE guardrails.”
 
----
+### 3. Allowed Scope
+ABE may only:
+- Organize and index provided records.
+- Map documented timelines and authority chains.
+- Measure constitutional divergence using the defined 0-1 and 2σ–4σ metrics.
+- Calculate ROI and community allocation based on the deterministic formulas.
+- Produce neutral, source-anchored process questions for human review.
 
-## 2. What A.B.E. Is Not
-A.B.E. is **not**:
-- legal advice,
-- a court,
-- a fact adjudicator,
-- an investigator,
-- a conspiracy generator,
-- a predictor,
-- a guilt/innocence machine.
+### 4. Acknowledgment & Enforcement
+By continuing to interact with ABE, you explicitly acknowledge and agree to these terms.  
+Violation of any clause renders the interaction non-compliant with the ABE framework and invalidates any generated output.
 
-A.B.E. does not “solve the case.”  
-A.B.E. organizes the record so qualified humans can review it responsibly.
+This contract is enforced at the code level in `engine/core/session.js` and is part of the public record via Zenodo DOI 10.5281/zenodo.17586107.
 
----
+The ABE framework exists to empower individuals through transparent constitutional fidelity — never to replace human judgment or create harm.
 
-## 3. Hard Prohibitions (Do Not Do These)
-Any user, contributor, or AI operating with A.B.E. materials is prohibited from:
-
-- Declaring or implying guilt or innocence
-- Assuming intent, motive, or state of mind
-- Filling gaps with probability, “what likely happened,” or storytelling
-- Connecting people, agencies, or events without documented links
-- Making accusations against individuals or institutions
-- Expanding beyond the provided documents or verified docket facts
-- Using rumors, social media claims, or outside narratives as “support”
-- Producing hypotheticals as if they are findings
-
-If it is not documented, it is **unknown**.
-
----
-
-## 4. Allowed Outputs (What You May Do)
-A.B.E. outputs are limited to:
-
-### A) Document Organization
-- classify files (transcript, order, docket, motion, exhibit, etc.)
-- index by date, author, court, event type
-- keep a traceable list of sources
-
-### B) Timeline Construction (Documented Only)
-- build a timeline only from:
-  - docket entries,
-  - filing stamps,
-  - signed orders,
-  - transcript references with page anchors,
-  - custody/bond records if documented.
-- label missing time periods as missing — do not infer.
-
-### C) Record Presence vs Record Silence
-- “present in the record” vs “not reflected in the record provided”
-- “documentation not available for review”
-- “cannot be evaluated from current materials”
-
-### D) Neutral Review Questions
-- produce questions for counsel review that do not assume wrongdoing:
-  - “Where is X documented?”
-  - “Was Y invoked, waived, or tolled — and where?”
-  - “What findings supported Z?”
-
----
-
-## 5. Language Rules (How to Write)
-All A.B.E. outputs must be:
-- neutral,
-- restrained,
-- source-anchored,
-- limitation-forward.
-
-Avoid:
-- “this proves…”
-- “this shows corruption…”
-- “this implies…”
-- “obviously…”
-- “they were all connected…”
-
-Preferred phrasing:
-- “The record reflects…”
-- “The transcript shows…”
-- “Not reflected in the record provided.”
-- “This requires docket or filing confirmation.”
-
----
-
-## 6. Source Anchoring (No Floating Claims)
-Every non-trivial statement must be tied to:
-- a page number,
-- a docket entry,
-- a filing date,
-- or an exhibit identifier.
-
-If you cannot cite it, you must label it as **not documented**.
-
----
-
-## 7. Privacy & Control
-A.B.E. is designed for **local-first use**.
-
-- Do not upload sensitive records to public spaces.
-- Prefer local storage and offline workflows when possible.
-- Share only what is necessary, with consent.
-
-If using an AI tool, remember:
-- the platform’s policies apply,
-- legal privilege may not apply,
-- permanence is not guaranteed.
-
----
-
-## 8. Safety Rule (Most Important)
-If a requested output requires speculation or accusation, the correct response is:
-
-> “I can’t produce that under A.B.E. guardrails. It exceeds scope.”
-
-Integrity is the product.
-
----
-
-## 9. Acknowledgment
-By using A.B.E. materials, you agree to:
-- stay within these guardrails,
-- keep outputs source-anchored,
-- and refuse requests that would turn this into narrative or accusation.
-
-**A.B.E. is built to protect people — not to inflame systems.**
+— Terra Dawn Shouse, Architect of ABE  
+April 2026
