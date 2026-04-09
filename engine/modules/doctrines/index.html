@@ -7,7 +7,7 @@
 </head>
 <body>
   <div class="header">
-    <h1>Doctrines & Constitutional Systems Engineering</h1>
+    <h1>Doctrines</h1>
   </div>
 
   <div id="module-content"></div>
@@ -17,6 +17,8 @@
     window.onload = () => {
       if (typeof renderUI === 'function') {
         renderUI(document.getElementById('module-content'));
+      } else {
+        document.getElementById('module-content').innerHTML = '<p>Doctrines module loaded but renderUI not found.</p>';
       }
     };
   </script>
