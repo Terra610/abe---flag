@@ -12,7 +12,7 @@
     <section class="header">
       <div>
         <h1>A.B.E. System Map</h1>
-        <p class="tagline">Public architecture view · local-only chain map</p>
+        <p class="tagline">Public architecture view · doctrine-anchored module chain</p>
       </div>
       <a class="home-link" href="/abe---flag/index.html">← Home</a>
     </section>
@@ -20,8 +20,8 @@
     <section class="panel">
       <div class="pill">100% local-only · no login · no telemetry · no remote API calls</div>
       <p class="muted">
-        This page shows the A.B.E. chain as a real system. It does not pretend missing modules are complete.
-        It reads local artifacts, reports presence honestly, and shows the public-facing flow from intake to macro.
+        This page shows how the A.B.E. system is wired. Modules do the work. Doctrine defines the boundary.
+        The chain stays local, traceable, and honest about what exists.
       </p>
     </section>
 
@@ -32,7 +32,7 @@
           Intake → CDA → CFF → AFFE → CIRI → CIBS → CII → Integration → Macro
         </div>
         <p class="muted">
-          Each layer stays client-side and uses local browser storage only.
+          Each layer reads from local browser artifacts only.
         </p>
       </section>
 
@@ -50,9 +50,7 @@
 
       <section class="card">
         <h2>Actions</h2>
-        <div class="module-nav">
-          <button id="refresh-map">Refresh Map</button>
-        </div>
+        <button id="refresh-map">Refresh Map</button>
         <div id="map-status" class="status-box small">Status: waiting</div>
       </section>
     </section>
@@ -71,44 +69,175 @@
       <section class="card">
         <h2>System Meaning</h2>
         <div id="system-meaning" class="status-box small">
-          The system map shows what exists, what is missing, and how the modules connect.
+          The system map shows what exists, what is missing, and how doctrine anchors the module chain.
         </div>
       </section>
     </section>
 
+    <section class="panel">
+      <h2>Module Chain</h2>
+      <div class="grid cols-3">
+        <section class="card">
+          <h2>Intake</h2>
+          <p>Captures source facts and stores the intake artifact locally.</p>
+          <a href="/abe---flag/intake/index.html"><button>Open Intake</button></a>
+        </section>
+
+        <section class="card">
+          <h2>CDA</h2>
+          <p>Tests authority, divergence, and invalid structure.</p>
+          <a href="/abe---flag/cda/index.html"><button>Open CDA</button></a>
+        </section>
+
+        <section class="card">
+          <h2>CFF</h2>
+          <p>Tests mission alignment, funding traceability, and off-mission drift.</p>
+          <a href="/abe---flag/cff/index.html"><button>Open CFF</button></a>
+        </section>
+
+        <section class="card">
+          <h2>AFFE</h2>
+          <p>Renders the funding layer in a more legible public-facing review format.</p>
+          <a href="/abe---flag/affe/index.html"><button>Open AFFE</button></a>
+        </section>
+
+        <section class="card">
+          <h2>CIRI</h2>
+          <p>Models recovery, stabilization, savings, and downstream repair.</p>
+          <a href="/abe---flag/ciri/index.html"><button>Open CIRI</button></a>
+        </section>
+
+        <section class="card">
+          <h2>CIBS</h2>
+          <p>Converts recovery into transparent allocation categories.</p>
+          <a href="/abe---flag/cibs/index.html"><button>Open CIBS</button></a>
+        </section>
+
+        <section class="card">
+          <h2>CII</h2>
+          <p>Turns allocations into visible funded public-facing outputs.</p>
+          <a href="/abe---flag/cii/index.html"><button>Open CII</button></a>
+        </section>
+
+        <section class="card">
+          <h2>Integration</h2>
+          <p>Checks chain readiness, integrity, and builds an integrated artifact.</p>
+          <a href="/abe---flag/integration/index.html"><button>Open Integration</button></a>
+        </section>
+
+        <section class="card">
+          <h2>Macro</h2>
+          <p>Projects broader strategic and cross-sector consequences.</p>
+          <a href="/abe---flag/macro/index.html"><button>Open Macro</button></a>
+        </section>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Doctrine Anchors</h2>
+      <div class="grid cols-3">
+        <section class="card">
+          <h2>Constitutional Fidelity</h2>
+          <p>Authority must remain traceable, bounded, and real.</p>
+          <a href="/abe---flag/doctrine/constitutional-fidelity.html"><button>Open</button></a>
+        </section>
+
+        <section class="card">
+          <h2>Void Ab Initio</h2>
+          <p>Invalid origin points cannot become lawful by repetition.</p>
+          <a href="/abe---flag/doctrine/void-ab-initio.html"><button>Open</button></a>
+        </section>
+
+        <section class="card">
+          <h2>ABE-CRRA</h2>
+          <p>Structural correction must lead to measurable restoration.</p>
+          <a href="/abe---flag/doctrine/abe-crra.html"><button>Open</button></a>
+        </section>
+
+        <section class="card">
+          <h2>Justice Monopoly</h2>
+          <p>Concentrated justice control creates distortion risk.</p>
+          <a href="/abe---flag/doctrine/justice-monopoly.html"><button>Open</button></a>
+        </section>
+
+        <section class="card">
+          <h2>Constitutional Systems Engineering</h2>
+          <p>Systems must remain coherent with lawful origin, scope, and execution.</p>
+          <a href="/abe---flag/doctrine/constitutional-systems-engineering.html"><button>Open</button></a>
+        </section>
+
+        <section class="card">
+          <h2>Doctrine Hub</h2>
+          <p>Central doctrine library for the full authored A.B.E. doctrine set.</p>
+          <a href="/abe---flag/doctrine/index.html"><button>Open Doctrine</button></a>
+        </section>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Doctrine → Module Wiring</h2>
+      <div class="grid cols-3">
+        <section class="card">
+          <h2>Constitutional Fidelity</h2>
+          <div class="status-box small">
+            Intake → captures claimed authority<br>
+            CDA → tests lawful origin and scope<br>
+            CFF → tests mission and funding alignment<br>
+            Integration → checks full-chain traceability
+          </div>
+        </section>
+
+        <section class="card">
+          <h2>Void Ab Initio</h2>
+          <div class="status-box small">
+            CDA → flags invalid origin<br>
+            CFF → rejects invalid enforcement as clean funding basis<br>
+            Integration → prevents invalid upstream artifacts from being normalized
+          </div>
+        </section>
+
+        <section class="card">
+          <h2>ABE-CRRA</h2>
+          <div class="status-box small">
+            CIRI → models restoration and recovery<br>
+            CIBS → allocates corrected recovery into public buckets<br>
+            CII → translates restoration into tangible outputs
+          </div>
+        </section>
+
+        <section class="card">
+          <h2>Justice Monopoly</h2>
+          <div class="status-box small">
+            CDA → detects structural imbalance<br>
+            CFF → tracks sustained off-mission funding behavior<br>
+            Integration → reveals chain-wide concentration problems<br>
+            Macro → projects downstream social and economic cost
+          </div>
+        </section>
+
+        <section class="card">
+          <h2>Constitutional Systems Engineering</h2>
+          <div class="status-box small">
+            CDA → authority architecture<br>
+            CFF → funding architecture<br>
+            Integration → full system coherence<br>
+            System Map → public structural view
+          </div>
+        </section>
+
+        <section class="card">
+          <h2>Integrity Rule</h2>
+          <div class="status-box small">
+            Doctrine defines the boundary.<br>
+            Modules apply the boundary.<br>
+            Outputs must stay traceable to the boundary.<br>
+            Missing alignment must be flagged, not hidden.
+          </div>
+        </section>
+      </div>
+    </section>
+
     <section class="grid cols-3">
-      <section class="card">
-        <h2>Module Roles</h2>
-        <div class="status-box small">
-          <strong>Intake</strong><br>
-          Local source capture and intake artifact creation.<br><br>
-
-          <strong>CDA</strong><br>
-          Constitutional divergence scoring and defect flagging.<br><br>
-
-          <strong>CFF</strong><br>
-          Funding trace review and mission-alignment classification.<br><br>
-
-          <strong>AFFE</strong><br>
-          Readable review layer for CFF artifact interpretation.<br><br>
-
-          <strong>CIRI</strong><br>
-          Recovery, savings, and stabilization modeling.<br><br>
-
-          <strong>CIBS</strong><br>
-          Transparent budget allocation from modeled recovery.<br><br>
-
-          <strong>CII</strong><br>
-          Converts budget buckets into funded output units.<br><br>
-
-          <strong>Integration</strong><br>
-          Full-chain handshake, readiness, and audit summary.<br><br>
-
-          <strong>Macro</strong><br>
-          Cross-sector and strategic recovery view.
-        </div>
-      </section>
-
       <section class="card">
         <h2>Privacy Boundary</h2>
         <div class="status-box small">
@@ -117,7 +246,7 @@
           No remote sync.<br>
           No telemetry.<br>
           No cloud API dependency.<br><br>
-          All artifacts are stored only in the user’s browser local storage.
+          All artifacts stay in the user’s browser local storage.
         </div>
       </section>
 
@@ -126,6 +255,15 @@
         <div id="integrity-note" class="status-box small">
           Only link to real pages. Only show real artifact presence. No fake doors.
         </div>
+      </section>
+
+      <section class="card">
+        <h2>Doctrine Map Bridge</h2>
+        <p>
+          The doctrine hub defines the authored doctrine set. This system map shows how that set governs the
+          module chain.
+        </p>
+        <a href="/abe---flag/law/doctrines/doctrine_map.html"><button>Open Doctrine Map</button></a>
       </section>
     </section>
   </main>
@@ -246,7 +384,7 @@
       renderCrosswalk(artifacts);
 
       if (chainScore === 100) {
-        els.systemMeaning.textContent = "The full A.B.E. public chain exists locally and is behaving like a real system.";
+        els.systemMeaning.textContent = "The full A.B.E. public chain exists locally and doctrine-to-module wiring is intact.";
       } else if (chainScore >= 75) {
         els.systemMeaning.textContent = "Most of the A.B.E. chain exists locally, but one or more layers are still missing.";
       } else if (chainScore > 0) {
@@ -260,7 +398,7 @@
       } else if (!presence.integration && presence.cii) {
         els.integrityNote.textContent = "CII exists, but Integration is missing. The chain has outputs without a full orchestration snapshot.";
       } else if (chainScore === 100) {
-        els.integrityNote.textContent = "All public chain layers are present. No fake doors. No missing shell routes.";
+        els.integrityNote.textContent = "All public chain layers are present. Doctrine and modules are wired as a real system.";
       } else {
         els.integrityNote.textContent = "Only link to real pages. Only show real artifact presence. No fake doors.";
       }
