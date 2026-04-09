@@ -1,1 +1,530 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <base href="/abe---flag/">
+  <title>A.B.E. Macro</title>
+  <link rel="stylesheet" href="/abe---flag/assets/theme.css">
+</head>
+<body>
+  <main class="wrap">
+    <section class="header">
+      <div>
+        <h1>A.B.E. Macro</h1>
+        <p class="tagline">Macro recovery view · local-only cross-sector scenario layer</p>
+      </div>
+      <a class="home-link" href="/abe---flag/index.html">← Home</a>
+    </section>
 
+    <section class="panel">
+      <div class="pill">100% local-only · no login · no telemetry · no remote API calls</div>
+      <p class="muted">
+        Macro reads the local CIRI, CIBS, CII, and Integration artifacts, then translates them into
+        broader cross-sector recovery views. This is the strategic layer, not a remote dashboard.
+      </p>
+    </section>
+
+    <section class="grid cols-3">
+      <section class="card">
+        <h2>Scenario Setup</h2>
+
+        <label for="macro-name">Macro scenario name</label>
+        <input id="macro-name" type="text" placeholder="Example: Cross-Industry Recovery Cascade">
+
+        <label for="macro-scope">Macro scope</label>
+        <input id="macro-scope" type="text" placeholder="Example: national, multi-state, sector-specific">
+
+        <label for="macro-notes">Macro notes</label>
+        <textarea id="macro-notes" rows="10" placeholder="Optional notes about the macro scenario"></textarea>
+
+        <div class="module-nav">
+          <button id="run-macro">Run Macro</button>
+          <button id="save-macro">Save Macro</button>
+          <button id="clear-macro" type="button">Clear</button>
+        </div>
+
+        <div id="macro-status" class="status-box small">Status: waiting</div>
+      </section>
+
+      <section class="card">
+        <h2>Scenario Modifiers</h2>
+
+        <label for="gdp-multiplier">GDP multiplier</label>
+        <input id="gdp-multiplier" type="number" min="0" step="0.01" value="1.20">
+
+        <label for="employment-multiplier">Employment multiplier</label>
+        <input id="employment-multiplier" type="number" min="0" step="0.01" value="1.15">
+
+        <label for="credit-multiplier">Credit stability multiplier</label>
+        <input id="credit-multiplier" type="number" min="0" step="0.01" value="1.10">
+
+        <label for="consumption-multiplier">Consumer demand multiplier</label>
+        <input id="consumption-multiplier" type="number" min="0" step="0.01" value="1.12">
+
+        <label for="recovery-years">Recovery years</label>
+        <input id="recovery-years" type="number" min="1" step="1" value="2">
+
+        <label for="confidence">Confidence (0 to 10)</label>
+        <input id="confidence" type="number" min="0" max="10" step="1" value="0">
+      </section>
+
+      <section class="card">
+        <h2>Topline Outputs</h2>
+
+        <div class="status-box">
+          <strong>Macro recovery total</strong>
+          <div id="macro-total" style="font-size: 24px; margin-top: 8px;">$0.00</div>
+        </div>
+
+        <div class="status-box" style="margin-top: 12px;">
+          <strong>Estimated jobs impact</strong>
+          <div id="macro-jobs" style="font-size: 24px; margin-top: 8px;">0</div>
+        </div>
+
+        <div class="status-box" style="margin-top: 12px;">
+          <strong>Macro readiness</strong>
+          <div id="macro-readiness" style="font-size: 24px; margin-top: 8px;">0</div>
+        </div>
+      </section>
+    </section>
+
+    <section class="grid cols-3">
+      <section class="card">
+        <h2>Sector View</h2>
+        <div id="sector-view" class="status-box small">No macro sector output yet.</div>
+      </section>
+
+      <section class="card">
+        <h2>Upstream Snapshot</h2>
+        <div id="upstream-summary" class="status-box small">No upstream summary loaded yet.</div>
+      </section>
+
+      <section class="card">
+        <h2>Integrity Notes</h2>
+        <div id="integrity-notes" class="status-box small">No macro integrity notes yet.</div>
+      </section>
+    </section>
+
+    <section class="grid cols-3">
+      <section class="card">
+        <h2>Artifact Preview</h2>
+        <pre id="artifact-preview" class="small">No Macro artifact saved yet.</pre>
+      </section>
+
+      <section class="card">
+        <h2>Public Meaning</h2>
+        <div id="public-meaning" class="status-box small">
+          Macro translates structural correction into broader economic and sector consequences.
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Crosswalk</h2>
+        <div id="crosswalk" class="status-box small">No crosswalk generated yet.</div>
+      </section>
+    </section>
+  </main>
+
+  <script>
+    const KEYS = {
+      ciri: "abe_ciri_artifact",
+      cibs: "abe_cibs_artifact",
+      cii: "abe_cii_artifact",
+      integration: "abe_integration_artifact",
+      macro: "abe_macro_artifact"
+    };
+
+    const els = {
+      macroName: document.getElementById("macro-name"),
+      macroScope: document.getElementById("macro-scope"),
+      macroNotes: document.getElementById("macro-notes"),
+
+      gdpMultiplier: document.getElementById("gdp-multiplier"),
+      employmentMultiplier: document.getElementById("employment-multiplier"),
+      creditMultiplier: document.getElementById("credit-multiplier"),
+      consumptionMultiplier: document.getElementById("consumption-multiplier"),
+      recoveryYears: document.getElementById("recovery-years"),
+      confidence: document.getElementById("confidence"),
+
+      macroTotal: document.getElementById("macro-total"),
+      macroJobs: document.getElementById("macro-jobs"),
+      macroReadiness: document.getElementById("macro-readiness"),
+
+      sectorView: document.getElementById("sector-view"),
+      upstreamSummary: document.getElementById("upstream-summary"),
+      integrityNotes: document.getElementById("integrity-notes"),
+      artifactPreview: document.getElementById("artifact-preview"),
+      publicMeaning: document.getElementById("public-meaning"),
+      crosswalk: document.getElementById("crosswalk"),
+      status: document.getElementById("macro-status"),
+
+      runBtn: document.getElementById("run-macro"),
+      saveBtn: document.getElementById("save-macro"),
+      clearBtn: document.getElementById("clear-macro")
+    };
+
+    function money(n) {
+      return new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "USD"
+      }).format(Number(n) || 0);
+    }
+
+    function n(el) {
+      return Number(el.value) || 0;
+    }
+
+    function loadJson(key) {
+      const raw = localStorage.getItem(key);
+      if (!raw) return null;
+      try {
+        return JSON.parse(raw);
+      } catch (err) {
+        return null;
+      }
+    }
+
+    function getArtifacts() {
+      return {
+        ciri: loadJson(KEYS.ciri),
+        cibs: loadJson(KEYS.cibs),
+        cii: loadJson(KEYS.cii),
+        integration: loadJson(KEYS.integration)
+      };
+    }
+
+    function computeReadiness(artifacts) {
+      const count = Object.values(artifacts).filter(Boolean).length;
+      return Math.round((count / 4) * 100);
+    }
+
+    function computeBaseRecovery(artifacts) {
+      return Math.max(
+        Number(artifacts.cii?.totals?.total_funded_amount) || 0,
+        Number(artifacts.ciri?.outputs?.net_modeled_recovery) || 0,
+        Number(artifacts.integration?.integrated_total) || 0
+      );
+    }
+
+    function computeMacroRecovery(baseRecovery) {
+      const gdp = n(els.gdpMultiplier);
+      const employment = n(els.employmentMultiplier);
+      const credit = n(els.creditMultiplier);
+      const consumption = n(els.consumptionMultiplier);
+      const years = Math.max(1, n(els.recoveryYears));
+      const confidence = Math.max(0.1, n(els.confidence) / 10);
+
+      return baseRecovery * gdp * employment * credit * consumption * years * confidence;
+    }
+
+    function computeJobsImpact(macroRecovery) {
+      return Math.floor(macroRecovery / 100000);
+    }
+
+    function buildSectorView(macroRecovery) {
+      const sectors = {
+        housing_infrastructure: macroRecovery * 0.18,
+        transportation_mobility: macroRecovery * 0.15,
+        justice_restoration: macroRecovery * 0.14,
+        workforce_jobs: macroRecovery * 0.16,
+        agriculture_local_production: macroRecovery * 0.10,
+        digital_systems: macroRecovery * 0.09,
+        consumer_demand_credit: macroRecovery * 0.18
+      };
+
+      return sectors;
+    }
+
+    function buildCrosswalk(artifacts, macroRecovery, jobsImpact) {
+      return {
+        ciri_total_recovery: artifacts.ciri?.outputs?.net_modeled_recovery ?? null,
+        cibs_budget_total: artifacts.cibs?.budget?.available_budget ?? null,
+        cii_total_funded_amount: artifacts.cii?.totals?.total_funded_amount ?? null,
+        integration_total: artifacts.integration?.integrated_total ?? null,
+        macro_recovery_total: macroRecovery,
+        macro_jobs_impact: jobsImpact
+      };
+    }
+
+    function buildIntegrityNotes(artifacts) {
+      const lines = [];
+
+      if (!artifacts.ciri) lines.push("CIRI artifact missing.");
+      if (!artifacts.cibs) lines.push("CIBS artifact missing.");
+      if (!artifacts.cii) lines.push("CII artifact missing.");
+      if (!artifacts.integration) lines.push("Integration artifact missing.");
+
+      const cibsPct = Number(artifacts.cibs?.budget?.total_percent);
+      if (artifacts.cibs && !(Math.abs(cibsPct - 100) < 0.01)) {
+        lines.push("CIBS total percent is not balanced at 100%.");
+      }
+
+      const totalUnits = Number(artifacts.cii?.totals?.total_units);
+      if (artifacts.cii && totalUnits <= 0) {
+        lines.push("CII total units are zero or missing.");
+      }
+
+      const readiness = Number(artifacts.integration?.readiness_score);
+      if (artifacts.integration && readiness < 100) {
+        lines.push("Integration readiness is below full chain completion.");
+      }
+
+      if (!lines.length) {
+        lines.push("Macro integrity checks passed for the current local chain.");
+      }
+
+      return lines;
+    }
+
+    function buildArtifact(precomputed) {
+      const artifacts = precomputed?.artifacts || getArtifacts();
+      const readiness = typeof precomputed?.readiness === "number"
+        ? precomputed.readiness
+        : computeReadiness(artifacts);
+      const baseRecovery = typeof precomputed?.baseRecovery === "number"
+        ? precomputed.baseRecovery
+        : computeBaseRecovery(artifacts);
+      const macroRecovery = typeof precomputed?.macroRecovery === "number"
+        ? precomputed.macroRecovery
+        : computeMacroRecovery(baseRecovery);
+      const jobsImpact = typeof precomputed?.jobsImpact === "number"
+        ? precomputed.jobsImpact
+        : computeJobsImpact(macroRecovery);
+      const sectorView = precomputed?.sectorView || buildSectorView(macroRecovery);
+      const crosswalk = precomputed?.crosswalk || buildCrosswalk(artifacts, macroRecovery, jobsImpact);
+      const integrityNotes = precomputed?.integrityNotes || buildIntegrityNotes(artifacts);
+
+      return {
+        module: "macro",
+        version: "1.0.0",
+        timestamp: new Date().toISOString(),
+        privacy: {
+          local_only: true,
+          telemetry: false,
+          remote_calls: false
+        },
+        macro: {
+          name: els.macroName.value.trim(),
+          scope: els.macroScope.value.trim(),
+          notes: els.macroNotes.value.trim()
+        },
+        modifiers: {
+          gdp_multiplier: n(els.gdpMultiplier),
+          employment_multiplier: n(els.employmentMultiplier),
+          credit_multiplier: n(els.creditMultiplier),
+          consumption_multiplier: n(els.consumptionMultiplier),
+          recovery_years: Math.max(1, n(els.recoveryYears)),
+          confidence: n(els.confidence)
+        },
+        readiness_score: readiness,
+        base_recovery: baseRecovery,
+        macro_recovery_total: macroRecovery,
+        macro_jobs_impact: jobsImpact,
+        sector_view: sectorView,
+        crosswalk,
+        integrity_notes: integrityNotes
+      };
+    }
+
+    function renderSectorView(sectors) {
+      if (!sectors) {
+        els.sectorView.textContent = "No macro sector output yet.";
+        return;
+      }
+
+      const lines = Object.entries(sectors).map(([k, v]) => {
+        return k + ": " + money(v);
+      });
+      els.sectorView.textContent = lines.join("\n");
+    }
+
+    function renderUpstreamSummary(artifacts) {
+      if (!artifacts) {
+        els.upstreamSummary.textContent = "No upstream summary loaded yet.";
+        return;
+      }
+
+      const summary = {
+        ciri_total_recovery: artifacts.ciri?.outputs?.net_modeled_recovery ?? null,
+        cibs_budget_total: artifacts.cibs?.budget?.available_budget ?? null,
+        cii_total_units: artifacts.cii?.totals?.total_units ?? null,
+        cii_total_funded_amount: artifacts.cii?.totals?.total_funded_amount ?? null,
+        integration_readiness: artifacts.integration?.readiness_score ?? null,
+        integration_total: artifacts.integration?.integrated_total ?? null
+      };
+
+      els.upstreamSummary.textContent = JSON.stringify(summary, null, 2);
+    }
+
+    function renderIntegrityNotes(lines) {
+      if (!lines || !lines.length) {
+        els.integrityNotes.textContent = "No macro integrity notes yet.";
+        return;
+      }
+      els.integrityNotes.textContent = lines.join("\n");
+    }
+
+    function renderCrosswalk(crosswalk) {
+      if (!crosswalk) {
+        els.crosswalk.textContent = "No crosswalk generated yet.";
+        return;
+      }
+      els.crosswalk.textContent = JSON.stringify(crosswalk, null, 2);
+    }
+
+    function renderArtifactPreview(artifact) {
+      if (!artifact) {
+        els.artifactPreview.textContent = "No Macro artifact saved yet.";
+        return;
+      }
+      els.artifactPreview.textContent = JSON.stringify(artifact, null, 2);
+    }
+
+    function updateOutputs() {
+      const artifacts = getArtifacts();
+      const readiness = computeReadiness(artifacts);
+      const baseRecovery = computeBaseRecovery(artifacts);
+      const macroRecovery = computeMacroRecovery(baseRecovery);
+      const jobsImpact = computeJobsImpact(macroRecovery);
+      const sectors = buildSectorView(macroRecovery);
+      const crosswalk = buildCrosswalk(artifacts, macroRecovery, jobsImpact);
+      const integrityNotes = buildIntegrityNotes(artifacts);
+
+      els.macroTotal.textContent = money(macroRecovery);
+      els.macroJobs.textContent = String(jobsImpact);
+      els.macroReadiness.textContent = String(readiness);
+
+      renderSectorView(sectors);
+      renderUpstreamSummary(artifacts);
+      renderIntegrityNotes(integrityNotes);
+      renderCrosswalk(crosswalk);
+
+      if (macroRecovery >= 1000000000000) {
+        els.publicMeaning.textContent = "This scenario models trillion-scale macro recovery if structural correction holds at broad scale.";
+      } else if (macroRecovery >= 1000000000) {
+        els.publicMeaning.textContent = "This scenario models billion-scale macro recovery with major sector spillover.";
+      } else if (macroRecovery >= 100000000) {
+        els.publicMeaning.textContent = "This scenario models substantial macro recovery with cross-sector consequences.";
+      } else if (macroRecovery > 0) {
+        els.publicMeaning.textContent = "This scenario models positive macro recovery, though still limited in present scope.";
+      } else {
+        els.publicMeaning.textContent = "No macro recovery is modeled yet because the upstream chain is still incomplete or zeroed out.";
+      }
+
+      return buildArtifact({
+        artifacts,
+        readiness,
+        baseRecovery,
+        macroRecovery,
+        jobsImpact,
+        sectorView: sectors,
+        crosswalk,
+        integrityNotes
+      });
+    }
+
+    function loadSavedMacro() {
+      const raw = localStorage.getItem(KEYS.macro);
+      if (!raw) {
+        renderArtifactPreview(null);
+        updateOutputs();
+        return;
+      }
+
+      try {
+        const data = JSON.parse(raw);
+
+        els.macroName.value = data.macro?.name || "";
+        els.macroScope.value = data.macro?.scope || "";
+        els.macroNotes.value = data.macro?.notes || "";
+
+        els.gdpMultiplier.value = data.modifiers?.gdp_multiplier ?? 1.20;
+        els.employmentMultiplier.value = data.modifiers?.employment_multiplier ?? 1.15;
+        els.creditMultiplier.value = data.modifiers?.credit_multiplier ?? 1.10;
+        els.consumptionMultiplier.value = data.modifiers?.consumption_multiplier ?? 1.12;
+        els.recoveryYears.value = data.modifiers?.recovery_years ?? 2;
+        els.confidence.value = data.modifiers?.confidence ?? 0;
+
+        els.macroTotal.textContent = money(data.macro_recovery_total ?? 0);
+        els.macroJobs.textContent = String(data.macro_jobs_impact ?? 0);
+        els.macroReadiness.textContent = String(data.readiness_score ?? 0);
+
+        renderSectorView(data.sector_view);
+        renderIntegrityNotes(data.integrity_notes);
+        renderCrosswalk(data.crosswalk);
+        renderArtifactPreview(data);
+
+        els.status.textContent = "Status: loaded saved Macro artifact from this browser.";
+      } catch (err) {
+        els.status.textContent = "Status: saved Macro artifact exists but could not be read.";
+        updateOutputs();
+      }
+    }
+
+    function clearForm() {
+      localStorage.removeItem(KEYS.macro);
+
+      els.macroName.value = "";
+      els.macroScope.value = "";
+      els.macroNotes.value = "";
+
+      els.gdpMultiplier.value = 1.20;
+      els.employmentMultiplier.value = 1.15;
+      els.creditMultiplier.value = 1.10;
+      els.consumptionMultiplier.value = 1.12;
+      els.recoveryYears.value = 2;
+      els.confidence.value = 0;
+
+      els.macroTotal.textContent = "$0.00";
+      els.macroJobs.textContent = "0";
+      els.macroReadiness.textContent = "0";
+
+      renderSectorView(null);
+      renderIntegrityNotes(null);
+      renderCrosswalk(null);
+      renderArtifactPreview(null);
+
+      els.status.textContent = "Status: local Macro artifact cleared from this browser.";
+    }
+
+    [
+      els.gdpMultiplier,
+      els.employmentMultiplier,
+      els.creditMultiplier,
+      els.consumptionMultiplier,
+      els.recoveryYears,
+      els.confidence
+    ].forEach(el => {
+      el.addEventListener("input", updateOutputs);
+      el.addEventListener("change", updateOutputs);
+    });
+
+    els.runBtn.addEventListener("click", () => {
+      const artifact = updateOutputs();
+      renderArtifactPreview(artifact);
+      els.status.textContent = "Status: Macro ran locally. Save when ready.";
+    });
+
+    els.saveBtn.addEventListener("click", () => {
+      const artifact = updateOutputs();
+
+      if (!artifact.macro.name && artifact.macro_recovery_total <= 0) {
+        els.status.textContent = "Status: add a macro name or build real upstream totals before saving.";
+        return;
+      }
+
+      localStorage.setItem(KEYS.macro, JSON.stringify(artifact));
+      renderArtifactPreview(artifact);
+      els.status.textContent = "Status: Macro artifact saved locally in this browser.";
+    });
+
+    els.clearBtn.addEventListener("click", () => {
+      clearForm();
+      updateOutputs();
+    });
+
+    loadSavedMacro();
+  </script>
+</body>
+</html>
