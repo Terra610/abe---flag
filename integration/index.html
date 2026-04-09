@@ -1,1 +1,502 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <base href="/abe---flag/">
+  <title>A.B.E. Integration</title>
+  <link rel="stylesheet" href="/abe---flag/assets/theme.css">
+</head>
+<body>
+  <main class="wrap">
+    <section class="header">
+      <div>
+        <h1>A.B.E. Integration</h1>
+        <p class="tagline">Local-only orchestration, audit view, and artifact handshake layer</p>
+      </div>
+      <a class="home-link" href="/abe---flag/index.html">← Home</a>
+    </section>
 
+    <section class="panel">
+      <div class="pill">100% local-only · no login · no telemetry · no remote API calls</div>
+      <p class="muted">
+        Integration reads the local artifacts created across the A.B.E. chain, checks what exists,
+        summarizes what is ready, and creates a single integrated artifact for the public-facing system.
+        No backend. No cloud sync. No hidden calls.
+      </p>
+    </section>
+
+    <section class="grid cols-3">
+      <section class="card">
+        <h2>Integration Setup</h2>
+
+        <label for="integration-name">Integration name</label>
+        <input id="integration-name" type="text" placeholder="Example: A.B.E. Public Audit Run">
+
+        <label for="integration-scope">Integration scope</label>
+        <input id="integration-scope" type="text" placeholder="Example: statewide recovery model">
+
+        <label for="integration-notes">Integration notes</label>
+        <textarea id="integration-notes" rows="10" placeholder="Optional notes about this integrated run"></textarea>
+
+        <div class="module-nav">
+          <button id="run-integration">Run Integration</button>
+          <button id="save-integration">Save Integration</button>
+          <button id="clear-integration" type="button">Clear</button>
+        </div>
+
+        <div id="integration-status" class="status-box small">Status: waiting</div>
+      </section>
+
+      <section class="card">
+        <h2>Artifact Presence</h2>
+        <div id="presence-box" class="status-box small">Checking for local artifacts...</div>
+      </section>
+
+      <section class="card">
+        <h2>Readiness Score</h2>
+        <div class="status-box">
+          <strong>System readiness</strong>
+          <div id="readiness-score" style="font-size: 24px; margin-top: 8px;">0</div>
+        </div>
+
+        <div class="status-box" style="margin-top: 12px;">
+          <strong>Integrated total</strong>
+          <div id="integrated-total" style="font-size: 24px; margin-top: 8px;">$0.00</div>
+        </div>
+      </section>
+    </section>
+
+    <section class="grid cols-3">
+      <section class="card">
+        <h2>Module Summary</h2>
+        <div id="module-summary" class="status-box small">No integrated summary yet.</div>
+      </section>
+
+      <section class="card">
+        <h2>Integrity Summary</h2>
+        <div id="integrity-summary" class="status-box small">No integrity review yet.</div>
+      </section>
+
+      <section class="card">
+        <h2>System Meaning</h2>
+        <div id="system-meaning" class="status-box small">
+          Integration shows what the chain produced, what is missing, and whether the system is coherent enough to rely on.
+        </div>
+      </section>
+    </section>
+
+    <section class="grid cols-3">
+      <section class="card">
+        <h2>Integrated Artifact Preview</h2>
+        <pre id="artifact-preview" class="small">No Integration artifact saved yet.</pre>
+      </section>
+
+      <section class="card">
+        <h2>Downstream View</h2>
+        <div id="downstream-view" class="status-box small">No integrated downstream view yet.</div>
+      </section>
+
+      <section class="card">
+        <h2>Audit Snapshot</h2>
+        <div id="audit-snapshot" class="status-box small">No audit snapshot yet.</div>
+      </section>
+    </section>
+  </main>
+
+  <script>
+    const KEYS = {
+      intake: "abe_intake_artifact",
+      cda: "abe_cda_artifact",
+      cff: "abe_cff_artifact",
+      affe: "abe_affe_artifact",
+      ciri: "abe_ciri_artifact",
+      cibs: "abe_cibs_artifact",
+      cii: "abe_cii_artifact",
+      integration: "abe_integration_artifact"
+    };
+
+    const els = {
+      integrationName: document.getElementById("integration-name"),
+      integrationScope: document.getElementById("integration-scope"),
+      integrationNotes: document.getElementById("integration-notes"),
+
+      status: document.getElementById("integration-status"),
+      presenceBox: document.getElementById("presence-box"),
+      readinessScore: document.getElementById("readiness-score"),
+      integratedTotal: document.getElementById("integrated-total"),
+
+      moduleSummary: document.getElementById("module-summary"),
+      integritySummary: document.getElementById("integrity-summary"),
+      systemMeaning: document.getElementById("system-meaning"),
+      artifactPreview: document.getElementById("artifact-preview"),
+      downstreamView: document.getElementById("downstream-view"),
+      auditSnapshot: document.getElementById("audit-snapshot"),
+
+      runBtn: document.getElementById("run-integration"),
+      saveBtn: document.getElementById("save-integration"),
+      clearBtn: document.getElementById("clear-integration")
+    };
+
+    function money(n) {
+      return new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "USD"
+      }).format(Number(n) || 0);
+    }
+
+    function loadJson(key) {
+      const raw = localStorage.getItem(key);
+      if (!raw) return null;
+      try {
+        return JSON.parse(raw);
+      } catch (err) {
+        return null;
+      }
+    }
+
+    function getArtifacts() {
+      return {
+        intake: loadJson(KEYS.intake),
+        cda: loadJson(KEYS.cda),
+        cff: loadJson(KEYS.cff),
+        affe: loadJson(KEYS.affe),
+        ciri: loadJson(KEYS.ciri),
+        cibs: loadJson(KEYS.cibs),
+        cii: loadJson(KEYS.cii)
+      };
+    }
+
+    function getPresence(artifacts) {
+      return {
+        intake: !!artifacts.intake,
+        cda: !!artifacts.cda,
+        cff: !!artifacts.cff,
+        affe: !!artifacts.affe,
+        ciri: !!artifacts.ciri,
+        cibs: !!artifacts.cibs,
+        cii: !!artifacts.cii
+      };
+    }
+
+    function computeReadiness(presence) {
+      const values = Object.values(presence);
+      const count = values.filter(Boolean).length;
+      return Math.round((count / values.length) * 100);
+    }
+
+    function computeIntegratedTotal(artifacts) {
+      const ciriTotal = Number(artifacts.ciri?.outputs?.net_modeled_recovery) || 0;
+      const ciiAmount = Number(artifacts.cii?.totals?.total_funded_amount) || 0;
+      return Math.max(ciriTotal, ciiAmount);
+    }
+
+    function buildIntegritySummary(artifacts, presence) {
+      const lines = [];
+
+      if (!presence.intake) lines.push("Missing Intake artifact.");
+      if (!presence.cda) lines.push("Missing CDA artifact.");
+      if (!presence.cff) lines.push("Missing CFF artifact.");
+      if (!presence.affe) lines.push("Missing AFFE artifact.");
+      if (!presence.ciri) lines.push("Missing CIRI artifact.");
+      if (!presence.cibs) lines.push("Missing CIBS artifact.");
+      if (!presence.cii) lines.push("Missing CII artifact.");
+
+      const cibsPct = Number(artifacts.cibs?.budget?.total_percent);
+      if (presence.cibs && !(Math.abs(cibsPct - 100) < 0.01)) {
+        lines.push("CIBS allocation total is not balanced at 100%.");
+      }
+
+      const cdaScore = Number(artifacts.cda?.analysis?.divergence_score);
+      if (presence.cda && cdaScore <= 0) {
+        lines.push("CDA score is zero or missing.");
+      }
+
+      const cffClass = artifacts.cff?.analysis?.classification || "";
+      if (presence.cff && !cffClass) {
+        lines.push("CFF classification is missing.");
+      }
+
+      const ciriScore = Number(artifacts.ciri?.outputs?.ciri_score);
+      if (presence.ciri && ciriScore <= 0) {
+        lines.push("CIRI score is zero or missing.");
+      }
+
+      const totalUnits = Number(artifacts.cii?.totals?.total_units);
+      if (presence.cii && totalUnits <= 0) {
+        lines.push("CII funded units are zero or missing.");
+      }
+
+      if (!lines.length) {
+        lines.push("All detected integrity checks passed for the current local artifact set.");
+      }
+
+      return lines;
+    }
+
+    function buildModuleSummary(artifacts, presence) {
+      const summary = {
+        intake_title: artifacts.intake?.source?.title || "",
+        cda_score: artifacts.cda?.analysis?.divergence_score ?? null,
+        cff_classification: artifacts.cff?.analysis?.classification || "",
+        affe_classification: artifacts.affe?.summary?.classification || "",
+        ciri_score: artifacts.ciri?.outputs?.ciri_score ?? null,
+        ciri_total_recovery: artifacts.ciri?.outputs?.net_modeled_recovery ?? null,
+        cibs_budget_total: artifacts.cibs?.budget?.available_budget ?? null,
+        cii_total_units: artifacts.cii?.totals?.total_units ?? null,
+        cii_total_funded_amount: artifacts.cii?.totals?.total_funded_amount ?? null,
+        presence
+      };
+
+      return summary;
+    }
+
+    function buildDownstreamView(artifacts) {
+      return {
+        from_cda: {
+          ready_for_cff: artifacts.cda?.downstream?.ready_for_cff ?? false,
+          ready_for_ciri: artifacts.cda?.downstream?.ready_for_ciri ?? false,
+          ready_for_integration: artifacts.cda?.downstream?.ready_for_integration ?? false
+        },
+        from_cff: {
+          ready_for_affe: artifacts.cff?.downstream?.ready_for_affe ?? false,
+          ready_for_ciri: artifacts.cff?.downstream?.ready_for_ciri ?? false,
+          ready_for_integration: artifacts.cff?.downstream?.ready_for_integration ?? false
+        },
+        from_affe: {
+          ready_for_ciri: artifacts.affe?.downstream?.ready_for_ciri ?? false,
+          ready_for_integration: artifacts.affe?.downstream?.ready_for_integration ?? false
+        },
+        from_ciri: {
+          ready_for_cibs: artifacts.ciri?.downstream?.ready_for_cibs ?? false,
+          ready_for_cii: artifacts.ciri?.downstream?.ready_for_cii ?? false,
+          ready_for_integration: artifacts.ciri?.downstream?.ready_for_integration ?? false
+        },
+        from_cibs: {
+          ready_for_cii: artifacts.cibs?.downstream?.ready_for_cii ?? false,
+          ready_for_integration: artifacts.cibs?.downstream?.ready_for_integration ?? false
+        },
+        from_cii: {
+          ready_for_integration: artifacts.cii?.downstream?.ready_for_integration ?? false
+        }
+      };
+    }
+
+    function buildAuditSnapshot(artifacts, presence, readiness, integratedTotal) {
+      return {
+        timestamp: new Date().toISOString(),
+        modules_present: Object.entries(presence).filter(([, v]) => v).map(([k]) => k),
+        readiness_score: readiness,
+        integrated_total: integratedTotal,
+        intake_title: artifacts.intake?.source?.title || "",
+        scenario_name: artifacts.ciri?.scenario?.name || "",
+        portfolio_name: artifacts.cii?.portfolio?.name || "",
+        budget_name: artifacts.cibs?.budget?.name || ""
+      };
+    }
+
+    function buildArtifact(precomputed) {
+      const artifacts = precomputed?.artifacts || getArtifacts();
+      const presence = precomputed?.presence || getPresence(artifacts);
+      const readiness = typeof precomputed?.readiness === "number"
+        ? precomputed.readiness
+        : computeReadiness(presence);
+      const integratedTotal = typeof precomputed?.integratedTotal === "number"
+        ? precomputed.integratedTotal
+        : computeIntegratedTotal(artifacts);
+
+      const moduleSummary = buildModuleSummary(artifacts, presence);
+      const integritySummary = buildIntegritySummary(artifacts, presence);
+      const downstreamView = buildDownstreamView(artifacts);
+      const auditSnapshot = buildAuditSnapshot(artifacts, presence, readiness, integratedTotal);
+
+      return {
+        module: "integration",
+        version: "1.0.0",
+        timestamp: new Date().toISOString(),
+        privacy: {
+          local_only: true,
+          telemetry: false,
+          remote_calls: false
+        },
+        integration: {
+          name: els.integrationName.value.trim(),
+          scope: els.integrationScope.value.trim(),
+          notes: els.integrationNotes.value.trim()
+        },
+        presence,
+        readiness_score: readiness,
+        integrated_total: integratedTotal,
+        module_summary: moduleSummary,
+        integrity_summary: integritySummary,
+        downstream_view: downstreamView,
+        audit_snapshot: auditSnapshot
+      };
+    }
+
+    function renderPresence(presence) {
+      const lines = Object.entries(presence).map(([k, v]) => {
+        return k + ": " + (v ? "present" : "missing");
+      });
+      els.presenceBox.textContent = lines.join("\n");
+    }
+
+    function renderModuleSummary(summary) {
+      if (!summary) {
+        els.moduleSummary.textContent = "No integrated summary yet.";
+        return;
+      }
+      els.moduleSummary.textContent = JSON.stringify(summary, null, 2);
+    }
+
+    function renderIntegritySummary(lines) {
+      if (!lines || !lines.length) {
+        els.integritySummary.textContent = "No integrity review yet.";
+        return;
+      }
+      els.integritySummary.textContent = lines.join("\n");
+    }
+
+    function renderDownstreamView(view) {
+      if (!view) {
+        els.downstreamView.textContent = "No integrated downstream view yet.";
+        return;
+      }
+      els.downstreamView.textContent = JSON.stringify(view, null, 2);
+    }
+
+    function renderAuditSnapshot(snapshot) {
+      if (!snapshot) {
+        els.auditSnapshot.textContent = "No audit snapshot yet.";
+        return;
+      }
+      els.auditSnapshot.textContent = JSON.stringify(snapshot, null, 2);
+    }
+
+    function renderArtifactPreview(artifact) {
+      if (!artifact) {
+        els.artifactPreview.textContent = "No Integration artifact saved yet.";
+        return;
+      }
+      els.artifactPreview.textContent = JSON.stringify(artifact, null, 2);
+    }
+
+    function updateOutputs() {
+      const artifacts = getArtifacts();
+      const presence = getPresence(artifacts);
+      const readiness = computeReadiness(presence);
+      const integratedTotal = computeIntegratedTotal(artifacts);
+
+      renderPresence(presence);
+      els.readinessScore.textContent = String(readiness);
+      els.integratedTotal.textContent = money(integratedTotal);
+
+      const artifact = buildArtifact({ artifacts, presence, readiness, integratedTotal });
+
+      renderModuleSummary(artifact.module_summary);
+      renderIntegritySummary(artifact.integrity_summary);
+      renderDownstreamView(artifact.downstream_view);
+      renderAuditSnapshot(artifact.audit_snapshot);
+
+      if (readiness === 100) {
+        els.systemMeaning.textContent = "The full A.B.E. chain is present locally and can be reviewed as a coherent system.";
+      } else if (readiness >= 70) {
+        els.systemMeaning.textContent = "Most of the A.B.E. chain is present locally, but at least one layer is still missing or incomplete.";
+      } else if (readiness > 0) {
+        els.systemMeaning.textContent = "Only part of the A.B.E. chain is present locally. The system is still partial.";
+      } else {
+        els.systemMeaning.textContent = "No local artifacts are present yet, so there is nothing real to integrate.";
+      }
+
+      return artifact;
+    }
+
+    function loadSavedIntegration() {
+      const raw = localStorage.getItem(KEYS.integration);
+      if (!raw) {
+        renderArtifactPreview(null);
+        updateOutputs();
+        return;
+      }
+
+      try {
+        const data = JSON.parse(raw);
+
+        els.integrationName.value = data.integration?.name || "";
+        els.integrationScope.value = data.integration?.scope || "";
+        els.integrationNotes.value = data.integration?.notes || "";
+
+        renderPresence(data.presence || {});
+        els.readinessScore.textContent = String(data.readiness_score ?? 0);
+        els.integratedTotal.textContent = money(data.integrated_total ?? 0);
+
+        renderModuleSummary(data.module_summary);
+        renderIntegritySummary(data.integrity_summary);
+        renderDownstreamView(data.downstream_view);
+        renderAuditSnapshot(data.audit_snapshot);
+        renderArtifactPreview(data);
+
+        els.status.textContent = "Status: loaded saved Integration artifact from this browser.";
+      } catch (err) {
+        els.status.textContent = "Status: saved Integration artifact exists but could not be read.";
+        updateOutputs();
+      }
+    }
+
+    function clearForm() {
+      localStorage.removeItem(KEYS.integration);
+
+      els.integrationName.value = "";
+      els.integrationScope.value = "";
+      els.integrationNotes.value = "";
+
+      els.readinessScore.textContent = "0";
+      els.integratedTotal.textContent = "$0.00";
+
+      renderPresence({
+        intake: false,
+        cda: false,
+        cff: false,
+        affe: false,
+        ciri: false,
+        cibs: false,
+        cii: false
+      });
+
+      renderModuleSummary(null);
+      renderIntegritySummary(null);
+      renderDownstreamView(null);
+      renderAuditSnapshot(null);
+      renderArtifactPreview(null);
+
+      els.status.textContent = "Status: local Integration artifact cleared from this browser.";
+    }
+
+    els.runBtn.addEventListener("click", () => {
+      const artifact = updateOutputs();
+      renderArtifactPreview(artifact);
+      els.status.textContent = "Status: Integration ran locally. Save when ready.";
+    });
+
+    els.saveBtn.addEventListener("click", () => {
+      const artifact = updateOutputs();
+
+      if (!artifact.integration.name && artifact.readiness_score <= 0) {
+        els.status.textContent = "Status: add an integration name or generate real upstream artifacts before saving.";
+        return;
+      }
+
+      localStorage.setItem(KEYS.integration, JSON.stringify(artifact));
+      renderArtifactPreview(artifact);
+      els.status.textContent = "Status: Integration artifact saved locally in this browser.";
+    });
+
+    els.clearBtn.addEventListener("click", () => {
+      clearForm();
+      updateOutputs();
+    });
+
+    loadSavedIntegration();
+  </script>
+</body>
+  </html>
