@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="en">
 <head>
@@ -21,8 +20,8 @@
     <section class="panel">
       <div class="pill">100% local-only · no login · no telemetry · no remote API calls</div>
       <p class="muted">
-        This page is the intake gate for the public site. Users can paste text or note what kind of
-        material they are working with. Nothing here sends data anywhere.
+        This page is the intake gate for the public site. Users can upload a file, paste text, and define
+        what kind of source they are working with. Nothing here sends data anywhere.
       </p>
     </section>
 
@@ -38,6 +37,10 @@
 
         <label for="title">Working title</label>
         <input id="title" type="text" placeholder="Example: FMCSR scope conflict review">
+
+        <label for="source-file">Upload source file</label>
+        <input id="source-file" type="file" accept=".txt,.pdf,.doc,.docx,.json,.csv,.md,.rtf,.png,.jpg,.jpeg,.webp">
+        <div id="file-info" class="small">No file selected.</div>
 
         <label for="source-text">Paste source text</label>
         <textarea id="source-text" rows="14" placeholder="Paste source text here"></textarea>
@@ -106,6 +109,8 @@
       sourceType: document.getElementById("source-type"),
       jurisdiction: document.getElementById("jurisdiction"),
       title: document.getElementById("title"),
+      sourceFile: document.getElementById("source-file"),
+      fileInfo: document.getElementById("file-info"),
       sourceText: document.getElementById("source-text"),
       targetCda: document.getElementById("target-cda"),
       targetCff: document.getElementById("target-cff"),
@@ -120,9 +125,11 @@
     };
 
     function buildArtifact() {
+      const file = els.sourceFile.files && els.sourceFile.files[0] ? els.sourceFile.files[0] : null;
+
       return {
         module: "intake",
-        version: "1.0.0",
+        version: "1.1.0",
         timestamp: new Date().toISOString(),
         privacy: {
           local_only: true,
@@ -133,7 +140,12 @@
           type: els.sourceType.value.trim(),
           jurisdiction: els.jurisdiction.value.trim(),
           title: els.title.value.trim(),
-          text: els.sourceText.value
+          text: els.sourceText.value,
+          file: file ? {
+            name: file.name,
+            size: file.size,
+            mime_type: file.type || "unknown"
+          } : null
         },
         targets: {
           cda: els.targetCda.checked,
@@ -157,6 +169,106 @@
         source_type: data.source?.type || "",
         jurisdiction: data.source?.jurisdiction || "",
         text_length: (data.source?.text || "").length,
+        file: data.source?.file || null,
         targets: data.targets || {},
         timestamp: data.timestamp || ""
       };
+
+      els.preview.textContent = JSON.stringify(preview, null, 2);
+    }
+
+    function loadStored() {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) {
+        renderPreview(null);
+        return;
+      }
+
+      try {
+        const data = JSON.parse(raw);
+
+        els.sourceType.value = data.source?.type || "";
+        els.jurisdiction.value = data.source?.jurisdiction || "";
+        els.title.value = data.source?.title || "";
+        els.sourceText.value = data.source?.text || "";
+
+        if (data.source?.file?.name) {
+          els.fileInfo.textContent =
+            "Previously saved file metadata: " +
+            data.source.file.name +
+            " (" +
+            (data.source.file.size || 0) +
+            " bytes)";
+        } else {
+          els.fileInfo.textContent = "No file selected.";
+        }
+
+        els.targetCda.checked = !!data.targets?.cda;
+        els.targetCff.checked = !!data.targets?.cff;
+        els.targetCiri.checked = !!data.targets?.ciri;
+        els.targetCibs.checked = !!data.targets?.cibs;
+        els.targetCii.checked = !!data.targets?.cii;
+        els.targetIntegration.checked = !!data.targets?.integration;
+
+        renderPreview(data);
+        els.status.textContent = "Status: loaded saved intake from this browser.";
+      } catch (err) {
+        els.status.textContent = "Status: saved intake exists but could not be read.";
+        renderPreview(null);
+      }
+    }
+
+    els.sourceFile.addEventListener("change", () => {
+      const file = els.sourceFile.files && els.sourceFile.files[0] ? els.sourceFile.files[0] : null;
+
+      if (!file) {
+        els.fileInfo.textContent = "No file selected.";
+        return;
+      }
+
+      els.fileInfo.textContent =
+        "Selected file: " + file.name + " (" + file.size + " bytes)";
+    });
+
+    els.saveBtn.addEventListener("click", () => {
+      const artifact = buildArtifact();
+
+      const hasText = !!artifact.source.text.trim();
+      const hasTitle = !!artifact.source.title.trim();
+      const hasFile = !!artifact.source.file;
+
+      if (!hasText && !hasTitle && !hasFile) {
+        els.status.textContent = "Status: add a title, paste source text, or choose a file before saving.";
+        return;
+      }
+
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(artifact));
+      renderPreview(artifact);
+      els.status.textContent = "Status: intake saved locally in this browser.";
+    });
+
+    els.clearBtn.addEventListener("click", () => {
+      localStorage.removeItem(STORAGE_KEY);
+
+      els.sourceType.value = "";
+      els.jurisdiction.value = "";
+      els.title.value = "";
+      els.sourceText.value = "";
+      els.sourceFile.value = "";
+      els.fileInfo.textContent = "No file selected.";
+
+      els.targetCda.checked = true;
+      els.targetCff.checked = true;
+      els.targetCiri.checked = true;
+      els.targetCibs.checked = false;
+      els.targetCii.checked = false;
+      els.targetIntegration.checked = true;
+
+      renderPreview(null);
+      els.status.textContent = "Status: local intake cleared from this browser.";
+    });
+
+    loadStored();
+  </script>
+</body>
+                                                    </html>
