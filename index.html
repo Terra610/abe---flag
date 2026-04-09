@@ -5,32 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>A.B.E. — American Butterfly Effect</title>
   <link rel="stylesheet" href="assets/theme.css">
-  <script src="engine/core/session.js"></script>
 </head>
 <body>
   <div class="header">
     <h1>A.B.E. — American Butterfly Effect</h1>
     <div class="tagline">Constitution • Integrity • Recovery • All Local</div>
     <div class="global-controls">
-      <button onclick="goHome()">Home</button>
       <button onclick="resetAll()">Reset</button>
       <button onclick="clearData()">Clear Data</button>
       <button onclick="downloadAuditHash()">Download Audit Hash</button>
     </div>
   </div>
 
-  <div class="module-nav">
-    <button onclick="loadModule('intake')">Intake</button>
-    <button onclick="loadModule('cae')">CAE</button>
-    <button onclick="loadModule('cda')">CDA</button>
-    <button onclick="loadModule('ccri')">CCRI</button>
-    <button onclick="loadModule('cff')">CFF</button>
-    <button onclick="loadModule('affe')">AFFE</button>
-    <button onclick="loadModule('ciri')">CIRI</button>
-    <button onclick="loadModule('cibs')">CIBS</button>
-    <button onclick="loadModule('cii')">CII</button>
-    <button onclick="loadModule('macro')">Macro</button>
-    <button onclick="loadModule('doctrines')">Doctrines</button>
+  <div id="pipeline-status" class="pipeline-status">
+    Current Step: <span id="current-step">Intake</span>
   </div>
 
   <div id="module-container" class="module-container"></div>
@@ -39,57 +27,56 @@
   <div class="ai-assistant">
     <h3>ABE Assistant</h3>
     <div id="ai-chat" class="ai-chat"></div>
-    <input type="text" id="ai-input" placeholder="Ask about any output or constitutional question..." onkeypress="if(event.key === 'Enter') askAI()">
+    <input type="text" id="ai-input" placeholder="Ask about the current output..." onkeypress="if(event.key === 'Enter') askAI()">
     <button onclick="askAI()">Ask</button>
   </div>
 
+  <script src="engine/core/session.js"></script>
   <script>
-    async function loadModule(moduleName) {
+    const firingOrder = ["intake", "cae", "cda", "ccri", "cff", "affe", "ciri", "cibs", "cii", "macro", "doctrines"];
+    let currentIndex = 0;
+
+    async function runNextModule() {
+      const moduleName = firingOrder[currentIndex];
+      document.getElementById('current-step').textContent = moduleName.toUpperCase();
+
       const container = document.getElementById('module-container');
-      container.innerHTML = `<div class="loading">Loading ${moduleName.toUpperCase()}...</div>`;
+      container.innerHTML = `<div class="loading">Running ${moduleName.toUpperCase()}...</div>`;
 
       try {
         const mod = await import(`./engine/modules/${moduleName}/index.js`);
         container.innerHTML = '';
         mod.renderUI(container);
       } catch (err) {
-        container.innerHTML = `<div class="error">Failed to load ${moduleName}.<br>Error: ${err.message}</div>`;
+        container.innerHTML = `<div class="error">Failed to run ${moduleName}.<br>${err.message}</div>`;
       }
     }
 
-    function goHome() {
-      document.getElementById('module-container').innerHTML = `
-        <div class="module-box welcome">
-          <h2>Welcome to A.B.E.</h2>
-          <p>The American Butterfly Effect — turning constitutional realignment into measurable peace and prosperity for all.</p>
-          <p>Select a module from the navigation above to begin.</p>
-        </div>
-      `;
+    function goToNext() {
+      currentIndex = (currentIndex + 1) % firingOrder.length;
+      runNextModule();
     }
 
     function resetAll() {
-      if (confirm("Reset all scenario data?")) {
+      if (confirm("Reset all data and start over?")) {
         localStorage.clear();
-        goHome();
+        currentIndex = 0;
+        runNextModule();
       }
     }
 
     function clearData() {
       if (confirm("Clear current data?")) {
         localStorage.removeItem('ABE_FLAG_SCENARIO_V1');
-        loadModule('intake');
+        runNextModule();
       }
     }
 
     async function downloadAuditHash() {
-      const s = getOrCreateScenario();
-      const hash = await hashObject(s);
+      const s = getOrCreateScenario ? getOrCreateScenario() : {};
+      const hash = await (typeof hashObject === 'function' ? hashObject(s) : Promise.resolve("No hash function"));
       const filename = `ABE_Audit_${new Date().toISOString().slice(0,19)}.txt`;
-      downloadTextFile(filename, `ABE Audit Hash:\n${hash}\n\nGenerated at: ${new Date().toISOString()}`);
-    }
-
-    function downloadTextFile(filename, text) {
-      const blob = new Blob([text], { type: 'text/plain' });
+      const blob = new Blob([`ABE Audit Hash:\n${hash}`], { type: 'text/plain' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
@@ -98,24 +85,21 @@
       URL.revokeObjectURL(url);
     }
 
-    // Simple AI Assistant (respects guardrails)
+    // Simple AI Assistant
     function askAI() {
       const input = document.getElementById('ai-input');
       const chat = document.getElementById('ai-chat');
       if (!input.value.trim()) return;
-
       chat.innerHTML += `<p><strong>You:</strong> ${input.value}</p>`;
-
-      const response = "ABE Assistant: This relates to constitutional alignment. Check the divergence score in CDA or the ROI in CIRI. The framework is deterministic, private, and non-commercial. What specific output would you like explained?";
-
+      const response = "ABE Assistant: The engine follows a fixed firing order. Check the current module output or ask about constitutional alignment.";
       chat.innerHTML += `<p><strong>ABE:</strong> ${response}</p>`;
       input.value = '';
       chat.scrollTop = chat.scrollHeight;
     }
 
-    // Initialize
+    // Start the pipeline
     window.onload = () => {
-      goHome();
+      runNextModule();
     };
   </script>
 </body>
