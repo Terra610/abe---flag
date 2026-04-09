@@ -1,1 +1,336 @@
 
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <base href="/abe---flag/">
+  <title>A.B.E. AFFE</title>
+  <link rel="stylesheet" href="/abe---flag/assets/theme.css">
+</head>
+<body>
+  <main class="wrap">
+    <section class="header">
+      <div>
+        <h1>A.B.E. AFFE</h1>
+        <p class="tagline">Artifact Funding Fidelity Explorer · local-only review layer</p>
+      </div>
+      <a class="home-link" href="/abe---flag/index.html">← Home</a>
+    </section>
+
+    <section class="panel">
+      <div class="pill">100% local-only · no login · no telemetry · no remote API calls</div>
+      <p class="muted">
+        AFFE reads the local CFF artifact, summarizes mission alignment, and gives the user a clean
+        review layer without cloud charting, external libraries, or hidden calls.
+      </p>
+    </section>
+
+    <section class="grid cols-3">
+      <section class="card">
+        <h2>Artifact Bridge</h2>
+        <div id="bridge-status" class="status-box small">Checking for CFF artifact...</div>
+
+        <label for="view-mode">View mode</label>
+        <input id="view-mode" type="text" value="summary" placeholder="summary or detail">
+
+        <label for="review-notes">Review notes</label>
+        <textarea id="review-notes" rows="10" placeholder="Optional AFFE review notes"></textarea>
+
+        <div class="module-nav">
+          <button id="refresh-affe">Refresh from CFF</button>
+          <button id="save-affe">Save AFFE</button>
+          <button id="clear-affe" type="button">Clear</button>
+        </div>
+
+        <div id="affe-status" class="status-box small">Status: waiting</div>
+      </section>
+
+      <section class="card">
+        <h2>Classification Summary</h2>
+        <div class="status-box">
+          <strong>Classification</strong>
+          <div id="classification-value" style="font-size: 24px; margin-top: 8px;">UNCLEAR</div>
+        </div>
+
+        <div class="status-box" style="margin-top: 12px;">
+          <strong>Exposure estimate</strong>
+          <div id="exposure-value" style="font-size: 24px; margin-top: 8px;">$0.00</div>
+        </div>
+
+        <div class="status-box" style="margin-top: 12px;">
+          <strong>Confidence</strong>
+          <div id="confidence-value" style="font-size: 24px; margin-top: 8px;">0</div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Downstream Readiness</h2>
+        <div id="next-readiness" class="status-box small">
+          Waiting for CFF artifact to determine readiness.
+        </div>
+      </section>
+    </section>
+
+    <section class="grid cols-3">
+      <section class="card">
+        <h2>Flags</h2>
+        <div id="flag-summary" class="status-box small">No AFFE summary yet.</div>
+      </section>
+
+      <section class="card">
+        <h2>Funding Stream</h2>
+        <div id="stream-summary" class="status-box small">No stream data loaded yet.</div>
+      </section>
+
+      <section class="card">
+        <h2>Artifact Preview</h2>
+        <pre id="artifact-preview" class="small">No AFFE artifact saved yet.</pre>
+      </section>
+    </section>
+  </main>
+
+  <script>
+    const CFF_KEY = "abe_cff_artifact";
+    const AFFE_KEY = "abe_affe_artifact";
+
+    const els = {
+      bridgeStatus: document.getElementById("bridge-status"),
+      viewMode: document.getElementById("view-mode"),
+      reviewNotes: document.getElementById("review-notes"),
+
+      classificationValue: document.getElementById("classification-value"),
+      exposureValue: document.getElementById("exposure-value"),
+      confidenceValue: document.getElementById("confidence-value"),
+
+      nextReadiness: document.getElementById("next-readiness"),
+      flagSummary: document.getElementById("flag-summary"),
+      streamSummary: document.getElementById("stream-summary"),
+      artifactPreview: document.getElementById("artifact-preview"),
+      status: document.getElementById("affe-status"),
+
+      refreshBtn: document.getElementById("refresh-affe"),
+      saveBtn: document.getElementById("save-affe"),
+      clearBtn: document.getElementById("clear-affe")
+    };
+
+    function money(n) {
+      return new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "USD"
+      }).format(Number(n) || 0);
+    }
+
+    function getCffArtifact() {
+      const raw = localStorage.getItem(CFF_KEY);
+      if (!raw) return null;
+
+      try {
+        return JSON.parse(raw);
+      } catch (err) {
+        return null;
+      }
+    }
+
+    function buildAffeArtifact(cff) {
+      return {
+        module: "affe",
+        version: "1.0.0",
+        timestamp: new Date().toISOString(),
+        privacy: {
+          local_only: true,
+          telemetry: false,
+          remote_calls: false
+        },
+        source_bridge: {
+          cff_present: !!cff
+        },
+        review: {
+          view_mode: els.viewMode.value.trim() || "summary",
+          notes: els.reviewNotes.value.trim()
+        },
+        summary: cff ? {
+          program_name: cff.funding_stream?.program_name || "",
+          authority_anchor: cff.funding_stream?.authority_anchor || "",
+          funding_source: cff.funding_stream?.funding_source || "",
+          mission_summary: cff.funding_stream?.mission_summary || "",
+          annual_amount: cff.funding_stream?.annual_amount || 0,
+          years_active: cff.funding_stream?.years_active || 0,
+          population_impacted: cff.funding_stream?.population_impacted || 0,
+          classification: cff.analysis?.classification || "UNCLEAR",
+          exposure_estimate: cff.analysis?.exposure_estimate || 0,
+          confidence: cff.analysis?.confidence || 0,
+          flags: cff.analysis?.flags || {}
+        } : null,
+        downstream: {
+          ready_for_ciri: !!cff,
+          ready_for_integration: !!cff
+        }
+      };
+    }
+
+    function renderFlags(flags) {
+      const active = Object.entries(flags || {})
+        .filter(([, v]) => v)
+        .map(([k]) => k);
+
+      if (!active.length) {
+        els.flagSummary.textContent = "No active flags in the linked CFF artifact.";
+        return;
+      }
+
+      els.flagSummary.textContent = active.join("\n");
+    }
+
+    function renderStreamSummary(summary) {
+      if (!summary) {
+        els.streamSummary.textContent = "No stream data loaded yet.";
+        return;
+      }
+
+      const payload = {
+        program_name: summary.program_name,
+        authority_anchor: summary.authority_anchor,
+        funding_source: summary.funding_source,
+        annual_amount: summary.annual_amount,
+        years_active: summary.years_active,
+        population_impacted: summary.population_impacted
+      };
+
+      els.streamSummary.textContent = JSON.stringify(payload, null, 2);
+    }
+
+    function renderReadiness(artifact) {
+      if (!artifact) {
+        els.nextReadiness.textContent = "Waiting for CFF artifact to determine readiness.";
+        return;
+      }
+
+      const d = artifact.downstream || {};
+      els.nextReadiness.textContent =
+        "ready_for_ciri: " + String(!!d.ready_for_ciri) + "\n" +
+        "ready_for_integration: " + String(!!d.ready_for_integration);
+    }
+
+    function renderArtifactPreview(artifact) {
+      if (!artifact) {
+        els.artifactPreview.textContent = "No AFFE artifact saved yet.";
+        return;
+      }
+
+      els.artifactPreview.textContent = JSON.stringify(artifact, null, 2);
+    }
+
+    function renderFromCff(cff) {
+      if (!cff) {
+        els.bridgeStatus.textContent = "No CFF artifact found in this browser.";
+        els.classificationValue.textContent = "UNCLEAR";
+        els.exposureValue.textContent = "$0.00";
+        els.confidenceValue.textContent = "0";
+        renderFlags({});
+        renderStreamSummary(null);
+        renderReadiness(null);
+        return null;
+      }
+
+      const summary = {
+        program_name: cff.funding_stream?.program_name || "",
+        authority_anchor: cff.funding_stream?.authority_anchor || "",
+        funding_source: cff.funding_stream?.funding_source || "",
+        mission_summary: cff.funding_stream?.mission_summary || "",
+        annual_amount: cff.funding_stream?.annual_amount || 0,
+        years_active: cff.funding_stream?.years_active || 0,
+        population_impacted: cff.funding_stream?.population_impacted || 0,
+        classification: cff.analysis?.classification || "UNCLEAR",
+        exposure_estimate: cff.analysis?.exposure_estimate || 0,
+        confidence: cff.analysis?.confidence || 0,
+        flags: cff.analysis?.flags || {}
+      };
+
+      els.bridgeStatus.textContent = "CFF artifact found and loaded locally.";
+      els.classificationValue.textContent = summary.classification;
+      els.exposureValue.textContent = money(summary.exposure_estimate);
+      els.confidenceValue.textContent = String(summary.confidence);
+
+      renderFlags(summary.flags);
+      renderStreamSummary(summary);
+
+      const affe = buildAffeArtifact(cff);
+      renderReadiness(affe);
+      return affe;
+    }
+
+    function loadSavedAffe() {
+      const raw = localStorage.getItem(AFFE_KEY);
+      if (!raw) {
+        renderArtifactPreview(null);
+        return;
+      }
+
+      try {
+        const affe = JSON.parse(raw);
+        els.viewMode.value = affe.review?.view_mode || "summary";
+        els.reviewNotes.value = affe.review?.notes || "";
+        renderArtifactPreview(affe);
+        els.status.textContent = "Status: loaded saved AFFE artifact from this browser.";
+      } catch (err) {
+        els.status.textContent = "Status: saved AFFE artifact exists but could not be read.";
+        renderArtifactPreview(null);
+      }
+    }
+
+    function refreshFromCff() {
+      const cff = getCffArtifact();
+      const affe = renderFromCff(cff);
+
+      if (!affe) {
+        els.status.textContent = "Status: no CFF artifact found to refresh from.";
+        return null;
+      }
+
+      renderArtifactPreview(affe);
+      els.status.textContent = "Status: AFFE refreshed locally from CFF artifact.";
+      return affe;
+    }
+
+    function clearAffe() {
+      localStorage.removeItem(AFFE_KEY);
+      els.viewMode.value = "summary";
+      els.reviewNotes.value = "";
+
+      const cff = getCffArtifact();
+      renderFromCff(cff);
+      renderArtifactPreview(null);
+
+      els.status.textContent = "Status: local AFFE artifact cleared from this browser.";
+    }
+
+    els.refreshBtn.addEventListener("click", () => {
+      refreshFromCff();
+    });
+
+    els.saveBtn.addEventListener("click", () => {
+      const cff = getCffArtifact();
+
+      if (!cff) {
+        els.status.textContent = "Status: save failed because no CFF artifact exists yet.";
+        return;
+      }
+
+      const affe = buildAffeArtifact(cff);
+      localStorage.setItem(AFFE_KEY, JSON.stringify(affe));
+      renderArtifactPreview(affe);
+      renderReadiness(affe);
+      els.status.textContent = "Status: AFFE artifact saved locally in this browser.";
+    });
+
+    els.clearBtn.addEventListener("click", () => {
+      clearAffe();
+    });
+
+    const cff = getCffArtifact();
+    renderFromCff(cff);
+    loadSavedAffe();
+  </script>
+</body>
+</html>
