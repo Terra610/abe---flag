@@ -36,25 +36,28 @@
     const firingOrder = ["intake", "cae", "cda", "ccri", "cff", "affe", "ciri", "cibs", "cii", "macro", "doctrines"];
     let currentIndex = 0;
 
-    async function runNextModule() {
+    function runNextModule() {
       const moduleName = firingOrder[currentIndex];
       document.getElementById('current-step').textContent = moduleName.toUpperCase();
 
       const container = document.getElementById('module-container');
       container.innerHTML = `<div class="loading">Running ${moduleName.toUpperCase()}...</div>`;
 
-      try {
-        const mod = await import(`./engine/modules/${moduleName}/index.js`);
-        container.innerHTML = '';
-        mod.renderUI(container);
-      } catch (err) {
-        container.innerHTML = `<div class="error">Failed to run ${moduleName}.<br>${err.message}</div>`;
-      }
-    }
-
-    function goToNext() {
-      currentIndex = (currentIndex + 1) % firingOrder.length;
-      runNextModule();
+      // Load the module's index.js with a script tag (more reliable on GitHub Pages)
+      const script = document.createElement('script');
+      script.src = `engine/modules/${moduleName}/index.js`;
+      script.onload = () => {
+        if (typeof renderUI === 'function') {
+          container.innerHTML = '';
+          renderUI(container);
+        } else {
+          container.innerHTML = `<div class="error">Module ${moduleName} loaded but renderUI not found.</div>`;
+        }
+      };
+      script.onerror = () => {
+        container.innerHTML = `<div class="error">Failed to load ${moduleName} at engine/modules/${moduleName}/index.js</div>`;
+      };
+      document.head.appendChild(script);
     }
 
     function resetAll() {
@@ -85,7 +88,6 @@
       URL.revokeObjectURL(url);
     }
 
-    // Simple AI Assistant
     function askAI() {
       const input = document.getElementById('ai-input');
       const chat = document.getElementById('ai-chat');
