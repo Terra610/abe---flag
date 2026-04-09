@@ -1,1 +1,586 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <base href="/abe---flag/">
+  <title>A.B.E. CIRI</title>
+  <link rel="stylesheet" href="/abe---flag/assets/theme.css">
+</head>
+<body>
+  <main class="wrap">
+    <section class="header">
+      <div>
+        <h1>A.B.E. CIRI</h1>
+        <p class="tagline">Constitutional Integrity Recovery Index · local-only recovery modeling</p>
+      </div>
+      <a class="home-link" href="/abe---flag/index.html">← Home</a>
+    </section>
 
+    <section class="panel">
+      <div class="pill">100% local-only · no login · no telemetry · no remote API calls</div>
+      <p class="muted">
+        CIRI reads local Intake, CDA, CFF, and AFFE context, then models recovery, savings, and redirection
+        scenarios entirely in the browser.
+      </p>
+    </section>
+
+    <section class="grid cols-3">
+      <section class="card">
+        <h2>Artifact Bridge</h2>
+        <div id="bridge-status" class="status-box small">Checking for upstream artifacts...</div>
+
+        <label for="scenario-name">Scenario name</label>
+        <input id="scenario-name" type="text" placeholder="Example: Restored mobility and recovery">
+
+        <label for="analysis-scope">Analysis scope</label>
+        <input id="analysis-scope" type="text" placeholder="Example: transportation, statewide, cross-sector">
+
+        <label for="analysis-notes">Scenario notes</label>
+        <textarea id="analysis-notes" rows="10" placeholder="Optional notes for this recovery model"></textarea>
+      </section>
+
+      <section class="card">
+        <h2>Recovery Inputs</h2>
+
+        <label for="cases-avoided">Cases avoided</label>
+        <input id="cases-avoided" type="number" min="0" step="1" value="0">
+
+        <label for="cost-per-case">Average cost per case</label>
+        <input id="cost-per-case" type="number" min="0" step="0.01" value="0">
+
+        <label for="fees-restored">Fees restored</label>
+        <input id="fees-restored" type="number" min="0" step="0.01" value="0">
+
+        <label for="compliance-savings">Compliance / enforcement savings</label>
+        <input id="compliance-savings" type="number" min="0" step="0.01" value="0">
+
+        <label for="market-recovery">Market recovery value</label>
+        <input id="market-recovery" type="number" min="0" step="0.01" value="0">
+
+        <label for="households-restored">Households restored</label>
+        <input id="households-restored" type="number" min="0" step="1" value="0">
+
+        <label for="jobs-unlocked">Jobs unlocked</label>
+        <input id="jobs-unlocked" type="number" min="0" step="1" value="0">
+      </section>
+
+      <section class="card">
+        <h2>Recovery Modifiers</h2>
+
+        <label for="confidence">Confidence (0 to 10)</label>
+        <input id="confidence" type="number" min="0" max="10" step="1" value="0">
+
+        <label for="timeframe-years">Timeframe in years</label>
+        <input id="timeframe-years" type="number" min="1" step="1" value="1">
+
+        <label for="downstream-multiplier">Downstream multiplier</label>
+        <input id="downstream-multiplier" type="number" min="0" step="0.01" value="1.00">
+
+        <label for="stability-factor">Stability factor</label>
+        <input id="stability-factor" type="number" min="0" step="0.01" value="1.00">
+
+        <label for="implementation-cost">Implementation cost</label>
+        <input id="implementation-cost" type="number" min="0" step="0.01" value="0">
+
+        <div class="module-nav">
+          <button id="run-ciri">Run CIRI</button>
+          <button id="save-ciri">Save CIRI</button>
+          <button id="clear-ciri" type="button">Clear</button>
+        </div>
+
+        <div id="ciri-status" class="status-box small">Status: waiting</div>
+      </section>
+    </section>
+
+    <section class="grid cols-3">
+      <section class="card">
+        <h2>Recovery Output</h2>
+        <div class="status-box">
+          <strong>Total direct recovery</strong>
+          <div id="direct-recovery" style="font-size: 24px; margin-top: 8px;">$0.00</div>
+        </div>
+
+        <div class="status-box" style="margin-top: 12px;">
+          <strong>Total modeled recovery</strong>
+          <div id="modeled-recovery" style="font-size: 24px; margin-top: 8px;">$0.00</div>
+        </div>
+
+        <div class="status-box" style="margin-top: 12px;">
+          <strong>CIRI score</strong>
+          <div id="ciri-score" style="font-size: 24px; margin-top: 8px;">0</div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Component Summary</h2>
+        <div id="component-summary" class="status-box small">No CIRI analysis yet.</div>
+      </section>
+
+      <section class="card">
+        <h2>Downstream Readiness</h2>
+        <div id="next-readiness" class="status-box small">
+          Run CIRI to generate downstream-ready recovery totals.
+        </div>
+      </section>
+    </section>
+
+    <section class="grid cols-3">
+      <section class="card">
+        <h2>Artifact Preview</h2>
+        <pre id="artifact-preview" class="small">No CIRI artifact saved yet.</pre>
+      </section>
+
+      <section class="card">
+        <h2>Upstream Snapshot</h2>
+        <div id="upstream-summary" class="status-box small">No upstream summary loaded yet.</div>
+      </section>
+
+      <section class="card">
+        <h2>Public Meaning</h2>
+        <div id="public-meaning" class="status-box small">
+          CIRI translates structural correction into estimated recovery and stabilization outcomes.
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <script>
+    const INTAKE_KEY = "abe_intake_artifact";
+    const CDA_KEY = "abe_cda_artifact";
+    const CFF_KEY = "abe_cff_artifact";
+    const AFFE_KEY = "abe_affe_artifact";
+    const CIRI_KEY = "abe_ciri_artifact";
+
+    const els = {
+      bridgeStatus: document.getElementById("bridge-status"),
+      scenarioName: document.getElementById("scenario-name"),
+      analysisScope: document.getElementById("analysis-scope"),
+      analysisNotes: document.getElementById("analysis-notes"),
+
+      casesAvoided: document.getElementById("cases-avoided"),
+      costPerCase: document.getElementById("cost-per-case"),
+      feesRestored: document.getElementById("fees-restored"),
+      complianceSavings: document.getElementById("compliance-savings"),
+      marketRecovery: document.getElementById("market-recovery"),
+      householdsRestored: document.getElementById("households-restored"),
+      jobsUnlocked: document.getElementById("jobs-unlocked"),
+
+      confidence: document.getElementById("confidence"),
+      timeframeYears: document.getElementById("timeframe-years"),
+      downstreamMultiplier: document.getElementById("downstream-multiplier"),
+      stabilityFactor: document.getElementById("stability-factor"),
+      implementationCost: document.getElementById("implementation-cost"),
+
+      directRecovery: document.getElementById("direct-recovery"),
+      modeledRecovery: document.getElementById("modeled-recovery"),
+      ciriScore: document.getElementById("ciri-score"),
+
+      componentSummary: document.getElementById("component-summary"),
+      nextReadiness: document.getElementById("next-readiness"),
+      artifactPreview: document.getElementById("artifact-preview"),
+      upstreamSummary: document.getElementById("upstream-summary"),
+      publicMeaning: document.getElementById("public-meaning"),
+      status: document.getElementById("ciri-status"),
+
+      runBtn: document.getElementById("run-ciri"),
+      saveBtn: document.getElementById("save-ciri"),
+      clearBtn: document.getElementById("clear-ciri")
+    };
+
+    function money(n) {
+      return new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "USD"
+      }).format(Number(n) || 0);
+    }
+
+    function n(idEl) {
+      return Number(idEl.value) || 0;
+    }
+
+    function getUpstreamPresence() {
+      return {
+        intake_present: !!localStorage.getItem(INTAKE_KEY),
+        cda_present: !!localStorage.getItem(CDA_KEY),
+        cff_present: !!localStorage.getItem(CFF_KEY),
+        affe_present: !!localStorage.getItem(AFFE_KEY)
+      };
+    }
+
+    function loadJson(key) {
+      const raw = localStorage.getItem(key);
+      if (!raw) return null;
+      try {
+        return JSON.parse(raw);
+      } catch (err) {
+        return null;
+      }
+    }
+
+    function computeDirectRecovery() {
+      const casesAvoided = n(els.casesAvoided);
+      const costPerCase = n(els.costPerCase);
+      const feesRestored = n(els.feesRestored);
+      const complianceSavings = n(els.complianceSavings);
+      const marketRecovery = n(els.marketRecovery);
+
+      const caseRecovery = casesAvoided * costPerCase;
+
+      return {
+        case_recovery: caseRecovery,
+        fees_restored: feesRestored,
+        compliance_savings: complianceSavings,
+        market_recovery: marketRecovery,
+        total_direct: caseRecovery + feesRestored + complianceSavings + marketRecovery
+      };
+    }
+
+    function computeModeledRecovery(direct) {
+      const timeframeYears = Math.max(1, n(els.timeframeYears));
+      const downstreamMultiplier = n(els.downstreamMultiplier);
+      const stabilityFactor = n(els.stabilityFactor);
+      const implementationCost = n(els.implementationCost);
+      const confidence = n(els.confidence);
+
+      const householdsRestored = n(els.householdsRestored);
+      const jobsUnlocked = n(els.jobsUnlocked);
+
+      const householdValue = householdsRestored * 12000 * timeframeYears;
+      const jobsValue = jobsUnlocked * 35000 * timeframeYears;
+
+      const confidenceFactor = Math.max(0.1, confidence / 10);
+
+      const gross = (
+        direct.total_direct +
+        householdValue +
+        jobsValue
+      ) * Math.max(0, downstreamMultiplier) * Math.max(0, stabilityFactor) * confidenceFactor;
+
+      const net = Math.max(0, gross - implementationCost);
+
+      return {
+        household_value: householdValue,
+        jobs_value: jobsValue,
+        gross_modeled_recovery: gross,
+        implementation_cost: implementationCost,
+        net_modeled_recovery: net
+      };
+    }
+
+    function computeCiriScore(direct, modeled) {
+      const total = modeled.net_modeled_recovery;
+      const confidence = n(els.confidence);
+      const households = n(els.householdsRestored);
+      const jobs = n(els.jobsUnlocked);
+
+      let score = 0;
+
+      if (total >= 1000000000) score += 40;
+      else if (total >= 100000000) score += 30;
+      else if (total >= 10000000) score += 20;
+      else if (total >= 1000000) score += 10;
+      else if (total > 0) score += 5;
+
+      if (households >= 100000) score += 15;
+      else if (households >= 10000) score += 10;
+      else if (households >= 1000) score += 5;
+      else if (households > 0) score += 2;
+
+      if (jobs >= 100000) score += 15;
+      else if (jobs >= 10000) score += 10;
+      else if (jobs >= 1000) score += 5;
+      else if (jobs > 0) score += 2;
+
+      score += Math.min(30, confidence * 3);
+
+      return Math.min(100, score);
+    }
+
+    function buildArtifact(precomputed) {
+      const upstream = getUpstreamPresence();
+      const direct = precomputed?.direct || computeDirectRecovery();
+      const modeled = precomputed?.modeled || computeModeledRecovery(direct);
+      const score = typeof precomputed?.score === "number"
+        ? precomputed.score
+        : computeCiriScore(direct, modeled);
+
+      return {
+        module: "ciri",
+        version: "1.0.0",
+        timestamp: new Date().toISOString(),
+        privacy: {
+          local_only: true,
+          telemetry: false,
+          remote_calls: false
+        },
+        source_bridge: upstream,
+        scenario: {
+          name: els.scenarioName.value.trim(),
+          scope: els.analysisScope.value.trim(),
+          notes: els.analysisNotes.value.trim()
+        },
+        inputs: {
+          cases_avoided: n(els.casesAvoided),
+          cost_per_case: n(els.costPerCase),
+          fees_restored: n(els.feesRestored),
+          compliance_savings: n(els.complianceSavings),
+          market_recovery: n(els.marketRecovery),
+          households_restored: n(els.householdsRestored),
+          jobs_unlocked: n(els.jobsUnlocked),
+          confidence: n(els.confidence),
+          timeframe_years: Math.max(1, n(els.timeframeYears)),
+          downstream_multiplier: n(els.downstreamMultiplier),
+          stability_factor: n(els.stabilityFactor),
+          implementation_cost: n(els.implementationCost)
+        },
+        outputs: {
+          ...direct,
+          ...modeled,
+          ciri_score: score
+        },
+        downstream: {
+          ready_for_cibs: true,
+          ready_for_cii: true,
+          ready_for_integration: true
+        }
+      };
+    }
+
+    function renderSummary(artifact) {
+      if (!artifact) {
+        els.componentSummary.textContent = "No CIRI analysis yet.";
+        return;
+      }
+
+      const o = artifact.outputs || {};
+      els.componentSummary.textContent =
+        "case_recovery: " + money(o.case_recovery || 0) + "\n" +
+        "fees_restored: " + money(o.fees_restored || 0) + "\n" +
+        "compliance_savings: " + money(o.compliance_savings || 0) + "\n" +
+        "market_recovery: " + money(o.market_recovery || 0) + "\n" +
+        "household_value: " + money(o.household_value || 0) + "\n" +
+        "jobs_value: " + money(o.jobs_value || 0) + "\n" +
+        "implementation_cost: " + money(o.implementation_cost || 0);
+    }
+
+    function renderReadiness(artifact) {
+      if (!artifact) {
+        els.nextReadiness.textContent = "Run CIRI to generate downstream-ready recovery totals.";
+        return;
+      }
+
+      const d = artifact.downstream || {};
+      els.nextReadiness.textContent =
+        "ready_for_cibs: " + String(!!d.ready_for_cibs) + "\n" +
+        "ready_for_cii: " + String(!!d.ready_for_cii) + "\n" +
+        "ready_for_integration: " + String(!!d.ready_for_integration);
+    }
+
+    function renderArtifactPreview(artifact) {
+      if (!artifact) {
+        els.artifactPreview.textContent = "No CIRI artifact saved yet.";
+        return;
+      }
+      els.artifactPreview.textContent = JSON.stringify(artifact, null, 2);
+    }
+
+    function renderUpstreamSummary() {
+      const intake = loadJson(INTAKE_KEY);
+      const cda = loadJson(CDA_KEY);
+      const cff = loadJson(CFF_KEY);
+      const affe = loadJson(AFFE_KEY);
+
+      const summary = {
+        intake_title: intake?.source?.title || "",
+        cda_score: cda?.analysis?.divergence_score ?? null,
+        cff_classification: cff?.analysis?.classification || "",
+        cff_exposure_estimate: cff?.analysis?.exposure_estimate ?? null,
+        affe_classification: affe?.summary?.classification || ""
+      };
+
+      els.upstreamSummary.textContent = JSON.stringify(summary, null, 2);
+    }
+
+    function renderBridgeStatus() {
+      const p = getUpstreamPresence();
+      const lines = [];
+
+      if (p.intake_present) lines.push("Intake found.");
+      if (p.cda_present) lines.push("CDA found.");
+      if (p.cff_present) lines.push("CFF found.");
+      if (p.affe_present) lines.push("AFFE found.");
+
+      if (!lines.length) {
+        els.bridgeStatus.textContent = "No upstream artifacts found in this browser.";
+      } else {
+        els.bridgeStatus.textContent = lines.join(" ");
+      }
+
+      const intake = loadJson(INTAKE_KEY);
+      const cda = loadJson(CDA_KEY);
+      const cff = loadJson(CFF_KEY);
+
+      if (intake && !els.scenarioName.value) {
+        els.scenarioName.value = intake.source?.title || "";
+      }
+
+      if (cda && !els.analysisScope.value) {
+        els.analysisScope.value = cda.scenario?.jurisdiction || "";
+      }
+
+      if (cff && !els.analysisNotes.value) {
+        els.analysisNotes.value = cff.funding_stream?.mission_summary || "";
+      }
+    }
+
+    function updateOutputs() {
+      const direct = computeDirectRecovery();
+      const modeled = computeModeledRecovery(direct);
+      const score = computeCiriScore(direct, modeled);
+
+      els.directRecovery.textContent = money(direct.total_direct);
+      els.modeledRecovery.textContent = money(modeled.net_modeled_recovery);
+      els.ciriScore.textContent = String(score);
+
+      const artifact = buildArtifact({ direct, modeled, score });
+      renderSummary(artifact);
+      renderReadiness(artifact);
+
+      const total = modeled.net_modeled_recovery;
+      if (total >= 1000000000) {
+        els.publicMeaning.textContent = "This scenario models billion-scale recovery potential if structural correction holds.";
+      } else if (total >= 100000000) {
+        els.publicMeaning.textContent = "This scenario models major regional recovery potential with broad stabilization effects.";
+      } else if (total >= 1000000) {
+        els.publicMeaning.textContent = "This scenario models meaningful recovery and measurable stabilization at public scale.";
+      } else if (total > 0) {
+        els.publicMeaning.textContent = "This scenario models positive recovery, though still modest in present form.";
+      } else {
+        els.publicMeaning.textContent = "No recovery is modeled yet because the inputs are still near zero.";
+      }
+
+      return artifact;
+    }
+
+    function loadSavedCiri() {
+      const raw = localStorage.getItem(CIRI_KEY);
+      if (!raw) {
+        renderArtifactPreview(null);
+        updateOutputs();
+        return;
+      }
+
+      try {
+        const data = JSON.parse(raw);
+
+        els.scenarioName.value = data.scenario?.name || "";
+        els.analysisScope.value = data.scenario?.scope || "";
+        els.analysisNotes.value = data.scenario?.notes || "";
+
+        els.casesAvoided.value = data.inputs?.cases_avoided ?? 0;
+        els.costPerCase.value = data.inputs?.cost_per_case ?? 0;
+        els.feesRestored.value = data.inputs?.fees_restored ?? 0;
+        els.complianceSavings.value = data.inputs?.compliance_savings ?? 0;
+        els.marketRecovery.value = data.inputs?.market_recovery ?? 0;
+        els.householdsRestored.value = data.inputs?.households_restored ?? 0;
+        els.jobsUnlocked.value = data.inputs?.jobs_unlocked ?? 0;
+        els.confidence.value = data.inputs?.confidence ?? 0;
+        els.timeframeYears.value = data.inputs?.timeframe_years ?? 1;
+        els.downstreamMultiplier.value = data.inputs?.downstream_multiplier ?? 1;
+        els.stabilityFactor.value = data.inputs?.stability_factor ?? 1;
+        els.implementationCost.value = data.inputs?.implementation_cost ?? 0;
+
+        els.directRecovery.textContent = money(data.outputs?.total_direct || 0);
+        els.modeledRecovery.textContent = money(data.outputs?.net_modeled_recovery || 0);
+        els.ciriScore.textContent = String(data.outputs?.ciri_score ?? 0);
+
+        renderSummary(data);
+        renderReadiness(data);
+        renderArtifactPreview(data);
+        els.status.textContent = "Status: loaded saved CIRI artifact from this browser.";
+      } catch (err) {
+        els.status.textContent = "Status: saved CIRI artifact exists but could not be read.";
+        updateOutputs();
+      }
+    }
+
+    function clearForm() {
+      els.scenarioName.value = "";
+      els.analysisScope.value = "";
+      els.analysisNotes.value = "";
+
+      els.casesAvoided.value = 0;
+      els.costPerCase.value = 0;
+      els.feesRestored.value = 0;
+      els.complianceSavings.value = 0;
+      els.marketRecovery.value = 0;
+      els.householdsRestored.value = 0;
+      els.jobsUnlocked.value = 0;
+
+      els.confidence.value = 0;
+      els.timeframeYears.value = 1;
+      els.downstreamMultiplier.value = 1;
+      els.stabilityFactor.value = 1;
+      els.implementationCost.value = 0;
+
+      els.directRecovery.textContent = "$0.00";
+      els.modeledRecovery.textContent = "$0.00";
+      els.ciriScore.textContent = "0";
+      renderSummary(null);
+      renderReadiness(null);
+      renderArtifactPreview(null);
+    }
+
+    [
+      els.casesAvoided,
+      els.costPerCase,
+      els.feesRestored,
+      els.complianceSavings,
+      els.marketRecovery,
+      els.householdsRestored,
+      els.jobsUnlocked,
+      els.confidence,
+      els.timeframeYears,
+      els.downstreamMultiplier,
+      els.stabilityFactor,
+      els.implementationCost
+    ].forEach(el => {
+      el.addEventListener("input", updateOutputs);
+      el.addEventListener("change", updateOutputs);
+    });
+
+    els.runBtn.addEventListener("click", () => {
+      const artifact = updateOutputs();
+      renderArtifactPreview(artifact);
+      els.status.textContent = "Status: CIRI ran locally. Save when ready.";
+    });
+
+    els.saveBtn.addEventListener("click", () => {
+      const artifact = updateOutputs();
+
+      if (!artifact.scenario.name && artifact.outputs.net_modeled_recovery <= 0) {
+        els.status.textContent = "Status: add a scenario name or meaningful recovery inputs before saving.";
+        return;
+      }
+
+      localStorage.setItem(CIRI_KEY, JSON.stringify(artifact));
+      renderArtifactPreview(artifact);
+      renderReadiness(artifact);
+      els.status.textContent = "Status: CIRI artifact saved locally in this browser.";
+    });
+
+    els.clearBtn.addEventListener("click", () => {
+      localStorage.removeItem(CIRI_KEY);
+      clearForm();
+      renderBridgeStatus();
+      renderUpstreamSummary();
+      els.status.textContent = "Status: local CIRI artifact cleared from this browser.";
+    });
+
+    renderBridgeStatus();
+    renderUpstreamSummary();
+    loadSavedCiri();
+  </script>
+</body>
+</html>
