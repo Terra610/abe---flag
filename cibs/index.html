@@ -1,1 +1,487 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <base href="/abe---flag/">
+  <title>A.B.E. CIBS</title>
+  <link rel="stylesheet" href="/abe---flag/assets/theme.css">
+</head>
+<body>
+  <main class="wrap">
+    <section class="header">
+      <div>
+        <h1>A.B.E. CIBS</h1>
+        <p class="tagline">Community Investment Budgeting System · local-only allocation layer</p>
+      </div>
+      <a class="home-link" href="/abe---flag/index.html">← Home</a>
+    </section>
 
+    <section class="panel">
+      <div class="pill">100% local-only · no login · no telemetry · no remote API calls</div>
+      <p class="muted">
+        CIBS reads the local CIRI recovery artifact and translates modeled recovery into budget allocations.
+        Nothing leaves the browser. No remote budgeting service. No cloud ledger cosplay.
+      </p>
+    </section>
+
+    <section class="grid cols-3">
+      <section class="card">
+        <h2>Artifact Bridge</h2>
+        <div id="bridge-status" class="status-box small">Checking for CIRI artifact...</div>
+
+        <label for="budget-name">Budget name</label>
+        <input id="budget-name" type="text" placeholder="Example: Rebuild Together Budget">
+
+        <label for="budget-scope">Budget scope</label>
+        <input id="budget-scope" type="text" placeholder="Example: statewide, national, local pilot">
+
+        <label for="budget-notes">Budget notes</label>
+        <textarea id="budget-notes" rows="10" placeholder="Optional allocation notes"></textarea>
+      </section>
+
+      <section class="card">
+        <h2>Allocation Percentages</h2>
+
+        <label for="pct-housing">Housing & stabilization %</label>
+        <input id="pct-housing" type="number" min="0" max="100" step="0.01" value="18">
+
+        <label for="pct-transport">Transportation restoration %</label>
+        <input id="pct-transport" type="number" min="0" max="100" step="0.01" value="14">
+
+        <label for="pct-justice">Justice restoration %</label>
+        <input id="pct-justice" type="number" min="0" max="100" step="0.01" value="16">
+
+        <label for="pct-workforce">Workforce & jobs %</label>
+        <input id="pct-workforce" type="number" min="0" max="100" step="0.01" value="14">
+
+        <label for="pct-community">Community reinvestment %</label>
+        <input id="pct-community" type="number" min="0" max="100" step="0.01" value="12">
+
+        <label for="pct-legal">Legal defense & compliance %</label>
+        <input id="pct-legal" type="number" min="0" max="100" step="0.01" value="10">
+
+        <label for="pct-agriculture">Agriculture & local production %</label>
+        <input id="pct-agriculture" type="number" min="0" max="100" step="0.01" value="8">
+
+        <label for="pct-digital">Digital access & systems %</label>
+        <input id="pct-digital" type="number" min="0" max="100" step="0.01" value="8">
+      </section>
+
+      <section class="card">
+        <h2>Outputs</h2>
+
+        <div class="status-box">
+          <strong>Total allocation %</strong>
+          <div id="total-percent" style="font-size: 24px; margin-top: 8px;">100.00%</div>
+        </div>
+
+        <div class="status-box" style="margin-top: 12px;">
+          <strong>Total available budget</strong>
+          <div id="available-budget" style="font-size: 24px; margin-top: 8px;">$0.00</div>
+        </div>
+
+        <div class="module-nav">
+          <button id="run-cibs">Run CIBS</button>
+          <button id="save-cibs">Save CIBS</button>
+          <button id="clear-cibs" type="button">Clear</button>
+        </div>
+
+        <div id="cibs-status" class="status-box small">Status: waiting</div>
+      </section>
+    </section>
+
+    <section class="grid cols-3">
+      <section class="card">
+        <h2>Allocation Table</h2>
+        <div id="allocation-table" class="status-box small">No allocation output yet.</div>
+      </section>
+
+      <section class="card">
+        <h2>Readiness</h2>
+        <div id="next-readiness" class="status-box small">
+          Run CIBS to prepare allocation outputs for CII and Integration.
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Artifact Preview</h2>
+        <pre id="artifact-preview" class="small">No CIBS artifact saved yet.</pre>
+      </section>
+    </section>
+
+    <section class="grid cols-3">
+      <section class="card">
+        <h2>Upstream Snapshot</h2>
+        <div id="upstream-summary" class="status-box small">No upstream summary loaded yet.</div>
+      </section>
+
+      <section class="card">
+        <h2>Budget Meaning</h2>
+        <div id="budget-meaning" class="status-box small">
+          CIBS converts modeled recovery into named, transparent allocation buckets.
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Integrity Check</h2>
+        <div id="integrity-check" class="status-box small">
+          Allocation percentages should total 100%.
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <script>
+    const CIRI_KEY = "abe_ciri_artifact";
+    const CIBS_KEY = "abe_cibs_artifact";
+
+    const els = {
+      bridgeStatus: document.getElementById("bridge-status"),
+      budgetName: document.getElementById("budget-name"),
+      budgetScope: document.getElementById("budget-scope"),
+      budgetNotes: document.getElementById("budget-notes"),
+
+      pctHousing: document.getElementById("pct-housing"),
+      pctTransport: document.getElementById("pct-transport"),
+      pctJustice: document.getElementById("pct-justice"),
+      pctWorkforce: document.getElementById("pct-workforce"),
+      pctCommunity: document.getElementById("pct-community"),
+      pctLegal: document.getElementById("pct-legal"),
+      pctAgriculture: document.getElementById("pct-agriculture"),
+      pctDigital: document.getElementById("pct-digital"),
+
+      totalPercent: document.getElementById("total-percent"),
+      availableBudget: document.getElementById("available-budget"),
+
+      allocationTable: document.getElementById("allocation-table"),
+      nextReadiness: document.getElementById("next-readiness"),
+      artifactPreview: document.getElementById("artifact-preview"),
+      upstreamSummary: document.getElementById("upstream-summary"),
+      budgetMeaning: document.getElementById("budget-meaning"),
+      integrityCheck: document.getElementById("integrity-check"),
+      status: document.getElementById("cibs-status"),
+
+      runBtn: document.getElementById("run-cibs"),
+      saveBtn: document.getElementById("save-cibs"),
+      clearBtn: document.getElementById("clear-cibs")
+    };
+
+    function money(n) {
+      return new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "USD"
+      }).format(Number(n) || 0);
+    }
+
+    function n(el) {
+      return Number(el.value) || 0;
+    }
+
+    function loadJson(key) {
+      const raw = localStorage.getItem(key);
+      if (!raw) return null;
+      try {
+        return JSON.parse(raw);
+      } catch (err) {
+        return null;
+      }
+    }
+
+    function getBudgetTotal() {
+      const ciri = loadJson(CIRI_KEY);
+      return Number(ciri?.outputs?.net_modeled_recovery) || 0;
+    }
+
+    function getPercents() {
+      return {
+        housing_stabilization: n(els.pctHousing),
+        transportation_restoration: n(els.pctTransport),
+        justice_restoration: n(els.pctJustice),
+        workforce_jobs: n(els.pctWorkforce),
+        community_reinvestment: n(els.pctCommunity),
+        legal_defense_compliance: n(els.pctLegal),
+        agriculture_local_production: n(els.pctAgriculture),
+        digital_access_systems: n(els.pctDigital)
+      };
+    }
+
+    function totalPercentValue(pcts) {
+      return Object.values(pcts).reduce((a, b) => a + b, 0);
+    }
+
+    function computeAllocations(totalBudget, pcts) {
+      const out = {};
+      for (const [key, pct] of Object.entries(pcts)) {
+        out[key] = {
+          percent: pct,
+          amount: totalBudget * (pct / 100)
+        };
+      }
+      return out;
+    }
+
+    function buildArtifact(precomputed) {
+      const totalBudget = typeof precomputed?.totalBudget === "number"
+        ? precomputed.totalBudget
+        : getBudgetTotal();
+
+      const pcts = precomputed?.pcts || getPercents();
+      const totalPct = typeof precomputed?.totalPct === "number"
+        ? precomputed.totalPct
+        : totalPercentValue(pcts);
+      const allocations = precomputed?.allocations || computeAllocations(totalBudget, pcts);
+
+      return {
+        module: "cibs",
+        version: "1.0.0",
+        timestamp: new Date().toISOString(),
+        privacy: {
+          local_only: true,
+          telemetry: false,
+          remote_calls: false
+        },
+        source_bridge: {
+          ciri_present: !!localStorage.getItem(CIRI_KEY)
+        },
+        budget: {
+          name: els.budgetName.value.trim(),
+          scope: els.budgetScope.value.trim(),
+          notes: els.budgetNotes.value.trim(),
+          available_budget: totalBudget,
+          total_percent: totalPct
+        },
+        allocations,
+        downstream: {
+          ready_for_cii: Math.abs(totalPct - 100) < 0.01 && totalBudget > 0,
+          ready_for_integration: Math.abs(totalPct - 100) < 0.01 && totalBudget > 0
+        }
+      };
+    }
+
+    function renderBridgeStatus() {
+      const ciri = loadJson(CIRI_KEY);
+      if (!ciri) {
+        els.bridgeStatus.textContent = "No CIRI artifact found in this browser.";
+        return;
+      }
+
+      els.bridgeStatus.textContent = "CIRI artifact found and loaded locally.";
+
+      if (!els.budgetName.value) {
+        els.budgetName.value = (ciri.scenario?.name || "Recovery") + " Budget";
+      }
+      if (!els.budgetScope.value) {
+        els.budgetScope.value = ciri.scenario?.scope || "";
+      }
+      if (!els.budgetNotes.value) {
+        els.budgetNotes.value = ciri.scenario?.notes || "";
+      }
+    }
+
+    function renderUpstreamSummary() {
+      const ciri = loadJson(CIRI_KEY);
+      if (!ciri) {
+        els.upstreamSummary.textContent = "No upstream summary loaded yet.";
+        return;
+      }
+
+      const summary = {
+        scenario_name: ciri.scenario?.name || "",
+        net_modeled_recovery: ciri.outputs?.net_modeled_recovery ?? 0,
+        ciri_score: ciri.outputs?.ciri_score ?? 0,
+        households_restored: ciri.inputs?.households_restored ?? 0,
+        jobs_unlocked: ciri.inputs?.jobs_unlocked ?? 0
+      };
+
+      els.upstreamSummary.textContent = JSON.stringify(summary, null, 2);
+    }
+
+    function renderAllocationTable(artifact) {
+      if (!artifact) {
+        els.allocationTable.textContent = "No allocation output yet.";
+        return;
+      }
+
+      const lines = [];
+      for (const [key, value] of Object.entries(artifact.allocations || {})) {
+        lines.push(
+          key + ": " + value.percent.toFixed(2) + "% · " + money(value.amount)
+        );
+      }
+
+      els.allocationTable.textContent = lines.join("\n");
+    }
+
+    function renderReadiness(artifact) {
+      if (!artifact) {
+        els.nextReadiness.textContent = "Run CIBS to prepare allocation outputs for CII and Integration.";
+        return;
+      }
+
+      const d = artifact.downstream || {};
+      els.nextReadiness.textContent =
+        "ready_for_cii: " + String(!!d.ready_for_cii) + "\n" +
+        "ready_for_integration: " + String(!!d.ready_for_integration);
+    }
+
+    function renderArtifactPreview(artifact) {
+      if (!artifact) {
+        els.artifactPreview.textContent = "No CIBS artifact saved yet.";
+        return;
+      }
+      els.artifactPreview.textContent = JSON.stringify(artifact, null, 2);
+    }
+
+    function updateOutputs() {
+      const totalBudget = getBudgetTotal();
+      const pcts = getPercents();
+      const totalPct = totalPercentValue(pcts);
+      const allocations = computeAllocations(totalBudget, pcts);
+
+      els.totalPercent.textContent = totalPct.toFixed(2) + "%";
+      els.availableBudget.textContent = money(totalBudget);
+
+      if (Math.abs(totalPct - 100) < 0.01) {
+        els.integrityCheck.textContent = "Allocation total is balanced at 100%.";
+      } else if (totalPct > 100) {
+        els.integrityCheck.textContent = "Allocation total exceeds 100%. Trim it back before saving.";
+      } else {
+        els.integrityCheck.textContent = "Allocation total is below 100%. Fill the gap before saving.";
+      }
+
+      if (totalBudget >= 1000000000) {
+        els.budgetMeaning.textContent = "This budget models billion-scale public reinvestment capacity.";
+      } else if (totalBudget >= 100000000) {
+        els.budgetMeaning.textContent = "This budget models major public reinvestment capacity.";
+      } else if (totalBudget >= 1000000) {
+        els.budgetMeaning.textContent = "This budget models meaningful public reinvestment at operating scale.";
+      } else if (totalBudget > 0) {
+        els.budgetMeaning.textContent = "This budget models positive but limited reinvestment capacity.";
+      } else {
+        els.budgetMeaning.textContent = "No allocation base exists yet because CIRI recovery is still zero.";
+      }
+
+      const artifact = buildArtifact({ totalBudget, pcts, totalPct, allocations });
+      renderAllocationTable(artifact);
+      renderReadiness(artifact);
+
+      return artifact;
+    }
+
+    function loadSavedCibs() {
+      const raw = localStorage.getItem(CIBS_KEY);
+      if (!raw) {
+        renderArtifactPreview(null);
+        updateOutputs();
+        return;
+      }
+
+      try {
+        const data = JSON.parse(raw);
+
+        els.budgetName.value = data.budget?.name || "";
+        els.budgetScope.value = data.budget?.scope || "";
+        els.budgetNotes.value = data.budget?.notes || "";
+
+        const a = data.allocations || {};
+        els.pctHousing.value = a.housing_stabilization?.percent ?? 18;
+        els.pctTransport.value = a.transportation_restoration?.percent ?? 14;
+        els.pctJustice.value = a.justice_restoration?.percent ?? 16;
+        els.pctWorkforce.value = a.workforce_jobs?.percent ?? 14;
+        els.pctCommunity.value = a.community_reinvestment?.percent ?? 12;
+        els.pctLegal.value = a.legal_defense_compliance?.percent ?? 10;
+        els.pctAgriculture.value = a.agriculture_local_production?.percent ?? 8;
+        els.pctDigital.value = a.digital_access_systems?.percent ?? 8;
+
+        els.totalPercent.textContent = (data.budget?.total_percent ?? 0).toFixed(2) + "%";
+        els.availableBudget.textContent = money(data.budget?.available_budget ?? 0);
+
+        renderAllocationTable(data);
+        renderReadiness(data);
+        renderArtifactPreview(data);
+        els.status.textContent = "Status: loaded saved CIBS artifact from this browser.";
+      } catch (err) {
+        els.status.textContent = "Status: saved CIBS artifact exists but could not be read.";
+        updateOutputs();
+      }
+    }
+
+    function clearForm() {
+      localStorage.removeItem(CIBS_KEY);
+
+      els.budgetName.value = "";
+      els.budgetScope.value = "";
+      els.budgetNotes.value = "";
+
+      els.pctHousing.value = 18;
+      els.pctTransport.value = 14;
+      els.pctJustice.value = 16;
+      els.pctWorkforce.value = 14;
+      els.pctCommunity.value = 12;
+      els.pctLegal.value = 10;
+      els.pctAgriculture.value = 8;
+      els.pctDigital.value = 8;
+
+      els.totalPercent.textContent = "100.00%";
+      els.availableBudget.textContent = "$0.00";
+
+      renderAllocationTable(null);
+      renderReadiness(null);
+      renderArtifactPreview(null);
+
+      els.status.textContent = "Status: local CIBS artifact cleared from this browser.";
+    }
+
+    [
+      els.pctHousing,
+      els.pctTransport,
+      els.pctJustice,
+      els.pctWorkforce,
+      els.pctCommunity,
+      els.pctLegal,
+      els.pctAgriculture,
+      els.pctDigital
+    ].forEach(el => {
+      el.addEventListener("input", updateOutputs);
+      el.addEventListener("change", updateOutputs);
+    });
+
+    els.runBtn.addEventListener("click", () => {
+      const artifact = updateOutputs();
+      renderArtifactPreview(artifact);
+      els.status.textContent = "Status: CIBS ran locally. Save when ready.";
+    });
+
+    els.saveBtn.addEventListener("click", () => {
+      const artifact = updateOutputs();
+
+      if (artifact.budget.available_budget <= 0) {
+        els.status.textContent = "Status: save failed because no CIRI budget base exists yet.";
+        return;
+      }
+
+      if (Math.abs(artifact.budget.total_percent - 100) >= 0.01) {
+        els.status.textContent = "Status: allocation percentages must total 100% before saving.";
+        return;
+      }
+
+      localStorage.setItem(CIBS_KEY, JSON.stringify(artifact));
+      renderArtifactPreview(artifact);
+      renderReadiness(artifact);
+      els.status.textContent = "Status: CIBS artifact saved locally in this browser.";
+    });
+
+    els.clearBtn.addEventListener("click", () => {
+      clearForm();
+      renderBridgeStatus();
+      renderUpstreamSummary();
+      updateOutputs();
+    });
+
+    renderBridgeStatus();
+    renderUpstreamSummary();
+    loadSavedCibs();
+  </script>
+</body>
+</html>
