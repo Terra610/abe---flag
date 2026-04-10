@@ -12,7 +12,7 @@
     <section class="header">
       <div>
         <h1>A.B.E. Intake</h1>
-        <p class="tagline">Local-only intake and normalization</p>
+        <p class="tagline">Local-only ingestion and engine handoff</p>
       </div>
       <a class="home-link" href="/abe---flag/index.html">← Home</a>
     </section>
@@ -20,8 +20,8 @@
     <section class="panel">
       <div class="pill">100% local-only · no login · no telemetry · no remote API calls</div>
       <p class="muted">
-        This page is the intake gate for the public site. Users can upload a file, paste text, and define
-        what kind of source they are working with. Nothing here sends data anywhere.
+        Intake creates the first structured artifact for the engine. The user may upload a file or paste text.
+        A.B.E. processes what is provided and hands off to the calculation chain.
       </p>
     </section>
 
@@ -30,23 +30,23 @@
         <h2>Source Intake</h2>
 
         <label for="source-type">Source type</label>
-        <input id="source-type" type="text" placeholder="Example: court filing, policy, statute, notice">
+        <input id="source-type" type="text" placeholder="Example: court filing, statute, policy, report">
 
         <label for="jurisdiction">Jurisdiction</label>
         <input id="jurisdiction" type="text" placeholder="Example: Iowa, federal, county, city">
 
         <label for="title">Working title</label>
-        <input id="title" type="text" placeholder="Example: FMCSR scope conflict review">
+        <input id="title" type="text" placeholder="Example: Authority alignment review">
 
         <label for="source-file">Upload source file</label>
-        <input id="source-file" type="file" accept=".txt,.pdf,.doc,.docx,.json,.csv,.md,.rtf,.png,.jpg,.jpeg,.webp">
+        <input id="source-file" type="file" accept=".txt,.md,.json,.csv,.pdf,.doc,.docx,.rtf,.png,.jpg,.jpeg,.webp">
         <div id="file-info" class="small">No file selected.</div>
 
         <label for="source-text">Paste source text</label>
-        <textarea id="source-text" rows="14" placeholder="Paste source text here"></textarea>
+        <textarea id="source-text" rows="14" placeholder="Paste text only if you are not uploading a readable text file"></textarea>
 
         <div class="module-nav">
-          <button id="save-intake">Save Intake</button>
+          <button id="run-engine">Run Engine</button>
           <button id="clear-intake" type="button">Clear</button>
         </div>
 
@@ -54,8 +54,10 @@
       </section>
 
       <section class="card">
-        <h2>Module Targets</h2>
-        <p class="muted">Choose where this intake should flow next.</p>
+        <h2>Engine Targets</h2>
+        <p class="muted">
+          Intake hands off to the engine chain automatically. These targets are stored locally as run metadata.
+        </p>
 
         <label>
           <input id="target-cda" type="checkbox" checked>
@@ -73,12 +75,12 @@
         </label>
 
         <label>
-          <input id="target-cibs" type="checkbox">
+          <input id="target-cibs" type="checkbox" checked>
           CIBS
         </label>
 
         <label>
-          <input id="target-cii" type="checkbox">
+          <input id="target-cii" type="checkbox" checked>
           CII
         </label>
 
@@ -90,14 +92,14 @@
         <hr>
 
         <p class="small">
-          These selections are stored only in the browser using local storage.
+          These do not require manual execution. They define the engine handoff path.
         </p>
       </section>
 
       <section class="card">
-        <h2>Stored Preview</h2>
-        <p class="muted">This shows what is currently stored locally from intake.</p>
-        <div id="intake-preview" class="status-box small">No intake data saved yet.</div>
+        <h2>Intake Preview</h2>
+        <p class="muted">This shows the structured intake artifact that will be passed into the engine.</p>
+        <pre id="intake-preview" class="small">No intake artifact created yet.</pre>
       </section>
     </section>
   </main>
@@ -112,24 +114,69 @@
       sourceFile: document.getElementById("source-file"),
       fileInfo: document.getElementById("file-info"),
       sourceText: document.getElementById("source-text"),
+
       targetCda: document.getElementById("target-cda"),
       targetCff: document.getElementById("target-cff"),
       targetCiri: document.getElementById("target-ciri"),
       targetCibs: document.getElementById("target-cibs"),
       targetCii: document.getElementById("target-cii"),
       targetIntegration: document.getElementById("target-integration"),
-      status: document.getElementById("intake-status"),
+
       preview: document.getElementById("intake-preview"),
-      saveBtn: document.getElementById("save-intake"),
+      status: document.getElementById("intake-status"),
+
+      runBtn: document.getElementById("run-engine"),
       clearBtn: document.getElementById("clear-intake")
     };
 
-    function buildArtifact() {
+    function setStatus(message) {
+      els.status.textContent = "Status: " + message;
+    }
+
+    function renderPreview(data) {
+      if (!data) {
+        els.preview.textContent = "No intake artifact created yet.";
+        return;
+      }
+      els.preview.textContent = JSON.stringify(data, null, 2);
+    }
+
+    function getFileMetadata(file) {
+      if (!file) return null;
+      return {
+        name: file.name,
+        size: file.size,
+        mime_type: file.type || "unknown"
+      };
+    }
+
+    function isReadableTextFile(file) {
+      if (!file) return false;
+      const name = file.name.toLowerCase();
+      return (
+        file.type.startsWith("text/") ||
+        name.endsWith(".txt") ||
+        name.endsWith(".md") ||
+        name.endsWith(".json") ||
+        name.endsWith(".csv")
+      );
+    }
+
+    function readTextFile(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(String(reader.result || ""));
+        reader.onerror = () => reject(new Error("File could not be read."));
+        reader.readAsText(file);
+      });
+    }
+
+    function buildArtifact(textOverride = null) {
       const file = els.sourceFile.files && els.sourceFile.files[0] ? els.sourceFile.files[0] : null;
 
       return {
         module: "intake",
-        version: "1.1.0",
+        version: "1.2.0",
         timestamp: new Date().toISOString(),
         privacy: {
           local_only: true,
@@ -140,12 +187,8 @@
           type: els.sourceType.value.trim(),
           jurisdiction: els.jurisdiction.value.trim(),
           title: els.title.value.trim(),
-          text: els.sourceText.value,
-          file: file ? {
-            name: file.name,
-            size: file.size,
-            mime_type: file.type || "unknown"
-          } : null
+          text: textOverride !== null ? textOverride : els.sourceText.value,
+          file: getFileMetadata(file)
         },
         targets: {
           cda: els.targetCda.checked,
@@ -158,25 +201,6 @@
       };
     }
 
-    function renderPreview(data) {
-      if (!data) {
-        els.preview.textContent = "No intake data saved yet.";
-        return;
-      }
-
-      const preview = {
-        title: data.source?.title || "",
-        source_type: data.source?.type || "",
-        jurisdiction: data.source?.jurisdiction || "",
-        text_length: (data.source?.text || "").length,
-        file: data.source?.file || null,
-        targets: data.targets || {},
-        timestamp: data.timestamp || ""
-      };
-
-      els.preview.textContent = JSON.stringify(preview, null, 2);
-    }
-
     function loadStored() {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (!raw) {
@@ -186,22 +210,10 @@
 
       try {
         const data = JSON.parse(raw);
-
         els.sourceType.value = data.source?.type || "";
         els.jurisdiction.value = data.source?.jurisdiction || "";
         els.title.value = data.source?.title || "";
         els.sourceText.value = data.source?.text || "";
-
-        if (data.source?.file?.name) {
-          els.fileInfo.textContent =
-            "Previously saved file metadata: " +
-            data.source.file.name +
-            " (" +
-            (data.source.file.size || 0) +
-            " bytes)";
-        } else {
-          els.fileInfo.textContent = "No file selected.";
-        }
 
         els.targetCda.checked = !!data.targets?.cda;
         els.targetCff.checked = !!data.targets?.cff;
@@ -210,15 +222,22 @@
         els.targetCii.checked = !!data.targets?.cii;
         els.targetIntegration.checked = !!data.targets?.integration;
 
+        if (data.source?.file?.name) {
+          els.fileInfo.textContent =
+            "Stored file metadata: " + data.source.file.name + " (" + (data.source.file.size || 0) + " bytes)";
+        } else {
+          els.fileInfo.textContent = "No file selected.";
+        }
+
         renderPreview(data);
-        els.status.textContent = "Status: loaded saved intake from this browser.";
+        setStatus("loaded existing intake artifact from this browser.");
       } catch (err) {
-        els.status.textContent = "Status: saved intake exists but could not be read.";
         renderPreview(null);
+        setStatus("stored intake artifact could not be read.");
       }
     }
 
-    els.sourceFile.addEventListener("change", () => {
+    els.sourceFile.addEventListener("change", async () => {
       const file = els.sourceFile.files && els.sourceFile.files[0] ? els.sourceFile.files[0] : null;
 
       if (!file) {
@@ -226,25 +245,51 @@
         return;
       }
 
-      els.fileInfo.textContent =
-        "Selected file: " + file.name + " (" + file.size + " bytes)";
+      els.fileInfo.textContent = "Selected file: " + file.name + " (" + file.size + " bytes)";
+
+      if (isReadableTextFile(file)) {
+        try {
+          const text = await readTextFile(file);
+          els.sourceText.value = text;
+          setStatus("read text-based file into intake automatically.");
+        } catch (err) {
+          setStatus("file selected, but text extraction failed.");
+        }
+      } else {
+        setStatus("file selected. This file type is stored for metadata only unless text is pasted manually.");
+      }
     });
 
-    els.saveBtn.addEventListener("click", () => {
-      const artifact = buildArtifact();
+    els.runBtn.addEventListener("click", async () => {
+      const file = els.sourceFile.files && els.sourceFile.files[0] ? els.sourceFile.files[0] : null;
+      let finalText = els.sourceText.value;
 
-      const hasText = !!artifact.source.text.trim();
+      if (file && isReadableTextFile(file) && !finalText.trim()) {
+        try {
+          finalText = await readTextFile(file);
+          els.sourceText.value = finalText;
+        } catch (err) {
+          setStatus("engine start failed because the uploaded file could not be read.");
+          return;
+        }
+      }
+
+      const artifact = buildArtifact(finalText);
+
       const hasTitle = !!artifact.source.title.trim();
+      const hasText = !!artifact.source.text.trim();
       const hasFile = !!artifact.source.file;
 
-      if (!hasText && !hasTitle && !hasFile) {
-        els.status.textContent = "Status: add a title, paste source text, or choose a file before saving.";
+      if (!hasTitle && !hasText && !hasFile) {
+        setStatus("add a title, upload a file, or paste text before running the engine.");
         return;
       }
 
       localStorage.setItem(STORAGE_KEY, JSON.stringify(artifact));
       renderPreview(artifact);
-      els.status.textContent = "Status: intake saved locally in this browser.";
+      setStatus("intake artifact created. Handing off to engine.");
+
+      window.location.href = "/abe---flag/integration/index.html";
     });
 
     els.clearBtn.addEventListener("click", () => {
@@ -257,18 +302,4 @@
       els.sourceFile.value = "";
       els.fileInfo.textContent = "No file selected.";
 
-      els.targetCda.checked = true;
-      els.targetCff.checked = true;
-      els.targetCiri.checked = true;
-      els.targetCibs.checked = false;
-      els.targetCii.checked = false;
-      els.targetIntegration.checked = true;
-
-      renderPreview(null);
-      els.status.textContent = "Status: local intake cleared from this browser.";
-    });
-
-    loadStored();
-  </script>
-</body>
-                                                    </html>
+      els.targetCda
