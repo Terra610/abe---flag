@@ -1,4 +1,4 @@
-README.md# System Map — A.B.E. Architecture
+# System Map — A.B.E. Architecture
 
 ## Function
 
@@ -19,6 +19,53 @@ Input
 → CII (Unified Output)  
 → Macro (Aggregate Scaling)
 
+---
+
+flowchart TD
+    A[Intake<br/>Data Ingestion and Artifact Creation]
+    B[CDA<br/>Constitutional Validation and Divergence]
+    C[CFF<br/>Funding Alignment]
+    D[AFFE<br/>Financial Exposure]
+    E[CIRI<br/>Impact and Recovery]
+    F[CIBS<br/>System Behavior]
+    G[CII<br/>Unified Output]
+    H[Macro<br/>Aggregate Scaling]
+
+    A --> B
+    B --> C
+    C --> D
+    D --> E
+    E --> F
+    F --> G
+    G --> H
+
+    D1[Constitutional Fidelity]
+    D2[Void Ab Initio]
+    D3[ABE-CRRA]
+    D4[Justice Monopoly]
+    D5[Constitutional Systems Engineering]
+
+    D1 -. authority anchor .-> B
+    D1 -. authority anchor .-> C
+    D1 -. authority anchor .-> G
+
+    D2 -. invalid origin rule .-> B
+    D2 -. invalid origin rule .-> C
+    D2 -. invalid origin rule .-> G
+
+    D3 -. restoration rule .-> E
+    D3 -. restoration rule .-> F
+    D3 -. restoration rule .-> H
+
+    D4 -. concentration/distortion .-> B
+    D4 -. concentration/distortion .-> C
+    D4 -. concentration/distortion .-> H
+
+    D5 -. architecture constraint .-> B
+    D5 -. architecture constraint .-> C
+    D5 -. architecture constraint .-> G
+    D5 -. architecture constraint .-> H
+    
 ---
 
 ## Module Relationships
