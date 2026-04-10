@@ -1,0 +1,9 @@
+{
+  "version": "1.0",
+  "entries": [
+    {
+      "note": "Initialize public hash ledger; append future audit certificates here.",
+      "timestamp": "2025-01-01T00:00:00Z"
+    }
+  ]
+}
