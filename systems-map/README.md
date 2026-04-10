@@ -11,16 +11,20 @@ It represents the full calculation chain from input to macro-scale output.
 ## System Flow
 
 Input  
-→ CDA (Constitutional Validation & Divergence)  
-→ CFF (Funding Alignment)  
-→ AFFE (Financial Exposure)  
-→ CIRI (Impact & Recovery)  
-→ CIBS (System Behavior)  
-→ CII (Unified Output)  
-→ Macro (Aggregate Scaling)
+→ Intake  
+→ CDA  
+→ CFF  
+→ AFFE  
+→ CIRI  
+→ CIBS  
+→ CII  
+→ Macro
 
 ---
 
+## System Flow (Visual)
+
+```mermaid
 flowchart TD
     A[Intake<br/>Data Ingestion and Artifact Creation]
     B[CDA<br/>Constitutional Validation and Divergence]
@@ -57,15 +61,16 @@ flowchart TD
     D3 -. restoration rule .-> F
     D3 -. restoration rule .-> H
 
-    D4 -. concentration/distortion .-> B
-    D4 -. concentration/distortion .-> C
-    D4 -. concentration/distortion .-> H
+    D4 -. concentration and distortion .-> B
+    D4 -. concentration and distortion .-> C
+    D4 -. concentration and distortion .-> H
 
     D5 -. architecture constraint .-> B
     D5 -. architecture constraint .-> C
     D5 -. architecture constraint .-> G
     D5 -. architecture constraint .-> H
-    
+```
+
 ---
 
 ## Module Relationships
@@ -95,9 +100,9 @@ Outputs are cumulative and propagate through the system.
 
 The system operates sequentially.
 
-- No branching logic  
-- No conditional execution paths  
-- No interpretation layer  
+- No branching logic
+- No conditional execution paths
+- No interpretation layer
 
 Each step produces output that directly feeds the next.
 
@@ -105,10 +110,10 @@ Each step produces output that directly feeds the next.
 
 ## Data Flow
 
-- Input data enters through Intake  
-- Each module processes and appends results  
-- Outputs are preserved at every stage  
-- Final output reflects total system condition  
+- Input data enters through Intake
+- Each module processes and appends results
+- Outputs are preserved at every stage
+- Final output reflects total system condition
 
 ---
 
@@ -116,9 +121,54 @@ Each step produces output that directly feeds the next.
 
 The integrity of the system depends on full execution of all modules.
 
-- Skipping modules breaks output accuracy  
-- Altering sequence breaks system logic  
-- Removing modules removes measurable components  
+- Skipping modules breaks output accuracy
+- Altering sequence breaks system logic
+- Removing modules removes measurable components
+
+---
+
+## Doctrine Relationship
+
+Doctrine defines system constraints.
+
+The engine applies those constraints through calculation.
+
+### Constitutional Fidelity
+Defines the authority baseline.
+
+### Void Ab Initio
+Defines invalid origin conditions.
+
+### ABE-CRRA
+Defines restoration through lawful realignment.
+
+### Justice Monopoly
+Defines concentrated distortion and enforcement imbalance.
+
+### Constitutional Systems Engineering
+Defines system architecture, boundaries, and visibility of overstep.
+
+---
+
+## Divergence Propagation
+
+Divergence identified in CDA propagates through all modules:
+
+- CFF → funding misalignment
+- AFFE → financial cost
+- CIRI → social and economic impact
+- CIBS → system-wide effects
+- Macro → aggregate economic drag
+
+---
+
+## Recovery Propagation
+
+Removal of divergence propagates recovery:
+
+- CIRI → restored participation
+- CIBS → compounding benefits
+- Macro → total economic uplift
 
 ---
 
@@ -132,35 +182,14 @@ No domain, function, or module exists in isolation.
 
 ---
 
-## Divergence Propagation
-
-Divergence identified in CDA propagates through all modules:
-
-- CFF → funding misalignment  
-- AFFE → financial cost  
-- CIRI → social and economic impact  
-- CIBS → system-wide effects  
-- Macro → aggregate economic drag  
-
----
-
-## Recovery Propagation
-
-Removal of divergence propagates recovery:
-
-- CIRI → restored participation  
-- CIBS → compounding system benefits  
-- Macro → total economic uplift  
-
----
-
 ## Result
 
 The System Map provides a complete representation of:
 
-- system structure  
-- module relationships  
-- data flow  
-- calculation sequence  
+- system structure
+- module relationships
+- doctrine linkage
+- data flow
+- calculation sequence
 
 It ensures that A.B.E. operates as a unified, deterministic system.
