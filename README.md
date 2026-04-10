@@ -1,119 +1,181 @@
-# A.B.E. — American Butterfly Effect Engine
+# A.B.E. — American Butterfly Effect
 
-**Constitutional Systems Engineering (CSE) — Applied Framework**
+## Deterministic Constitutional Measurement System
+
+A.B.E. is a deterministic system that evaluates conditions against constitutional constraints, measures divergence, and quantifies the resulting economic and social impact.
+
+All inputs are processed.  
+Conditions either align with constitutional authority or they do not.  
+Misalignment is measured as divergence.
 
 ---
 
-## What This Is
+## Core Function
 
-The A.B.E. Engine is a **deterministic, client-side system** designed to:
+A.B.E. performs:
 
-- Identify authority boundaries
-- Detect structural divergence
-- Trace funding alignment
-- Model restoration and economic recovery
+- Constitutional validation
+- Divergence measurement
+- Funding alignment verification
+- Financial exposure calculation
+- Impact and recovery modeling
+- System behavior analysis
+- Aggregate economic scaling
 
-This system operates as a **local-only analytical engine**:
-- No backend
-- No tracking
-- No login
-- No external APIs
+---
 
-All processing occurs within the user’s browser.
+## System Logic
+
+Input  
+→ Constitutional Validation  
+→ Divergence Classification  
+→ Funding Alignment  
+→ Financial Exposure  
+→ Impact & Recovery  
+→ System Behavior  
+→ Unified Output  
+→ Macro Aggregation
+
+---
+
+## Deterministic Principles
+
+- No interpretation layer  
+- No probabilistic output  
+- No ambiguity  
+- No conditional language  
+
+Conditions are evaluated as:
+
+- Aligned (0 divergence)
+- Divergent (measurable)
+
+---
+
+## Divergence Model
+
+Divergence represents misalignment from constitutional authority.
+
+Divergence produces:
+
+- Economic cost  
+- Social harm  
+- Suppressed participation  
+
+All divergence is measurable.
+
+---
+
+## Funding Principle
+
+Funding defines operational authority.
+
+- Actions must align with funded scope  
+- Off-scope actions are measured as divergence  
+- Misapplied funding is traceable  
+
+---
+
+## Recovery Model
+
+Removal of divergence produces recovery.
+
+Recovery includes:
+
+- Restored mobility  
+- Increased employment  
+- Housing stabilization  
+- Reduced incarceration  
+- Increased economic participation  
+
+Recovery is measurable and directly tied to realignment.
+
+---
+
+## System Structure
+
+The A.B.E. system operates through sequential modules:
+
+- Intake — Data ingestion  
+- CDA — Constitutional validation and divergence classification  
+- CFF — Funding alignment  
+- AFFE — Financial exposure  
+- CIRI — Impact and recovery  
+- CIBS — System behavior and compounding effects  
+- CII — Unified system output  
+- Macro — Aggregate economic scaling  
+
+Modules are not independent.  
+Each module extends the calculation of the previous.
+
+---
+
+## Privacy Model
+
+- No data leaves the user’s device  
+- No tracking  
+- No login  
+- No external processing  
+
+All calculations are performed locally.
+
+---
+
+## System Scope
+
+A.B.E. applies across all domains where authority, funding, and action exist:
+
+- Transportation  
+- Housing  
+- Justice and enforcement  
+- Healthcare  
+- Agriculture  
+- Finance and credit  
+- Labor and workforce  
+- Public safety  
+- Governance systems  
+
+All domains are interconnected.
+
+---
+
+## Output
+
+A.B.E. produces:
+
+- Divergence measurement  
+- Financial exposure  
+- Recovery potential  
+- System behavior mapping  
+- Total economic impact  
 
 ---
 
 ## Core Principle
 
-> A system must be able to prove:
-> - its authority,
-> - its scope,
-> - its funding alignment,
-> - and its outputs.
+All conditions are evaluated against a single controlling authority.
 
-If it cannot, it is structurally unsound.
+No system operates outside constitutional constraints.
 
----
-
-## New Discipline
-
-This repository represents the first working implementation of:
-
-### **Constitutional Systems Engineering (CSE)**
-
-A discipline that treats governance as an engineered system with:
-
-- explicit authority boundaries
-- traceable funding
-- deterministic evaluation
-- auditable outputs
-
-A.B.E. is the **reference implementation**.
+Divergence is measurable.  
+Recovery is measurable.
 
 ---
 
-## System Architecture
+## Result
 
-Each module:
-- reads local artifacts
-- produces deterministic outputs
-- does not rely on external systems
+A.B.E. provides a deterministic, traceable model of:
 
----
-
-## Doctrine Layer
-
-The system is governed by a fixed doctrine set:
-
-- Constitutional Fidelity
-- Void Ab Initio
-- ABE-CRRA
-- Justice Monopoly
-- Constitutional Systems Engineering
-
-Doctrine defines the boundary.  
-Modules apply the boundary.
-
----
-
-## Privacy Guarantee
-
-- No data leaves the device
-- No telemetry
-- No storage outside browser localStorage
-
----
-
-## License
-
-**CC BY-NC 4.0 — Integrity Only, Never for Sale**
+- Misalignment (cost)  
+- Realignment (recovery)  
+- System-wide economic impact  
 
 ---
 
 ## Citation
 
-Shouse, Terra. *American Butterfly Effect (A.B.E.)*. Zenodo.  
-https://doi.org/10.5281/zenodo.17586107  
+Shouse, T. *American Butterfly Effect (A.B.E.)*. Zenodo.  
+DOI: 10.5281/zenodo.17586107  
 
-License: CC BY-NC 4.0  
+Licensed under CC BY-NC 4.0  
 Integrity only — never for sale
-
-Reference Implementation: A.B.E. Engine (client-side system architecture)
-
----
-
-## Status
-
-Active build.  
-Public interface operational upon completion of module chain integrity.
-
----
-
-## Final Note
-
-This system is not a theory.
-
-It is a working structure designed to:
-- expose divergence,
-- restore alignment,
-- and quantify the cost of deviation.
