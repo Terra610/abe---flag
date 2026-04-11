@@ -44,6 +44,10 @@
           <button id="clear-integration" type="button">Clear</button>
         </div>
 
+        <div class="module-nav" style="margin-top:12px;">
+          <button id="download-receipt" type="button">Download SHA-256 Audit Receipt</button>
+        </div>
+
         <div id="integration-status" class="status-box small">Status: waiting</div>
       </section>
 
@@ -114,10 +118,8 @@
       </section>
 
       <section class="card">
-        <h2>Action Orientation</h2>
-        <div id="action-orientation" class="status-box small">
-          When divergence is detected, A.B.E. should tell the user what the issue means in plain language and what evidence or authority questions to focus on next.
-        </div>
+        <h2>SHA-256 Audit Receipt</h2>
+        <pre id="audit-receipt" class="small">No audit receipt generated yet.</pre>
       </section>
     </section>
   </main>
@@ -132,6 +134,7 @@
       cibs: "abe_cibs_artifact",
       cii: "abe_cii_artifact",
       integration: "abe_integration_artifact",
+      receipt: "abe_audit_receipt",
       legacyCiri: "ABE_CIRI_SCENARIO_V2",
       legacyCibs: "ABE_CIBS_BUDGET_V1",
       legacyCii: "ABE_CII_PORTFOLIO_V1"
@@ -155,10 +158,12 @@
       downstreamView: document.getElementById("downstream-view"),
       auditSnapshot: document.getElementById("audit-snapshot"),
       cdaFindings: document.getElementById("cda-findings"),
+      auditReceipt: document.getElementById("audit-receipt"),
 
       runBtn: document.getElementById("run-integration"),
       saveBtn: document.getElementById("save-integration"),
-      clearBtn: document.getElementById("clear-integration")
+      clearBtn: document.getElementById("clear-integration"),
+      downloadReceiptBtn: document.getElementById("download-receipt")
     };
 
     const modPaths = {
@@ -567,6 +572,44 @@
       };
     }
 
+    async function sha256Hex(input) {
+      const data = new TextEncoder().encode(input);
+      const digest = await crypto.subtle.digest("SHA-256", data);
+      const bytes = Array.from(new Uint8Array(digest));
+      return bytes.map(b => b.toString(16).padStart(2, "0")).join("");
+    }
+
+    async function buildAuditReceipt(integrationArtifact) {
+      const canonical = JSON.stringify(integrationArtifact);
+      const hash = await sha256Hex(canonical);
+
+      return {
+        receipt_type: "abe_audit_receipt",
+        version: "1.0.0",
+        timestamp: new Date().toISOString(),
+        hash_algorithm: "SHA-256",
+        export_block_hash: hash,
+        integration_module_version: integrationArtifact.version,
+        readiness_score: integrationArtifact.readiness_score,
+        integrated_total: integrationArtifact.integrated_total,
+        intake_title: integrationArtifact.module_summary?.intake_title || "",
+        modules_present: integrationArtifact.audit_snapshot?.modules_present || [],
+        message: "Use this receipt to preserve a local integrity snapshot of the A.B.E. engine run."
+      };
+    }
+
+    function downloadJson(filename, data) {
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
     function loadArtifacts() {
       return {
         intake: loadJson(KEYS.intake),
@@ -600,7 +643,7 @@
       }, null, 2);
     }
 
-    function renderAll() {
+    async function renderAll() {
       const artifacts = loadArtifacts();
       const presence = getPresence(artifacts);
       const readiness = computeReadiness(presence);
@@ -613,7 +656,7 @@
 
       const integrationArtifact = {
         module: "integration",
-        version: "1.3.0",
+        version: "1.4.0",
         timestamp: new Date().toISOString(),
         privacy: {
           local_only: true,
@@ -634,6 +677,9 @@
         audit_snapshot: audit
       };
 
+      const receipt = await buildAuditReceipt(integrationArtifact);
+      saveJson(KEYS.receipt, receipt);
+
       els.presenceBox.textContent = JSON.stringify(presence, null, 2);
       els.readinessScore.textContent = String(readiness);
       els.integratedTotal.textContent = money(integratedTotal);
@@ -643,6 +689,7 @@
       els.downstreamView.textContent = JSON.stringify(downstream, null, 2);
       els.auditSnapshot.textContent = JSON.stringify(audit, null, 2);
       els.artifactPreview.textContent = JSON.stringify(integrationArtifact, null, 2);
+      els.auditReceipt.textContent = JSON.stringify(receipt, null, 2);
 
       renderLegalExplainer(artifacts);
       renderFindings(artifacts);
@@ -671,7 +718,7 @@
           "No local artifacts are present yet, so there is nothing real to integrate.";
       }
 
-      return integrationArtifact;
+      return { integrationArtifact, receipt };
     }
 
     async function runAndRender() {
@@ -679,17 +726,17 @@
         const intake = loadJson(KEYS.intake);
         if (!intake) {
           setStatus("no intake artifact found. Start from Intake first.");
-          renderAll();
+          await renderAll();
           return;
         }
 
         await runChain();
-        const integrationArtifact = renderAll();
+        const { integrationArtifact } = await renderAll();
         saveJson(KEYS.integration, integrationArtifact);
       } catch (err) {
         console.error(err);
         setStatus("integration run failed. Check module runner files.");
-        renderAll();
+        await renderAll();
       }
     }
 
@@ -699,15 +746,27 @@
       setStatus("engine chain complete.");
     });
 
-    els.saveBtn.addEventListener("click", () => {
-      const artifact = renderAll();
-      saveJson(KEYS.integration, artifact);
+    els.saveBtn.addEventListener("click", async () => {
+      const { integrationArtifact } = await renderAll();
+      saveJson(KEYS.integration, integrationArtifact);
       setStatus("integration artifact saved locally.");
+    });
+
+    els.downloadReceiptBtn.addEventListener("click", async () => {
+      const { receipt } = await renderAll();
+      const safeTitle = (loadJson(KEYS.intake)?.source?.title || "abe-audit")
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "")
+        .slice(0, 40) || "abe-audit";
+
+      downloadJson(`${safeTitle}-sha256-audit-receipt.json`, receipt);
+      setStatus("SHA-256 audit receipt downloaded.");
     });
 
     els.clearBtn.addEventListener("click", () => {
       [
-        KEYS.cda, KEYS.cff, KEYS.affe, KEYS.ciri, KEYS.cibs, KEYS.cii, KEYS.integration,
+        KEYS.cda, KEYS.cff, KEYS.affe, KEYS.ciri, KEYS.cibs, KEYS.cii, KEYS.integration, KEYS.receipt,
         KEYS.legacyCiri, KEYS.legacyCibs, KEYS.legacyCii
       ].forEach(key => localStorage.removeItem(key));
 
@@ -728,10 +787,10 @@
         await runAndRender();
         setStatus("engine chain complete.");
       } else {
-        renderAll();
+        await renderAll();
         setStatus("ready.");
       }
     })();
   </script>
 </body>
-  </html>
+</html>
