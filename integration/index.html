@@ -87,6 +87,11 @@
 
     <section class="grid cols-3">
       <section class="card">
+        <h2>Plain Language Legal Explainer</h2>
+        <pre id="legal-explainer" class="small">No explanation available yet.</pre>
+      </section>
+
+      <section class="card">
         <h2>Integrated Artifact Preview</h2>
         <pre id="artifact-preview" class="small">No Integration artifact saved yet.</pre>
       </section>
@@ -95,10 +100,24 @@
         <h2>Downstream View</h2>
         <pre id="downstream-view" class="small">No integrated downstream view yet.</pre>
       </section>
+    </section>
 
+    <section class="grid cols-3">
       <section class="card">
         <h2>Audit Snapshot</h2>
         <pre id="audit-snapshot" class="small">No audit snapshot yet.</pre>
+      </section>
+
+      <section class="card">
+        <h2>CDA Findings</h2>
+        <pre id="cda-findings" class="small">No CDA findings yet.</pre>
+      </section>
+
+      <section class="card">
+        <h2>Action Orientation</h2>
+        <div id="action-orientation" class="status-box small">
+          When divergence is detected, A.B.E. should tell the user what the issue means in plain language and what evidence or authority questions to focus on next.
+        </div>
       </section>
     </section>
   </main>
@@ -131,9 +150,11 @@
       moduleSummary: document.getElementById("module-summary"),
       integritySummary: document.getElementById("integrity-summary"),
       systemMeaning: document.getElementById("system-meaning"),
+      legalExplainer: document.getElementById("legal-explainer"),
       artifactPreview: document.getElementById("artifact-preview"),
       downstreamView: document.getElementById("downstream-view"),
       auditSnapshot: document.getElementById("audit-snapshot"),
+      cdaFindings: document.getElementById("cda-findings"),
 
       runBtn: document.getElementById("run-integration"),
       saveBtn: document.getElementById("save-integration"),
@@ -209,14 +230,17 @@
 
       return {
         module: "cda",
-        version: raw?.module_version || "1.0.0",
+        version: raw?.module_version || "1.1.0",
         timestamp: raw?.generated_at || new Date().toISOString(),
         input: intake,
         result: {
-          alignment_status: divergence === 0 ? "aligned" : "divergent",
+          alignment_status: raw?.result?.alignment_status || (divergence === 0 ? "aligned" : "divergent"),
           divergence_score: divergence,
-          authority_trace: raw?.by_domain || raw?.result?.authority_trace || []
-        }
+          authority_trace: raw?.by_domain || raw?.result?.authority_trace || [],
+          findings: raw?.result?.findings || [],
+          indicators: raw?.result?.indicators || {}
+        },
+        legal_explainer: raw?.legal_explainer || null
       };
     }
 
@@ -263,7 +287,6 @@
 
     function buildCIRI(intake, cda, cff, affe) {
       const divergence = Number(cda?.result?.divergence_score) || 0;
-      const offMission = Number(cff?.result?.totals?.OFF_MISSION) || 0;
       const exposure = Number(affe?.result?.estimated_total_exposure) || 0;
 
       const casesAvoided = divergence * 12;
@@ -482,7 +505,8 @@
         cibs_budget_total: artifacts.cibs?.budget?.available_budget ?? null,
         cii_total_units: ciiFunded > 0 ? (artifacts.cii?.result?.total_units ?? 0) : 0,
         cii_total_funded_amount: ciiFunded,
-        presence
+        presence,
+        legal_explainer: artifacts.cda?.legal_explainer || null
       };
     }
 
@@ -555,6 +579,27 @@
       };
     }
 
+    function renderLegalExplainer(artifacts) {
+      const explainer = artifacts.cda?.legal_explainer || null;
+
+      if (!explainer) {
+        els.legalExplainer.textContent = "No explanation available yet.";
+        return;
+      }
+
+      els.legalExplainer.textContent = JSON.stringify(explainer, null, 2);
+    }
+
+    function renderFindings(artifacts) {
+      const findings = artifacts.cda?.result?.findings || [];
+      const indicators = artifacts.cda?.result?.indicators || {};
+
+      els.cdaFindings.textContent = JSON.stringify({
+        findings,
+        indicators
+      }, null, 2);
+    }
+
     function renderAll() {
       const artifacts = loadArtifacts();
       const presence = getPresence(artifacts);
@@ -568,7 +613,7 @@
 
       const integrationArtifact = {
         module: "integration",
-        version: "1.2.0",
+        version: "1.3.0",
         timestamp: new Date().toISOString(),
         privacy: {
           local_only: true,
@@ -598,6 +643,9 @@
       els.downstreamView.textContent = JSON.stringify(downstream, null, 2);
       els.auditSnapshot.textContent = JSON.stringify(audit, null, 2);
       els.artifactPreview.textContent = JSON.stringify(integrationArtifact, null, 2);
+
+      renderLegalExplainer(artifacts);
+      renderFindings(artifacts);
 
       if (readiness === 100) {
         const hasRealEconomicOutput =
@@ -686,4 +734,4 @@
     })();
   </script>
 </body>
-</html>
+  </html>
