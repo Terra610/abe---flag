@@ -113,7 +113,6 @@
       cibs: "abe_cibs_artifact",
       cii: "abe_cii_artifact",
       integration: "abe_integration_artifact",
-      // legacy compatibility keys
       legacyCiri: "ABE_CIRI_SCENARIO_V2",
       legacyCibs: "ABE_CIBS_BUDGET_V1",
       legacyCii: "ABE_CII_PORTFOLIO_V1"
@@ -146,8 +145,7 @@
       cff: "../cff/runner.js",
       affe: "../affe/runner.js",
       cibs: "../cibs/runner.js",
-      cii: "../cii/runner.js",
-      macro: "../macro/runner.js"
+      cii: "../cii/runner.js"
     };
 
     function setStatus(message) {
@@ -302,9 +300,11 @@
       const recovery = Number(ciri?.result?.net_modeled_recovery) || 0;
 
       let allocations = raw?.allocations || [];
-      if (Array.isArray(allocations) && allocations.length) {
-        // fine
-      } else {
+      if (!Array.isArray(allocations)) {
+        allocations = [];
+      }
+
+      if (allocations.length === 0 && recovery > 0) {
         allocations = [
           { category: "housing", amount: recovery * 0.25 },
           { category: "mobility", amount: recovery * 0.15 },
@@ -324,7 +324,7 @@
         input: { ciri },
         budget: {
           available_budget: recovery,
-          total_percent: 100,
+          total_percent: recovery > 0 ? 100 : 0,
           allocations
         }
       };
@@ -344,13 +344,14 @@
         Number(cibs?.budget?.available_budget) ||
         0;
 
-      const portfolio =
-        raw?.portfolio ||
-        [
-          { project_id: "housing-1", category: "housing", allocated_usd: totalBudget * 0.25 },
-          { project_id: "mobility-1", category: "mobility", allocated_usd: totalBudget * 0.15 },
-          { project_id: "workforce-1", category: "workforce", allocated_usd: totalBudget * 0.15 }
-        ];
+      let portfolio = raw?.portfolio || [];
+      if (!Array.isArray(portfolio)) {
+        portfolio = [];
+      }
+
+      if (totalBudget <= 0) {
+        portfolio = [];
+      }
 
       const portfolioArtifact = {
         module: "cii",
@@ -358,7 +359,7 @@
         timestamp: raw?.generated_at || new Date().toISOString(),
         input: { cibs },
         result: {
-          total_units: Array.isArray(portfolio) ? portfolio.length : 0,
+          total_units: totalBudget > 0 ? portfolio.length : 0,
           total_funded_amount: totalBudget,
           portfolio
         }
@@ -387,7 +388,6 @@
         derived: {}
       };
 
-      // CDA
       setStatus("running CDA.");
       let cdaRaw = null;
       const cdaRun = await importRun(modPaths.cda);
@@ -398,7 +398,6 @@
       saveJson(KEYS.cda, cda);
       scenario.derived.cda = cda.result;
 
-      // CFF
       setStatus("running CFF.");
       let cffRaw = null;
       const cffRun = await importRun(modPaths.cff);
@@ -409,7 +408,6 @@
       saveJson(KEYS.cff, cff);
       scenario.derived.cff = cff.result;
 
-      // AFFE
       setStatus("running AFFE.");
       let affeRaw = null;
       const affeRun = await importRun(modPaths.affe);
@@ -420,13 +418,11 @@
       saveJson(KEYS.affe, affe);
       scenario.derived.affe = affe.result;
 
-      // CIRI (manual deterministic build because current repo uses local.js, not runner.js)
       setStatus("running CIRI.");
       const ciri = buildCIRI(intake, cda, cff, affe);
       saveJson(KEYS.ciri, ciri);
       scenario.derived.ciri = { total_recovery: ciri.result.net_modeled_recovery };
 
-      // CIBS
       setStatus("running CIBS.");
       let cibsRaw = null;
       const cibsRun = await importRun(modPaths.cibs);
@@ -440,7 +436,6 @@
         total_recovery: cibs.budget.available_budget
       };
 
-      // CII
       setStatus("running CII.");
       let ciiRaw = null;
       const ciiRun = await importRun(modPaths.cii);
@@ -471,16 +466,22 @@
     }
 
     function buildSummary(artifacts, presence) {
+      const cdaScore = artifacts.cda?.result?.divergence_score ?? null;
+      const cffClass = artifacts.cff?.result?.classification || "";
+      const affeClass = artifacts.affe?.result?.classification || "";
+      const ciriRecovery = artifacts.ciri?.result?.net_modeled_recovery ?? null;
+      const ciiFunded = artifacts.cii?.result?.total_funded_amount ?? null;
+
       return {
         intake_title: artifacts.intake?.source?.title || "",
-        cda_score: artifacts.cda?.result?.divergence_score ?? null,
-        cff_classification: artifacts.cff?.result?.classification || "",
-        affe_classification: artifacts.affe?.result?.classification || "",
+        cda_score: cdaScore,
+        cff_classification: cffClass || (presence.cff ? "stub_or_unclassified" : ""),
+        affe_classification: affeClass || (presence.affe ? "stub_or_unclassified" : ""),
         ciri_score: artifacts.ciri?.result?.ciri_score ?? null,
-        ciri_total_recovery: artifacts.ciri?.result?.net_modeled_recovery ?? null,
+        ciri_total_recovery: ciriRecovery,
         cibs_budget_total: artifacts.cibs?.budget?.available_budget ?? null,
-        cii_total_units: artifacts.cii?.result?.total_units ?? null,
-        cii_total_funded_amount: artifacts.cii?.result?.total_funded_amount ?? null,
+        cii_total_units: ciiFunded > 0 ? (artifacts.cii?.result?.total_units ?? 0) : 0,
+        cii_total_funded_amount: ciiFunded,
         presence
       };
     }
@@ -537,8 +538,8 @@
         integrated_total: integratedTotal,
         intake_title: artifacts.intake?.source?.title || "",
         scenario_name: artifacts.ciri?.result?.ciri_score !== undefined ? "CIRI active" : "",
-        portfolio_name: artifacts.cii?.result?.total_units ? "CII portfolio built" : "",
-        budget_name: artifacts.cibs?.budget?.available_budget ? "CIBS budget built" : ""
+        portfolio_name: (Number(artifacts.cii?.result?.total_units) || 0) > 0 ? "CII portfolio built" : "",
+        budget_name: (Number(artifacts.cibs?.budget?.available_budget) || 0) > 0 ? "CIBS budget built" : ""
       };
     }
 
@@ -567,7 +568,7 @@
 
       const integrationArtifact = {
         module: "integration",
-        version: "1.1.0",
+        version: "1.2.0",
         timestamp: new Date().toISOString(),
         privacy: {
           local_only: true,
@@ -599,13 +600,27 @@
       els.artifactPreview.textContent = JSON.stringify(integrationArtifact, null, 2);
 
       if (readiness === 100) {
-        els.systemMeaning.textContent = "The full A.B.E. chain is present locally and the engine sequence completed.";
+        const hasRealEconomicOutput =
+          (Number(artifacts.affe?.result?.estimated_total_exposure) || 0) > 0 ||
+          (Number(artifacts.ciri?.result?.net_modeled_recovery) || 0) > 0 ||
+          (Number(artifacts.cii?.result?.total_funded_amount) || 0) > 0;
+
+        if (hasRealEconomicOutput) {
+          els.systemMeaning.textContent =
+            "The full A.B.E. chain is present locally and the engine sequence completed with measurable outputs.";
+        } else {
+          els.systemMeaning.textContent =
+            "The full A.B.E. chain is present locally and the engine sequence completed, but current inputs produced zero-state or stub-level outputs.";
+        }
       } else if (readiness >= 70) {
-        els.systemMeaning.textContent = "Most of the A.B.E. chain is present locally, but one or more layers are still missing.";
+        els.systemMeaning.textContent =
+          "Most of the A.B.E. chain is present locally, but one or more layers are still missing.";
       } else if (readiness > 0) {
-        els.systemMeaning.textContent = "Only part of the A.B.E. chain is present locally. The system is still partial.";
+        els.systemMeaning.textContent =
+          "Only part of the A.B.E. chain is present locally. The system is still partial.";
       } else {
-        els.systemMeaning.textContent = "No local artifacts are present yet, so there is nothing real to integrate.";
+        els.systemMeaning.textContent =
+          "No local artifacts are present yet, so there is nothing real to integrate.";
       }
 
       return integrationArtifact;
@@ -656,7 +671,6 @@
       renderAll();
     });
 
-    // Auto-run when arriving from Intake if intake exists and downstream artifacts are missing.
     (async function init() {
       const artifacts = loadArtifacts();
       const presence = getPresence(artifacts);
@@ -672,4 +686,4 @@
     })();
   </script>
 </body>
-  </html>
+</html>
