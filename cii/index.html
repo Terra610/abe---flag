@@ -4,167 +4,147 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <base href="/abe---flag/">
-  <title>A.B.E. CII</title>
+  <title>A.B.E. CII — Constitutional Implementation Interface</title>
   <link rel="stylesheet" href="/abe---flag/assets/theme.css">
 </head>
 <body>
   <main class="wrap">
     <section class="header">
       <div>
-        <h1>A.B.E. CII</h1>
-        <p class="tagline">Community Investment Interface · local-only funded outputs layer</p>
+        <h1>CII</h1>
+        <p class="tagline">Constitutional Implementation Interface</p>
       </div>
       <a class="home-link" href="/abe---flag/index.html">← Home</a>
     </section>
 
     <section class="panel">
-      <div class="pill">100% local-only · no login · no telemetry · no remote API calls</div>
+      <div class="pill">Local-only · implementation layer · deployment-ready portfolio view</div>
       <p class="muted">
-        CII reads the local CIBS budget artifact and translates allocation buckets into funded unit outputs.
-        It stays fully client-side and never ships user data anywhere.
+        CII converts the CIBS reinvestment budget into visible implementation units.
+        This is where recovery becomes portfolio entries, funded projects, and deployable community action.
       </p>
     </section>
 
     <section class="grid cols-3">
       <section class="card">
-        <h2>Artifact Bridge</h2>
-        <div id="bridge-status" class="status-box small">Checking for CIBS artifact...</div>
-
-        <label for="portfolio-name">Portfolio name</label>
-        <input id="portfolio-name" type="text" placeholder="Example: Rebuild Together Portfolio">
-
-        <label for="portfolio-scope">Portfolio scope</label>
-        <input id="portfolio-scope" type="text" placeholder="Example: statewide or national">
-
-        <label for="portfolio-notes">Portfolio notes</label>
-        <textarea id="portfolio-notes" rows="10" placeholder="Optional output notes"></textarea>
-      </section>
-
-      <section class="card">
-        <h2>Unit Cost Assumptions</h2>
-
-        <label for="cost-housing">Housing stabilization cost per unit</label>
-        <input id="cost-housing" type="number" min="1" step="0.01" value="12000">
-
-        <label for="cost-transport">Transportation restoration cost per unit</label>
-        <input id="cost-transport" type="number" min="1" step="0.01" value="3500">
-
-        <label for="cost-justice">Justice restoration cost per unit</label>
-        <input id="cost-justice" type="number" min="1" step="0.01" value="9000">
-
-        <label for="cost-workforce">Workforce placement cost per unit</label>
-        <input id="cost-workforce" type="number" min="1" step="0.01" value="6000">
-
-        <label for="cost-community">Community grant cost per unit</label>
-        <input id="cost-community" type="number" min="1" step="0.01" value="25000">
-
-        <label for="cost-legal">Legal defense cost per unit</label>
-        <input id="cost-legal" type="number" min="1" step="0.01" value="5000">
-
-        <label for="cost-agriculture">Agriculture investment cost per unit</label>
-        <input id="cost-agriculture" type="number" min="1" step="0.01" value="40000">
-
-        <label for="cost-digital">Digital access cost per unit</label>
-        <input id="cost-digital" type="number" min="1" step="0.01" value="1500">
-      </section>
-
-      <section class="card">
-        <h2>Outputs</h2>
-
+        <h2>Implementation Overview</h2>
         <div class="status-box">
-          <strong>Total funded units</strong>
-          <div id="total-units" style="font-size: 24px; margin-top: 8px;">0</div>
+          <strong>Total Funded Amount</strong>
+          <div id="total-funded" style="font-size: 28px; margin-top: 8px;">$0.00</div>
         </div>
 
         <div class="status-box" style="margin-top: 12px;">
-          <strong>Total funded amount</strong>
-          <div id="funded-amount" style="font-size: 24px; margin-top: 8px;">$0.00</div>
+          <strong>Total Units</strong>
+          <div id="total-units" style="font-size: 28px; margin-top: 8px;">0</div>
         </div>
+      </section>
 
-        <div class="module-nav">
-          <button id="run-cii">Run CII</button>
-          <button id="save-cii">Save CII</button>
-          <button id="clear-cii" type="button">Clear</button>
+      <section class="card">
+        <h2>Portfolio Summary</h2>
+        <pre id="portfolio-summary" class="small">No implementation portfolio available yet.</pre>
+      </section>
+
+      <section class="card">
+        <h2>Plain Language Meaning</h2>
+        <div id="plain-language" class="status-box small">
+          CII explains how the reinvestment budget becomes visible funded action instead of staying abstract.
         </div>
+      </section>
+    </section>
 
-        <div id="cii-status" class="status-box small">Status: waiting</div>
+    <section class="panel">
+      <h2>Implementation Formula View</h2>
+      <p>
+        CII converts allocation amounts into deployable units using category-specific deployment assumptions.
+      </p>
+      <div class="status-box small">
+        estimated_units = floor(allocated_usd ÷ category_unit_cost)
+      </div>
+      <pre id="formula-view" class="small" style="margin-top: 12px;">No implementation inputs available yet.</pre>
+    </section>
+
+    <section class="panel">
+      <h2>Portfolio Table</h2>
+      <div style="overflow-x:auto; margin-top: 12px;">
+        <table style="width:100%; border-collapse: collapse;">
+          <thead>
+            <tr>
+              <th style="text-align:left; padding:10px; border-bottom:1px solid #333;">Project ID</th>
+              <th style="text-align:left; padding:10px; border-bottom:1px solid #333;">Category</th>
+              <th style="text-align:left; padding:10px; border-bottom:1px solid #333;">Allocated</th>
+              <th style="text-align:left; padding:10px; border-bottom:1px solid #333;">Monthly</th>
+              <th style="text-align:left; padding:10px; border-bottom:1px solid #333;">Estimated Units</th>
+              <th style="text-align:left; padding:10px; border-bottom:1px solid #333;">Recipient / Program</th>
+              <th style="text-align:left; padding:10px; border-bottom:1px solid #333;">Deployment Type</th>
+            </tr>
+          </thead>
+          <tbody id="portfolio-table-body">
+            <tr>
+              <td colspan="7" style="padding:10px;">No implementation portfolio available yet.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="grid cols-3">
+      <section class="card">
+        <h2>Budget Inputs</h2>
+        <pre id="budget-inputs" class="small">No CIBS input found yet.</pre>
+      </section>
+
+      <section class="card">
+        <h2>Findings</h2>
+        <pre id="findings" class="small">No findings available yet.</pre>
+      </section>
+
+      <section class="card">
+        <h2>Why This Matters</h2>
+        <div class="status-box small">
+          CII is the layer that makes the budget tangible. It shows what the recovered value can actually fund, where it can go, and how many implementation units it can support.
+        </div>
       </section>
     </section>
 
     <section class="grid cols-3">
       <section class="card">
-        <h2>Funded Outputs</h2>
-        <div id="outputs-table" class="status-box small">No funded outputs yet.</div>
-      </section>
-
-      <section class="card">
-        <h2>Readiness</h2>
-        <div id="next-readiness" class="status-box small">
-          Run CII to prepare funded output totals for Integration.
-        </div>
+        <h2>Citizen View</h2>
+        <pre id="citizen-view" class="small">No citizen view available yet.</pre>
       </section>
 
       <section class="card">
         <h2>Artifact Preview</h2>
-        <pre id="artifact-preview" class="small">No CII artifact saved yet.</pre>
-      </section>
-    </section>
-
-    <section class="grid cols-3">
-      <section class="card">
-        <h2>Upstream Snapshot</h2>
-        <div id="upstream-summary" class="status-box small">No upstream summary loaded yet.</div>
+        <pre id="artifact-preview" class="small">No CII artifact available yet.</pre>
       </section>
 
       <section class="card">
-        <h2>Portfolio Meaning</h2>
-        <div id="portfolio-meaning" class="status-box small">
-          CII converts budget buckets into visible, countable, public-facing output units.
-        </div>
-      </section>
-
-      <section class="card">
-        <h2>Integrity Check</h2>
-        <div id="integrity-check" class="status-box small">
-          Waiting for a valid CIBS allocation artifact.
+        <h2>Next Layer</h2>
+        <div id="next-layer" class="status-box small">
+          When CII builds a funded portfolio, Integration and Macro can show how reinvestment becomes visible local implementation and broader system uplift.
         </div>
       </section>
     </section>
   </main>
 
   <script>
-    const CIBS_KEY = "abe_cibs_artifact";
-    const CII_KEY = "abe_cii_artifact";
+    const KEYS = {
+      cibs: "abe_cibs_artifact",
+      cii: "abe_cii_artifact",
+      legacyCii: "ABE_CII_PORTFOLIO_V1"
+    };
 
     const els = {
-      bridgeStatus: document.getElementById("bridge-status"),
-      portfolioName: document.getElementById("portfolio-name"),
-      portfolioScope: document.getElementById("portfolio-scope"),
-      portfolioNotes: document.getElementById("portfolio-notes"),
-
-      costHousing: document.getElementById("cost-housing"),
-      costTransport: document.getElementById("cost-transport"),
-      costJustice: document.getElementById("cost-justice"),
-      costWorkforce: document.getElementById("cost-workforce"),
-      costCommunity: document.getElementById("cost-community"),
-      costLegal: document.getElementById("cost-legal"),
-      costAgriculture: document.getElementById("cost-agriculture"),
-      costDigital: document.getElementById("cost-digital"),
-
+      totalFunded: document.getElementById("total-funded"),
       totalUnits: document.getElementById("total-units"),
-      fundedAmount: document.getElementById("funded-amount"),
-
-      outputsTable: document.getElementById("outputs-table"),
-      nextReadiness: document.getElementById("next-readiness"),
+      portfolioSummary: document.getElementById("portfolio-summary"),
+      plainLanguage: document.getElementById("plain-language"),
+      formulaView: document.getElementById("formula-view"),
+      portfolioTableBody: document.getElementById("portfolio-table-body"),
+      budgetInputs: document.getElementById("budget-inputs"),
+      findings: document.getElementById("findings"),
+      citizenView: document.getElementById("citizen-view"),
       artifactPreview: document.getElementById("artifact-preview"),
-      upstreamSummary: document.getElementById("upstream-summary"),
-      portfolioMeaning: document.getElementById("portfolio-meaning"),
-      integrityCheck: document.getElementById("integrity-check"),
-      status: document.getElementById("cii-status"),
-
-      runBtn: document.getElementById("run-cii"),
-      saveBtn: document.getElementById("save-cii"),
-      clearBtn: document.getElementById("clear-cii")
+      nextLayer: document.getElementById("next-layer")
     };
 
     function money(n) {
@@ -172,10 +152,6 @@
         style: "currency",
         currency: "USD"
       }).format(Number(n) || 0);
-    }
-
-    function n(el) {
-      return Number(el.value) || 0;
     }
 
     function loadJson(key) {
@@ -188,319 +164,262 @@
       }
     }
 
-    function getUnitCosts() {
-      return {
-        housing_stabilization: n(els.costHousing),
-        transportation_restoration: n(els.costTransport),
-        justice_restoration: n(els.costJustice),
-        workforce_jobs: n(els.costWorkforce),
-        community_reinvestment: n(els.costCommunity),
-        legal_defense_compliance: n(els.costLegal),
-        agriculture_local_production: n(els.costAgriculture),
-        digital_access_systems: n(els.costDigital)
-      };
+    function saveJson(key, data) {
+      localStorage.setItem(key, JSON.stringify(data));
     }
 
-    function computeOutputs(cibs, unitCosts) {
-      const allocations = cibs?.allocations || {};
-      const outputs = {};
+    function buildCiiArtifact(cibs) {
+      const budget = cibs?.budget || {};
+      const availableBudget = Number(budget?.available_budget) || 0;
+      const allocations = Array.isArray(budget?.allocations) ? budget.allocations : [];
 
-      for (const [key, allocation] of Object.entries(allocations)) {
-        const amount = Number(allocation?.amount) || 0;
-        const unitCost = Number(unitCosts[key]) || 1;
-        const fundedUnits = Math.floor(amount / unitCost);
+      const portfolio = allocations
+        .filter(item => Number(item.amount) > 0)
+        .map((item, index) => {
+          const allocated = round2(Number(item.amount) || 0);
+          const monthly = round2(Number(item.monthly_amount) || allocated / 12);
 
-        outputs[key] = {
-          percent: Number(allocation?.percent) || 0,
-          amount,
-          unit_cost: unitCost,
-          funded_units: fundedUnits
-        };
+          return {
+            project_id: `cii-${index + 1}`,
+            category: item.category,
+            allocated_usd: allocated,
+            monthly_usd: monthly,
+            purpose: item.purpose || "",
+            recipient: item.recipient || inferRecipient(item.category),
+            deployment_type: inferDeploymentType(item.category),
+            estimated_units: estimateUnits(item.category, allocated),
+            start_month: item.start_month || "Month 1",
+            end_month: item.end_month || "Month 12"
+          };
+        });
+
+      const totalUnits = portfolio.reduce((sum, item) => sum + (Number(item.estimated_units) || 0), 0);
+      const totalFundedAmount = round2(
+        portfolio.reduce((sum, item) => sum + (Number(item.allocated_usd) || 0), 0)
+      );
+
+      const findings = [];
+      if (totalFundedAmount > 0) {
+        findings.push(`Portfolio funded amount: ${money(totalFundedAmount)}.`);
+        findings.push(`Estimated deployment units: ${totalUnits}.`);
+        findings.push(`Funded portfolio entries: ${portfolio.length}.`);
+      } else {
+        findings.push("No funded portfolio could be built because CIBS did not provide an active budget.");
       }
-
-      return outputs;
-    }
-
-    function totalUnits(outputs) {
-      return Object.values(outputs || {}).reduce((sum, item) => sum + (Number(item.funded_units) || 0), 0);
-    }
-
-    function totalFundedAmount(outputs) {
-      return Object.values(outputs || {}).reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
-    }
-
-    function buildArtifact(precomputed) {
-      const cibs = loadJson(CIBS_KEY);
-      const unitCosts = precomputed?.unitCosts || getUnitCosts();
-      const outputs = precomputed?.outputs || computeOutputs(cibs, unitCosts);
 
       return {
         module: "cii",
         version: "1.0.0",
         timestamp: new Date().toISOString(),
-        privacy: {
-          local_only: true,
-          telemetry: false,
-          remote_calls: false
+        input: {
+          cibs
         },
-        source_bridge: {
-          cibs_present: !!localStorage.getItem(CIBS_KEY)
+        result: {
+          total_units: totalUnits,
+          total_funded_amount: totalFundedAmount,
+          portfolio
         },
-        portfolio: {
-          name: els.portfolioName.value.trim(),
-          scope: els.portfolioScope.value.trim(),
-          notes: els.portfolioNotes.value.trim()
-        },
-        unit_costs: unitCosts,
-        outputs,
-        totals: {
-          total_units: totalUnits(outputs),
-          total_funded_amount: totalFundedAmount(outputs)
-        },
-        downstream: {
-          ready_for_integration: totalUnits(outputs) > 0 && totalFundedAmount(outputs) > 0
-        }
+        findings,
+        plain_language: buildPlainLanguage({
+          totalUnits,
+          totalFundedAmount,
+          portfolioCount: portfolio.length
+        })
       };
     }
 
-    function renderBridgeStatus() {
-      const cibs = loadJson(CIBS_KEY);
-      if (!cibs) {
-        els.bridgeStatus.textContent = "No CIBS artifact found in this browser.";
-        return;
-      }
+    function estimateUnits(category, allocated) {
+      const amount = Number(allocated) || 0;
 
-      els.bridgeStatus.textContent = "CIBS artifact found and loaded locally.";
-
-      if (!els.portfolioName.value) {
-        els.portfolioName.value = (cibs.budget?.name || "Public Budget") + " Outputs";
-      }
-      if (!els.portfolioScope.value) {
-        els.portfolioScope.value = cibs.budget?.scope || "";
-      }
-      if (!els.portfolioNotes.value) {
-        els.portfolioNotes.value = cibs.budget?.notes || "";
-      }
-    }
-
-    function renderUpstreamSummary() {
-      const cibs = loadJson(CIBS_KEY);
-      if (!cibs) {
-        els.upstreamSummary.textContent = "No upstream summary loaded yet.";
-        return;
-      }
-
-      const summary = {
-        budget_name: cibs.budget?.name || "",
-        available_budget: cibs.budget?.available_budget ?? 0,
-        total_percent: cibs.budget?.total_percent ?? 0,
-        ready_for_cii: cibs.downstream?.ready_for_cii ?? false
+      const unitCosts = {
+        "Community Housing Support": 6500,
+        "Youth / Education / Aftercare": 4000,
+        "Veterans & Emergency Relief": 5000,
+        "Local Small Business Recovery": 12000,
+        "Digital Access / Connectivity": 1500,
+        "Legal Defense / Rights Enforcement": 3500,
+        "Data Transparency / Public Dashboard": 8000,
+        "Administration & Compliance": 6000
       };
 
-      els.upstreamSummary.textContent = JSON.stringify(summary, null, 2);
+      const costPerUnit = unitCosts[category] || 5000;
+      return Math.floor(amount / costPerUnit);
     }
 
-    function renderOutputsTable(artifact) {
-      if (!artifact) {
-        els.outputsTable.textContent = "No funded outputs yet.";
+    function inferRecipient(category) {
+      const map = {
+        "Community Housing Support": "Local housing partners / family stabilization programs",
+        "Youth / Education / Aftercare": "Schools / youth programs / aftercare providers",
+        "Veterans & Emergency Relief": "Veterans services / emergency response programs",
+        "Local Small Business Recovery": "Local business recovery and workforce partners",
+        "Digital Access / Connectivity": "Community connectivity / digital inclusion programs",
+        "Legal Defense / Rights Enforcement": "Legal aid / rights defense / compliance review",
+        "Data Transparency / Public Dashboard": "Public dashboard / reporting / transparency office",
+        "Administration & Compliance": "Program administration / audit / compliance oversight"
+      };
+      return map[category] || "Community program partner";
+    }
+
+    function inferDeploymentType(category) {
+      const map = {
+        "Community Housing Support": "stabilization_support",
+        "Youth / Education / Aftercare": "youth_programs",
+        "Veterans & Emergency Relief": "emergency_relief",
+        "Local Small Business Recovery": "micro_reinvestment",
+        "Digital Access / Connectivity": "digital_access",
+        "Legal Defense / Rights Enforcement": "rights_enforcement",
+        "Data Transparency / Public Dashboard": "public_transparency",
+        "Administration & Compliance": "compliance_operations"
+      };
+      return map[category] || "community_support";
+    }
+
+    function round2(n) {
+      return Math.round((Number(n) || 0) * 100) / 100;
+    }
+
+    function buildPlainLanguage(data) {
+      if ((Number(data.totalFundedAmount) || 0) === 0) {
+        return {
+          status: "zero_state",
+          explanation:
+            "CII did not build a funded implementation portfolio because no active CIBS budget was available from the current run.",
+          what_to_do_next: [
+            "Confirm that CIRI produced recoverable value.",
+            "Confirm that CIBS produced a nonzero available budget.",
+            "Rerun the engine with fuller upstream case detail if the output is still zero."
+          ]
+        };
+      }
+
+      return {
+        status: "portfolio_built",
+        explanation:
+          "CII converted the CIBS reinvestment budget into visible implementation units. This is the layer where recovery becomes deployable community action.",
+        what_this_output_means: [
+          `${money(data.totalFundedAmount)} is represented in the implementation portfolio.`,
+          `${data.portfolioCount} funded portfolio entries were created.`,
+          `${data.totalUnits} estimated deployment units were modeled from the current budget.`
+        ]
+      };
+    }
+
+    function renderPortfolioTable(portfolio) {
+      if (!portfolio.length) {
+        els.portfolioTableBody.innerHTML = `
+          <tr>
+            <td colspan="7" style="padding:10px;">No implementation portfolio available yet.</td>
+          </tr>
+        `;
         return;
       }
 
-      const lines = [];
-      for (const [key, value] of Object.entries(artifact.outputs || {})) {
-        lines.push(
-          key + ": " +
-          value.funded_units + " units · " +
-          money(value.amount) + " total · " +
-          money(value.unit_cost) + " per unit"
-        );
-      }
-
-      els.outputsTable.textContent = lines.join("\n");
+      els.portfolioTableBody.innerHTML = portfolio.map(item => `
+        <tr>
+          <td style="padding:10px; border-bottom:1px solid #222;">${escapeHtml(item.project_id)}</td>
+          <td style="padding:10px; border-bottom:1px solid #222;">${escapeHtml(item.category)}</td>
+          <td style="padding:10px; border-bottom:1px solid #222;">${money(item.allocated_usd)}</td>
+          <td style="padding:10px; border-bottom:1px solid #222;">${money(item.monthly_usd)}</td>
+          <td style="padding:10px; border-bottom:1px solid #222;">${item.estimated_units}</td>
+          <td style="padding:10px; border-bottom:1px solid #222;">${escapeHtml(item.recipient)}</td>
+          <td style="padding:10px; border-bottom:1px solid #222;">${escapeHtml(item.deployment_type)}</td>
+        </tr>
+      `).join("");
     }
 
-    function renderReadiness(artifact) {
+    function escapeHtml(str) {
+      return String(str)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function render() {
+      const cibs = loadJson(KEYS.cibs);
+      const existingCii = loadJson(KEYS.cii);
+
+      let artifact = null;
+
+      if (cibs && cibs.budget) {
+        artifact = buildCiiArtifact(cibs);
+        saveJson(KEYS.cii, artifact);
+        saveJson(KEYS.legacyCii, {
+          module: "CII",
+          total_budget_in: artifact.result.total_funded_amount,
+          portfolio: artifact.result.portfolio
+        });
+      } else if (existingCii) {
+        artifact = existingCii;
+      }
+
       if (!artifact) {
-        els.nextReadiness.textContent = "Run CII to prepare funded output totals for Integration.";
-        return;
-      }
-
-      const d = artifact.downstream || {};
-      els.nextReadiness.textContent =
-        "ready_for_integration: " + String(!!d.ready_for_integration);
-    }
-
-    function renderArtifactPreview(artifact) {
-      if (!artifact) {
-        els.artifactPreview.textContent = "No CII artifact saved yet.";
-        return;
-      }
-      els.artifactPreview.textContent = JSON.stringify(artifact, null, 2);
-    }
-
-    function updateOutputs() {
-      const cibs = loadJson(CIBS_KEY);
-
-      if (!cibs) {
+        els.totalFunded.textContent = "$0.00";
         els.totalUnits.textContent = "0";
-        els.fundedAmount.textContent = "$0.00";
-        els.integrityCheck.textContent = "No valid CIBS artifact is present yet.";
-        renderOutputsTable(null);
-        renderReadiness(null);
-        return null;
+        els.portfolioSummary.textContent = "No implementation portfolio available yet.";
+        els.plainLanguage.textContent = "CII needs a valid CIBS budget artifact before it can build a funded portfolio.";
+        els.formulaView.textContent = "Missing CIBS budget artifact.";
+        els.budgetInputs.textContent = "No CIBS input found yet.";
+        els.findings.textContent = "No findings available yet.";
+        els.citizenView.textContent = "No citizen view available yet.";
+        els.artifactPreview.textContent = "No CII artifact available yet.";
+        els.nextLayer.textContent = "When CII has a funded portfolio, Integration and Macro can show broader uplift and implementation scale.";
+        renderPortfolioTable([]);
+        return;
       }
 
-      const unitCosts = getUnitCosts();
-      const outputs = computeOutputs(cibs, unitCosts);
-      const units = totalUnits(outputs);
-      const funded = totalFundedAmount(outputs);
+      const result = artifact.result || {};
+      const plain = artifact.plain_language || {};
+      const portfolio = Array.isArray(result.portfolio) ? result.portfolio : [];
 
-      els.totalUnits.textContent = String(units);
-      els.fundedAmount.textContent = money(funded);
+      els.totalFunded.textContent = money(result.total_funded_amount || 0);
+      els.totalUnits.textContent = String(result.total_units || 0);
 
-      if ((cibs.budget?.total_percent ?? 0) === 100 || Math.abs((cibs.budget?.total_percent ?? 0) - 100) < 0.01) {
-        els.integrityCheck.textContent = "CIBS allocation total is valid and CII outputs are being derived from it.";
+      els.portfolioSummary.textContent = JSON.stringify({
+        total_units: result.total_units || 0,
+        total_funded_amount: result.total_funded_amount || 0,
+        portfolio_entries: portfolio.length
+      }, null, 2);
+
+      els.plainLanguage.textContent = plain.explanation || "No plain-language explanation available yet.";
+
+      els.formulaView.textContent = JSON.stringify({
+        total_funded_amount: result.total_funded_amount || 0,
+        total_units: result.total_units || 0,
+        portfolio_entries: portfolio.length
+      }, null, 2);
+
+      els.budgetInputs.textContent = JSON.stringify({
+        available_budget: cibs?.budget?.available_budget || 0,
+        total_percent: cibs?.budget?.total_percent || 0,
+        program_count: cibs?.budget?.program_count || portfolio.length
+      }, null, 2);
+
+      els.findings.textContent = JSON.stringify(artifact.findings || [], null, 2);
+
+      els.citizenView.textContent = JSON.stringify({
+        plain_language_status: plain.status || "",
+        what_this_means: plain.what_this_output_means || [],
+        next_step: (result.total_funded_amount || 0) > 0
+          ? "Integration and Macro can now use this implementation portfolio to show scale and uplift."
+          : "Strengthen upstream recovery and budget inputs to build a nonzero implementation portfolio."
+      }, null, 2);
+
+      els.artifactPreview.textContent = JSON.stringify(artifact, null, 2);
+
+      renderPortfolioTable(portfolio);
+
+      if ((result.total_funded_amount || 0) > 0) {
+        els.nextLayer.textContent =
+          "CII built a funded implementation portfolio. Integration can now display the full chain, and Macro can aggregate the wider system uplift.";
       } else {
-        els.integrityCheck.textContent = "CIBS allocation total is not balanced at 100%. Outputs may be unreliable.";
-      }
-
-      if (units >= 100000) {
-        els.portfolioMeaning.textContent = "This portfolio models very large-scale public-facing outputs.";
-      } else if (units >= 10000) {
-        els.portfolioMeaning.textContent = "This portfolio models major public-facing output capacity.";
-      } else if (units >= 1000) {
-        els.portfolioMeaning.textContent = "This portfolio models meaningful operating-scale output capacity.";
-      } else if (units > 0) {
-        els.portfolioMeaning.textContent = "This portfolio models positive but limited public-facing outputs.";
-      } else {
-        els.portfolioMeaning.textContent = "No funded outputs are modeled yet because the allocation base is still empty or unit costs are too high.";
-      }
-
-      const artifact = buildArtifact({ unitCosts, outputs });
-      renderOutputsTable(artifact);
-      renderReadiness(artifact);
-
-      return artifact;
-    }
-
-    function loadSavedCii() {
-      const raw = localStorage.getItem(CII_KEY);
-      if (!raw) {
-        renderArtifactPreview(null);
-        updateOutputs();
-        return;
-      }
-
-      try {
-        const data = JSON.parse(raw);
-
-        els.portfolioName.value = data.portfolio?.name || "";
-        els.portfolioScope.value = data.portfolio?.scope || "";
-        els.portfolioNotes.value = data.portfolio?.notes || "";
-
-        els.costHousing.value = data.unit_costs?.housing_stabilization ?? 12000;
-        els.costTransport.value = data.unit_costs?.transportation_restoration ?? 3500;
-        els.costJustice.value = data.unit_costs?.justice_restoration ?? 9000;
-        els.costWorkforce.value = data.unit_costs?.workforce_jobs ?? 6000;
-        els.costCommunity.value = data.unit_costs?.community_reinvestment ?? 25000;
-        els.costLegal.value = data.unit_costs?.legal_defense_compliance ?? 5000;
-        els.costAgriculture.value = data.unit_costs?.agriculture_local_production ?? 40000;
-        els.costDigital.value = data.unit_costs?.digital_access_systems ?? 1500;
-
-        els.totalUnits.textContent = String(data.totals?.total_units ?? 0);
-        els.fundedAmount.textContent = money(data.totals?.total_funded_amount ?? 0);
-
-        renderOutputsTable(data);
-        renderReadiness(data);
-        renderArtifactPreview(data);
-        els.status.textContent = "Status: loaded saved CII artifact from this browser.";
-      } catch (err) {
-        els.status.textContent = "Status: saved CII artifact exists but could not be read.";
-        updateOutputs();
+        els.nextLayer.textContent =
+          "CII did not build a funded portfolio yet. Upstream recovery and reinvestment values still need stronger signal.";
       }
     }
 
-    function clearForm() {
-      localStorage.removeItem(CII_KEY);
-
-      els.portfolioName.value = "";
-      els.portfolioScope.value = "";
-      els.portfolioNotes.value = "";
-
-      els.costHousing.value = 12000;
-      els.costTransport.value = 3500;
-      els.costJustice.value = 9000;
-      els.costWorkforce.value = 6000;
-      els.costCommunity.value = 25000;
-      els.costLegal.value = 5000;
-      els.costAgriculture.value = 40000;
-      els.costDigital.value = 1500;
-
-      els.totalUnits.textContent = "0";
-      els.fundedAmount.textContent = "$0.00";
-
-      renderOutputsTable(null);
-      renderReadiness(null);
-      renderArtifactPreview(null);
-
-      els.status.textContent = "Status: local CII artifact cleared from this browser.";
-    }
-
-    [
-      els.costHousing,
-      els.costTransport,
-      els.costJustice,
-      els.costWorkforce,
-      els.costCommunity,
-      els.costLegal,
-      els.costAgriculture,
-      els.costDigital
-    ].forEach(el => {
-      el.addEventListener("input", updateOutputs);
-      el.addEventListener("change", updateOutputs);
-    });
-
-    els.runBtn.addEventListener("click", () => {
-      const artifact = updateOutputs();
-
-      if (!artifact) {
-        els.status.textContent = "Status: no CIBS artifact exists yet, so CII cannot run.";
-        return;
-      }
-
-      renderArtifactPreview(artifact);
-      els.status.textContent = "Status: CII ran locally. Save when ready.";
-    });
-
-    els.saveBtn.addEventListener("click", () => {
-      const artifact = updateOutputs();
-
-      if (!artifact) {
-        els.status.textContent = "Status: save failed because no CIBS artifact exists yet.";
-        return;
-      }
-
-      if (artifact.totals.total_funded_amount <= 0) {
-        els.status.textContent = "Status: save failed because there is no funded output amount yet.";
-        return;
-      }
-
-      localStorage.setItem(CII_KEY, JSON.stringify(artifact));
-      renderArtifactPreview(artifact);
-      renderReadiness(artifact);
-      els.status.textContent = "Status: CII artifact saved locally in this browser.";
-    });
-
-    els.clearBtn.addEventListener("click", () => {
-      clearForm();
-      renderBridgeStatus();
-      renderUpstreamSummary();
-      updateOutputs();
-    });
-
-    renderBridgeStatus();
-    renderUpstreamSummary();
-    loadSavedCii();
+    render();
   </script>
 </body>
 </html>
