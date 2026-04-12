@@ -235,7 +235,7 @@
 
       return {
         module: "cda",
-        version: raw?.module_version || "1.1.0",
+        version: raw?.module_version || "2.1.0",
         timestamp: raw?.generated_at || new Date().toISOString(),
         input: intake,
         result: {
@@ -258,7 +258,7 @@
 
       return {
         module: "cff",
-        version: raw?.module_version || "1.0.0",
+        version: raw?.module_version || "2.0",
         timestamp: raw?.generated_at || new Date().toISOString(),
         input: { intake, cda },
         result: {
@@ -275,11 +275,11 @@
       const estimatedExposure =
         Number(raw?.estimated_total_exposure) ||
         Number(raw?.result?.estimated_total_exposure) ||
-        (offMission > 0 ? offMission : divergence * 100000);
+        0;
 
       return {
         module: "affe",
-        version: raw?.module_version || "1.0.0",
+        version: raw?.module_version || "2.0",
         timestamp: raw?.generated_at || new Date().toISOString(),
         input: { intake, cda, cff },
         result: {
@@ -334,14 +334,14 @@
 
       if (allocations.length === 0 && recovery > 0) {
         allocations = [
-          { category: "housing", amount: recovery * 0.25 },
-          { category: "mobility", amount: recovery * 0.15 },
-          { category: "legal", amount: recovery * 0.10 },
-          { category: "workforce", amount: recovery * 0.15 },
-          { category: "community", amount: recovery * 0.10 },
-          { category: "agriculture", amount: recovery * 0.10 },
-          { category: "digital", amount: recovery * 0.05 },
-          { category: "stabilization", amount: recovery * 0.10 }
+          { category: "Community Housing Support", amount: recovery * 0.25 },
+          { category: "Youth / Education / Aftercare", amount: recovery * 0.20 },
+          { category: "Veterans & Emergency Relief", amount: recovery * 0.10 },
+          { category: "Local Small Business Recovery", amount: recovery * 0.15 },
+          { category: "Digital Access / Connectivity", amount: recovery * 0.05 },
+          { category: "Legal Defense / Rights Enforcement", amount: recovery * 0.10 },
+          { category: "Data Transparency / Public Dashboard", amount: recovery * 0.05 },
+          { category: "Administration & Compliance", amount: recovery * 0.10 }
         ];
       }
 
@@ -624,23 +624,15 @@
 
     function renderLegalExplainer(artifacts) {
       const explainer = artifacts.cda?.legal_explainer || null;
-
-      if (!explainer) {
-        els.legalExplainer.textContent = "No explanation available yet.";
-        return;
-      }
-
-      els.legalExplainer.textContent = JSON.stringify(explainer, null, 2);
+      els.legalExplainer.textContent = explainer
+        ? JSON.stringify(explainer, null, 2)
+        : "No explanation available yet.";
     }
 
     function renderFindings(artifacts) {
       const findings = artifacts.cda?.result?.findings || [];
       const indicators = artifacts.cda?.result?.indicators || {};
-
-      els.cdaFindings.textContent = JSON.stringify({
-        findings,
-        indicators
-      }, null, 2);
+      els.cdaFindings.textContent = JSON.stringify({ findings, indicators }, null, 2);
     }
 
     async function renderAll() {
@@ -764,7 +756,7 @@
       setStatus("SHA-256 audit receipt downloaded.");
     });
 
-    els.clearBtn.addEventListener("click", () => {
+    els.clearBtn.addEventListener("click", async () => {
       [
         KEYS.cda, KEYS.cff, KEYS.affe, KEYS.ciri, KEYS.cibs, KEYS.cii, KEYS.integration, KEYS.receipt,
         KEYS.legacyCiri, KEYS.legacyCibs, KEYS.legacyCii
@@ -775,7 +767,7 @@
       els.integrationNotes.value = "";
 
       setStatus("integration artifacts cleared.");
-      renderAll();
+      await renderAll();
     });
 
     (async function init() {
