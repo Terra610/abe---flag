@@ -1,62 +1,109 @@
 {
   "module": "cibs",
-  "name": "Constitutional Impact and Budget System",
+  "name": "Community Integrity Budget System",
   "version": "1.0.0",
   "category": "core",
-  "purpose": "Convert modeled recovery into visible budget allocations, public program funding, and community-level reinvestment structure.",
-  "description": "CIBS receives recovery value from CIRI and translates it into allocation logic that shows how recovered value can move into housing, mobility, legal aid, workforce participation, agriculture, community stabilization, and other public-facing priorities.",
+  "purpose": "Convert verified recovery and savings into a structured reinvestment plan that restores community stability, rights enforcement, and economic participation.",
+  "description": "CIBS receives modeled recovery from CIRI and allocates it across public-facing community priorities using transparent percentage-based budgeting. It forms the visible reinvestment layer of A.B.E.",
+  "formula_overview": "Recovery Pool = Direct + Indirect + Deferred Savings - Transition Costs",
   "inputs": [
     {
       "name": "ciri_artifact",
       "required": true,
       "source": "ciri",
-      "description": "Recovery output including total recoverable value, cases avoided, jail days avoided, and restored participation."
+      "description": "Recovery output including modeled savings, restored participation, and avoided harm."
     },
     {
-      "name": "budget_template",
+      "name": "inputs_csv",
+      "required": false,
+      "source": "cibs/inputs.csv",
+      "description": "Optional uploaded or local scenario input file."
+    },
+    {
+      "name": "budget_template_csv",
       "required": false,
       "source": "cibs/budget_template.csv",
-      "description": "Optional template for category weighting and allocation structure."
+      "description": "Optional budget template for scenario modeling."
     },
     {
-      "name": "auto_budget",
+      "name": "auto_budget_csv",
       "required": false,
       "source": "cibs/auto_budget.csv",
-      "description": "Optional preset allocation or scenario structure."
+      "description": "Optional prebuilt budget structure for automated allocation."
     }
   ],
   "outputs": [
     {
       "name": "available_budget",
       "type": "number",
-      "description": "Total modeled budget available from recovery."
+      "description": "Total recovery pool available for reinvestment."
     },
     {
       "name": "total_percent",
       "type": "number",
-      "description": "Total percentage of allocation represented in the budget model."
+      "description": "Total percentage represented in the allocation model."
     },
     {
       "name": "allocations",
       "type": "array",
-      "description": "Category-by-category budget allocation list."
+      "description": "Transparent category-by-category budget allocation list."
     },
     {
       "name": "program_count",
       "type": "number",
-      "description": "Number of funded public-facing program categories represented."
+      "description": "Number of active funded allocation categories."
     }
   ],
-  "allocation_domains": [
-    "housing",
-    "mobility",
-    "legal aid",
-    "workforce",
-    "community stabilization",
-    "agriculture",
-    "digital access",
-    "public support infrastructure"
+  "allocation_framework": [
+    {
+      "category": "Community Housing Support",
+      "percent": 25,
+      "purpose": "Keep families stable and prevent generational collapse."
+    },
+    {
+      "category": "Youth / Education / Aftercare",
+      "percent": 20,
+      "purpose": "Restore equal opportunity and protect the next generation."
+    },
+    {
+      "category": "Veterans & Emergency Relief",
+      "percent": 10,
+      "purpose": "Support recovery and avoid system re-entry."
+    },
+    {
+      "category": "Local Small Business Recovery",
+      "percent": 15,
+      "purpose": "Stimulate jobs, mobility, and independence."
+    },
+    {
+      "category": "Digital Access / Connectivity",
+      "percent": 5,
+      "purpose": "Ensure participation and equal voice."
+    },
+    {
+      "category": "Legal Defense / Rights Enforcement",
+      "percent": 10,
+      "purpose": "Maintain constitutional compliance and prevent relapse."
+    },
+    {
+      "category": "Data Transparency / Public Dashboard",
+      "percent": 5,
+      "purpose": "Keep accountability visible to the people."
+    },
+    {
+      "category": "Administration & Compliance",
+      "percent": 10,
+      "purpose": "Operate efficiently and verify integrity."
+    }
   ],
+  "constraints": {
+    "allocation_total_must_equal": 100,
+    "local_adjustment_allowed": true,
+    "deterministic": true,
+    "local_only": true,
+    "requires_interpretation_layer": false,
+    "requires_remote_calls": false
+  },
   "dependencies": {
     "upstream": [
       "ciri"
@@ -67,42 +114,14 @@
       "macro"
     ]
   },
-  "logic_contract": {
-    "deterministic": true,
-    "local_only": true,
-    "requires_interpretation_layer": false,
-    "requires_remote_calls": false
-  },
-  "state_transitions": [
-    {
-      "from": "recovery_modeled",
-      "to": "budget_available",
-      "description": "Converts net recovery into budget availability."
-    },
-    {
-      "from": "budget_available",
-      "to": "allocation_visible",
-      "description": "Distributes recoverable value into visible categories that citizens can understand and communities can use."
-    }
-  ],
   "citizen_value": {
-    "plain_language_role": "Shows where recovered value can go and how community uplift becomes visible rather than abstract.",
+    "plain_language_role": "Shows where recovered value goes so citizens can see how harm turns into stabilization, opportunity, and visible community benefit.",
     "public_facing_outputs": [
       "available budget",
       "category allocations",
       "program count",
       "community project potential"
     ]
-  },
-  "default_allocation_logic": {
-    "housing": 0.25,
-    "mobility": 0.15,
-    "legal": 0.10,
-    "workforce": 0.15,
-    "community": 0.10,
-    "agriculture": 0.10,
-    "digital": 0.05,
-    "stabilization": 0.10
   },
   "audit_fields": [
     "module",
