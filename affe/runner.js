@@ -21,7 +21,7 @@ export async function run(scenario = {}, ctx = {}) {
     highlights.push(`Off-mission funding flags: ${offMission}`);
   }
   if (unclear > 0) {
-    highlights.push(`Unclear funding/scope conditions: ${unclear}`);
+    highlights.push(`Unclear funding or scope conditions: ${unclear}`);
   }
   if (estimatedTotalExposure === 0) {
     highlights.push("No measurable exposure was modeled from the current input.");
