@@ -20,7 +20,8 @@ export async function run(scenario = {}, ctx = {}) {
   ]);
 
   const hasEnforcement = hasAny(rawText, [
-    "traffic stop", "citation", "arrest", "detained", "suspension", "revocation", "inspection", "compliance"
+    "traffic stop", "citation", "arrest", "detained", "suspension", "revocation",
+    "inspection", "compliance", "prosecution", "criminal", "charge"
   ]);
 
   const hasFunding = hasAny(rawText, [
@@ -54,17 +55,17 @@ export async function run(scenario = {}, ctx = {}) {
 
   if (hasPrivate && hasCommercial) {
     divergence += 2;
-    findings.push("Private/non-commercial language appears alongside commercial-regulatory language.");
+    findings.push("Private or non-commercial language appears alongside commercial-regulatory language.");
   }
 
   if (hasPrivate && hasEnforcement && !hasCommercial) {
     divergence += 2;
-    findings.push("Enforcement language appears against private/non-commercial activity without a clear commercial trigger.");
+    findings.push("Enforcement language appears against private or non-commercial activity without a clear commercial trigger.");
   }
 
   if (hasFunding && hasEnforcement) {
     divergence += 1;
-    findings.push("Funding/program language appears alongside enforcement activity and may require scope review.");
+    findings.push("Funding or program language appears alongside enforcement activity and may require scope review.");
     authorityTrace.push("funding_trace_present");
   }
 
@@ -94,9 +95,11 @@ export async function run(scenario = {}, ctx = {}) {
     }
   };
 
+  const legalExplainer = buildLegalExplainer(result, intake);
+
   return {
     module: "CDA",
-    module_version: "2.0",
+    module_version: "2.1.0",
     generated_at: new Date().toISOString(),
     inputs_used: {
       intake_present: !!intake
@@ -108,7 +111,7 @@ export async function run(scenario = {}, ctx = {}) {
     },
     by_domain: authorityTrace,
     result,
-    legal_explainer: buildLegalExplainer(result, intake)
+    legal_explainer: legalExplainer
   };
 }
 
@@ -120,20 +123,31 @@ function buildLegalExplainer(cdaResult, intake) {
   const divergence = Number(cdaResult?.divergence_score) || 0;
   const findings = Array.isArray(cdaResult?.findings) ? cdaResult.findings : [];
   const source = intake?.source || {};
+  const title = String(source?.title || "").trim();
 
   if (divergence === 0) {
     return {
       status: "aligned",
       plain_language:
-        "Based on the information provided, A.B.E. did not detect a strong authority, scope, or jurisdiction conflict.",
+        "The engine did not find a strong authority, jurisdiction, or scope conflict from the text you provided.",
       what_this_means:
-        "The input does not currently show a clear sign that government power was applied outside its lawful boundary.",
+        "Based on the current input, the engine does not yet see enough evidence of state overreach to classify the situation as divergence.",
+      why_this_happened:
+        "This usually means either the input is neutral, too short, or does not contain the enforcement language, statute language, or authority language needed to trigger a divergence result.",
       what_you_can_do: [
-        "If this was only a short test, provide more exact text from the stop, notice, citation, statute, or agency document.",
-        "If you still suspect overreach, rerun the engine with the actual enforcement language and the exact authority being cited."
+        "Paste the exact citation, charge, notice, court text, officer statement, or agency letter.",
+        "Include the legal authority they claimed to rely on, if known.",
+        "Include any language showing private or non-commercial activity if that is the issue.",
+        "Rerun the engine with the actual enforcement facts instead of a short test phrase."
       ],
-      safety_note:
-        "This output is informational only and depends on the quality of the input text."
+      evidence_to_collect: [
+        "Citation or charging document",
+        "Agency letter or notice",
+        "Court filing or docket entry",
+        "Officer statement or bodycam reference",
+        "Statute or regulation section used against the person"
+      ],
+      findings
     };
   }
 
@@ -148,7 +162,7 @@ function buildLegalExplainer(cdaResult, intake) {
   }
 
   if (cdaResult?.indicators?.funding_trigger) {
-    likelyIssues.push("A funding or program authority question may exist and should be compared to the specific action taken.");
+    likelyIssues.push("A funding or program authority issue may exist and should be compared to the specific action taken.");
   }
 
   if (cdaResult?.indicators?.ambiguity_trigger) {
@@ -156,32 +170,35 @@ function buildLegalExplainer(cdaResult, intake) {
   }
 
   if (likelyIssues.length === 0) {
-    likelyIssues.push("The input suggests a possible authority or scope conflict that needs closer review.");
+    likelyIssues.push("The input suggests an authority or scope conflict that deserves deeper review.");
   }
 
   return {
     status: "divergent",
     plain_language:
-      "A.B.E. detected signs that the action described may exceed the lawful scope of the authority being used.",
+      "The engine found signs that the government action described may exceed the lawful authority being used.",
     what_this_means:
-      "In plain terms, the government action described may be using a rule, funding hook, or enforcement power outside the boundary that authorizes it.",
+      "In plain terms, the facts you entered suggest the state may be applying a rule, enforcement power, or regulatory framework outside the boundary that lawfully authorizes it.",
+    why_this_happened:
+      "The engine detected language patterns that commonly show up when private activity is treated like regulated commercial activity, when enforcement outruns its trigger, or when authority and scope are not clearly established.",
     likely_issues: likelyIssues,
-    findings,
-    legal_foundation: [
-      "Authority must stay within constitutional and jurisdictional limits.",
-      "State action cannot exceed delegated scope.",
-      "Where definitions, scope, or funding do not support the action, divergence may exist.",
-      "Conflicts with controlling federal authority require careful scope and preemption review."
-    ],
     what_you_can_do: [
-      "Request the exact statute, regulation, and definition section being relied on.",
-      "Ask what jurisdictional trigger gives the state or officer authority in this specific situation.",
+      "Ask for the exact statute, regulation, and definition section being relied on.",
+      "Ask what jurisdictional trigger gives the state authority in this specific situation.",
       "Ask whether the action applies only to commercial or regulated activity, and whether that trigger is actually present.",
-      "Preserve records: notices, citations, agency letters, bodycam references, docket entries, and timestamps.",
-      "Write a simple timeline of what happened while the details are still fresh.",
-      "Use the engine output to organize a complaint, affidavit, public records request, or legal review."
+      "Preserve every record, notice, citation, timestamp, and communication.",
+      "Build a timeline of what happened in plain language while details are fresh.",
+      "Use the engine output to organize a complaint, affidavit, records request, or legal review."
     ],
-    safety_note:
-      "Do not escalate in the moment. Preserve your safety first and use this output for documentation and later challenge."
+    evidence_to_collect: [
+      "The exact charging language or citation",
+      "The claimed legal authority",
+      "Court filings or docket screenshots",
+      "Agency correspondence",
+      "Funding or grant references if they appear in the case",
+      "Any text showing private or non-commercial status"
+    ],
+    findings,
+    case_title: title
   };
-}
+      }
