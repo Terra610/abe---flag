@@ -1,0 +1,114 @@
+{
+  "module": "cibs",
+  "name": "Constitutional Impact and Budget System",
+  "version": "1.0.0",
+  "category": "core",
+  "purpose": "Convert modeled recovery into visible budget allocations, public program funding, and community-level reinvestment structure.",
+  "description": "CIBS receives recovery value from CIRI and translates it into allocation logic that shows how recovered value can move into housing, mobility, legal aid, workforce participation, agriculture, community stabilization, and other public-facing priorities.",
+  "inputs": [
+    {
+      "name": "ciri_artifact",
+      "required": true,
+      "source": "ciri",
+      "description": "Recovery output including total recoverable value, cases avoided, jail days avoided, and restored participation."
+    },
+    {
+      "name": "budget_template",
+      "required": false,
+      "source": "cibs/budget_template.csv",
+      "description": "Optional template for category weighting and allocation structure."
+    },
+    {
+      "name": "auto_budget",
+      "required": false,
+      "source": "cibs/auto_budget.csv",
+      "description": "Optional preset allocation or scenario structure."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "available_budget",
+      "type": "number",
+      "description": "Total modeled budget available from recovery."
+    },
+    {
+      "name": "total_percent",
+      "type": "number",
+      "description": "Total percentage of allocation represented in the budget model."
+    },
+    {
+      "name": "allocations",
+      "type": "array",
+      "description": "Category-by-category budget allocation list."
+    },
+    {
+      "name": "program_count",
+      "type": "number",
+      "description": "Number of funded public-facing program categories represented."
+    }
+  ],
+  "allocation_domains": [
+    "housing",
+    "mobility",
+    "legal aid",
+    "workforce",
+    "community stabilization",
+    "agriculture",
+    "digital access",
+    "public support infrastructure"
+  ],
+  "dependencies": {
+    "upstream": [
+      "ciri"
+    ],
+    "downstream": [
+      "cii",
+      "integration",
+      "macro"
+    ]
+  },
+  "logic_contract": {
+    "deterministic": true,
+    "local_only": true,
+    "requires_interpretation_layer": false,
+    "requires_remote_calls": false
+  },
+  "state_transitions": [
+    {
+      "from": "recovery_modeled",
+      "to": "budget_available",
+      "description": "Converts net recovery into budget availability."
+    },
+    {
+      "from": "budget_available",
+      "to": "allocation_visible",
+      "description": "Distributes recoverable value into visible categories that citizens can understand and communities can use."
+    }
+  ],
+  "citizen_value": {
+    "plain_language_role": "Shows where recovered value can go and how community uplift becomes visible rather than abstract.",
+    "public_facing_outputs": [
+      "available budget",
+      "category allocations",
+      "program count",
+      "community project potential"
+    ]
+  },
+  "default_allocation_logic": {
+    "housing": 0.25,
+    "mobility": 0.15,
+    "legal": 0.10,
+    "workforce": 0.15,
+    "community": 0.10,
+    "agriculture": 0.10,
+    "digital": 0.05,
+    "stabilization": 0.10
+  },
+  "audit_fields": [
+    "module",
+    "version",
+    "timestamp",
+    "input",
+    "budget"
+  ]
+}
