@@ -42,7 +42,7 @@ export async function run(scenario = {}, ctx = {}) {
     byProgram.push({
       program: "funding_scope_review",
       classification: "OFF_MISSION",
-      reason: "Funding/program language appears with private or non-commercial activity without a clear commercial trigger."
+      reason: "Funding or program language appears with private or non-commercial activity without a clear commercial trigger."
     });
   }
 
@@ -51,7 +51,7 @@ export async function run(scenario = {}, ctx = {}) {
     byProgram.push({
       program: "funding_scope_review",
       classification: "ON_MISSION",
-      reason: "Funding/program language appears with commercial-regulatory language."
+      reason: "Funding or program language appears with commercial-regulatory language."
     });
   }
 
@@ -60,7 +60,7 @@ export async function run(scenario = {}, ctx = {}) {
     byProgram.push({
       program: "funding_scope_review",
       classification: "UNCLEAR",
-      reason: "Funding/program language appears, but the activity trigger is not clear from the input."
+      reason: "Funding or program language appears, but the activity trigger is not clear from the input."
     });
   }
 
@@ -69,7 +69,7 @@ export async function run(scenario = {}, ctx = {}) {
     byProgram.push({
       program: "implicit_scope_review",
       classification: "UNCLEAR",
-      reason: "Divergence was detected but no explicit funding/program hook was found in the text."
+      reason: "Divergence was detected but no explicit funding or program hook was found in the text."
     });
   }
 
