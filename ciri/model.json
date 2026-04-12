@@ -1,0 +1,117 @@
+{
+  "module": "ciri",
+  "name": "Constitutional Impact and Recovery Index",
+  "version": "1.0.0",
+  "category": "core",
+  "purpose": "Convert divergence and funding misalignment into measurable harm, recovery potential, and restored participation.",
+  "description": "CIRI models the downstream human and economic consequences of divergence. It translates validated authority conflicts and fiscal exposure into recovery metrics that can be used by CIBS, CII, Integration, and Macro.",
+  "inputs": [
+    {
+      "name": "intake_artifact",
+      "required": true,
+      "source": "intake",
+      "description": "Original user-provided source text, file metadata, jurisdiction, and source type."
+    },
+    {
+      "name": "cda_artifact",
+      "required": true,
+      "source": "cda",
+      "description": "Constitutional divergence analysis including divergence score, findings, indicators, and authority trace."
+    },
+    {
+      "name": "cff_artifact",
+      "required": true,
+      "source": "cff",
+      "description": "Funding fidelity output including ON_MISSION, OFF_MISSION, and UNCLEAR conditions."
+    },
+    {
+      "name": "affe_artifact",
+      "required": true,
+      "source": "affe",
+      "description": "Applied fiscal and financial exposure output including estimated economic harm."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "ciri_score",
+      "type": "number",
+      "description": "Primary recovery-index score derived from divergence conditions."
+    },
+    {
+      "name": "cases_avoided",
+      "type": "number",
+      "description": "Modeled number of enforcement or prosecution events avoided through lawful realignment."
+    },
+    {
+      "name": "jail_days_avoided",
+      "type": "number",
+      "description": "Modeled number of detention or incarceration days avoided."
+    },
+    {
+      "name": "participation_restored",
+      "type": "number",
+      "description": "Estimated restored civic and economic participation."
+    },
+    {
+      "name": "net_modeled_recovery",
+      "type": "number",
+      "description": "Modeled recoverable value created by eliminating divergence."
+    }
+  ],
+  "calculation_domains": [
+    "constitutional divergence",
+    "civil liberty loss",
+    "enforcement burden",
+    "economic suppression",
+    "restored participation",
+    "recovery modeling"
+  ],
+  "dependencies": {
+    "upstream": [
+      "intake",
+      "cda",
+      "cff",
+      "affe"
+    ],
+    "downstream": [
+      "cibs",
+      "cii",
+      "integration",
+      "macro"
+    ]
+  },
+  "logic_contract": {
+    "deterministic": true,
+    "local_only": true,
+    "requires_interpretation_layer": false,
+    "requires_remote_calls": false
+  },
+  "state_transitions": [
+    {
+      "from": "divergence_detected",
+      "to": "harm_quantified",
+      "description": "Transforms validated divergence into measurable social and economic harm."
+    },
+    {
+      "from": "harm_quantified",
+      "to": "recovery_modeled",
+      "description": "Converts quantified harm into recoverable value, restored participation, and avoided losses."
+    }
+  ],
+  "citizen_value": {
+    "plain_language_role": "Explains what the divergence means in real-world human terms and what recovery becomes possible when the divergence is removed.",
+    "public_facing_outputs": [
+      "cases avoided",
+      "jail days avoided",
+      "restored participation",
+      "recoverable value"
+    ]
+  },
+  "audit_fields": [
+    "module",
+    "version",
+    "timestamp",
+    "input",
+    "result"
+  ]
+}
