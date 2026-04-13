@@ -1,21 +1,12 @@
 export async function run(scenario = {}, ctx = {}) {
+  const cda = scenario?.derived?.cda || scenario?.inputs?.cda || null;
+
   const model = await loadJson("./model.json");
   const csvRows = await loadCsv("./divergence.csv");
 
   const domains = Array.isArray(model?.domains) ? model.domains : [];
   const header = csvRows.length ? csvRows[0] : [];
   const body = csvRows.slice(1);
-
-  const requiredColumns = ["Category", "Divergence", "Confidence"];
-  const missingColumns = requiredColumns.filter(col => !header.includes(col));
-
-  if (!domains.length) {
-    throw new Error("CDI model.json is missing or has no domains.");
-  }
-
-  if (missingColumns.length) {
-    throw new Error(`CDI divergence.csv is missing required columns: ${missingColumns.join(", ")}`);
-  }
 
   const categoryIndex = header.indexOf("Category");
   const divergenceIndex = header.indexOf("Divergence");
@@ -32,8 +23,10 @@ export async function run(scenario = {}, ctx = {}) {
 
     const matchingRow = body.find(row => String(row[categoryIndex] || "").trim() === domainName);
 
-    const rawDivergence = matchingRow ? Number(matchingRow[divergenceIndex]) || 0 : 0;
+    let rawDivergence = matchingRow ? Number(matchingRow[divergenceIndex]) || 0 : 0;
     const rawConfidence = matchingRow ? Number(matchingRow[confidenceIndex]) || 0 : 0;
+
+    rawDivergence = applyCdaAdjustment(domain.key, rawDivergence, cda);
 
     const weightedDomainDivergence = round4(rawDivergence * domainWeight);
     const weightedDomainConfidence = round4(rawConfidence * domainWeight);
@@ -62,25 +55,28 @@ export async function run(scenario = {}, ctx = {}) {
 
   const overallSigmaBand = classifySigma(normalizedWeightedDivergence);
 
+  const highestDomain = domainScores
+    .slice()
+    .sort((a, b) => b.weighted_divergence - a.weighted_divergence)[0];
+
   const findings = [];
+
   if (normalizedWeightedDivergence > 0) {
     findings.push(`Weighted constitutional divergence computed at ${normalizedWeightedDivergence}.`);
   } else {
-    findings.push("No constitutional divergence was computed from the current CDI source data.");
+    findings.push("No constitutional divergence was computed from the current domain inputs.");
   }
 
   if (normalizedWeightedConfidence > 0) {
     findings.push(`Weighted confidence computed at ${normalizedWeightedConfidence}.`);
   }
 
-  const highestDomain = domainScores
-    .slice()
-    .sort((a, b) => (b.weighted_divergence - a.weighted_divergence))[0];
-
   if (highestDomain) {
-    findings.push(
-      `Highest weighted divergence domain: ${highestDomain.category} (${highestDomain.weighted_divergence}).`
-    );
+    findings.push(`Highest weighted divergence domain: ${highestDomain.category} (${highestDomain.weighted_divergence}).`);
+  }
+
+  if (cda?.void_ab_initio_flag || cda?.result?.void_ab_initio_flag) {
+    findings.push("CDA triggered void ab initio, which elevated domain severity in the constitutional divergence profile.");
   }
 
   return {
@@ -107,6 +103,37 @@ export async function run(scenario = {}, ctx = {}) {
   };
 }
 
+function applyCdaAdjustment(domainKey, divergence, cda) {
+  const result = cda?.result || cda || {};
+  let adjusted = Number(divergence) || 0;
+
+  if (result.void_ab_initio_flag) {
+    adjusted += 0.15;
+  }
+
+  if (result.ultra_vires_flag) {
+    adjusted += 0.10;
+  }
+
+  if (result.off_mission_flag) {
+    adjusted += 0.08;
+  }
+
+  if (result.funding_scope_conflict && ["healthcare", "housing", "education", "transport"].includes(domainKey)) {
+    adjusted += 0.05;
+  }
+
+  if (result.doctrine_triggers?.includes("commerce_nexus_failure") && domainKey === "commerce") {
+    adjusted += 0.10;
+  }
+
+  if (result.doctrine_triggers?.includes("jurisdiction_failure") && domainKey === "justice") {
+    adjusted += 0.08;
+  }
+
+  return Math.min(1, round4(adjusted));
+}
+
 async function loadJson(path) {
   const res = await fetch(path);
   if (!res.ok) throw new Error(`Failed to load JSON: ${path}`);
@@ -117,14 +144,7 @@ async function loadCsv(path) {
   const res = await fetch(path);
   if (!res.ok) throw new Error(`Failed to load CSV: ${path}`);
   const text = await res.text();
-  return text
-    .trim()
-    .split(/\r?\n/)
-    .map(line => splitCsvLine(line));
-}
-
-function splitCsvLine(line) {
-  return line.split(",").map(cell => cell.trim());
+  return text.trim().split(/\r?\n/).map(line => line.split(",").map(cell => cell.trim()));
 }
 
 function round4(n) {
@@ -133,7 +153,6 @@ function round4(n) {
 
 function classifySigma(divergence) {
   const d = Number(divergence) || 0;
-
   if (d >= 0.80) return "4σ severe divergence";
   if (d >= 0.60) return "3σ high divergence";
   if (d >= 0.40) return "2σ material divergence";
@@ -148,9 +167,9 @@ function buildPlainLanguage(data) {
       explanation:
         "CDI did not compute measurable constitutional divergence from the current domain inputs.",
       what_to_do_next: [
-        "Confirm the divergence.csv values are populated correctly.",
-        "Confirm the domain names in divergence.csv match the names in model.json.",
-        "Use updated divergence source data if you want a live constitutional deviation profile."
+        "Confirm divergence.csv values are populated correctly.",
+        "Confirm domain names match model.json.",
+        "Confirm CDA is supplying conflict flags when present."
       ]
     };
   }
@@ -158,7 +177,7 @@ function buildPlainLanguage(data) {
   return {
     status: "divergence_measured",
     explanation:
-      "CDI computed weighted constitutional divergence across the defined domains. This output measures how far the current system profile departs from constitutional fidelity.",
+      "CDI computed weighted constitutional divergence across the defined domains. This measures how far the current profile departs from constitutional fidelity.",
     what_this_output_means: [
       `Weighted divergence: ${data.weightedDivergence}`,
       `Weighted confidence: ${data.weightedConfidence}`,
@@ -168,4 +187,4 @@ function buildPlainLanguage(data) {
         : "No dominant divergence domain was identified."
     ]
   };
-}
+      }
