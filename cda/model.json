@@ -1,126 +1,145 @@
 {
-  "version": "1.0",
-  "updated": "2025-12-15T00:00:00Z",
-  "module": "CDA",
-  "authority": {
-    "name": "A.B.E. — Constitutional Divergence Analyzer",
-    "license": "CC BY-NC 4.0"
-  },
-  "dimensions": {
-    "scope_alignment": {
-      "weight": 0.36,
-      "description": "Whether the rule is being applied within its lawful commercial/non-commercial scope."
-    },
-    "preemption_fidelity": {
-      "weight": 0.33,
-      "description": "Whether state practice respects federal supremacy and preemption boundaries."
-    },
-    "funding_integrity": {
-      "weight": 0.18,
-      "description": "Whether federal funding (e.g., MCSAP) is used within statutory and regulatory conditions."
-    },
-    "rights_and_process": {
-      "weight": 0.13,
-      "description": "Whether application respects right to travel, due process, and equal treatment."
+  "module": "cda",
+  "name": "Constitutional Determination Audit",
+  "version": "1.0.0",
+  "category": "core",
+  "purpose": "Identify claimed authority, controlling authority, jurisdiction, doctrine triggers, rights burdens, and constitutional invalidity before divergence is quantified.",
+  "description": "CDA is the authority and doctrine engine of A.B.E. It determines whether an observed action is aligned, conflicted, ultra vires, off-mission, or void ab initio under the constitutional hierarchy of law.",
+  "hierarchy_of_law": [
+    "Constitution",
+    "Federal statute",
+    "Valid federal regulation",
+    "Funding and program conditions",
+    "State law only if consistent",
+    "Agency or departmental action only if delegated and within scope",
+    "Observed conduct"
+  ],
+  "inputs": [
+    {
+      "name": "intake_artifact",
+      "required": true,
+      "source": "intake",
+      "description": "Original user-provided source text, jurisdiction, title, and source type."
     }
-  },
-  "flag_definitions": {
-    "scope_noncommercial_treated_as_commercial": {
-      "dimension": "scope_alignment",
-      "severity": 1.0,
-      "description": "State is treating non-commercial citizens as if they were commercial/DOT-regulated."
+  ],
+  "outputs": [
+    {
+      "name": "claimed_authority",
+      "type": "array",
+      "description": "Authority claimed by the executing actor."
     },
-    "preemption_conflict": {
-      "dimension": "preemption_fidelity",
-      "severity": 1.0,
-      "description": "State rule conflicts with or expands beyond federal commercial scope under 49 U.S.C./49 CFR."
+    {
+      "name": "controlling_authority",
+      "type": "array",
+      "description": "Higher-order controlling authority under the constitutional hierarchy."
     },
-    "preemption_field": {
-      "dimension": "preemption_fidelity",
-      "severity": 0.9,
-      "description": "State appears to legislate in a field already occupied by Congress (field preemption)."
+    {
+      "name": "authority_conflict",
+      "type": "boolean",
+      "description": "Whether claimed authority conflicts with controlling authority."
     },
-    "ultra_vires_enforcement": {
-      "dimension": "scope_alignment",
-      "severity": 0.9,
-      "description": "Agency conduct goes beyond what its enabling statutes actually authorize."
+    {
+      "name": "jurisdiction_status",
+      "type": "string",
+      "description": "aligned, conflicted, ultra_vires, void, or unclear"
     },
-    "mcsap_off_mission": {
-      "dimension": "funding_integrity",
-      "severity": 0.9,
-      "description": "MCSAP or similar commercial enforcement funding is used for non-commercial activity."
+    {
+      "name": "constitutional_violation",
+      "type": "boolean",
+      "description": "Whether the observed conduct conflicts with controlling constitutional authority."
     },
-    "funding_conditions_ignored": {
-      "dimension": "funding_integrity",
-      "severity": 0.8,
-      "description": "Practice contradicts federal funding conditions or FMCSR adoption requirements."
+    {
+      "name": "void_ab_initio_flag",
+      "type": "boolean",
+      "description": "Whether the act is invalid from inception under constitutional rule."
     },
-    "funding_nontransparent": {
-      "dimension": "funding_integrity",
-      "severity": 0.4,
-      "description": "Funding source and statutory authority are not transparent to affected people."
+    {
+      "name": "ultra_vires_flag",
+      "type": "boolean",
+      "description": "Whether the conduct exceeds lawful authority or jurisdiction."
     },
-    "right_to_travel_burdened": {
-      "dimension": "rights_and_process",
-      "severity": 0.85,
-      "description": "Practice burdens the right to travel for people not engaged in commerce."
+    {
+      "name": "funding_scope_conflict",
+      "type": "boolean",
+      "description": "Whether the conduct appears outside approved funding or mission scope."
     },
-    "due_process_defects": {
-      "dimension": "rights_and_process",
-      "severity": 0.8,
-      "description": "Gaps in notice, hearing, or appeal before rights are restricted."
+    {
+      "name": "off_mission_flag",
+      "type": "boolean",
+      "description": "Whether the conduct falls outside approved mission or funding purpose."
     },
-    "selective_application": {
-      "dimension": "rights_and_process",
-      "severity": 0.5,
-      "description": "Rule is applied selectively or arbitrarily across similar cases."
+    {
+      "name": "doctrine_triggers",
+      "type": "array",
+      "description": "Rule-of-law doctrines triggered by the conduct."
+    },
+    {
+      "name": "rights_impacted",
+      "type": "array",
+      "description": "Rights and liberties burdened by the conduct."
+    },
+    {
+      "name": "findings",
+      "type": "array",
+      "description": "Deterministic findings supporting the audit result."
     }
+  ],
+  "doctrine_support": [
+    "void_ab_initio",
+    "constitutional_fidelity_breach",
+    "stare_decisis_inapplicable",
+    "legislative_vesting_conflict",
+    "equipoise_rule_triggered",
+    "spoilation_risk",
+    "ras_defect",
+    "commerce_nexus_failure",
+    "jurisdiction_failure",
+    "void_for_vagueness_risk",
+    "ultra_vires_enforcement",
+    "off_mission_execution",
+    "funding_scope_conflict"
+  ],
+  "rights_support": [
+    "right_to_travel",
+    "due_process",
+    "equal_protection",
+    "petition_for_redress",
+    "unreasonable_seizure",
+    "liberty_burden",
+    "property_burden"
+  ],
+  "logic_contract": {
+    "deterministic": true,
+    "local_only": true,
+    "requires_remote_calls": false,
+    "constitutional_root_required": true
   },
-  "scoring": {
-    "method": "weighted_flag_sum_clipped_0_1",
-    "notes": "Client-side CDA UI uses a simple sum of flag-based weights, clipped to [0,1]. That value is suitable as an input to CDI and CIRI.",
-    "dimension_weights": {
-      "scope_alignment": 0.36,
-      "preemption_fidelity": 0.33,
-      "funding_integrity": 0.18,
-      "rights_and_process": 0.13
+  "state_transitions": [
+    {
+      "from": "claimed_authority_detected",
+      "to": "controlling_authority_mapped",
+      "description": "Maps claimed authority against the constitutional hierarchy."
+    },
+    {
+      "from": "controlling_authority_mapped",
+      "to": "jurisdiction_audited",
+      "description": "Determines whether the observed conduct is within lawful jurisdiction."
+    },
+    {
+      "from": "jurisdiction_audited",
+      "to": "constitutional_validity_checked",
+      "description": "Applies ultra vires, off-mission, and void ab initio rules."
     }
+  ],
+  "citizen_value": {
+    "plain_language_role": "Explains what authority was claimed, what authority actually controls, whether jurisdiction exists, what rights were burdened, and whether the act is ultra vires, off-mission, or void ab initio."
   },
-  "doctrine_integration": {
-    "source": "law/doctrines/doctrine_map.json",
-    "notes": "CDA maps each flag to one or more doctrine IDs from the doctrine map. The front-end populates doctrines_triggered based on CDA_FLAG_DOCTRINES.",
-    "flag_doctrine_map": {
-      "scope_noncommercial_treated_as_commercial": [
-        "police_power_doctrine",
-        "fmcsr_expansion"
-      ],
-      "preemption_conflict": [
-        "supremacy_clause"
-      ],
-      "preemption_field": [
-        "supremacy_clause"
-      ],
-      "ultra_vires_enforcement": [
-        "nondelegation"
-      ],
-      "mcsap_off_mission": [
-        "fmcsr_expansion",
-        "major_questions"
-      ],
-      "funding_conditions_ignored": [
-        "supremacy_clause"
-      ],
-      "funding_nontransparent": [],
-      "right_to_travel_burdened": [
-        "equal_protection",
-        "void_for_vagueness"
-      ],
-      "due_process_defects": [
-        "void_for_vagueness"
-      ],
-      "selective_application": [
-        "equal_protection"
-      ]
+  "audit_fields": [
+    "module",
+    "version",
+    "timestamp",
+    "input",
+    "result",
+    "plain_language"
+  ]
     }
-  }
-}
