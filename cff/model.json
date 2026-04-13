@@ -1,0 +1,133 @@
+{
+  "version": "1.0",
+  "updated": "2025-11-30T00:00:00Z",
+  "module": "CFF",
+  "authority": {
+    "name": "A.B.E. — Constitutional Funding Forensics (CFF)",
+    "license": "CC BY-NC 4.0",
+    "description": "Models how federal funds are used relative to statutory authority and mission constraints."
+  },
+
+  "mission_classes": [
+    {
+      "key": "ON_MISSION",
+      "label": "On-mission",
+      "description": "Spending that is squarely within statutory authority and program purpose as enacted by Congress.",
+      "default_weight": 0.0
+    },
+    {
+      "key": "OFF_MISSION",
+      "label": "Off-mission",
+      "description": "Spending that is outside statutory authority, beyond program purpose, or conflicts with controlling federal law.",
+      "default_weight": 1.0
+    },
+    {
+      "key": "UNCLEAR",
+      "label": "Unclear / Needs Audit",
+      "description": "Spending that cannot be cleanly classified without deeper document review, Single Audit work, or IG/GAO findings.",
+      "default_weight": 0.5
+    }
+  ],
+
+  "risk_dimensions": {
+    "statutory_scope": {
+      "weight": 0.45,
+      "description": "How closely the funded activity tracks the text and intent of the authorizing statute and appropriation language."
+    },
+    "appropriation_clarity": {
+      "weight": 0.30,
+      "description": "Whether the funding line is clearly documented, traceable to a lawful purpose, and not used to backdoor unrelated programs."
+    },
+    "oversight_signal": {
+      "weight": 0.25,
+      "description": "Signals from IG, GAO, OMB, or Single Audit findings that indicate diversion, misuse, or repeat noncompliance."
+    }
+  },
+
+  "line_item_scoring": {
+    "base_score": 0,
+    "max_score": 100,
+    "penalties": {
+      "off_mission_spend": 60,
+      "unclear_spend": 30,
+      "statutory_conflict_flag": 40,
+      "preemption_conflict_flag": 40,
+      "repeat_audit_findings_flag": 30,
+      "unmapped_authority_flag": 25
+    },
+    "bonuses": {
+      "explicit_statutory_match": 10,
+      "transparent_reporting": 10
+    }
+  },
+
+  "portfolio_metrics": {
+    "aggregate_fields": {
+      "total_amount_usd": "sum(amount_usd)",
+      "total_on_mission_usd": "sum(amount_usd where spend_category_code == 'ON_MISSION')",
+      "total_off_mission_usd": "sum(amount_usd where spend_category_code == 'OFF_MISSION')",
+      "total_unclear_usd": "sum(amount_usd where spend_category_code == 'UNCLEAR')"
+    },
+    "ratios": {
+      "share_on_mission": "total_on_mission_usd / max(total_amount_usd, 1)",
+      "share_off_mission": "total_off_mission_usd / max(total_amount_usd, 1)",
+      "share_unclear": "total_unclear_usd / max(total_amount_usd, 1)"
+    },
+    "indexes": {
+      "off_mission_risk_index": {
+        "formula": "share_off_mission * 100",
+        "description": "0–100 index of how much of the portfolio is plainly off-mission."
+      },
+      "uncertainty_index": {
+        "formula": "share_unclear * 100",
+        "description": "0–100 index of how much funding is insufficiently documented or ambiguous."
+      }
+    }
+  },
+
+  "thresholds": {
+    "off_mission_risk_index": {
+      "low": 5,
+      "moderate": 15,
+      "high": 30
+    },
+    "uncertainty_index": {
+      "low": 5,
+      "moderate": 20,
+      "high": 40
+    }
+  },
+
+  "narrative_templates": {
+    "portfolio_summary": {
+      "low_risk": "This funding portfolio is largely aligned with statutory mission. Off-mission spending appears limited and well below typical red-flag thresholds. CFF classifies this as LOW RISK but recommends periodic review of ambiguous lines.",
+      "moderate_risk": "This portfolio shows meaningful off-mission or unclear spending. CFF classifies this as MODERATE RISK. A targeted review of OFF_MISSION and UNCLEAR line items is recommended, with priority on those tied to enforcement or high-impact programs.",
+      "high_risk": "This portfolio contains substantial off-mission or poorly documented spending relative to statutory authority. CFF classifies this as HIGH RISK for constitutional, fiscal, and oversight exposure. IG, GAO, or legislative review is likely warranted."
+    },
+    "line_item_notes": {
+      "on_mission": "This line item appears consistent with the authorizing statute and stated program purpose.",
+      "off_mission": "This line item appears to fund activities outside statutory scope or contrary to federal limitations. It should be reviewed for potential diversion or misuse.",
+      "unclear": "This line item lacks sufficient detail to confirm alignment. Additional documentation, program files, or audit work are required."
+    }
+  },
+
+  "integration": {
+    "downstream": {
+      "ciri": {
+        "field": "policy_corrections",
+        "description": "Aggregate OFF_MISSION amount (or a chosen subset) can be passed into CIRI as a policy_corrections value when those off-mission uses drive unconstitutional enforcement or harm."
+      },
+      "affe": {
+        "description": "AFFE reads CFF outputs to visualize where realignment and reprogramming of funding would relieve constitutional and economic pressure.",
+        "artifacts": [
+          "cff/inputs.csv",
+          "cff/portfolio.json (optional)"
+        ]
+      }
+    },
+    "integration_notes": [
+      "CFF does not determine criminal intent or liability; it highlights structural funding misalignment that other actors (courts, auditors, IGs, legislatures) must evaluate.",
+      "CFF outputs are deterministic from the inputs.csv: same file, same classification, same metrics."
+    ]
+  }
+}
