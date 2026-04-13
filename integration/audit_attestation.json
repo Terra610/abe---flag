@@ -1,0 +1,21 @@
+{
+  "version": "1.0",
+  "period": "FY2025 Q3",
+  "timestamp_utc": "2025-10-02T00:00:00Z",
+  "repo": "terra610/abe---flag",
+  "commit": "LATEST", 
+  "evidence": {
+    "system_map": "https://terra610.github.io/abe---flag/system/index.html",
+    "ciri_calculator": "https://terra610.github.io/abe---flag/ciri/index.html",
+    "ciri_inputs_csv": "https://terra610.github.io/abe---flag/ciri/inputs.csv",
+    "cibs_auto_budget_csv": "https://terra610.github.io/abe---flag/cibs/auto_budget.csv",
+    "doctrines": [
+      "https://terra610.github.io/abe---flag/doctrine/abe.html",
+      "https://terra610.github.io/abe---flag/doctrine/constitutional-fidelity.html",
+      "https://terra610.github.io/abe---flag/doctrine/void-ab-initio.html"
+    ]
+  },
+  "reviewer": "Public self-attestation (ABE Patch)",
+  "signature": "sha256:TO_BE_FILLED_LATER",
+  "notes": "This file asserts the above evidence was present and matched repo state at the listed timestamp."
+}

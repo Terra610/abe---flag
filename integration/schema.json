@@ -1,0 +1,14 @@
+{
+  "version": "1.0",
+  "about": "Integration page knows exactly which KPIs to display and from where.",
+  "kpis": [
+    {"key":"cibs_total","label":"Public Allocation (CIBS)","source":"/cibs/auto_budget.csv","method":"sum_column:value"},
+    {"key":"ciri_total","label":"Modeled Recovery (CIRI)","source":"/ciri/inputs.csv","method":"ciri_total_recovery_v2"},
+    {"key":"ciri_index","label":"CIRI Index","source":"/ciri/inputs.csv","method":"ciri_index"},
+    {"key":"roi_case","label":"ROI per Case","source":"/ciri/inputs.csv","method":"roi_per_case"}
+  ],
+  "meta": {
+    "doi": "10.5281/zenodo.17586107",
+    "license": "CC BY-NC 4.0"
+  }
+}
