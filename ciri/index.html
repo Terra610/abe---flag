@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>CIRI — Constitutional Integrity & ROI | A.B.E.</title>
+<base href="/abe---flag/">
+<link rel="stylesheet" href="abe-patch/assets/abe-patch.css"/>
+
+<style>
+  :root{
+    --bg:#05060b;
+    --panel:#10131c;
+    --panel-soft:#161a25;
+    --text:#edf2ff;
+    --muted:#9fb3c8;
+    --accent:#5ddfff;
+    --border:rgba(255,255,255,.08);
+  }
+  body{background:var(--bg);color:var(--text);font-family:system-ui,Segoe UI,Roboto,sans-serif;margin:0}
+  header{padding:1.2rem 1rem;text-align:center;border-bottom:1px solid var(--border);background:#0d111a}
+  h1{margin:0;font-size:1.7rem;color:var(--accent)}
+  .tagline{margin-top:.3rem;font-size:.95rem;color:var(--muted)}
+  nav.chip-row{margin-top:.7rem;display:flex;gap:.4rem;flex-wrap:wrap;justify-content:center}
+  main{max-width:1100px;margin:1.3rem auto;padding:0 1rem}
+  .card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:1rem;margin-bottom:1rem}
+  h2{margin:0 0 .6rem;font-size:1.2rem;color:#dfe9f6}
+  h3{margin:.3rem 0 .5rem;color:#cfe7ff;font-size:1rem}
+  .row{display:flex;flex-wrap:wrap;gap:1rem}
+  .input{background:#0f131a;border:1px solid var(--border);color:var(--text);border-radius:8px;padding:.5rem .6rem;width:120px;font-size:.92rem}
+  label{color:var(--muted);font-size:.86rem}
+  .output-box{background:#0f131a;border:1px solid var(--border);border-radius:10px;padding:.75rem;font-family:ui-monospace,monospace;font-size:.9rem;white-space:pre-wrap}
+  .btn-row{display:flex;gap:.6rem;margin-top:.6rem;flex-wrap:wrap}
+  .btn{padding:.55rem 1rem;border-radius:9px;border:1px solid var(--accent);background:rgba(93,223,255,.1);color:var(--accent);cursor:pointer;transition:.2s}
+  .btn:hover{background:rgba(93,223,255,.2)}
+  footer{text-align:center;margin:2rem 0 1rem;color:var(--muted);font-size:.85rem}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>CIRI — Integrity & ROI</h1>
+  <p class="tagline">Quantify recovery when unconstitutional practices stop — cases, fees, jobs, households, ROI.</p>
+  <nav class="chip-row">
+    <a class="chip" href="index.html">Home</a>
+    <a class="chip" href="intake/index.html">Intake</a>
+    <a class="chip" href="cda/index.html">CDA</a>
+    <a class="chip" href="cibs/index.html">CIBS</a>
+    <a class="chip" href="cii/index.html">CII</a>
+    <a class="chip" href="macro/index.html">Macro</a>
+    <a class="chip chip-alt" href="integration/index.html">Integration</a>
+  </nav>
+</header>
+
+<main>
+
+<!-- CONTEXT: auto-load Intake CSV -->
+<section class="card">
+  <h2>Intake Context</h2>
+  <p id="intake-status" class="tagline">Looking for Intake artifact…</p>
+  <div id="intake-preview" class="output-box" style="min-height:80px">—</div>
+</section>
+
+<!-- INPUTS -->
+<section class="card">
+  <h2>Step 1 — Confirm or edit scenario values</h2>
+
+  <div class="row">
+
+    <div>
+      <label>Cases involved</label><br>
+      <input id="cases" type="number" class="input" value="1" min="0">
+    </div>
+
+    <div>
+      <label>Avg economic cost per case</label><br>
+      <input id="cost_case" type="number" class="input" value="25000">
+    </div>
+
+    <div>
+      <label>Fees/Fines canceled</label><br>
+      <input id="fees" type="number" class="input" value="0">
+    </div>
+
+    <div>
+      <label>Jail days avoided</label><br>
+      <input id="jail" type="number" class="input" value="0">
+    </div>
+
+    <div>
+      <label>Cost per jail day</label><br>
+      <input id="cost_jail" type="number" class="input" value="98">
+    </div>
+
+    <div>
+      <label>Households restored</label><br>
+      <input id="hh" type="number" class="input" value="1" min="0">
+    </div>
+
+    <div>
+      <label>Avg monthly spend per restored household</label><br>
+      <input id="spend" type="number" class="input" value="1200">
+    </div>
+
+    <div>
+      <label>Months effective</label><br>
+      <input id="months" type="number" class="input" value="12" min="0">
+    </div>
+
+  </div>
+
+  <div class="btn-row">
+    <button id="run" class="btn">Compute Recovery</button>
+    <button id="dl" class="btn" disabled>Download CSV</button>
+  </div>
+</section>
+
+<!-- OUTPUT -->
+<section class="card">
+  <h2>Step 2 — Outputs</h2>
+  <h3>Total Recovery</h3>
+  <div id="total" class="output-box">—</div>
+
+  <h3 style="margin-top:1rem">ROI per Case</h3>
+  <div id="roi" class="output-box">—</div>
+
+  <h3 style="margin-top:1rem">Full JSON Scenario</h3>
+  <div id="json" class="output-box" style="min-height:160px">—</div>
+</section>
+
+</main>
+
+<footer>
+  CIRI — A.B.E. Constitutional Integrity & ROI · CC BY-NC 4.0 · Integrity only.
+</footer>
+
+<script>
+/* ======================
+   Helpers
+====================== */
+
+const $ = id => document.getElementById(id);
+const money = n => Number(n).toLocaleString(undefined,{style:"currency",currency:"USD"});
+
+/* ======================
+   Auto-load Intake Artifact
+====================== */
+
+(function loadIntake(){
+  const status = $("intake-status");
+  const box = $("intake-preview");
+
+  try {
+    const raw = localStorage.getItem("abe_intake_artifact");
+    if (!raw) {
+      status.textContent = "No Intake artifact found — running in manual mode.";
+      box.textContent = "Upload a document in Intake to auto-chain data here.";
+      return;
+    }
+
+    const obj = JSON.parse(raw);
+    status.textContent = "Loaded Intake artifact automatically.";
+    box.textContent = obj.text_normalized?.slice(0,500) + "…";
+
+    // If Intake provided a CIRI row, try to auto-fill fields
+    if (obj.generated_outputs?.ciri?.csv_inline) {
+      const csv = obj.generated_outputs.ciri.csv_inline;
+      const parts = csv.split("\n")[1]?.split(",") || [];
+
+      $("cases").value = 1;
+      $("cost_case").value = Number(parts[1] || 25000);
+      $("jail").value = Number(parts[2] || 0);
+      $("cost_jail").value = Number(parts[3] || 98);
+      $("fees").value = Number(parts[4] || 0);
+      $("hh").value = Number(parts[7] || 1);
+      $("spend").value = Number(parts[8] || 1200);
+      $("months").value = Number(parts[9] || 12);
+    }
+
+  } catch(e) {
+    status.textContent = "Could not load Intake artifact.";
+    box.textContent = "—";
+  }
+})();
+
+/* ======================
+   Compute CIRI Recovery
+====================== */
+
+$("run").onclick = function(){
+
+  const cases  = Number($("cases").value);
+  const cost_c = Number($("cost_case").value);
+  const fees   = Number($("fees").value);
+  const jail   = Number($("jail").value);
+  const cost_j = Number($("cost_jail").value);
+  const hh     = Number($("hh").value);
+  const spend  = Number($("spend").value);
+  const months = Number($("months").value);
+
+  const jail_val  = jail * cost_j;
+  const hh_val    = hh * spend * months;
+  const case_val  = cases * cost_c;
+
+  const total = jail_val + hh_val + case_val + fees;
+  const roi = cases > 0 ? total / cases : 0;
+
+  $("total").textContent = money(total);
+  $("roi").textContent   = money(roi);
+
+  const scenario = {
+    version:"2.0",
+    module:"CIRI",
+    inputs:{
+      cases, cost_c, fees, jail, cost_j, hh, spend, months
+    },
+    outputs:{
+      total_recovery: total,
+      roi_per_case: roi,
+      jail_value: jail_val,
+      household_value: hh_val,
+      case_value: case_val
+    },
+    created_at:new Date().toISOString()
+  };
+
+  $("json").textContent = JSON.stringify(scenario,null,2);
+  $("dl").disabled = false;
+
+  // Store for next modules: CIBS, CII, Macro, Integration
+  try{
+    localStorage.setItem("ABE_CIRI_SCENARIO_V2", JSON.stringify(scenario));
+  }catch(e){ console.warn("Could not store CIRI scenario:",e); }
+
+  // Save CSV rows
+  $("dl").onclick = function(){
+    const csv =
+      "metric,value\n" +
+      "total_recovery,"+total+"\n" +
+      "roi_per_case,"+roi+"\n" +
+      "jail_value,"+jail_val+"\n" +
+      "household_value,"+hh_val+"\n" +
+      "case_value,"+case_val+"\n";
+
+    const blob = new Blob([csv],{type:"text/csv"});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "ciri_scenario.csv";
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+};
+</script>
+
+</body>
+</html>
