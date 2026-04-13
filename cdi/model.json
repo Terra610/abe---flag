@@ -1,12 +1,78 @@
 {
-  "version": "1.0",
-  "description": "Defines domains and weighting factors for constitutional divergence scoring.",
+  "module": "cdi",
+  "name": "Constitution Divergence Index",
+  "version": "1.0.0",
+  "category": "core",
+  "purpose": "Quantify constitutional divergence across weighted domains and classify the severity of deviation from constitutional fidelity.",
+  "description": "CDI measures divergence magnitude by domain using deterministic weights and confidence values. It converts domain-level constitutional deviation into a weighted divergence profile that downstream modules can consume.",
   "domains": [
-    {"key":"commerce", "name":"Commerce Regulation", "weight":0.25},
-    {"key":"justice", "name":"Judicial Oversight & Remedies", "weight":0.20},
-    {"key":"healthcare", "name":"Healthcare Policy & Funding", "weight":0.15},
-    {"key":"transport", "name":"Mobility & Transportation", "weight":0.10},
-    {"key":"education", "name":"Education & Access", "weight":0.15},
-    {"key":"housing", "name":"Housing & Property Rights", "weight":0.15}
+    { "key": "commerce", "name": "Commerce Regulation", "weight": 0.25 },
+    { "key": "justice", "name": "Judicial Oversight & Remedies", "weight": 0.20 },
+    { "key": "healthcare", "name": "Healthcare Policy & Funding", "weight": 0.15 },
+    { "key": "transport", "name": "Mobility & Transportation", "weight": 0.10 },
+    { "key": "education", "name": "Education & Access", "weight": 0.15 },
+    { "key": "housing", "name": "Housing & Property Rights", "weight": 0.15 }
+  ],
+  "sigma_bands": {
+    "baseline_aligned": [0.00, 0.19],
+    "emerging_divergence_1sigma": [0.20, 0.39],
+    "material_divergence_2sigma": [0.40, 0.59],
+    "high_divergence_3sigma": [0.60, 0.79],
+    "severe_divergence_4sigma": [0.80, 1.00]
+  },
+  "inputs": [
+    {
+      "name": "cda_artifact",
+      "required": false,
+      "source": "cda",
+      "description": "Structured authority and doctrine findings from CDA."
+    },
+    {
+      "name": "model_json",
+      "required": true,
+      "source": "cdi/model.json",
+      "description": "Domain weight definitions."
+    },
+    {
+      "name": "divergence_csv",
+      "required": true,
+      "source": "cdi/divergence.csv",
+      "description": "Domain divergence and confidence values."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "domain_scores",
+      "type": "array",
+      "description": "Weighted divergence results by domain."
+    },
+    {
+      "name": "weighted_divergence",
+      "type": "number",
+      "description": "Overall weighted constitutional divergence."
+    },
+    {
+      "name": "weighted_confidence",
+      "type": "number",
+      "description": "Overall weighted confidence."
+    },
+    {
+      "name": "overall_sigma_band",
+      "type": "string",
+      "description": "Severity band of constitutional divergence."
+    }
+  ],
+  "logic_contract": {
+    "deterministic": true,
+    "local_only": true,
+    "requires_remote_calls": false
+  },
+  "audit_fields": [
+    "module",
+    "version",
+    "timestamp",
+    "input",
+    "result",
+    "plain_language"
   ]
 }
