@@ -29,12 +29,8 @@
         "source_file"
       ],
       "properties": {
-        "model_version": {
-          "type": "string"
-        },
-        "source_file": {
-          "type": "string"
-        }
+        "model_version": { "type": "string" },
+        "source_file": { "type": "string" }
       },
       "additionalProperties": true
     },
@@ -64,35 +60,25 @@
             "properties": {
               "key": { "type": "string" },
               "category": { "type": "string" },
-              "weight": { "type": "number", "minimum": 0 },
-              "divergence": { "type": "number", "minimum": 0, "maximum": 1 },
-              "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
-              "weighted_divergence": { "type": "number", "minimum": 0 },
-              "weighted_confidence": { "type": "number", "minimum": 0 },
+              "weight": { "type": "number" },
+              "divergence": { "type": "number" },
+              "confidence": { "type": "number" },
+              "weighted_divergence": { "type": "number" },
+              "weighted_confidence": { "type": "number" },
               "sigma_band": { "type": "string" }
             },
             "additionalProperties": true
           }
         },
-        "weighted_divergence": {
-          "type": "number",
-          "minimum": 0
-        },
-        "weighted_confidence": {
-          "type": "number",
-          "minimum": 0
-        },
-        "overall_sigma_band": {
-          "type": "string"
-        }
+        "weighted_divergence": { "type": "number" },
+        "weighted_confidence": { "type": "number" },
+        "overall_sigma_band": { "type": "string" }
       },
       "additionalProperties": true
     },
     "findings": {
       "type": "array",
-      "items": {
-        "type": "string"
-      }
+      "items": { "type": "string" }
     },
     "plain_language": {
       "type": "object",
@@ -101,12 +87,8 @@
         "explanation"
       ],
       "properties": {
-        "status": {
-          "type": "string"
-        },
-        "explanation": {
-          "type": "string"
-        },
+        "status": { "type": "string" },
+        "explanation": { "type": "string" },
         "what_to_do_next": {
           "type": "array",
           "items": { "type": "string" }
