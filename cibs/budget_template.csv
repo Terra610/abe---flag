@@ -1,8 +1,0 @@
-category,pct,min_usd,max_usd,priority,notes
-housing,0.25,0,,1,Stability and shelter
-clinics,0.15,0,,2,Healthcare access
-food,0.10,0,,3,Nutrition support
-mobility,0.20,0,,2,Transportation access
-workforce,0.15,0,,2,Jobs and training
-legal_aid,0.05,0,,3,Defense and admin relief
-admin_ops,0.10,0,,4,Operating costs
