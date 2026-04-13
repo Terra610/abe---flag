@@ -1,0 +1,123 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ABE CDI Output Schema",
+  "type": "object",
+  "required": [
+    "module",
+    "version",
+    "timestamp",
+    "input",
+    "result",
+    "findings",
+    "plain_language"
+  ],
+  "properties": {
+    "module": {
+      "type": "string",
+      "const": "cdi"
+    },
+    "version": {
+      "type": "string"
+    },
+    "timestamp": {
+      "type": "string"
+    },
+    "input": {
+      "type": "object",
+      "required": [
+        "model_version",
+        "source_file"
+      ],
+      "properties": {
+        "model_version": {
+          "type": "string"
+        },
+        "source_file": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": true
+    },
+    "result": {
+      "type": "object",
+      "required": [
+        "domain_scores",
+        "weighted_divergence",
+        "weighted_confidence",
+        "overall_sigma_band"
+      ],
+      "properties": {
+        "domain_scores": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "key",
+              "category",
+              "weight",
+              "divergence",
+              "confidence",
+              "weighted_divergence",
+              "weighted_confidence",
+              "sigma_band"
+            ],
+            "properties": {
+              "key": { "type": "string" },
+              "category": { "type": "string" },
+              "weight": { "type": "number", "minimum": 0 },
+              "divergence": { "type": "number", "minimum": 0, "maximum": 1 },
+              "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+              "weighted_divergence": { "type": "number", "minimum": 0 },
+              "weighted_confidence": { "type": "number", "minimum": 0 },
+              "sigma_band": { "type": "string" }
+            },
+            "additionalProperties": true
+          }
+        },
+        "weighted_divergence": {
+          "type": "number",
+          "minimum": 0
+        },
+        "weighted_confidence": {
+          "type": "number",
+          "minimum": 0
+        },
+        "overall_sigma_band": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": true
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "plain_language": {
+      "type": "object",
+      "required": [
+        "status",
+        "explanation"
+      ],
+      "properties": {
+        "status": {
+          "type": "string"
+        },
+        "explanation": {
+          "type": "string"
+        },
+        "what_to_do_next": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "what_this_output_means": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}
