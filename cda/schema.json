@@ -1,113 +1,122 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "CDA Scenario v1",
-  "description": "Schema for CDA (Constitutional Divergence Analyzer) scenario JSON. All fields used by CDI, CIRI, AFFE, and the audit ledger.",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ABE CDA Output Schema",
   "type": "object",
-
   "required": [
-    "version",
     "module",
-    "statute_name",
-    "level",
-    "population",
-    "flags",
-    "divergence_score"
+    "version",
+    "timestamp",
+    "input",
+    "result",
+    "plain_language"
   ],
-
-  "additionalProperties": false,
-
   "properties": {
-    "version": {
-      "type": "string",
-      "const": "1.0",
-      "description": "Schema + model version for CDA scenario objects."
-    },
-
     "module": {
       "type": "string",
-      "const": "CDA",
-      "description": "Identifies this artifact as a CDA scenario."
+      "const": "cda"
     },
-
-    "statute_name": {
-      "type": "string",
-      "description": "Human-readable name of the statute, rule, policy, or enforcement practice being evaluated."
+    "version": {
+      "type": "string"
     },
-
-    "jurisdiction": {
-      "type": "string",
-      "description": "Optional human-readable jurisdiction label (e.g., 'Iowa', 'Federal').",
-      "default": ""
+    "timestamp": {
+      "type": "string"
     },
-
-    "level": {
-      "type": "string",
-      "enum": ["state", "federal"],
-      "description": "Classification of the rule or enforcement practice."
+    "input": {
+      "type": "object"
     },
-
-    "population": {
-      "type": "string",
-      "enum": ["non_commercial", "commercial", "mixed"],
-      "description": "Population impacted — critical for Commerce Clause & FMCSR divergence."
-    },
-
-    "citations": {
-      "type": "array",
-      "description": "Optional list of statutory or CFR citations implicated by this scenario.",
-      "default": [],
-      "items": {
-        "type": "string"
-      }
-    },
-
-    "funding_streams": {
-      "type": "array",
-      "description": "Optional list of relevant federal funding sources (e.g., MCSAP, 23 U.S.C. 402).",
-      "default": [],
-      "items": {
-        "type": "string"
-      }
-    },
-
-    "flags": {
+    "result": {
       "type": "object",
-      "description": "Boolean divergence indicators used to determine score + doctrine implications.",
-      "additionalProperties": false,
+      "required": [
+        "claimed_authority",
+        "controlling_authority",
+        "authority_conflict",
+        "jurisdiction_status",
+        "constitutional_violation",
+        "void_ab_initio_flag",
+        "ultra_vires_flag",
+        "funding_scope_conflict",
+        "off_mission_flag",
+        "doctrine_triggers",
+        "rights_impacted",
+        "findings"
+      ],
       "properties": {
-        "scope_noncommercial_treated_as_commercial": { "type": "boolean", "default": false },
-        "preemption_conflict":                       { "type": "boolean", "default": false },
-        "preemption_field":                          { "type": "boolean", "default": false },
-        "ultra_vires_enforcement":                   { "type": "boolean", "default": false },
-        "mcsap_off_mission":                         { "type": "boolean", "default": false },
-        "funding_conditions_ignored":                { "type": "boolean", "default": false },
-        "funding_nontransparent":                    { "type": "boolean", "default": false },
-        "right_to_travel_burdened":                  { "type": "boolean", "default": false },
-        "due_process_defects":                       { "type": "boolean", "default": false },
-        "selective_application":                     { "type": "boolean", "default": false }
-      }
+        "claimed_authority": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "controlling_authority": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "authority_conflict": {
+          "type": "boolean"
+        },
+        "jurisdiction_status": {
+          "type": "string"
+        },
+        "constitutional_violation": {
+          "type": "boolean"
+        },
+        "void_ab_initio_flag": {
+          "type": "boolean"
+        },
+        "ultra_vires_flag": {
+          "type": "boolean"
+        },
+        "funding_scope_conflict": {
+          "type": "boolean"
+        },
+        "off_mission_flag": {
+          "type": "boolean"
+        },
+        "doctrine_triggers": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "rights_impacted": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "findings": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "additionalProperties": true
     },
-
-    "divergence_score": {
-      "type": "number",
-      "minimum": 0,
-      "maximum": 1,
-      "description": "Normalized 0–1 score derived from flags. Used by CDI → CIRI → CIBS → CII."
-    },
-
-    "doctrines_triggered": {
-      "type": "array",
-      "description": "Automatically identified doctrine IDs from law/doctrines/doctrine_map.json based on flags.",
-      "default": [],
-      "items": {
-        "type": "string"
-      }
-    },
-
-    "notes": {
-      "type": "string",
-      "description": "Optional user notes, context, or observations.",
-      "default": ""
+    "plain_language": {
+      "type": "object",
+      "required": [
+        "status",
+        "explanation"
+      ],
+      "properties": {
+        "status": {
+          "type": "string"
+        },
+        "explanation": {
+          "type": "string"
+        },
+        "what_authority_was_claimed": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "what_authority_controls": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "what_rights_are_impacted": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "what_doctrine_applies": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "additionalProperties": true
     }
-  }
+  },
+  "additionalProperties": true
 }
