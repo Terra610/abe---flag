@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>AFFE — American Funding & Fidelity Explorer | A.B.E.</title>
+  <base href="/abe---flag/">
+  <link rel="stylesheet" href="abe-patch/assets/abe-patch.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <style>
+    .affe-wrap{
+      max-width:1100px;
+      margin:0 auto;
+      padding:1.5rem 1rem 3rem;
+    }
+    .affe-header h1{
+      margin:0 0 .25rem;
+      font-size:1.9rem;
+    }
+    .affe-header .tagline{
+      max-width:780px;
+      color:var(--muted);
+      font-size:.98rem;
+    }
+    .affe-grid{
+      display:grid;
+      gap:1.1rem;
+    }
+    @media(min-width:900px){
+      .affe-grid{
+        grid-template-columns:1.4fr 1.6fr;
+      }
+    }
+    .affe-card{
+      background:var(--panel);
+      border-radius:14px;
+      border:1px solid var(--line);
+      padding:1rem 1.1rem 1.2rem;
+      box-shadow:0 18px 40px rgba(0,0,0,.45);
+      min-height:0;
+    }
+    .affe-card h2{
+      margin:.1rem 0 .4rem;
+      font-size:1.15rem;
+    }
+    .affe-card h3{
+      margin:.35rem 0 .3rem;
+      font-size:1rem;
+    }
+    .affe-sub{
+      color:var(--muted);
+      font-size:.9rem;
+    }
+    .affe-upload{
+      margin-top:.4rem;
+      padding:.7rem .75rem;
+      border-radius:12px;
+      border:1px dashed var(--line);
+      background:#050712;
+      font-size:.88rem;
+    }
+    .affe-upload label{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:.45rem .9rem;
+      border-radius:999px;
+      border:1px solid var(--accent);
+      background:#050712;
+      color:var(--ink);
+      cursor:pointer;
+      gap:.35rem;
+      margin-bottom:.3rem;
+    }
+    .affe-upload input[type="file"]{
+      display:none;
+    }
+    .affe-file-name{
+      display:block;
+      font-size:.84rem;
+      color:var(--muted);
+      margin-top:.15rem;
+    }
+    .affe-mini{
+      font-size:.82rem;
+      color:var(--muted);
+      margin-top:.3rem;
+    }
+    .affe-status{
+      margin-top:.6rem;
+      font-size:.84rem;
+      color:var(--muted);
+    }
+    .affe-status-ok{color:#4bd28f;}
+    .affe-status-warn{color:#ffba5c;}
+    .affe-status-bad{color:#ff8585;}
+    canvas{
+      width:100%!important;
+      height:260px!important;
+    }
+    table{
+      width:100%;
+      border-collapse:collapse;
+      margin-top:.4rem;
+      font-size:.82rem;
+    }
+    th,td{
+      border:1px solid var(--line);
+      padding:.3rem .35rem;
+    }
+    th{
+      text-align:left;
+      background:#090d18;
+    }
+    .affe-good{color:#4bd28f;}
+    .affe-off{color:#ff8585;}
+    .affe-unclear{color:#ffba5c;}
+  </style>
+</head>
+<body class="abe-page">
+
+<header class="abe-header">
+  <div class="affe-wrap affe-header">
+    <a href="/abe---flag/index.html" class="chip">← A.B.E. Home</a>
+    <h1>AFFE — American Funding & Fidelity Explorer</h1>
+    <p class="tagline">
+      Explore ON_MISSION / OFF_MISSION / UNCLEAR funding patterns. AFFE reads your CFF artifact and
+      turns it into an audit-grade visual story.
+    </p>
+    <nav class="chip-row">
+      <a class="chip" href="intake/index.html">Intake</a>
+      <a class="chip" href="cda/index.html">CDA</a>
+      <a class="chip" href="ciri/index.html">CIRI</a>
+      <a class="chip" href="cff/index.html">CFF</a>
+      <span class="chip chip-alt">AFFE</span>
+      <a class="chip" href="law/index.html">Law Corpus</a>
+      <a class="chip" href="doctrine/index.html">Doctrines</a>
+      <a class="chip" href="integration/index.html">Integration</a>
+    </nav>
+  </div>
+</header>
+
+<main class="abe-main">
+  <div class="affe-wrap affe-grid">
+
+    <!-- LEFT: source + status -->
+    <section class="affe-card">
+      <h2>Step 1 — Load a CFF artifact</h2>
+      <p class="affe-sub">
+        AFFE looks for a <code>CFF</code> artifact generated in this browser
+        (<code>ABE_CFF_ARTIFACT_V1</code>). You can also upload one manually.
+      </p>
+
+      <div class="affe-upload">
+        <label>
+          <span>📎 Choose cff_artifact.json (optional)</span>
+          <input id="affe-file" type="file" accept=".json,application/json">
+        </label>
+        <span id="affe-file-name" class="affe-file-name">No file selected</span>
+        <div id="affe-status" class="affe-status">Status: looking for local CFF artifact…</div>
+      </div>
+
+      <p class="affe-mini">
+        To generate a new artifact, go to CFF, upload your funding CSV, then save the
+        <code>cff_artifact.json</code>. AFFE will pick it up automatically in this browser.
+      </p>
+
+      <p class="affe-mini">
+        Law & Doctrine anchors:
+        <br>– Use LAW corpus for the statutory rails behind each program (MCSAP, FMCSA, CPS grants).  
+        <br>– Use Doctrines for Constitutional Fidelity + Void ab initio framing when OFF_MISSION is systemic.
+      </p>
+    </section>
+
+    <!-- RIGHT: charts + table -->
+    <section class="affe-card">
+      <h2>Step 2 — Patterns & programs</h2>
+
+      <h3>2.1 · ON/OFF/UNCLEAR split</h3>
+      <canvas id="affe-chart"></canvas>
+
+      <h3>2.2 · Per-program view (top 20 by OFF_MISSION amount)</h3>
+      <div id="affe-table-container">
+        <!-- table injected here -->
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<footer class="abe-footer">
+  <p>
+    CC BY-NC 4.0 · DOI <a href="https://doi.org/10.5281/zenodo.17586107">10.5281/zenodo.17586107</a> · Integrity only — never for sale.
+  </p>
+</footer>
+
+<script src="affe/local.js"></script>
+</body>
+</html>

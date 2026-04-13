@@ -1,0 +1,31 @@
+{
+  "name": "AFFE → CFF funding schema",
+  "version": "1.0.0",
+  "description": "Canonical output template for the Appropriation Fidelity & Funding Engine (AFFE). All AFFE exports should conform to this schema before being used by CFF.",
+  "required_columns": [
+    "program_name",
+    "federal_authority_citation",
+    "fiscal_year",
+    "state_or_jurisdiction",
+    "agency",
+    "line_item_description",
+    "spend_category_code",
+    "amount_usd"
+  ],
+  "optional_columns": [
+    "notes"
+  ],
+  "spend_category_code": {
+    "description": "CFF categorical label indicating whether the spending is lawful, unlawful, or mixed with respect to its statutory purpose.",
+    "allowed_values": [
+      "ON_MISSION",
+      "OFF_MISSION",
+      "UNCLEAR"
+    ]
+  },
+  "amount_usd": {
+    "description": "Dollar value of the line item. Parsed as a number in US dollars.",
+    "type": "number",
+    "format": "currency"
+  }
+}
