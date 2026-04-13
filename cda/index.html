@@ -23,33 +23,105 @@
     <section class="panel">
       <h2>Overview</h2>
       <p>
-        CDA identifies claimed authority, controlling authority, jurisdiction status,
-        doctrine triggers, rights burdens, and whether the conduct is ultra vires,
-        off-mission, or void ab initio.
+        CDA identifies claimed authority, controlling authority, jurisdiction conflicts,
+        funding-scope defects, doctrine triggers, rights burdens, and constitutional invalidity.
+        It computes a deterministic divergence score from the canonical CDA model.
       </p>
+    </section>
+
+    <section class="panel">
+      <h2>Scenario Setup</h2>
+      <div id="intake-bridge-note" class="status-box small">
+        Intake bridge: checking for the last Intake artifact in this browser…
+      </div>
+
+      <div class="grid cols-2">
+        <div>
+          <label for="statute-name">Statute / Practice Name</label>
+          <input id="statute-name" type="text" placeholder="Example: State transportation enforcement against private travel">
+
+          <label for="jurisdiction">Jurisdiction</label>
+          <input id="jurisdiction" type="text" placeholder="Example: Iowa">
+
+          <label for="level">Level</label>
+          <select id="level">
+            <option value="state">State</option>
+            <option value="federal">Federal</option>
+            <option value="local">Local</option>
+            <option value="mixed">Mixed</option>
+          </select>
+
+          <label for="population">Population Impacted</label>
+          <select id="population">
+            <option value="non_commercial">Non-commercial / private</option>
+            <option value="commercial">Commercial</option>
+            <option value="mixed">Mixed</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="citations">Citations</label>
+          <textarea id="citations" rows="4" placeholder="49 CFR 390.3, 49 CFR 350.201, Iowa Code 321..."></textarea>
+
+          <label for="funding">Funding Streams</label>
+          <textarea id="funding" rows="4" placeholder="MCSAP, federal highway safety funds, state appropriations..."></textarea>
+
+          <label for="notes">Notes</label>
+          <textarea id="notes" rows="6" placeholder="Add relevant facts, bridge notes from Intake, or case-specific context..."></textarea>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Divergence Flags</h2>
+      <div class="grid cols-2">
+        <label><input type="checkbox" id="flag-scope_noncommercial_treated_as_commercial"> Scope: non-commercial conduct treated as commercial</label>
+        <label><input type="checkbox" id="flag-preemption_conflict"> Preemption conflict</label>
+        <label><input type="checkbox" id="flag-preemption_field"> Field preemption</label>
+        <label><input type="checkbox" id="flag-ultra_vires_enforcement"> Ultra vires enforcement</label>
+        <label><input type="checkbox" id="flag-mcsap_off_mission"> MCSAP / funding off mission</label>
+        <label><input type="checkbox" id="flag-funding_conditions_ignored"> Funding conditions ignored</label>
+        <label><input type="checkbox" id="flag-funding_nontransparent"> Funding nontransparent</label>
+        <label><input type="checkbox" id="flag-right_to_travel_burdened"> Right to travel burdened</label>
+        <label><input type="checkbox" id="flag-due_process_defects"> Due process defects</label>
+        <label><input type="checkbox" id="flag-selective_application"> Selective application</label>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="module-nav">
+        <button id="btn-generate" type="button">Generate CDA scenario &amp; score</button>
+        <button id="btn-download" type="button" disabled>Download CDA JSON</button>
+      </div>
+
+      <div id="cda-status" class="status-box small" style="margin-top:12px;">
+        Status: waiting
+      </div>
+
+      <div style="margin-top:12px;">
+        <span id="cda-score-pill" class="status-box small">
+          Divergence score: <strong id="cda-score-value">—</strong>
+        </span>
+      </div>
+
+      <div id="cda-hash-line" class="status-box small" style="margin-top:12px;">
+        Audit hash: —
+      </div>
     </section>
 
     <section class="grid cols-2">
       <section class="card">
-        <h2>Module Output</h2>
-        <pre id="output">Loading…</pre>
+        <h2>CDA JSON</h2>
+        <pre id="cda-json">{}</pre>
       </section>
 
       <section class="card">
-        <h2>Plain Language</h2>
-        <pre id="plain">Loading…</pre>
+        <h2>Plain-Language Summary</h2>
+        <pre id="cda-summary">No CDA scenario generated yet.</pre>
       </section>
     </section>
   </main>
 
-  <script>
-    const artifact = JSON.parse(localStorage.getItem("abe_cda_artifact") || "null");
-    document.getElementById("output").textContent = artifact
-      ? JSON.stringify(artifact.result || artifact, null, 2)
-      : "No CDA artifact available yet.";
-    document.getElementById("plain").textContent = artifact
-      ? JSON.stringify(artifact.plain_language || {}, null, 2)
-      : "No plain-language explanation available yet.";
-  </script>
+  <script src="cda/local.js"></script>
 </body>
 </html>
