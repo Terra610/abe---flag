@@ -1,0 +1,329 @@
+{
+  "version": "1.5",
+  "updated": "2026-01-05T00:00:00Z",
+  "project": "A.B.E. — American Butterfly Effect",
+  "author": {
+    "name": "Terra Shouse",
+    "contact": "terra610",
+    "license": "CC BY-NC 4.0"
+  },
+
+  "non_negotiables": {
+    "privacy_absolute": true,
+    "local_only": true,
+    "no_api": true,
+    "no_backend": true,
+    "no_logins": true,
+    "no_tracking": true,
+    "transparency": true,
+    "constitutional_fidelity": true,
+    "sha256_receipts": true,
+    "no_people_scoring": true
+  },
+
+  "modules": {
+    "intake": {
+      "name": "Intake",
+      "long_name": "Document Intake + OCR Bridge",
+      "purpose": "Indexes user-provided files locally and produces normalized intake artifacts consumable by other modules. OCR/parsing is optional and remains local-only.",
+      "model_file": "intake/model.json",
+      "schema_file": "intake/schema.json",
+      "primary_output": "inputs.intake",
+      "status": "alpha",
+      "ui": "intake/index.html"
+    },
+
+    "system": {
+      "name": "System Map",
+      "long_name": "Canonical Chain-of-Custody Map",
+      "purpose": "Canonical map of module linkage, inputs/outputs, and integrity expectations for A.B.E. Also provides a human-readable view for users and auditors.",
+      "map_file": "system/map.json",
+      "status": "mvp",
+      "ui": "system/index.html"
+    },
+
+    "cae": {
+      "name": "CAE",
+      "long_name": "Constitutional Alignment Engine",
+      "purpose": "Parses constitutional text and positive law; flags misalignment and cites controlling authority (issue-spotting, not legal advice).",
+      "model_file": "cae/model.json",
+      "schema_file": "cae/schema.json",
+      "status": "planned",
+      "ui": "cae/index.html"
+    },
+
+    "cda": {
+      "name": "CDA",
+      "long_name": "Constitutional Divergence Analyzer",
+      "purpose": "Transforms system practices and legal scope issues into a structured divergence output used downstream. Produces the engine's canonical divergence artifact.",
+      "model_file": "cda/model.json",
+      "schema_file": "cda/schema.json",
+      "primary_output": "derived.divergence",
+      "status": "alpha",
+      "ui": "cda/index.html"
+    },
+
+    "ccri": {
+      "name": "CCRI",
+      "long_name": "Consumer Credit Risk Integrity",
+      "purpose": "Evaluates lending/credit policy integrity at the system level (not people). Can output standardized overrides/prefill keys for CIRI inputs.",
+      "inputs_file": "ccri/inputs.json",
+      "schema_file": "ccri/schema.json",
+      "model_file": "ccri/model.json",
+      "status": "alpha",
+      "ui": "ccri/index.html"
+    },
+
+    "cff": {
+      "name": "CFF",
+      "long_name": "Constitutional Funding Forensics",
+      "purpose": "Classifies line-item spending as ON_MISSION, OFF_MISSION, or UNCLEAR relative to statutory authority and program scope.",
+      "inputs_file": "cff/inputs.csv",
+      "schema_file": "cff/schema.json",
+      "model_file": "cff/model.json",
+      "status": "alpha",
+      "ui": "cff/index.html"
+    },
+
+    "affe": {
+      "name": "AFFE",
+      "long_name": "American Funding & Fidelity Explorer",
+      "purpose": "Explorer/bridge layer for funding and scope patterns; can prepare CIRI-ready prefills from CFF outputs.",
+      "model_file": "affe/model.json",
+      "status": "preview",
+      "ui": "affe/index.html"
+    },
+
+    "ciri": {
+      "name": "CIRI",
+      "long_name": "Constitutional Integrity ROI Engine",
+      "purpose": "Quantifies recoverable economic value from ending unconstitutional harm and restoring lawful practice. Deterministic math suitable for audit receipts.",
+      "inputs_file": "ciri/inputs.csv",
+      "default_inputs_file": "ciri/default_inputs.json",
+      "logic_spec": "ciri/calc.md",
+      "primary_output_field": "total_recovery",
+      "status": "mvp",
+      "ui": "ciri/index.html"
+    },
+
+    "cibs": {
+      "name": "CIBS",
+      "long_name": "Community Integrity Budget System",
+      "purpose": "Allocates the Recovery Pool into reinvestment categories with transparent percentages and auditability.",
+      "template_file": "cibs/budget_template.csv",
+      "auto_budget_output": "derived.cibs.allocations",
+      "status": "mvp",
+      "ui": "cibs/index.html"
+    },
+
+    "cii": {
+      "name": "CII",
+      "long_name": "Community Investment Interface",
+      "purpose": "Produces auditable project portfolios tied to CIBS budgets. Prefers curated portfolio.csv; falls back to a template if needed.",
+      "portfolio_file": "cii/portfolio.csv",
+      "template_file": "cii/portfolio_template.csv",
+      "primary_output": "derived.cii.portfolio",
+      "status": "mvp",
+      "ui": "cii/index.html"
+    },
+
+    "macro": {
+      "name": "Macro",
+      "long_name": "Macroeconomic Cascade",
+      "purpose": "Optional scaling model that projects top-down impact from restored communities (GDP/jobs/wage uplift) using local parameters.",
+      "model_file": "macro/model.json",
+      "downloads": [
+        "macro/macro_cascade.csv",
+        "macro/ABE_MacroCascadeModel.json"
+      ],
+      "status": "public",
+      "ui": "macro/index.html"
+    },
+
+    "integration": {
+      "name": "Integration Layer",
+      "long_name": "Orchestrator + Integrity Receipts",
+      "purpose": "Runs the firing order deterministically, stores outputs into the scenario, and generates SHA-256 hashes + an audit certificate locally (no servers).",
+      "checks": [
+        "module_dependency_check",
+        "schema_presence_check",
+        "sha256_hash_receipts",
+        "audit_certificate_generation",
+        "local_storage_only"
+      ],
+      "status": "alpha",
+      "ui": "integration/index.html"
+    },
+
+    "law": {
+      "name": "Federal Authority Corpus",
+      "long_name": "Lawful Scope & Authority Map",
+      "purpose": "Defines constitutional and statutory boundaries (USC/CFR/funding) that CAE, CDA, CFF, and CIRI can reference for scope mapping.",
+      "model_file": "law/law_schema.json",
+      "status": "seed",
+      "ui": "law/index.html"
+    },
+
+    "learn": {
+      "name": "Learn",
+      "long_name": "Guided Engine Tips",
+      "purpose": "Mini-examples that teach how CIRI, CIBS, and Macro work using doctrine-aligned numbers.",
+      "ui": "learn/index.html",
+      "status": "public"
+    }
+  },
+
+  "engine_contract": {
+    "firing_order": [
+      "intake",
+      "system",
+      "cae",
+      "divergence",
+      "ccri",
+      "cff",
+      "affe",
+      "ciri",
+      "cibs",
+      "cii",
+      "macro"
+    ],
+    "canonical_artifacts": {
+      "inputs": [
+        "inputs.intake",
+        "inputs.ciri",
+        "inputs.ciri_prefill",
+        "inputs.ciri_overrides",
+        "inputs.macro_params"
+      ],
+      "derived": [
+        "derived.systemmap",
+        "derived.cae",
+        "derived.divergence",
+        "derived.ccri",
+        "derived.cff",
+        "derived.affe",
+        "derived.ciri",
+        "derived.cibs",
+        "derived.cii",
+        "derived.macro"
+      ],
+      "receipts": [
+        "receipts.audit_certificate",
+        "hashes.*"
+      ]
+    }
+  },
+
+  "flows": [
+    {
+      "from": "Uploaded document(s) (PDF/image/text via Intake UI)",
+      "to": "inputs.intake",
+      "control": "local_indexing_optional_local_ocr_normalization_and_hashing",
+      "evidence": [
+        "/abe---flag/intake/index.html",
+        "/abe---flag/intake/model.json",
+        "/abe---flag/intake/schema.json",
+        "/abe---flag/intake/runner.js"
+      ]
+    },
+    {
+      "from": "inputs.intake + (optional) CAE scope tags",
+      "to": "derived.divergence",
+      "control": "practice_vs_authority_divergence_encoded_in_CDA_runner",
+      "evidence": [
+        "/abe---flag/cda/index.html",
+        "/abe---flag/cda/model.json",
+        "/abe---flag/cda/schema.json",
+        "/abe---flag/cda/runner.js"
+      ]
+    },
+    {
+      "from": "derived.divergence + (optional) CCRI overrides/prefills + CIRI defaults/user inputs",
+      "to": "derived.ciri",
+      "control": "deterministic_recovery_math_and_index_curve_with_documented_formulas",
+      "evidence": [
+        "/abe---flag/ciri/index.html",
+        "/abe---flag/ciri/calc.md",
+        "/abe---flag/ciri/inputs.csv",
+        "/abe---flag/ciri/default_inputs.json",
+        "/abe---flag/ciri/runner.js"
+      ]
+    },
+    {
+      "from": "derived.ciri.total_recovery",
+      "to": "derived.cibs.allocations",
+      "control": "allocation_rules_applied_from_budget_template_with_fallback",
+      "evidence": [
+        "/abe---flag/cibs/index.html",
+        "/abe---flag/cibs/budget_template.csv",
+        "/abe---flag/cibs/runner.js"
+      ]
+    },
+    {
+      "from": "derived.cibs.allocations",
+      "to": "derived.cii.portfolio",
+      "control": "portfolio_generation_prefers_curated_portfolio_csv_then_template_then_fallback",
+      "evidence": [
+        "/abe---flag/cii/index.html",
+        "/abe---flag/cii/portfolio.csv",
+        "/abe---flag/cii/portfolio_template.csv",
+        "/abe---flag/cii/runner.js"
+      ]
+    },
+    {
+      "from": "cff/inputs.csv",
+      "to": "derived.cff",
+      "control": "ON_MISSION_OFF_MISSION_UNCLEAR_classification_applied_locally",
+      "evidence": [
+        "/abe---flag/cff/index.html",
+        "/abe---flag/cff/model.json",
+        "/abe---flag/cff/schema.json",
+        "/abe---flag/cff/runner.js"
+      ]
+    },
+    {
+      "from": "derived.cff",
+      "to": "derived.affe",
+      "control": "explorer_views_and_optional_ciri_prefill_generation",
+      "evidence": [
+        "/abe---flag/affe/index.html",
+        "/abe---flag/affe/model.json",
+        "/abe---flag/affe/runner.js"
+      ]
+    },
+    {
+      "from": "All module outputs (inputs.* and derived.*)",
+      "to": "receipts.audit_certificate + hashes.*",
+      "control": "sha256_hashing_and_audit_certificate_generated_locally_by_integration",
+      "evidence": [
+        "/abe---flag/integration/index.html",
+        "/abe---flag/integration/orchestrator.js",
+        "/abe---flag/engine/core/session.js"
+      ]
+    }
+  ],
+
+  "links": {
+    "site_root": "/abe---flag/",
+    "home": "/abe---flag/index.html",
+    "start_here": "/abe---flag/start/index.html",
+    "doctrines": "/abe---flag/doctrine/index.html",
+    "learn": "/abe---flag/learn/index.html",
+
+    "ciri": "/abe---flag/ciri/index.html",
+    "cibs": "/abe---flag/cibs/index.html",
+    "cii": "/abe---flag/cii/index.html",
+    "cae": "/abe---flag/cae/index.html",
+    "cda": "/abe---flag/cda/index.html",
+    "cff": "/abe---flag/cff/index.html",
+    "affe": "/abe---flag/affe/index.html",
+    "ccri": "/abe---flag/ccri/index.html",
+    "intake": "/abe---flag/intake/index.html",
+    "integration": "/abe---flag/integration/index.html",
+    "macro": "/abe---flag/macro/index.html",
+    "system": "/abe---flag/system/index.html",
+
+    "doi": "https://doi.org/10.5281/zenodo.17586107",
+    "license": "https://creativecommons.org/licenses/by-nc/4.0/"
+  }
+}
