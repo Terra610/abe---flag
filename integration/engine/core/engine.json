@@ -1,1 +1,82 @@
-
+{
+  "engine_id": "ABE_FLAG",
+  "engine_version": "1.0",
+  "description": "ABE Flag - local-only constitutional alignment engine. Orchestrated via Integration.",
+  "firing_order": [
+    "intake",
+    "system",
+    "cae",
+    "divergence",
+    "ccri",
+    "cff",
+    "affe",
+    "ciri",
+    "cibs",
+    "cii",
+    "macro"
+  ],
+  "modules": {
+    "intake": {
+      "required": true,
+      "runner": "../intake/runner.js",
+      "produces": ["inputs.intake"]
+    },
+    "system": {
+      "required": false,
+      "runner": "../system/runner.js",
+      "produces": ["derived.systemmap"]
+    },
+    "cae": {
+      "required": false,
+      "runner": "../cae/runner.js",
+      "produces": ["derived.cae"]
+    },
+    "divergence": {
+      "required": true,
+      "impl": "cda",
+      "runner": "../cda/runner.js",
+      "requires": ["inputs.intake"],
+      "produces": ["derived.divergence"]
+    },
+    "ccri": {
+      "required": false,
+      "runner": "../ccri/runner.js",
+      "produces": ["derived.ccri"]
+    },
+    "cff": {
+      "required": false,
+      "runner": "../cff/runner.js",
+      "produces": ["derived.cff"]
+    },
+    "affe": {
+      "required": false,
+      "runner": "../affe/runner.js",
+      "requires": ["derived.cff"],
+      "produces": ["derived.affe"]
+    },
+    "ciri": {
+      "required": true,
+      "runner": "../ciri/runner.js",
+      "requires": ["derived.divergence"],
+      "produces": ["derived.ciri"]
+    },
+    "cibs": {
+      "required": true,
+      "runner": "../cibs/runner.js",
+      "requires": ["derived.ciri"],
+      "produces": ["derived.cibs"]
+    },
+    "cii": {
+      "required": true,
+      "runner": "../cii/runner.js",
+      "requires": ["derived.cibs"],
+      "produces": ["derived.cii"]
+    },
+    "macro": {
+      "required": false,
+      "runner": "../macro/runner.js",
+      "requires": ["derived.ciri"],
+      "produces": ["derived.macro"]
+    }
+  }
+}
