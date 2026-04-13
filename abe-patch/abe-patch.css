@@ -1,0 +1,5 @@
+
+.abe-utility-bar{position:sticky;top:0;z-index:9999;display:flex;gap:.75rem;align-items:center;justify-content:space-between;padding:.6rem .9rem;background:#0b0d10;color:#eaeef7;font:14px/1.4 system-ui,Segoe UI,Roboto,Helvetica,Arial;border-bottom:1px solid #1f2633}
+.abe-utility-bar a{color:#7bd8ff;text-decoration:none}.abe-utility-bar a:hover{text-decoration:underline}
+.abe-badge{padding:.15rem .5rem;border:1px solid #263144;border-radius:999px;color:#a9b2c7}
+.abe-tooltip{border-bottom:1px dotted #7bd8ff;cursor:help}
