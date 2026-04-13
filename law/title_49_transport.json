@@ -1,0 +1,94 @@
+[
+  {
+    "id": "49usc_31136",
+    "kind": "statute",
+    "domain": "transportation",
+
+    "usc_title": 49,
+    "usc_section": "31136",
+    "usc_full_cite": "49 U.S.C. § 31136",
+
+    "cfr_title": null,
+    "cfr_part": null,
+    "cfr_full_cite": null,
+
+    "constitution_ref": "Art. I §8 cl.3 (Commerce Clause)",
+
+    "population": ["commercial_motor_carriers", "commercial_drivers"],
+
+    "authority_granted": [
+      "Prescribe regulations to ensure commercial motor vehicles are operated safely.",
+      "Set minimum safety standards for commercial motor carriers and their drivers."
+    ],
+    "authority_limited": [
+      "Does not authorize regulation of non-commercial private citizens traveling for personal reasons.",
+      "Does not itself create criminal penalties absent further statutory authorization."
+    ],
+
+    "preemption": {
+      "type": "conflict",
+      "summary": "States may not enforce safety requirements that conflict with FMCSA regulations under this authority.",
+      "related_cases": []
+    },
+
+    "related_cfr": [
+      {
+        "cfr_title": 49,
+        "cfr_part": "390",
+        "cfr_full_cite": "49 CFR Part 390",
+        "purpose": "Defines scope and general applicability of FMCSA safety regulations."
+      }
+    ],
+
+    "funding_links": [
+      {
+        "program": "MCSAP",
+        "usc_authority": "49 U.S.C. § 31102",
+        "conditions": [
+          "Funds must support commercial motor vehicle safety enforcement.",
+          "Funds may not be used to enforce regulations against non-commercial citizens outside FMCSA scope."
+        ]
+      }
+    ],
+
+    "notes": "Foundational authority for FMCSA; critical for distinguishing commercial vs non-commercial jurisdiction."
+  },
+
+  {
+    "id": "49cfr_390_3",
+    "kind": "regulation",
+    "domain": "transportation",
+
+    "usc_title": null,
+    "usc_section": null,
+    "usc_full_cite": null,
+
+    "cfr_title": 49,
+    "cfr_part": "390.3",
+    "cfr_full_cite": "49 CFR 390.3",
+
+    "constitution_ref": "Art. I §8 cl.3 (Commerce Clause)",
+
+    "population": ["commercial_motor_carriers", "commercial_drivers"],
+
+    "authority_granted": [
+      "Specifies which motor carriers and drivers are subject to FMCSA regulations.",
+      "Defines general applicability and exceptions for commercial motor vehicle safety rules."
+    ],
+    "authority_limited": [
+      "Does not extend FMCSA jurisdiction to purely personal, non-commercial driving.",
+      "Cannot enlarge statutory authority beyond what 49 U.S.C. provides."
+    ],
+
+    "preemption": {
+      "type": "conflict",
+      "summary": "State rules that conflict with or expand beyond this scope may be preempted.",
+      "related_cases": []
+    },
+
+    "related_cfr": [],
+    "funding_links": [],
+
+    "notes": "Key regulatory definition for who is 'in' and 'out' of FMCSA scope. CDA/CAE use this to detect when states treat non-commercial citizens as commercial drivers."
+  }
+]

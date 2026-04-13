@@ -1,0 +1,258 @@
+[
+  {
+    "id": "49usc_31102_mcsap",
+    "kind": "funding",
+    "domain": "transportation",
+
+    "usc_title": 49,
+    "usc_section": "31102",
+    "usc_full_cite": "49 U.S.C. § 31102",
+
+    "cfr_title": 49,
+    "cfr_part": "350",
+    "cfr_full_cite": "49 CFR Part 350",
+
+    "constitution_ref": "Art. I §8 cl.3 (Commerce Clause)",
+
+    "population": ["states", "territories", "fmcsap_grant_recipients"],
+
+    "authority_granted": [
+      "Authorizes the Secretary of Transportation to make Motor Carrier Safety Assistance Program (MCSAP) grants to States.",
+      "Allows use of federal funds to improve commercial motor vehicle safety, enforcement, and data systems related to motor carriers and commercial drivers."
+    ],
+    "authority_limited": [
+      "Does not authorize States to use MCSAP funds to enforce traffic laws against non-commercial private citizens.",
+      "Does not expand the scope of FMCSA jurisdiction beyond commercial motor vehicles and motor carriers as defined in Title 49 and FMCSR.",
+      "Does not allow MCSAP-funded programs to contradict or exceed federal safety regulations in 49 CFR 350 and 390–399."
+    ],
+
+    "preemption": {
+      "type": "none",
+      "summary": "This section is a funding authority. It does not directly preempt State law, but the terms and conditions of MCSAP grants restrict how States may use federal funds.",
+      "related_cases": []
+    },
+
+    "related_cfr": [
+      {
+        "cfr_title": 49,
+        "cfr_part": "350",
+        "cfr_full_cite": "49 CFR Part 350",
+        "purpose": "Implements the Motor Carrier Safety Assistance Program and defines eligibility, allowable activities, and funding conditions."
+      }
+    ],
+
+    "funding_links": [
+      {
+        "program": "MCSAP",
+        "usc_authority": "49 U.S.C. § 31102",
+        "conditions": [
+          "Funds must be used to support commercial motor vehicle safety programs consistent with FMCSA regulations.",
+          "Officers and activities supported by these funds are intended for enforcement related to motor carriers and commercial transportation, not general traffic enforcement against non-commercial citizens."
+        ]
+      }
+    ],
+
+    "notes": "Central funding authority for MCSAP. CFF uses this node to detect when MCSAP-funded enforcement is applied to non-commercial drivers or activities outside commercial motor vehicle safety."
+  },
+  {
+    "id": "49usc_31136_fmcsa_safety",
+    "kind": "statute",
+    "domain": "transportation",
+
+    "usc_title": 49,
+    "usc_section": "31136",
+    "usc_full_cite": "49 U.S.C. § 31136",
+
+    "cfr_title": null,
+    "cfr_part": null,
+    "cfr_full_cite": null,
+
+    "constitution_ref": "Art. I §8 cl.3 (Commerce Clause)",
+
+    "population": ["motor_carriers", "commercial_drivers"],
+
+    "authority_granted": [
+      "Authorizes the Secretary of Transportation to prescribe regulations to ensure that commercial motor vehicles are operated safely.",
+      "Allows the establishment of minimum safety standards for commercial motor carriers and their drivers."
+    ],
+    "authority_limited": [
+      "Does not itself authorize regulation of purely personal, non-commercial use of motor vehicles by private citizens.",
+      "Does not enlarge federal jurisdiction into non-commercial intrastate travel unrelated to motor carrier operations."
+    ],
+
+    "preemption": {
+      "type": "conflict",
+      "summary": "States may not enforce safety requirements that conflict with or frustrate federal safety regulations issued under this authority.",
+      "related_cases": []
+    },
+
+    "related_cfr": [
+      {
+        "cfr_title": 49,
+        "cfr_part": "390",
+        "cfr_full_cite": "49 CFR Part 390",
+        "purpose": "Defines general applicability and scope of the Federal Motor Carrier Safety Regulations."
+      }
+    ],
+
+    "funding_links": [],
+
+    "notes": "Foundational FMCSA safety authority. Used by CAE/CDA to distinguish commercial safety regulation from non-commercial traffic regulation."
+  },
+  {
+    "id": "49usc_31141_preemption",
+    "kind": "statute",
+    "domain": "transportation",
+
+    "usc_title": 49,
+    "usc_section": "31141",
+    "usc_full_cite": "49 U.S.C. § 31141",
+
+    "cfr_title": null,
+    "cfr_part": null,
+    "cfr_full_cite": null,
+
+    "constitution_ref": "Art. VI (Supremacy Clause)",
+
+    "population": ["states", "motor_carriers", "commercial_drivers"],
+
+    "authority_granted": [
+      "Authorizes the Secretary of Transportation to review State commercial motor vehicle safety regulations.",
+      "Allows the Secretary to declare State laws or regulations preempted when they are less stringent, incompatible, or create an unreasonable burden on interstate commerce compared to federal standards."
+    ],
+    "authority_limited": [
+      "Applies to State laws relating to commercial motor vehicle safety, not to general non-commercial driving rules.",
+      "Does not authorize federal control over purely local, non-commercial traffic matters unrelated to commercial motor vehicle operations."
+    ],
+
+    "preemption": {
+      "type": "conflict",
+      "summary": "Preempts State commercial motor vehicle safety regulations that conflict with federal standards or unreasonably burden interstate commerce.",
+      "related_cases": []
+    },
+
+    "related_cfr": [],
+    "funding_links": [],
+
+    "notes": "Core statutory preemption tool for FMCSA. CDA/CAE use this to flag State regulations that attempt to regulate commercial carriers in ways that conflict with federal standards."
+  },
+  {
+    "id": "49usc_14501c_motor_carrier_preemption",
+    "kind": "statute",
+    "domain": "transportation",
+
+    "usc_title": 49,
+    "usc_section": "14501(c)",
+    "usc_full_cite": "49 U.S.C. § 14501(c)",
+
+    "cfr_title": null,
+    "cfr_part": null,
+    "cfr_full_cite": null,
+
+    "constitution_ref": "Art. I §8 cl.3 (Commerce Clause)",
+
+    "population": ["motor_carriers", "commercial_transportation"],
+
+    "authority_granted": [
+      "Preempts State and local laws related to the price, route, or service of motor carriers with respect to the transportation of property in interstate commerce, with limited exceptions."
+    ],
+    "authority_limited": [
+      "Does not convert non-commercial private drivers into motor carriers.",
+      "Does not preempt traditional State police powers over general traffic safety unrelated to motor carrier services."
+    ],
+
+    "preemption": {
+      "type": "field",
+      "summary": "Occupies much of the field of economic regulation of interstate motor carriers (price, routes, services), limiting State authority in that area.",
+      "related_cases": []
+    },
+
+    "related_cfr": [],
+    "funding_links": [],
+
+    "notes": "Important background preemption statute for motor carrier regulation. Helps CDA/CAE differentiate economic regulation of carriers from non-commercial driving."
+  },
+  {
+    "id": "49cfr_350_mcsap_rules",
+    "kind": "regulation",
+    "domain": "transportation",
+
+    "usc_title": 49,
+    "usc_section": "31102",
+    "usc_full_cite": "49 U.S.C. § 31102",
+
+    "cfr_title": 49,
+    "cfr_part": "350",
+    "cfr_full_cite": "49 CFR Part 350",
+
+    "constitution_ref": "Art. I §8 cl.3 (Commerce Clause)",
+
+    "population": ["states", "fmcsap_grant_recipients"],
+
+    "authority_granted": [
+      "Defines eligibility, conditions, and allowable uses of MCSAP grant funds.",
+      "Describes required elements of a State Commercial Vehicle Safety Plan (CVSP) for receiving and using MCSAP funds."
+    ],
+    "authority_limited": [
+      "Does not authorize States to use MCSAP-funded officers to enforce general non-commercial traffic laws unrelated to commercial motor vehicle safety.",
+      "Does not allow State plans that are inconsistent with FMCSA’s jurisdiction or statutory limits."
+    ],
+
+    "preemption": {
+      "type": "none",
+      "summary": "Implements a funding program rather than directly displacing State law, but its conditions can make off-mission use of funds a violation of grant terms.",
+      "related_cases": []
+    },
+
+    "related_cfr": [],
+    "funding_links": [
+      {
+        "program": "MCSAP",
+        "usc_authority": "49 U.S.C. § 31102",
+        "conditions": [
+          "Activities must align with the State’s approved Commercial Vehicle Safety Plan.",
+          "Enforcement must relate to commercial motor vehicles and motor carriers as defined in FMCSA regulations."
+        ]
+      }
+    ],
+
+    "notes": "Operational rule set for MCSAP grants. CFF/AFFE use this to determine when specific line items or enforcement activities are OFF_MISSION for federal funding."
+  },
+  {
+    "id": "49cfr_390_3_applicability",
+    "kind": "regulation",
+    "domain": "transportation",
+
+    "usc_title": null,
+    "usc_section": null,
+    "usc_full_cite": null,
+
+    "cfr_title": 49,
+    "cfr_part": "390.3",
+    "cfr_full_cite": "49 CFR 390.3",
+
+    "constitution_ref": "Art. I §8 cl.3 (Commerce Clause)",
+
+    "population": ["motor_carriers", "commercial_drivers"],
+
+    "authority_granted": [
+      "Defines which motor carriers, drivers, and commercial motor vehicles are subject to the Federal Motor Carrier Safety Regulations.",
+      "Identifies limited exceptions to FMCSA applicability."
+    ],
+    "authority_limited": [
+      "Explicitly excludes certain non-commercial operations from FMCSR applicability.",
+      "Does not extend FMCSA authority to purely personal, non-commercial use of a motor vehicle by a private citizen."
+    ],
+
+    "preemption": {
+      "type": "conflict",
+      "summary": "State rules that treat excluded non-commercial operations as if they were FMCSA-regulated can conflict with this applicability definition.",
+      "related_cases": []
+    },
+
+    "related_cfr": [],
+    "funding_links": [],
+
+    "notes": "Key applicability provision. CDA uses this to flag scenarios where States treat non-commercial citizens as if they are FMCSA-regulated commercial drivers."
+  }
+]

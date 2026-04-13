@@ -1,0 +1,82 @@
+{
+  "version": "1.0",
+  "module": "LAW",
+  "source": {
+    "name": "FMCSA / FMCSR scope anchors",
+    "license": "CC BY-NC 4.0 (A.B.E. annotations on top of public law)",
+    "notes": "Summaries derived from public FMCSA regulations; not a substitute for the full CFR text."
+  },
+  "entries": [
+    {
+      "id": "fmcsr_390_3_applicability",
+      "type": "regulation",
+      "jurisdiction": "federal",
+      "citation": "49 CFR 390.3",
+      "title": "General applicability — FMCSA safety regulations",
+      "summary": "Defines when the FMCSA safety regulations (Parts 390–399) apply. Generally applies to commercial motor vehicles engaged in interstate commerce or specific intrastate commercial activities, not to ordinary non-commercial private passenger vehicles.",
+      "full_text_available": false,
+      "full_text_ref": "CFR: 49 CFR 390.3",
+      "scope_tags": [
+        "commercial_driver",
+        "cmv_only",
+        "enforcement_limits",
+        "preemption",
+        "funding_fmcsr"
+      ],
+      "on_mission_conditions": "Applied to drivers and motor carriers operating commercial motor vehicles (CMVs) as defined in 49 CFR 390.5, in covered commercial activities.",
+      "off_mission_signals": "Used as justification to stop, detain, ticket, or process non-commercial private citizens in ordinary passenger vehicles, who are not operating CMVs within the FMCSA definitions.",
+      "preemption_strength": "strong",
+      "funding_program": "FMCSA / MCSAP-linked commercial enforcement",
+      "funding_on_mission_example": "Roadside inspections of interstate CMV operators subject to hours-of-service, drug and alcohol testing, and other FMCSR provisions.",
+      "funding_off_mission_example": "Using CMV-focused enforcement units or MCSAP-funded patrol to stop and ticket non-commercial private drivers for general traffic violations unrelated to CMV safety.",
+      "notes_for_engine": "CDA can map flags 'scope_noncommercial_treated_as_commercial' and 'preemption_conflict' to this authority where states extend FMCSR-based enforcement to non-commercial citizens."
+    },
+    {
+      "id": "fmcsr_390_5_definitions_cmv",
+      "type": "regulation",
+      "jurisdiction": "federal",
+      "citation": "49 CFR 390.5",
+      "title": "Definitions — Commercial Motor Vehicle (CMV)",
+      "summary": "Provides the definition of 'commercial motor vehicle' for purposes of FMCSA safety regulations, typically based on weight, passenger capacity, or hazardous materials, and tied to commercial use.",
+      "full_text_available": false,
+      "full_text_ref": "CFR: 49 CFR 390.5",
+      "scope_tags": [
+        "commercial_driver",
+        "cmv_only",
+        "enforcement_limits",
+        "funding_fmcsr"
+      ],
+      "on_mission_conditions": "Enforcement limited to vehicles and operations meeting the regulatory CMV definitions (e.g., weight thresholds, passenger capacity, hazardous materials, business/commercial use).",
+      "off_mission_signals": "Treating any privately owned passenger car used for ordinary personal travel as a 'CMV' solely because it is on a public roadway.",
+      "preemption_strength": "moderate",
+      "funding_program": "FMCSA / MCSAP",
+      "funding_on_mission_example": "Inspections and enforcement actions targeting CMV operators in regulated commercial service.",
+      "funding_off_mission_example": "Using CMV-focused funding, personnel, or infrastructure primarily to enforce general state traffic codes on non-commercial private vehicles.",
+      "notes_for_engine": "CDA/CFF can use this to determine whether a given enforcement scenario involves a CMV as defined or an off-scope private citizen."
+    },
+    {
+      "id": "mcsap_350_303_compatibility",
+      "type": "regulation",
+      "jurisdiction": "federal",
+      "citation": "49 CFR 350.303",
+      "title": "MCSAP — What conditions must a State meet to qualify for MCSAP funds?",
+      "summary": "Defines compatibility requirements for States to receive MCSAP funding, including adopting and enforcing safety regulations applicable to commercial motor vehicles and drivers.",
+      "full_text_available": false,
+      "full_text_ref": "CFR: 49 CFR 350.303",
+      "scope_tags": [
+        "funding_mcsap",
+        "funding_conditions",
+        "commercial_driver",
+        "cmv_only",
+        "preemption"
+      ],
+      "on_mission_conditions": "State adopts and enforces laws/regulations that are compatible with federal FMCSRs for CMVs and commercial drivers as defined.",
+      "off_mission_signals": "State uses MCSAP-funded enforcement to police non-commercial drivers, private vehicles not defined as CMVs, or general criminal code unrelated to CMV safety.",
+      "preemption_strength": "moderate",
+      "funding_program": "MCSAP",
+      "funding_on_mission_example": "Commercial vehicle safety inspections, CMV crash reduction programs, enforcement directly tied to FMCSR compliance.",
+      "funding_off_mission_example": "Spending MCSAP grant funds on routine patrols that primarily issue citations to non-commercial drivers (e.g., seatbelt, minor speeding, license status) not tied to CMVs or FMCSR scope.",
+      "notes_for_engine": "CFF can use this as a rule to classify line items as OFF_MISSION when spend is clearly directed to broad, non-CMV traffic enforcement."
+    }
+  ]
+}
