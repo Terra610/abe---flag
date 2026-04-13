@@ -1,0 +1,12 @@
+{
+  "version": "1.0",
+  "description": "Defines domains and weighting factors for constitutional divergence scoring.",
+  "domains": [
+    {"key":"commerce", "name":"Commerce Regulation", "weight":0.25},
+    {"key":"justice", "name":"Judicial Oversight & Remedies", "weight":0.20},
+    {"key":"healthcare", "name":"Healthcare Policy & Funding", "weight":0.15},
+    {"key":"transport", "name":"Mobility & Transportation", "weight":0.10},
+    {"key":"education", "name":"Education & Access", "weight":0.15},
+    {"key":"housing", "name":"Housing & Property Rights", "weight":0.15}
+  ]
+}
