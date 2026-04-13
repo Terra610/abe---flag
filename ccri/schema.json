@@ -1,0 +1,219 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CCRI_inputs_v1",
+  "description": "Schema for CCRI (Consumer Credit Risk Integrity) inputs.json scenario file.",
+  "type": "object",
+  "required": ["version", "module", "scenarios"],
+  "additionalProperties": false,
+  "properties": {
+    "version": {
+      "type": "string"
+    },
+    "module": {
+      "type": "string",
+      "const": "CCRI"
+    },
+    "scenarios": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "jurisdiction",
+          "institution_type",
+          "loan_types",
+          "data_sources_used",
+          "license_requirements",
+          "population_impact"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier for this CCRI scenario."
+          },
+          "jurisdiction": {
+            "type": "string",
+            "description": "State or region where the institution operates (e.g., 'Iowa')."
+          },
+          "institution_type": {
+            "type": "string",
+            "description": "Type of institution being evaluated.",
+            "enum": [
+              "bank",
+              "credit_union",
+              "auto_finance",
+              "dealership",
+              "captive_finance",
+              "fintech",
+              "other"
+            ]
+          },
+          "institution_name": {
+            "type": "string",
+            "description": "Optional human-readable institution name."
+          },
+          "loan_types": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string",
+              "enum": [
+                "auto_purchase",
+                "auto_refinance",
+                "personal_installment",
+                "credit_card",
+                "consolidation",
+                "small_business",
+                "other"
+              ]
+            }
+          },
+          "uses_ssn_for": {
+            "type": "array",
+            "description": "Declared uses of SSN in the institution workflow.",
+            "items": {
+              "type": "string",
+              "enum": [
+                "identity_match_credit_bureau",
+                "identity_match_internal",
+                "irs_reporting",
+                "fraud_detection",
+                "third_party_background_checks",
+                "unclassified_other"
+              ]
+            }
+          },
+          "data_sources_used": {
+            "type": "object",
+            "description": "Binary map of which major data sources feed the underwriting system.",
+            "required": [
+              "credit_bureau",
+              "paystubs_or_w2",
+              "bank_statements",
+              "dmv_records",
+              "dot_or_fmcsa_records",
+              "third_party_background_vendors"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "credit_bureau": { "type": "boolean" },
+              "paystubs_or_w2": { "type": "boolean" },
+              "bank_statements": { "type": "boolean" },
+              "dmv_records": { "type": "boolean" },
+              "dot_or_fmcsa_records": { "type": "boolean" },
+              "third_party_background_vendors": { "type": "boolean" },
+              "other_public_records": { "type": "boolean" }
+            }
+          },
+          "dmv_usage_details": {
+            "type": "object",
+            "description": "How DMV data is used inside the system, if at all.",
+            "additionalProperties": false,
+            "properties": {
+              "pulled_for_identity_only": { "type": "boolean" },
+              "used_in_underwriting_decisions": { "type": "boolean" },
+              "used_for_pricing_or_interest_rate": { "type": "boolean" },
+              "fields_used": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "license_status",
+                    "suspension_flags",
+                    "traffic_violations",
+                    "dui_or_owi_notations",
+                    "accident_history",
+                    "points_or_scoring",
+                    "other"
+                  ]
+                }
+              },
+              "notes": { "type": "string" }
+            }
+          },
+          "dot_or_fmcsa_usage_details": {
+            "type": "object",
+            "description": "How DOT/FMCSA data is used, if at all.",
+            "additionalProperties": false,
+            "properties": {
+              "is_dot_regulated_population": {
+                "type": "boolean",
+                "description": "True if this scenario explicitly covers DOT-regulated safety-sensitive employees."
+              },
+              "pulls_cdl_or_safety_record": { "type": "boolean" },
+              "uses_mcsap_or_fmcsr_flags": { "type": "boolean" },
+              "notes": { "type": "string" }
+            }
+          },
+          "license_requirements": {
+            "type": "object",
+            "description": "Which license-related gates are enforced.",
+            "required": [
+              "requires_valid_license_to_apply",
+              "requires_valid_license_to_fund_loan",
+              "requires_valid_license_to_test_drive"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "requires_valid_license_to_apply": { "type": "boolean" },
+              "requires_valid_license_to_fund_loan": { "type": "boolean" },
+              "requires_valid_license_to_test_drive": { "type": "boolean" },
+              "exceptions_available": { "type": "boolean" },
+              "notes": { "type": "string" }
+            }
+          },
+          "population_impact": {
+            "type": "object",
+            "description": "High-level estimate of how many people are affected.",
+            "required": [
+              "applications_per_year",
+              "denial_rate_overall"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "applications_per_year": {
+                "type": "number",
+                "minimum": 0
+              },
+              "denial_rate_overall": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "denial_rate_for_suspended_or_no_license": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "estimated_noncommercial_applicants_affected": {
+                "type": "number",
+                "minimum": 0
+              }
+            }
+          },
+          "denial_reasons_top": {
+            "type": "array",
+            "description": "Top denial reasons as recorded by the institution.",
+            "items": { "type": "string" }
+          },
+          "appeal_process": {
+            "type": "object",
+            "description": "Whether and how people can challenge denials.",
+            "additionalProperties": false,
+            "properties": {
+              "has_appeal_mechanism": { "type": "boolean" },
+              "human_review_available": { "type": "boolean" },
+              "notes": { "type": "string" }
+            }
+          },
+          "notes": {
+            "type": "string",
+            "description": "Freeform notes about this scenario."
+          }
+        }
+      }
+    }
+  }
+                    }
