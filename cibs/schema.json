@@ -1,0 +1,11 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "title":"CIBS auto_budget.csv header schema",
+  "type":"object",
+  "properties":{
+    "category":{"type":"string","minLength":1},
+    "value":{"type":"number","minimum":0}
+  },
+  "required":["category","value"],
+  "additionalProperties":true
+}
