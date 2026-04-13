@@ -1,0 +1,6 @@
+name,category,cost_usd,households,status
+12-unit infill apartments,housing,2400000,12,scoping
+Community clinic buildout,health,1800000,350,design
+Regional food hub,food,950000,900,pre-award
+Adult credentialing center,education,650000,220,active
+Transit micro-mobility pilot,transport,400000,1500,active
