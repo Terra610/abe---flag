@@ -1,468 +1,207 @@
 // integration/orchestrator.js
-// ABE Flag Orchestrator (Mode B): Run Engine in-order, local-only, receipts + hashes.
-// Manifest-driven. No servers, no logins, no telemetry.
+// Local-only orchestration helper for A.B.E.
+// Fixes engine/core pathing so Integration resolves its own core files correctly.
 
-import {
-  getOrCreateScenario,
-  saveScenario,
-  resetScenario,
-  setModuleStatus,
-  scenarioSet,
-  scenarioGet,
-  storeHash,
-  downloadJSON
-} from "../engine/core/session.js";
+import { scenarioGet, getOrCreateScenario } from "./engine/core/session.js";
 
-async function loadManifest() {
-  const res = await fetch("../engine/core/engine.json", { cache: "no-store" });
-  if (!res.ok) throw new Error("Failed to load engine manifest.");
+async function loadEngineManifest() {
+  const res = await fetch("./engine/core/engine.json", { cache: "no-store" });
+  if (!res.ok) {
+    throw new Error(`Could not load engine manifest (HTTP ${res.status})`);
+  }
   return res.json();
 }
 
-function pillClass(status) {
-  const s = (status || "").toUpperCase();
-  if (s === "OK") return "pill ok";
-  if (s === "WARN") return "pill warn";
-  if (s === "FAIL") return "pill fail";
-  if (s === "SKIP") return "pill skip";
-  if (s === "RUNNING") return "pill pending";
-  return "pill pending";
-}
-
-function renderStatus() {
-  const scenario = getOrCreateScenario();
-  const grid = document.getElementById("statusGrid");
-  if (!grid) return;
-
-  grid.innerHTML = "";
-
-  const entries = Object.entries(scenario.module_status || {});
-  if (!entries.length) {
-    grid.textContent = "No scenario initialized yet.";
-    return;
-  }
-
-  for (const [key, info] of entries) {
-    const row = document.createElement("div");
-    row.className = "status";
-
-    const a = document.createElement("div");
-    a.textContent = key;
-
-    const b = document.createElement("div");
-    const status = info?.status || "PENDING";
-    b.innerHTML = `<span class="${pillClass(status)}">${status}</span>`;
-
-    const c = document.createElement("div");
-    c.textContent = info?.notes || "";
-
-    row.appendChild(a);
-    row.appendChild(b);
-    row.appendChild(c);
-    grid.appendChild(row);
-  }
-}
-
-function listFiles(files) {
-  const el = document.getElementById("fileList");
-  if (!el) return;
-
-  el.innerHTML = "";
-  if (!files || !files.length) return;
-
-  const ul = document.createElement("ul");
-  for (const f of files) {
-    const li = document.createElement("li");
-    li.textContent = `${f.name} (${Math.round(f.size / 1024)} KB)`;
-    ul.appendChild(li);
-  }
-  el.appendChild(ul);
-}
-
-function initScenario() {
-  const s = getOrCreateScenario();
-  s.module_status = s.module_status || {};
-  saveScenario(s);
-  renderStatus();
-}
-
-function loadDefaultScenario() {
-  // Default inputs that let required modules run without user uploads.
-  // Keep minimal + non-sensitive.
-  initScenario();
-
-  scenarioSet("inputs.intake", {
-    source: "default_scenario",
-    created_at: new Date().toISOString(),
-    notes: "Default scenario loaded (no user upload)."
-  });
-
-  scenarioSet("inputs.default_loaded", true);
-
-  saveScenario(getOrCreateScenario());
-  renderStatus();
-}
-
-function setPendingFromManifest(manifest) {
-  const s = getOrCreateScenario();
-  s.module_status = s.module_status || {};
-
-  for (const k of manifest.firing_order || []) {
-    if (!s.module_status[k]) {
-      s.module_status[k] = {
-        status: "PENDING",
-        generated_at: new Date().toISOString(),
-        notes: ""
-      };
-    }
-  }
-  saveScenario(s);
-}
-
-function hasRequiredPaths(paths = []) {
-  const missing = [];
-  for (const p of paths) {
-    const v = scenarioGet(p);
-    if (v === undefined || v === null) missing.push(p);
-  }
-  return missing;
-}
-
-/* =========================
-   PLAIN ENGLISH RECEIPT BUILDER
-   Writes: derived.plain_english
-   Format: Citizen Summary first, Technical Appendix second
-   ========================= */
-
-function safeKeys(obj) {
+function safeReadJson(key) {
   try {
-    return Object.keys(obj || {});
-  } catch {
-    return [];
+    const raw = localStorage.getItem(key);
+    return raw ? JSON.parse(raw) : null;
+  } catch (err) {
+    console.warn(`Could not parse localStorage key ${key}:`, err);
+    return null;
   }
 }
 
-function buildPlainEnglish(finalScenario, receipt) {
-  const engineId = receipt?.engine?.engine_id || finalScenario?.engine?.engine_id || "ABE_FLAG";
-  const engineVersion = receipt?.engine?.engine_version || finalScenario?.engine?.engine_version || "1.0";
-
-  const status = receipt?.module_status || finalScenario?.module_status || {};
-  const hashes = receipt?.hashes || finalScenario?.hashes || {};
-  const inputsPresent = receipt?.inputs_present || safeKeys(finalScenario?.inputs);
-  const derivedPresent = receipt?.derived_present || safeKeys(finalScenario?.derived);
-
-  const entries = Object.entries(status);
-  const ran = entries.filter(([, v]) => String(v?.status || "").toUpperCase() !== "PENDING");
-  const ok = ran.filter(([, v]) => String(v?.status || "").toUpperCase() === "OK");
-  const warn = ran.filter(([, v]) => String(v?.status || "").toUpperCase() === "WARN");
-  const fail = ran.filter(([, v]) => String(v?.status || "").toUpperCase() === "FAIL");
-  const skip = ran.filter(([, v]) => String(v?.status || "").toUpperCase() === "SKIP");
-
-  const receiptHash = hashes?.["receipts.audit_certificate"] || null;
-  const plainHash = hashes?.["derived.plain_english"] || null;
-
-  const overall =
-    fail.length ? "FAIL" :
-    warn.length ? "WARN" :
-    ok.length ? "OK" :
-    "UNKNOWN";
-
-  const citizen = {
-    headline: `ABE Engine Run: ${overall}`,
-    what_this_is: [
-      "This page ran a local-only engine in your browser.",
-      "Nothing was uploaded. No accounts. No tracking.",
-      "The engine produces outputs and hashes them so you can prove what ran."
-    ],
-    what_happened: [
-      `Engine: ${engineId} v${engineVersion}`,
-      `Modules completed: ${ok.length}/${ran.length || entries.length}`,
-      `Warnings: ${warn.length}`,
-      `Failures: ${fail.length}`,
-      `Skipped: ${skip.length}`
-    ],
-    what_to_download: [
-      "audit_certificate.json = the official run receipt (module status + hashes).",
-      "scenario.json = the full scenario store (inputs + derived outputs + hashes)."
-    ],
-    how_to_verify_hashes: [
-      "A hash is a fingerprint of an output.",
-      "If the output changes, the hash changes.",
-      "To verify: re-run the engine on the same inputs and compare hashes."
-    ],
-    key_hashes: {
-      audit_certificate: receiptHash,
-      plain_english: plainHash
-    },
-    what_outputs_exist_now: {
-      inputs_present: inputsPresent,
-      derived_present: derivedPresent
-    }
-  };
-
-  const technical = {
-    overall_status: overall,
-    module_status: status,
-    hashes,
-    canonical_paths: {
-      receipt_path: "receipts.audit_certificate",
-      plain_english_path: "derived.plain_english"
-    },
-    produced_keys: {
-      inputs_present: inputsPresent,
-      derived_present: derivedPresent
-    }
-  };
-
+function modulePresence() {
   return {
-    generated_at: new Date().toISOString(),
-    engine: { engine_id: engineId, engine_version: engineVersion },
-    citizen_summary: citizen,
-    technical_appendix: technical
+    intake: !!safeReadJson("abe_intake_artifact"),
+    cda: !!safeReadJson("abe_cda_artifact") || !!safeReadJson("ABE_CDA_SCENARIO_V1"),
+    cdi: !!safeReadJson("abe_cdi_artifact"),
+    cff: !!safeReadJson("abe_cff_artifact"),
+    affe: !!safeReadJson("abe_affe_artifact"),
+    ciri: !!safeReadJson("abe_ciri_artifact") || !!safeReadJson("ABE_CIRI_SCENARIO_V2"),
+    cibs: !!safeReadJson("abe_cibs_artifact") || !!safeReadJson("ABE_CIBS_BUDGET_V1"),
+    cii: !!safeReadJson("abe_cii_artifact") || !!safeReadJson("ABE_CII_PORTFOLIO_V1"),
+    macro: !!safeReadJson("abe_macro_artifact"),
+    integration: !!safeReadJson("abe_integration_artifact")
   };
 }
 
-async function loadRunner(runnerPath) {
-  // runnerPath in manifest is relative to integration/ folder
-  return import(runnerPath);
+function readinessScore(presence) {
+  const vals = Object.values(presence);
+  const present = vals.filter(Boolean).length;
+  return vals.length ? Math.round((present / vals.length) * 100) : 0;
 }
 
-async function runEngine(files) {
-  const manifest = await loadManifest();
-
-  initScenario();
-  setPendingFromManifest(manifest);
-
-  // Auto-default: if user didn't upload anything and Intake hasn't populated inputs.intake,
-  // we still run deterministically with a safe default.
-  if (scenarioGet("inputs.intake") == null) {
-    loadDefaultScenario();
-  }
-
-  renderStatus();
-
-  // Save file metadata only (no uploads anywhere).
-  if (files && files.length) {
-    const meta = Array.from(files).map((f) => ({
-      name: f.name,
-      size: f.size,
-      type: f.type,
-      lastModified: f.lastModified
-    }));
-    scenarioSet("inputs.intake_files_meta", meta);
-  }
-
-  // Run modules in order
-  for (const moduleKey of manifest.firing_order || []) {
-    const cfg = manifest.modules?.[moduleKey] || {};
-    const required = !!cfg.required;
-    const requires = cfg.requires || [];
-    const produces = cfg.produces || [];
-    const runnerPath = cfg.runner;
-
-    setModuleStatus(moduleKey, "RUNNING", "Running…");
-    renderStatus();
-
-    const missing = hasRequiredPaths(requires);
-    if (missing.length) {
-      const note = `Missing required inputs: ${missing.join(", ")}`;
-      if (required) {
-        setModuleStatus(moduleKey, "FAIL", note);
-        renderStatus();
-        break;
-      } else {
-        setModuleStatus(moduleKey, "SKIP", note);
-        renderStatus();
-        continue;
-      }
+function buildDownstreamView(presence) {
+  return {
+    from_cda: {
+      ready_for_cdi: !!presence.cda,
+      ready_for_cff: !!presence.cda,
+      ready_for_integration: !!presence.cda
+    },
+    from_cdi: {
+      ready_for_affe: !!presence.cdi,
+      ready_for_ciri: !!presence.cdi,
+      ready_for_integration: !!presence.cdi
+    },
+    from_cff: {
+      ready_for_affe: !!presence.cff,
+      ready_for_integration: !!presence.cff
+    },
+    from_affe: {
+      ready_for_ciri: !!presence.affe,
+      ready_for_integration: !!presence.affe
+    },
+    from_ciri: {
+      ready_for_cibs: !!presence.ciri,
+      ready_for_cii: !!presence.ciri,
+      ready_for_integration: !!presence.ciri
+    },
+    from_cibs: {
+      ready_for_cii: !!presence.cibs,
+      ready_for_integration: !!presence.cibs
+    },
+    from_cii: {
+      ready_for_macro: !!presence.cii,
+      ready_for_integration: !!presence.cii
+    },
+    from_macro: {
+      ready_for_integration: !!presence.macro
     }
+  };
+}
 
-    if (!runnerPath) {
-      const note = "No runner defined in manifest.";
-      if (required) {
-        setModuleStatus(moduleKey, "FAIL", note);
-        renderStatus();
-        break;
-      } else {
-        setModuleStatus(moduleKey, "SKIP", note);
-        renderStatus();
-        continue;
-      }
+function buildModuleSummary(artifacts, presence) {
+  return {
+    intake_title: artifacts.intake?.original_file_name || artifacts.intake?.doc_type || "",
+    cda_score:
+      artifacts.cda?.divergence_score ??
+      artifacts.cda?.result?.divergence_score ??
+      null,
+    cdi_weighted_divergence:
+      artifacts.cdi?.result?.weighted_divergence ?? null,
+    cff_classification:
+      artifacts.cff?.result?.classification ||
+      artifacts.cff?.classification ||
+      "",
+    affe_classification:
+      artifacts.affe?.result?.classification ||
+      artifacts.affe?.classification ||
+      "",
+    ciri_total_recovery:
+      artifacts.ciri?.result?.net_modeled_recovery ??
+      artifacts.ciri?.total_recovery ??
+      null,
+    cibs_budget_total:
+      artifacts.cibs?.budget?.available_budget ??
+      artifacts.cibs?.total_recovery ??
+      null,
+    cii_total_units:
+      artifacts.cii?.result?.total_units ??
+      (Array.isArray(artifacts.cii?.portfolio) ? artifacts.cii.portfolio.length : 0) ??
+      0,
+    cii_total_funded_amount:
+      artifacts.cii?.result?.total_funded_amount ??
+      artifacts.cii?.total_budget_in ??
+      null,
+    macro_uplift:
+      artifacts.macro?.result?.projected_macro_uplift ?? null,
+    presence
+  };
+}
+
+function buildIntegritySummary(presence) {
+  const out = [];
+  if (!presence.intake) out.push("Missing Intake artifact.");
+  if (!presence.cda) out.push("Missing CDA artifact.");
+  if (!presence.cdi) out.push("Missing CDI artifact.");
+  if (!presence.cff) out.push("Missing CFF artifact.");
+  if (!presence.affe) out.push("Missing AFFE artifact.");
+  if (!presence.ciri) out.push("Missing CIRI artifact.");
+  if (!presence.cibs) out.push("Missing CIBS artifact.");
+  if (!presence.cii) out.push("Missing CII artifact.");
+  if (!out.length) out.push("All tracked module artifacts are present.");
+  return out;
+}
+
+function collectArtifacts() {
+  return {
+    intake: safeReadJson("abe_intake_artifact"),
+    cda: safeReadJson("abe_cda_artifact") || safeReadJson("ABE_CDA_SCENARIO_V1"),
+    cdi: safeReadJson("abe_cdi_artifact"),
+    cff: safeReadJson("abe_cff_artifact"),
+    affe: safeReadJson("abe_affe_artifact"),
+    ciri: safeReadJson("abe_ciri_artifact") || safeReadJson("ABE_CIRI_SCENARIO_V2"),
+    cibs: safeReadJson("abe_cibs_artifact") || safeReadJson("ABE_CIBS_BUDGET_V1"),
+    cii: safeReadJson("abe_cii_artifact") || safeReadJson("ABE_CII_PORTFOLIO_V1"),
+    macro: safeReadJson("abe_macro_artifact")
+  };
+}
+
+export async function buildIntegrationArtifact(meta = {}) {
+  const manifest = await loadEngineManifest();
+  const presence = modulePresence();
+  const artifacts = collectArtifacts();
+  const readiness = readinessScore(presence);
+  const downstream = buildDownstreamView(presence);
+  const summary = buildModuleSummary(artifacts, presence);
+  const integrity = buildIntegritySummary(presence);
+
+  const integratedTotal =
+    Number(summary.macro_uplift) ||
+    Number(summary.cii_total_funded_amount) ||
+    Number(summary.cibs_budget_total) ||
+    Number(summary.ciri_total_recovery) ||
+    0;
+
+  const integrationArtifact = {
+    module: "integration",
+    version: manifest?.version || "1.0.0",
+    timestamp: new Date().toISOString(),
+    privacy: {
+      local_only: true,
+      telemetry: false,
+      remote_calls: false
+    },
+    integration: {
+      name: meta.name || "",
+      scope: meta.scope || "",
+      notes: meta.notes || ""
+    },
+    presence,
+    readiness_score: readiness,
+    integrated_total: integratedTotal,
+    module_summary: summary,
+    integrity_summary: integrity,
+    downstream_view: downstream,
+    audit_snapshot: {
+      timestamp: new Date().toISOString(),
+      modules_present: Object.entries(presence).filter(([, v]) => v).map(([k]) => k),
+      readiness_score: readiness,
+      integrated_total: integratedTotal,
+      intake_title: summary.intake_title || ""
     }
-
-    let mod;
-    try {
-      mod = await loadRunner(runnerPath);
-    } catch (e) {
-      const note = `Runner not found: ${runnerPath}`;
-      if (required) {
-        setModuleStatus(moduleKey, "FAIL", note);
-        renderStatus();
-        break;
-      } else {
-        setModuleStatus(moduleKey, "SKIP", note);
-        renderStatus();
-        continue;
-      }
-    }
-
-    if (!mod?.run || typeof mod.run !== "function") {
-      const note = "Runner missing export: run(scenario, ctx)";
-      if (required) {
-        setModuleStatus(moduleKey, "FAIL", note);
-        renderStatus();
-        break;
-      } else {
-        setModuleStatus(moduleKey, "SKIP", note);
-        renderStatus();
-        continue;
-      }
-    }
-
-    try {
-      const scenario = getOrCreateScenario();
-      const out = await mod.run(scenario, { files });
-
-      // WRITE CONTRACT (ends edit-loop of death):
-      // - honor __writes if provided
-      // - otherwise write entire output to produces[0] only
-      if (out && typeof out === "object" && !Array.isArray(out) && out.__writes && typeof out.__writes === "object") {
-        for (const [p, v] of Object.entries(out.__writes)) {
-          scenarioSet(p, v);
-          await storeHash(p, v);
-        }
-      } else if (produces.length >= 1) {
-        scenarioSet(produces[0], out);
-        await storeHash(produces[0], out);
-      } else {
-        if (out !== undefined) await storeHash(`module_output.${moduleKey}`, out);
-      }
-
-      setModuleStatus(moduleKey, "OK", "Completed");
-      renderStatus();
-    } catch (e) {
-      const note = `Error: ${e?.message || String(e)}`;
-      if (required) {
-        setModuleStatus(moduleKey, "FAIL", note);
-        renderStatus();
-        break;
-      } else {
-        setModuleStatus(moduleKey, "WARN", note);
-        renderStatus();
-        continue;
-      }
-    }
-  }
-
-  // Build receipt
-  const finalScenario = getOrCreateScenario();
-  const receipt = {
-    engine: finalScenario.engine,
-    created_at: finalScenario.created_at,
-    updated_at: finalScenario.updated_at,
-    module_status: finalScenario.module_status,
-    hashes: finalScenario.hashes,
-    inputs_present: Object.keys(finalScenario.inputs || {}),
-    derived_present: Object.keys(finalScenario.derived || {})
   };
 
-  scenarioSet("receipts.audit_certificate", receipt);
-  await storeHash("receipts.audit_certificate", receipt);
+  localStorage.setItem("abe_integration_artifact", JSON.stringify(integrationArtifact));
+  getOrCreateScenario("abe_integration_artifact", integrationArtifact);
 
-  // Build + store derived.plain_english (local-only)
-  try {
-    const plain = buildPlainEnglish(getOrCreateScenario(), receipt);
-    scenarioSet("derived.plain_english", plain);
-    await storeHash("derived.plain_english", plain);
-
-    const plainPre = document.getElementById("plainPreview");
-    if (plainPre) plainPre.textContent = JSON.stringify(plain.citizen_summary, null, 2);
-  } catch (e) {
-    console.warn("Plain-English builder failed:", e);
-  }
-
-  const pre = document.getElementById("receiptPreview");
-  if (pre) pre.textContent = JSON.stringify(receipt, null, 2);
-
-  return receipt;
+  return integrationArtifact;
 }
 
-/* =========================
-   UI HOOKS
-   ========================= */
-
-// Nav buttons (present in the updated integration/index.html)
-const btnHome = document.getElementById("btnHome");
-if (btnHome) btnHome.addEventListener("click", () => (window.location.href = "../index.html"));
-
-const btnStart = document.getElementById("btnStart");
-if (btnStart) btnStart.addEventListener("click", () => (window.location.href = "../start/index.html"));
-
-const btnInit = document.getElementById("btnInit");
-if (btnInit) {
-  btnInit.addEventListener("click", () => {
-    initScenario();
-    alert("Scenario initialized.");
-  });
-}
-
-const btnDefault = document.getElementById("btnDefault");
-if (btnDefault) {
-  btnDefault.addEventListener("click", () => {
-    loadDefaultScenario();
-    alert("Default scenario loaded.");
-  });
-}
-
-const btnReset = document.getElementById("btnReset");
-if (btnReset) {
-  btnReset.addEventListener("click", () => {
-    resetScenario();
-    renderStatus();
-    const pre = document.getElementById("receiptPreview");
-    if (pre) pre.textContent = "";
-    const plainPre = document.getElementById("plainPreview");
-    if (plainPre) plainPre.textContent = "";
-    alert("Scenario reset.");
-  });
-}
-
-const btnRun = document.getElementById("btnRun");
-if (btnRun) {
-  btnRun.addEventListener("click", async () => {
-    const input = document.getElementById("fileInput");
-    const files = input?.files || null;
-    try {
-      await runEngine(files);
-    } catch (e) {
-      alert(`Run failed: ${e?.message || e}`);
+export async function getIntegrationArtifact(meta = {}) {
+  const existing = scenarioGet("abe_integration_artifact") || safeReadJson("abe_integration_artifact");
+  if (existing) return existing;
+  return buildIntegrationArtifact(meta);
     }
-  });
-}
-
-const btnReceipt = document.getElementById("btnReceipt");
-if (btnReceipt) {
-  btnReceipt.addEventListener("click", () => {
-    const receipt = scenarioGet("receipts.audit_certificate");
-    if (!receipt) return alert("No receipt yet. Run Engine first.");
-    downloadJSON("audit_certificate.json", receipt);
-  });
-}
-
-const btnScenario = document.getElementById("btnScenario");
-if (btnScenario) {
-  btnScenario.addEventListener("click", () => {
-    const s = getOrCreateScenario();
-    downloadJSON("scenario.json", s);
-  });
-}
-
-const fileInput = document.getElementById("fileInput");
-if (fileInput) {
-  fileInput.addEventListener("change", (e) => {
-    listFiles(e.target.files);
-  });
-}
-
-// Render on load
-renderStatus();
