@@ -1,39 +1,155 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <base href="/abe---flag/">
   <title>ABE System Map</title>
-  <style>
-    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 20px; }
-    .card { border: 1px solid #ddd; border-radius: 12px; padding: 14px; margin: 12px 0; }
-    code, pre { background: #f6f6f6; border-radius: 10px; padding: 10px; display:block; overflow:auto; }
-    .row { display:flex; gap:10px; flex-wrap: wrap; }
-    button { padding: 10px 14px; cursor:pointer; }
-    small { color:#555; }
-  </style>
+  <link rel="stylesheet" href="assets/theme.css">
 </head>
 <body>
-  <h1>ABE System Map</h1>
-  <p><strong>Local-only.</strong> No servers, no logins, no telemetry.</p>
+  <main class="wrap">
+    <header class="hero panel">
+      <div class="pill">Local-only · no servers · no logins · no telemetry</div>
+      <h1>ABE System Map</h1>
+      <p class="tagline">
+        A.B.E. runs like an engine: modules fire in order, use the same uploaded data,
+        and produce auditable receipts that prove integrity without tracking.
+      </p>
+      <div class="module-nav" style="margin-top:16px;">
+        <a href="/abe---flag/index.html"><button>Home</button></a>
+        <a href="/abe---flag/intake/index.html"><button>Start</button></a>
+        <a href="/abe---flag/integration/index.html"><button>Go to Integration / Run</button></a>
+      </div>
+    </header>
 
-  <div class="card">
-    <h2>What this page is</h2>
-    <p id="headline"></p>
-    <ul id="bullets"></ul>
-  </div>
+    <section class="panel">
+      <h2>What this page is</h2>
+      <p>
+        This page displays the authoritative <code>system/map.json</code> file that the engine references.
+        It shows the module list, firing order, evidence paths, and raw map data so users and auditors can
+        see how the engine is wired together.
+      </p>
+    </section>
 
-  <div class="card">
-    <h2>Engine Flow (from system/map.json)</h2>
-    <div id="steps"></div>
-  </div>
+    <section class="panel">
+      <h2>Engine Flow</h2>
+      <div id="flow-box">Loading engine flow…</div>
+    </section>
 
-  <div class="card">
-    <h2>Raw Map</h2>
-    <small>This is the authoritative system map file that the engine references.</small>
-    <pre id="raw"></pre>
-  </div>
+    <section class="panel">
+      <h2>Firing Order</h2>
+      <pre id="firing-order">Loading firing order…</pre>
+    </section>
 
-  <script type="module" src="./view.js"></script>
+    <section class="panel">
+      <h2>Modules</h2>
+      <div id="modules-grid" class="grid cols-3">
+        <div class="card">Loading modules…</div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Raw Map</h2>
+      <p>This is the authoritative system map file that the engine references.</p>
+      <pre id="raw-map">Loading raw map…</pre>
+    </section>
+  </main>
+
+  <script>
+    const flowBox = document.getElementById("flow-box");
+    const firingOrderEl = document.getElementById("firing-order");
+    const modulesGrid = document.getElementById("modules-grid");
+    const rawMapEl = document.getElementById("raw-map");
+
+    function esc(str) {
+      return String(str)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;");
+    }
+
+    async function loadMap() {
+      const res = await fetch("system/map.json", { cache: "no-store" });
+      if (!res.ok) {
+        throw new Error("Could not load system/map.json (HTTP " + res.status + ")");
+      }
+      return await res.json();
+    }
+
+    function renderFlow(map) {
+      const flows = Array.isArray(map.flows)
+        ? map.flows
+        : Array.isArray(map.flow)
+          ? map.flow
+          : [];
+
+      if (!flows.length) {
+        flowBox.innerHTML = `
+          <div class="status-box small">
+            No flow array found in map.json. Raw map is shown below.
+          </div>
+        `;
+        return;
+      }
+
+      flowBox.innerHTML = flows.map((f) => `
+        <section class="card" style="margin-bottom:12px;">
+          <h3>${esc(f.from)} → ${esc(f.to)}</h3>
+          <p><strong>Control:</strong> ${esc(f.control || "—")}</p>
+          <p><strong>Evidence:</strong></p>
+          <ul>
+            ${(Array.isArray(f.evidence) ? f.evidence : []).map(e => `<li><code>${esc(e)}</code></li>`).join("")}
+          </ul>
+        </section>
+      `).join("");
+    }
+
+    function renderFiringOrder(map) {
+      const order = map?.engine_contract?.firing_order || [];
+      firingOrderEl.textContent = order.length
+        ? JSON.stringify(order, null, 2)
+        : "No firing order found.";
+    }
+
+    function renderModules(map) {
+      const modules = map.modules || {};
+      const entries = Object.entries(modules);
+
+      if (!entries.length) {
+        modulesGrid.innerHTML = `<div class="card">No modules found.</div>`;
+        return;
+      }
+
+      modulesGrid.innerHTML = entries.map(([key, mod]) => `
+        <section class="card">
+          <h3>${esc(mod.name || key)}</h3>
+          <p><strong>Long name:</strong> ${esc(mod.long_name || "—")}</p>
+          <p><strong>Purpose:</strong> ${esc(mod.purpose || "—")}</p>
+          <p><strong>Status:</strong> ${esc(mod.status || "—")}</p>
+          <p><strong>UI:</strong> <code>${esc(mod.ui || "—")}</code></p>
+          ${mod.ui ? `<a href="/abe---flag/${esc(mod.ui)}"><button>Open</button></a>` : ""}
+        </section>
+      `).join("");
+    }
+
+    async function boot() {
+      try {
+        const map = await loadMap();
+        renderFlow(map);
+        renderFiringOrder(map);
+        renderModules(map);
+        rawMapEl.textContent = JSON.stringify(map, null, 2);
+      } catch (err) {
+        console.error(err);
+        flowBox.innerHTML = `<div class="status-box small">Failed to load flow data.</div>`;
+        firingOrderEl.textContent = "Failed to load firing order.";
+        modulesGrid.innerHTML = `<div class="card">Failed to load modules.</div>`;
+        rawMapEl.textContent = "Failed to load raw map.";
+      }
+    }
+
+    boot();
+  </script>
 </body>
 </html>
