@@ -1,315 +1,208 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Integration / Audit | A.B.E.</title>
-
-  <!-- GitHub Pages base -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
   <base href="/abe---flag/">
-
-  <!-- Global dark theme patch (your project) -->
-  <link rel="stylesheet" href="abe-patch/assets/abe-patch.css"/>
-
-  <style>
-    /* Integration page layout (keeps ABE dark theme + readable contrast) */
-    .wrap{
-      max-width:1100px;
-      margin:0 auto;
-      padding:1.4rem 1rem 3rem;
-    }
-
-    .header h1{
-      margin:.2rem 0 .25rem;
-      font-size:1.85rem;
-      line-height:1.15;
-    }
-    .tagline{
-      max-width:860px;
-      color:var(--muted);
-      margin:.2rem 0 1rem;
-    }
-
-    .toolbar{
-      display:flex;
-      flex-wrap:wrap;
-      gap:.5rem;
-      align-items:center;
-      margin: .75rem 0 1rem;
-    }
-
-    .chip{
-      display:inline-flex;
-      align-items:center;
-      gap:.45rem;
-      padding:.45rem .75rem;
-      border-radius:999px;
-      border:1px solid var(--line);
-      background:#0b0f19;
-      color:var(--ink);
-      text-decoration:none;
-      font-size:.9rem;
-      cursor:pointer;
-      user-select:none;
-    }
-    .chip:hover{ border-color: rgba(93,223,255,.55); }
-    .chip.alt{
-      border-color: rgba(93,223,255,.35);
-      box-shadow:0 0 0 1px rgba(93,223,255,.15) inset;
-    }
-    .chip.danger{
-      border-color: rgba(255,133,133,.35);
-    }
-
-    .filebox{
-      display:flex;
-      flex-wrap:wrap;
-      gap:.6rem;
-      align-items:center;
-      padding:.65rem .75rem;
-      border:1px solid var(--line);
-      border-radius:14px;
-      background:#0b0f19;
-      box-shadow:0 18px 40px rgba(0,0,0,.35);
-      margin: .5rem 0 1rem;
-    }
-    .filebox label{
-      color:var(--muted);
-      font-size:.9rem;
-      margin-right:.25rem;
-    }
-    input[type="file"]{
-      color:var(--ink);
-      max-width:100%;
-    }
-    #fileList{
-      width:100%;
-      margin-top:.35rem;
-      color:var(--muted);
-      font-size:.9rem;
-    }
-    #fileList ul{ margin:.35rem 0 0; padding-left:1.2rem; }
-    #fileList li{ margin:.15rem 0; }
-
-    .grid{
-      display:grid;
-      gap:1rem;
-    }
-    @media(min-width:980px){
-      .grid{
-        grid-template-columns: 1.05fr 1.15fr;
-      }
-    }
-
-    .card{
-      background:#10131c;
-      border:1px solid var(--line);
-      border-radius:16px;
-      padding:1rem 1rem 1.05rem;
-      box-shadow:0 18px 40px rgba(0,0,0,.4);
-      min-height:0;
-    }
-    .card h2{
-      margin:.1rem 0 .35rem;
-      font-size:1.05rem;
-    }
-    .sub{
-      color:var(--muted);
-      font-size:.9rem;
-      margin:.1rem 0 .75rem;
-    }
-
-    /* Status grid */
-    #statusGrid{
-      display:grid;
-      gap:.35rem;
-    }
-    .status{
-      display:grid;
-      grid-template-columns: 140px 92px 1fr;
-      gap:.5rem;
-      align-items:center;
-      padding:.55rem .6rem;
-      border:1px solid rgba(255,255,255,.06);
-      border-radius:12px;
-      background:#050712;
-    }
-    @media(max-width:520px){
-      .status{ grid-template-columns: 1fr; }
-    }
-
-    .pill{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      padding:.18rem .55rem;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.12);
-      font-size:.78rem;
-      letter-spacing:.02em;
-      width:fit-content;
-    }
-    .pill.ok{ border-color: rgba(75,210,143,.45); color:#a9f3d1; }
-    .pill.warn{ border-color: rgba(255,186,92,.5); color:#ffe1b3; }
-    .pill.fail{ border-color: rgba(255,133,133,.5); color:#ffd0d0; }
-    .pill.skip{ border-color: rgba(170,170,170,.35); color:#d3d7df; }
-    .pill.pending{ border-color: rgba(93,223,255,.35); color:#c7f4ff; }
-
-    /* Previews */
-    pre.preview{
-      margin:0;
-      padding:.75rem .8rem;
-      border-radius:12px;
-      border:1px solid rgba(255,255,255,.08);
-      background:#050712;
-      color:var(--ink);
-      overflow:auto;
-      max-height:360px;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-      font-size:.82rem;
-      white-space:pre-wrap;
-      word-break:break-word;
-    }
-
-    .twoCol{
-      display:grid;
-      gap:1rem;
-      grid-template-columns: 1fr;
-    }
-    @media(min-width:980px){
-      .twoCol{ grid-template-columns: 1fr 1fr; }
-    }
-
-    .footerNote{
-      margin-top:1rem;
-      color:var(--muted);
-      font-size:.9rem;
-    }
-    .footerNote a{
-      color:var(--accent);
-      text-decoration:none;
-    }
-    .footerNote a:hover{ text-decoration:underline; }
-  </style>
+  <title>Integration • A.B.E.</title>
+  <link rel="stylesheet" href="assets/theme.css">
 </head>
+<body>
+  <main class="wrap">
+    <header class="header">
+      <div>
+        <h1>Integration</h1>
+        <p class="tagline">Local-only orchestration, audit view, and chain integrity</p>
+      </div>
+      <nav class="module-nav">
+        <a href="/abe---flag/index.html"><button>Home</button></a>
+        <a href="/abe---flag/system/index.html"><button>System</button></a>
+      </nav>
+    </header>
 
-<body class="abe-page">
-  <header class="abe-header">
-    <div class="wrap header">
-      <a class="chip" href="index.html">← A.B.E. Home</a>
-      <h1>Integration / Audit</h1>
-      <p class="tagline">
-        Run the A.B.E. engine locally (in-order), generate SHA-256 hashes, and export a human-readable explanation + audit receipt.
-        No servers. No logins. No tracking.
+    <section class="panel">
+      <div class="pill">100% local-only · no login · no telemetry · no remote API calls</div>
+      <p>
+        Integration does not replace the engine. It verifies module presence, reads local artifacts,
+        displays the chain, and preserves an auditable view of the system as it actually exists in the browser.
       </p>
+    </section>
 
-      <div class="toolbar" role="toolbar" aria-label="Integration controls">
-        <!-- Nav -->
-        <button class="chip" id="btnHome" type="button">Home</button>
-        <button class="chip" id="btnStart" type="button">Start</button>
+    <section class="grid cols-3">
+      <section class="card">
+        <h2>Integration Setup</h2>
 
-        <!-- Scenario -->
-        <button class="chip alt" id="btnInit" type="button">Init Scenario</button>
-        <button class="chip alt" id="btnDefault" type="button">Load Default</button>
-        <button class="chip danger" id="btnReset" type="button">Reset</button>
+        <label for="integration-name">Integration name</label>
+        <input id="integration-name" type="text" placeholder="Example: A.B.E. Public Audit Run">
 
-        <!-- Run -->
-        <button class="chip alt" id="btnRun" type="button">Run Engine</button>
+        <label for="integration-scope">Integration scope</label>
+        <input id="integration-scope" type="text" placeholder="Example: statewide recovery model">
 
-        <!-- Downloads -->
-        <button class="chip" id="btnReceipt" type="button">Download Receipt</button>
-        <button class="chip" id="btnScenario" type="button">Download Scenario</button>
+        <label for="integration-notes">Integration notes</label>
+        <textarea id="integration-notes" rows="8" placeholder="Optional notes about this integrated run"></textarea>
 
-        <!-- NEW: Explain + Plain-English downloads (orchestrator can hook these later) -->
-        <button class="chip" id="btnExplain" type="button" title="Downloads receipts.explain if present">Download Explain</button>
-        <button class="chip" id="btnPlain" type="button" title="Downloads derived.plain_english if present">Download Plain-English</button>
-      </div>
+        <div class="module-nav">
+          <button id="run-integration" type="button">Build Integration Artifact</button>
+          <button id="save-integration" type="button">Save Integration</button>
+          <button id="clear-integration" type="button">Clear Integration</button>
+        </div>
 
-      <div class="filebox">
-        <label for="fileInput"><strong>Optional upload:</strong></label>
-        <input id="fileInput" type="file" multiple />
-        <div id="fileList"></div>
-      </div>
-    </div>
-  </header>
+        <div class="module-nav" style="margin-top:12px;">
+          <button id="download-integration" type="button">Download Integration JSON</button>
+        </div>
 
-  <main class="abe-main">
-    <div class="wrap">
-      <div class="grid">
-        <!-- LEFT: Status -->
-        <section class="card">
-          <h2>Module Status</h2>
-          <p class="sub">This shows what ran, what was skipped, and what failed (if anything).</p>
-          <div id="statusGrid">No scenario initialized yet.</div>
+        <div id="integration-status" class="status-box small" style="margin-top:12px;">
+          Status: waiting
+        </div>
+      </section>
 
-          <p class="footerNote">
-            Tip: <strong>SKIP</strong> is usually optional modules missing inputs (not a failure). <strong>FAIL</strong> means the engine stopped on a required dependency.
-          </p>
-        </section>
+      <section class="card">
+        <h2>Artifact Presence</h2>
+        <pre id="presence-box">Checking…</pre>
+      </section>
 
-        <!-- RIGHT: Outputs -->
-        <section class="card">
-          <h2>Run Outputs</h2>
-          <p class="sub">Explain = “what it means for me.” Plain-English = run receipt in simple language. Audit Certificate = technical proof.</p>
+      <section class="card">
+        <h2>Readiness</h2>
+        <div class="status-box">
+          <strong>System readiness</strong>
+          <div id="readiness-score" style="font-size:24px; margin-top:8px;">0</div>
+        </div>
+        <div class="status-box" style="margin-top:12px;">
+          <strong>Integrated total</strong>
+          <div id="integrated-total" style="font-size:24px; margin-top:8px;">$0.00</div>
+        </div>
+      </section>
+    </section>
 
-          <div class="twoCol" style="margin-bottom:1rem;">
-            <div>
-              <h2 style="font-size:1rem;margin:.2rem 0 .4rem;">Explain Preview (What it means for me)</h2>
-              <pre id="explainPreview" class="preview">Run the engine to generate the explain layer.</pre>
-            </div>
-            <div>
-              <h2 style="font-size:1rem;margin:.2rem 0 .4rem;">Plain-English Preview (Receipt in human terms)</h2>
-              <pre id="plainPreview" class="preview">Run the engine to generate derived.plain_english.</pre>
-            </div>
-          </div>
+    <section class="grid cols-2">
+      <section class="card">
+        <h2>Module Summary</h2>
+        <pre id="module-summary">No integration artifact yet.</pre>
+      </section>
 
-          <div>
-            <h2 style="font-size:1rem;margin:.2rem 0 .4rem;">Audit Certificate Preview</h2>
-            <pre id="receiptPreview" class="preview">Run the engine to generate the audit certificate.</pre>
-          </div>
+      <section class="card">
+        <h2>Integrity Summary</h2>
+        <pre id="integrity-summary">No integrity summary yet.</pre>
+      </section>
+    </section>
 
-          <p class="footerNote">
-            Want to inspect authority packs? Open <a href="law/index.html">Law — Federal Authority Corpus</a>.
-          </p>
-        </section>
-      </div>
+    <section class="grid cols-2">
+      <section class="card">
+        <h2>Downstream View</h2>
+        <pre id="downstream-view">No downstream view yet.</pre>
+      </section>
 
-      <p class="footerNote" style="margin-top:1.2rem;">
-        Everything here runs locally in your browser. If you refresh and outputs “disappear,” your browser may have cleared local storage.
-      </p>
-    </div>
+      <section class="card">
+        <h2>Audit Snapshot</h2>
+        <pre id="audit-snapshot">No audit snapshot yet.</pre>
+      </section>
+    </section>
+
+    <section class="card">
+      <h2>Integration Artifact Preview</h2>
+      <pre id="artifact-preview">No integration artifact yet.</pre>
+    </section>
   </main>
 
-  <footer class="abe-footer">
-    <p>
-      A.B.E. — Integration / Audit · CC BY-NC 4.0 · Local-only integrity engine (no tracking).
-    </p>
-  </footer>
-
-  <!-- Orchestrator -->
-  <script type="module" src="integration/orchestrator.js"></script>
-
-  <!-- Local-only download buttons for explain/plain (doesn't touch orchestrator) -->
   <script type="module">
-    import { scenarioGet, downloadJSON, getOrCreateScenario } from "engine/core/session.js";
+    import { buildIntegrationArtifact, getIntegrationArtifact } from "./orchestrator.js";
+    import { scenarioGet } from "./engine/core/session.js";
 
-    const btnExplain = document.getElementById("btnExplain");
-    if (btnExplain) {
-      btnExplain.addEventListener("click", () => {
-        const explain = scenarioGet("receipts.explain");
-        if (!explain) return alert("No receipts.explain found yet. Run Engine first.");
-        downloadJSON("explain.json", explain);
-      });
+    const els = {
+      name: document.getElementById("integration-name"),
+      scope: document.getElementById("integration-scope"),
+      notes: document.getElementById("integration-notes"),
+      status: document.getElementById("integration-status"),
+      presence: document.getElementById("presence-box"),
+      readiness: document.getElementById("readiness-score"),
+      total: document.getElementById("integrated-total"),
+      summary: document.getElementById("module-summary"),
+      integrity: document.getElementById("integrity-summary"),
+      downstream: document.getElementById("downstream-view"),
+      snapshot: document.getElementById("audit-snapshot"),
+      preview: document.getElementById("artifact-preview"),
+      runBtn: document.getElementById("run-integration"),
+      saveBtn: document.getElementById("save-integration"),
+      clearBtn: document.getElementById("clear-integration"),
+      downloadBtn: document.getElementById("download-integration")
+    };
+
+    function money(n) {
+      return new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "USD"
+      }).format(Number(n) || 0);
     }
 
-    const btnPlain = document.getElementById("btnPlain");
-    if (btnPlain) {
-      btnPlain.addEventListener("click", () => {
-        const plain = scenarioGet("derived.plain_english");
-        if (!plain) return alert("No derived.plain_english found yet. Run Engine first.");
-        downloadJSON("plain_english.json", plain);
-      });
+    function setStatus(msg) {
+      els.status.textContent = "Status: " + msg;
     }
+
+    function downloadJson(filename, data) {
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    async function render(meta = {}) {
+      const artifact = await getIntegrationArtifact(meta);
+
+      els.presence.textContent = JSON.stringify(artifact.presence || {}, null, 2);
+      els.readiness.textContent = String(artifact.readiness_score || 0);
+      els.total.textContent = money(artifact.integrated_total || 0);
+      els.summary.textContent = JSON.stringify(artifact.module_summary || {}, null, 2);
+      els.integrity.textContent = JSON.stringify(artifact.integrity_summary || [], null, 2);
+      els.downstream.textContent = JSON.stringify(artifact.downstream_view || {}, null, 2);
+      els.snapshot.textContent = JSON.stringify(artifact.audit_snapshot || {}, null, 2);
+      els.preview.textContent = JSON.stringify(artifact, null, 2);
+    }
+
+    els.runBtn.addEventListener("click", async () => {
+      setStatus("building integration artifact…");
+      const artifact = await buildIntegrationArtifact({
+        name: els.name.value.trim(),
+        scope: els.scope.value.trim(),
+        notes: els.notes.value.trim()
+      });
+      await render();
+      setStatus("integration artifact built.");
+    });
+
+    els.saveBtn.addEventListener("click", async () => {
+      const artifact = await buildIntegrationArtifact({
+        name: els.name.value.trim(),
+        scope: els.scope.value.trim(),
+        notes: els.notes.value.trim()
+      });
+      localStorage.setItem("abe_integration_artifact", JSON.stringify(artifact));
+      await render();
+      setStatus("integration artifact saved locally.");
+    });
+
+    els.clearBtn.addEventListener("click", async () => {
+      localStorage.removeItem("abe_integration_artifact");
+      await render();
+      setStatus("integration artifact cleared.");
+    });
+
+    els.downloadBtn.addEventListener("click", async () => {
+      const artifact = scenarioGet("abe_integration_artifact") || JSON.parse(localStorage.getItem("abe_integration_artifact") || "null");
+      if (!artifact) {
+        setStatus("no integration artifact to download.");
+        return;
+      }
+      downloadJson("abe_integration_artifact.json", artifact);
+      setStatus("integration artifact downloaded.");
+    });
+
+    render();
+    setStatus("ready.");
   </script>
 </body>
-</html>
+  </html>
