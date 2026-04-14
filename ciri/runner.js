@@ -1,110 +1,140 @@
 // ciri/runner.js
-// CIRI → economic recovery output (repo-default baseline if user inputs missing)
-// Local-only, no backend. Works best under http(s) (GitHub Pages/local server).
+// CIRI — Constitutional Integrity ROI
+// STRICT canonical implementation from abe---flag-1.0.0 (DOI anchored)
+// No expanded recovery logic. No AFFE passthrough. No formula drift.
 
 function num(x, fallback = 0) {
   const n = Number(x);
   return Number.isFinite(n) ? n : fallback;
 }
 
-async function loadRepoDefaults() {
-  // From /ciri/runner.js, this resolves to /ciri/default_inputs.json
-  const res = await fetch("./default_inputs.json", { cache: "no-store" });
-  if (!res.ok) throw new Error("Could not load ciri/default_inputs.json");
+async function loadDefaults() {
+  const url = new URL("./default_inputs.json", import.meta.url);
+  const res = await fetch(url, { cache: "no-store" });
+  if (!res.ok) {
+    throw new Error(`Could not load ciri/default_inputs.json (HTTP ${res.status})`);
+  }
   return await res.json();
 }
 
-export async function run(scenario, ctx = {}) {
-  const divergence = scenario?.derived?.divergence;
-  if (!divergence) throw new Error("Missing derived.divergence (CDA must run first).");
+function normalizeInputs(raw = {}) {
+  return {
+    cases_avoided: num(raw.cases_avoided),
 
-  const ccri = scenario?.derived?.ccri || null;
+    avg_cost: num(raw.avg_cost, num(raw.avg_cost_per_case)),
+    fees_calc: num(raw.fees_calc, num(raw.fees_canceled_total)),
 
-  // Prefer user-provided inputs; otherwise load repo defaults
-  let inp = scenario?.inputs?.ciri_inputs;
-  let source = "user";
+    jail_day_cost: num(raw.jail_day_cost, num(raw.cost_per_jail_day)),
+    jailDays: num(raw.jailDays, num(raw.jail_days_avoided)),
 
-  if (!inp || Object.keys(inp).length === 0) {
-    try {
-      inp = await loadRepoDefaults();
-      source = "repo_default";
-    } catch {
-      // Final fallback if fetch fails (e.g., file:// mode). Keep engine running.
-      inp = {};
-      source = "empty_fallback";
-    }
+    licenses: num(raw.licenses, num(raw.households_restored)),
+    transport_weight: num(raw.transport_weight, num(raw.avg_monthly_market_spend)),
+
+    expected_wage: num(raw.expected_wage, num(raw.avg_monthly_wage)),
+    months_employed: num(raw.months_employed, num(raw.months_effective)),
+    employment_rate: num(raw.employment_rate, num(raw.employment_probability)),
+    pay_multiplier: num(raw.pay_multiplier, 1),
+
+    K: num(raw.K, 50000000)
+  };
+}
+
+function computeCanonicalCiri(fields) {
+  const direct_case =
+    fields.cases_avoided * (fields.avg_cost + fields.fees_calc);
+
+  const detention =
+    fields.cases_avoided * fields.jail_day_cost * fields.jailDays;
+
+  const licensing =
+    fields.licenses * fields.transport_weight;
+
+  const per_worker =
+    fields.expected_wage *
+    (fields.months_employed / 12) *
+    fields.employment_rate *
+    fields.pay_multiplier;
+
+  const employment =
+    per_worker * fields.cases_avoided;
+
+  const Total =
+    direct_case +
+    detention +
+    licensing +
+    employment;
+
+  const safeK = Math.max(1, fields.K);
+  const CIRI = 1 - Math.exp(- Total / safeK);
+
+  const ROI_per_case =
+    fields.cases_avoided > 0 ? Total / fields.cases_avoided : null;
+
+  return {
+    direct_case,
+    detention,
+    licensing,
+    per_worker,
+    employment,
+    Total,
+    CIRI,
+    ROI_per_case,
+    K: safeK
+  };
+}
+
+export async function run(scenario = {}, ctx = {}) {
+  const cda = scenario?.derived?.cda || null;
+  const cdi = scenario?.derived?.cdi || null;
+
+  const divergenceSignal =
+    num(cdi?.result?.weighted_divergence) ||
+    num(cdi?.weighted_divergence) ||
+    num(cda?.result?.divergence_score) ||
+    num(cda?.divergence_score) ||
+    0;
+
+  if (divergenceSignal <= 0) {
+    throw new Error("Missing constitutional divergence signal (CDI or CDA must run before CIRI).");
   }
 
-  const cases_avoided = num(inp.cases_avoided);
-  const cost_per_case = num(inp.cost_per_case);
+  let rawInputs = scenario?.inputs?.ciri_inputs;
+  let inputSource = "user";
 
-  const jail_days_avoided = num(inp.jail_days_avoided);
-  const cost_per_jail_day = num(inp.cost_per_jail_day);
+  if (!rawInputs || Object.keys(rawInputs).length === 0) {
+    rawInputs = await loadDefaults();
+    inputSource = "repo_default";
+  }
 
-  const enforcement_hours_avoided = num(inp.enforcement_hours_avoided);
-  const cost_per_enforcement_hour = num(inp.cost_per_enforcement_hour);
-
-  const fees_canceled_total = num(inp.fees_canceled_total);
-
-  const households_restored = num(inp.households_restored);
-  const market_access_value_per_household = num(inp.market_access_value_per_household);
-
-  const employment_probability = num(inp.employment_probability); // 0..1
-  const wage_uplift_per_person = num(inp.wage_uplift_per_person);
-  const people_impacted = num(inp.people_impacted);
-
-  const litigation_risk_avoided = num(inp.litigation_risk_avoided);
-  const transition_costs = num(inp.transition_costs);
-
-  const K = Math.max(1, num(inp.K, 1_000_000));
-
-  const direct_case_cost_savings = cases_avoided * cost_per_case;
-  const detention_cost_savings = jail_days_avoided * cost_per_jail_day;
-  const enforcement_cost_savings = enforcement_hours_avoided * cost_per_enforcement_hour;
-
-  const market_access_uplift = households_restored * market_access_value_per_household;
-  const employment_wage_uplift = people_impacted * employment_probability * wage_uplift_per_person;
-
-  const fees_savings = fees_canceled_total;
-
-  const R_T =
-    direct_case_cost_savings +
-    detention_cost_savings +
-    enforcement_cost_savings +
-    market_access_uplift +
-    employment_wage_uplift +
-    fees_savings +
-    litigation_risk_avoided -
-    transition_costs;
-
-  const total_recovery = Math.max(0, R_T);
-  const ciri_index = 1 - Math.exp(-total_recovery / K);
-  const roi_per_case = cases_avoided > 0 ? total_recovery / cases_avoided : 0;
+  const fields = normalizeInputs(rawInputs);
+  const outputs = computeCanonicalCiri(fields);
 
   return {
     module: "CIRI",
-    module_version: "1.0",
+    module_version: "1.0.0-canonical",
     generated_at: new Date().toISOString(),
     inputs_used: {
       divergence_present: true,
-      ccri_present: !!ccri,
-      ciri_inputs_source: source
+      divergence_signal: divergenceSignal,
+      cda_present: !!cda,
+      cdi_present: !!cdi,
+      ciri_inputs_source: inputSource
     },
-    components: {
-      direct_case_cost_savings,
-      detention_cost_savings,
-      enforcement_cost_savings,
-      market_access_uplift,
-      employment_wage_uplift,
-      fees_savings,
-      litigation_risk_avoided,
-      transition_costs
+    inputs_normalized: fields,
+    outputs: {
+      direct_case: outputs.direct_case,
+      detention: outputs.detention,
+      licensing: outputs.licensing,
+      per_worker: outputs.per_worker,
+      employment: outputs.employment,
+      Total: outputs.Total,
+      CIRI: outputs.CIRI,
+      ROI_per_case: outputs.ROI_per_case
     },
-    total_recovery,
-    K,
-    ciri_index,
-    roi_per_case,
-    notes:
-      "CIRI uses scenario.inputs.ciri_inputs if provided; otherwise loads ciri/default_inputs.json as baseline."
+    total_recovery: outputs.Total,
+    K: outputs.K,
+    ciri_index: outputs.CIRI,
+    roi_per_case: outputs.ROI_per_case,
+    notes: "Strict canonical CIRI formula from abe---flag-1.0.0. No expanded recovery terms applied."
   };
 }
