@@ -107,10 +107,9 @@
     </section>
   </main>
 
-  <!-- FIXED: Root-relative path to orchestrator.js -->
+  <!-- FIXED: Root-relative import to your orchestrator.js -->
   <script type="module" src="/abe---flag/integration/orchestrator.js"></script>
 
-  <!-- Temporary fallback so the button always responds while we debug the real import -->
   <script>
     const runBtn = document.getElementById("run-integration");
     const statusEl = document.getElementById("integration-status");
@@ -119,17 +118,26 @@
       statusEl.textContent = "Status: Building integration artifact…";
 
       try {
-        // Try to call the real function from your orchestrator
+        // Try to import and run the real orchestrator
         const { buildIntegrationArtifact } = await import("/abe---flag/integration/orchestrator.js");
+        
         const artifact = await buildIntegrationArtifact({
           name: document.getElementById("integration-name").value.trim(),
           scope: document.getElementById("integration-scope").value.trim(),
           notes: document.getElementById("integration-notes").value.trim()
         });
+
         statusEl.textContent = "Status: Integration artifact built successfully!";
         console.log("✅ Full integration artifact created:", artifact);
+
+        // Optional: refresh the displayed sections
+        document.getElementById("presence-box").textContent = JSON.stringify(artifact.presence || {}, null, 2);
+        document.getElementById("readiness-score").textContent = artifact.readiness_score || 0;
+        document.getElementById("integrated-total").textContent = "$" + (artifact.integrated_total || 0);
+        document.getElementById("artifact-preview").textContent = JSON.stringify(artifact, null, 2);
+
       } catch (err) {
-        console.error("Orchestrator import failed:", err);
+        console.error("Orchestrator import or execution failed:", err);
         statusEl.textContent = "Status: Error — check console (F12)";
       }
     });
