@@ -24,9 +24,9 @@
   <h1>CDI — Constitutional Divergence Index</h1>
 
   <p><strong>Core module in the A.B.E. firing order.</strong><br>
-  CDA provides divergence flags → CDI computes weighted 0–1 scores across domains → CIRI translates those scores into measurable economic recovery value.</p>
+  CDA provides divergence flags → <strong>CDI computes weighted 0–1 scores</strong> → CIRI translates scores into measurable economic recovery value.</p>
 
-  <h2>Divergence by Category (Current Sample)</h2>
+  <h2>Divergence by Category (from divergence.csv)</h2>
 
   <table>
     <thead>
@@ -34,7 +34,7 @@
         <th>Category</th>
         <th>Divergence (0–1.0)</th>
         <th>Confidence</th>
-        <th>Feeds into CIRI as</th>
+        <th>Impact on CIRI</th>
       </tr>
     </thead>
     <tbody>
@@ -60,7 +60,7 @@
         <td>Mobility & Transportation</td>
         <td class="high">0.81</td>
         <td>0.86</td>
-        <td>Critical — FMCSR scope</td>
+        <td>Critical — FMCSR scope violations</td>
       </tr>
       <tr>
         <td>Education & Access</td>
@@ -79,15 +79,16 @@
 
   <h2>Position in Firing Order</h2>
   <p>
-    Intake → System → CAE → <strong>CDA</strong> → <strong>CDI</strong> → CCRI → CFF → AFFE → <strong>CIRI</strong> → CIBS → CII → Macro → Integration
+    Intake → System → CAE → CDA → <strong>CDI</strong> → CCRI → CFF → AFFE → CIRI → CIBS → CII → Macro → Integration
   </p>
 
   <p><strong>Key files:</strong><br>
     • <a href="model.json">model.json</a> — domain weights and scoring rules<br>
-    • <a href="divergence.csv">divergence.csv</a> — current divergence data
+    • <a href="divergence.csv">divergence.csv</a> — current divergence data<br>
+    • <a href="runner.js">runner.js</a> — processing logic
   </p>
 
-  <p><strong>Next step:</strong> <a href="../ciri/index.html">Open CIRI Calculator</a> — CDI scores feed directly into recovery calculations.</p>
+  <p><strong>Next step in the chain:</strong> <a href="../ciri/index.html">Open CIRI Calculator</a> — CDI scores feed directly into recovery calculations.</p>
 
   <small>
     © 2025 Terra Dawn Shouse — American Butterfly Effect (A.B.E.)<br>
