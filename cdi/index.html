@@ -1,155 +1,96 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <base href="/abe---flag/">
-  <title>CDI • A.B.E.</title>
-  <link rel="stylesheet" href="assets/theme.css">
+  <meta charset="utf-8">
+  <title>CDI — Constitutional Divergence Index</title>
+  <link rel="stylesheet" href="../assets/theme.css">
+  <link rel="stylesheet" href="../abe-patch/assets/abe-patch.css">
+  <style>
+    table { width:100%; border-collapse:collapse; margin:20px 0; }
+    th, td { padding:12px; text-align:left; border-bottom:1px solid #243244; }
+    th { background:#111824; }
+    .high { color:#ff6b6b; }
+    .mid  { color:#ffd166; }
+    .low  { color:#06d6a0; }
+  </style>
 </head>
 <body>
-  <main class="wrap">
-    <header class="header">
-      <div>
-        <h1>CDI</h1>
-        <p class="tagline">Constitution Divergence Index</p>
-      </div>
-      <nav class="module-nav">
-        <a href="/abe---flag/index.html"><button>Home</button></a>
-        <a href="/abe---flag/cda/index.html"><button>CDA</button></a>
-        <a href="/abe---flag/integration/index.html"><button>Integration</button></a>
-      </nav>
-    </header>
 
-    <section class="panel">
-      <h2>Overview</h2>
-      <p>
-        CDI quantifies constitutional divergence across weighted domains and classifies
-        the severity of deviation from constitutional fidelity. This page displays the
-        CDI artifact if one exists and also shows the source domain table from
-        <code>divergence.csv</code>.
-      </p>
-    </section>
+  <div class="abe-utility-bar">
+    ← <a href="../index.html">A.B.E. Home</a>
+    <span class="abe-badge">CDI Core Module</span>
+  </div>
 
-    <section class="grid cols-2">
-      <section class="card">
-        <h2>CDI Artifact</h2>
-        <pre id="cdi-output">Loading…</pre>
-      </section>
+  <h1>CDI — Constitutional Divergence Index</h1>
+  
+  <p><strong>Core module in the A.B.E. firing order.</strong><br>
+  Takes divergence flags from CDA and produces a weighted 0–1 score that feeds directly into CIRI for economic recovery calculation.</p>
 
-      <section class="card">
-        <h2>Plain Language</h2>
-        <pre id="cdi-plain">Loading…</pre>
-      </section>
-    </section>
+  <h2>Divergence by Category (Sample Data)</h2>
+  
+  <table>
+    <thead>
+      <tr>
+        <th>Category</th>
+        <th>Divergence (0–1.0)</th>
+        <th>Confidence</th>
+        <th>Impact on CIRI</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Commerce Regulation</td>
+        <td class="high">0.63</td>
+        <td>0.92</td>
+        <td>High — directly affects funding scope</td>
+      </tr>
+      <tr>
+        <td>Judicial Oversight & Remedies</td>
+        <td class="high">0.74</td>
+        <td>0.88</td>
+        <td>High — affects void ab initio findings</td>
+      </tr>
+      <tr>
+        <td>Healthcare Policy & Funding</td>
+        <td class="mid">0.57</td>
+        <td>0.91</td>
+        <td>Moderate</td>
+      </tr>
+      <tr>
+        <td>Mobility & Transportation</td>
+        <td class="high">0.81</td>
+        <td>0.86</td>
+        <td>Critical — FMCSR scope violations</td>
+      </tr>
+      <tr>
+        <td>Education & Access</td>
+        <td class="low">0.45</td>
+        <td>0.94</td>
+        <td>Lower</td>
+      </tr>
+      <tr>
+        <td>Housing & Property Rights</td>
+        <td class="mid">0.68</td>
+        <td>0.89</td>
+        <td>Moderate</td>
+      </tr>
+    </tbody>
+  </table>
 
-    <section class="panel">
-      <h2>Domain Divergence Table</h2>
-      <div class="status-box small" id="cdi-status">Loading divergence.csv…</div>
-      <div style="overflow-x:auto; margin-top:12px;">
-        <table style="width:100%; border-collapse: collapse;">
-          <thead>
-            <tr>
-              <th style="text-align:left; padding:10px; border-bottom:1px solid #333;">Category</th>
-              <th style="text-align:left; padding:10px; border-bottom:1px solid #333;">Divergence</th>
-              <th style="text-align:left; padding:10px; border-bottom:1px solid #333;">Confidence</th>
-            </tr>
-          </thead>
-          <tbody id="divTableBody">
-            <tr>
-              <td colspan="3" style="padding:10px;">Loading…</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
+  <p><strong>How CDI fits in the firing order:</strong><br>
+  CDA (flags) → <strong>CDI (weighted score 0–1)</strong> → CIRI (economic recovery value) → CIBS (budget allocation) → Integration (SHA-256 audit receipt)</p>
 
-    <section class="panel">
-      <h2>Source Files</h2>
-      <div class="module-nav">
-        <a href="/abe---flag/cdi/model.json" download><button>Download model.json</button></a>
-        <a href="/abe---flag/cdi/divergence.csv" download><button>Download divergence.csv</button></a>
-      </div>
-    </section>
-  </main>
+  <p><strong>Files used:</strong><br>
+  • <a href="model.json">cdi/model.json</a> — domain weights<br>
+  • <a href="divergence.csv">cdi/divergence.csv</a> — live data</p>
 
-  <script>
-    const outputEl = document.getElementById("cdi-output");
-    const plainEl = document.getElementById("cdi-plain");
-    const statusEl = document.getElementById("cdi-status");
-    const bodyEl = document.getElementById("divTableBody");
+  <p><strong>Next:</strong> <a href="../ciri/index.html">Run CIRI Calculator</a> using CDI divergence as input.</p>
 
-    function escapeHtml(str) {
-      return String(str)
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
-    }
+  <small>
+    © 2025 Terra Dawn Shouse — American Butterfly Effect (A.B.E.)<br>
+    Licensed under CC BY-NC 4.0 · Integrity only — never for sale.<br>
+    Deterministic math. No bias. No drift.
+  </small>
 
-    function parseCsvLine(line) {
-      return line.split(",").map(cell => cell.trim());
-    }
-
-    function renderArtifact() {
-      const artifact = JSON.parse(localStorage.getItem("abe_cdi_artifact") || "null");
-      outputEl.textContent = artifact
-        ? JSON.stringify(artifact.result || artifact, null, 2)
-        : "No CDI artifact available yet.";
-      plainEl.textContent = artifact
-        ? JSON.stringify(artifact.plain_language || {}, null, 2)
-        : "No plain-language explanation available yet.";
-    }
-
-    async function loadCsvTable() {
-      try {
-        const res = await fetch("cdi/divergence.csv", { cache: "no-store" });
-        if (!res.ok) {
-          statusEl.textContent = `Could not load divergence.csv (HTTP ${res.status}).`;
-          bodyEl.innerHTML = `<tr><td colspan="3" style="padding:10px;">Could not load divergence.csv.</td></tr>`;
-          return;
-        }
-
-        const text = await res.text();
-        const rows = text.trim().split(/\r?\n/).map(parseCsvLine);
-
-        if (rows.length < 2) {
-          statusEl.textContent = "divergence.csv loaded, but no data rows were found.";
-          bodyEl.innerHTML = `<tr><td colspan="3" style="padding:10px;">No divergence rows found.</td></tr>`;
-          return;
-        }
-
-        const header = rows[0];
-        const categoryIndex = header.indexOf("Category");
-        const divergenceIndex = header.indexOf("Divergence");
-        const confidenceIndex = header.indexOf("Confidence");
-
-        if (categoryIndex === -1 || divergenceIndex === -1 || confidenceIndex === -1) {
-          statusEl.textContent = "divergence.csv is missing one or more required columns.";
-          bodyEl.innerHTML = `<tr><td colspan="3" style="padding:10px;">Required columns not found.</td></tr>`;
-          return;
-        }
-
-        const dataRows = rows.slice(1);
-        bodyEl.innerHTML = dataRows.map(r => `
-          <tr>
-            <td style="padding:10px; border-bottom:1px solid #222;">${escapeHtml(r[categoryIndex] || "")}</td>
-            <td style="padding:10px; border-bottom:1px solid #222;">${escapeHtml(r[divergenceIndex] || "")}</td>
-            <td style="padding:10px; border-bottom:1px solid #222;">${escapeHtml(r[confidenceIndex] || "")}</td>
-          </tr>
-        `).join("");
-
-        statusEl.textContent = "divergence.csv loaded successfully.";
-      } catch (err) {
-        console.error(err);
-        statusEl.textContent = "Failed to load divergence.csv.";
-        bodyEl.innerHTML = `<tr><td colspan="3" style="padding:10px;">Failed to load divergence.csv.</td></tr>`;
-      }
-    }
-
-    renderArtifact();
-    loadCsvTable();
-  </script>
 </body>
 </html>
