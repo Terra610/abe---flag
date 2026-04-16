@@ -1,10 +1,16 @@
 // AFFE parser – tiny helper that turns CSV / XLSX / PDF into
 // { sourceType, columns: string[], rows: Array<object> }.
 // Runs entirely in the browser.
+// 
+// IMPORTANT: This version is 100% local-only. 
+// No external CDN calls. PDF worker is served from root /assets/ folder.
+// This preserves the strict firing order and deterministic nature of A.B.E.
 
 window.AFFEParser = (function(){
-    // Ensure pdf.js worker is configured — fully local, no remote calls
-  if(window.pdfjsLib && window.pdfjsLib.GlobalWorkerOptions){
+  
+  // Local PDF worker configuration - fully offline, no remote calls
+  // Path uses ../ because parser.js is inside affe/ and assets/ is at repo root
+  if (window.pdfjsLib && window.pdfjsLib.GlobalWorkerOptions) {
     window.pdfjsLib.GlobalWorkerOptions.workerSrc = "../assets/pdf.worker.min.js";
   }
 
