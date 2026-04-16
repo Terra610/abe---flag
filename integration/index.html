@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   
-  <!-- CRITICAL BASE TAG - ALREADY PRESENT BUT CONFIRMED -->
+  <!-- CRITICAL BASE TAG -->
   <base href="/abe---flag/">
 
   <title>Integration • A.B.E.</title>
@@ -77,7 +77,6 @@
       </section>
     </section>
 
-    <!-- Rest of your sections remain the same -->
     <section class="grid cols-2">
       <section class="card">
         <h2>Module Summary</h2>
@@ -108,20 +107,31 @@
     </section>
   </main>
 
-  <!-- FIXED: Use root-relative path for the module script -->
+  <!-- FIXED: Root-relative path to orchestrator.js -->
   <script type="module" src="/abe---flag/integration/orchestrator.js"></script>
-  
+
+  <!-- Temporary fallback so the button always responds while we debug the real import -->
   <script>
-    // Fallback inline script to ensure button works even if import fails
-    document.getElementById("run-integration").addEventListener("click", () => {
-      const status = document.getElementById("integration-status");
-      status.textContent = "Status: Building integration artifact...";
-      
-      // Simulate engine run for now (replace with real call once orchestrator loads)
-      setTimeout(() => {
-        status.textContent = "Status: Integration artifact built successfully!";
-        alert("✅ Engine ran! (This is a temporary placeholder until orchestrator.js is fully wired.)");
-      }, 800);
+    const runBtn = document.getElementById("run-integration");
+    const statusEl = document.getElementById("integration-status");
+
+    runBtn.addEventListener("click", async () => {
+      statusEl.textContent = "Status: Building integration artifact…";
+
+      try {
+        // Try to call the real function from your orchestrator
+        const { buildIntegrationArtifact } = await import("/abe---flag/integration/orchestrator.js");
+        const artifact = await buildIntegrationArtifact({
+          name: document.getElementById("integration-name").value.trim(),
+          scope: document.getElementById("integration-scope").value.trim(),
+          notes: document.getElementById("integration-notes").value.trim()
+        });
+        statusEl.textContent = "Status: Integration artifact built successfully!";
+        console.log("✅ Full integration artifact created:", artifact);
+      } catch (err) {
+        console.error("Orchestrator import failed:", err);
+        statusEl.textContent = "Status: Error — check console (F12)";
+      }
     });
   </script>
 </body>
