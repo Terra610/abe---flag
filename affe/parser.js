@@ -3,10 +3,9 @@
 // Runs entirely in the browser.
 
 window.AFFEParser = (function(){
-  // Ensure pdf.js worker is configured (no remote workers pulling your data)
+    // Ensure pdf.js worker is configured — fully local, no remote calls
   if(window.pdfjsLib && window.pdfjsLib.GlobalWorkerOptions){
-    window.pdfjsLib.GlobalWorkerOptions.workerSrc =
-      "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js";
+    window.pdfjsLib.GlobalWorkerOptions.workerSrc = "../assets/pdf.worker.min.js";
   }
 
   // ---- CSV parsing ----
