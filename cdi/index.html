@@ -18,23 +18,23 @@
 
   <div class="abe-utility-bar">
     ← <a href="../index.html">A.B.E. Home</a>
-    <span class="abe-badge">CDI Core Module</span>
+    <span class="abe-badge">Core Module</span>
   </div>
 
   <h1>CDI — Constitutional Divergence Index</h1>
-  
-  <p><strong>Core module in the A.B.E. firing order.</strong><br>
-  Takes divergence flags from CDA and produces a weighted 0–1 score that feeds directly into CIRI for economic recovery calculation.</p>
 
-  <h2>Divergence by Category (Sample Data)</h2>
-  
+  <p><strong>Core module in the A.B.E. firing order.</strong><br>
+  CDA provides divergence flags → CDI computes weighted 0–1 scores across domains → CIRI translates those scores into measurable economic recovery value.</p>
+
+  <h2>Divergence by Category (Current Sample)</h2>
+
   <table>
     <thead>
       <tr>
         <th>Category</th>
         <th>Divergence (0–1.0)</th>
         <th>Confidence</th>
-        <th>Impact on CIRI</th>
+        <th>Feeds into CIRI as</th>
       </tr>
     </thead>
     <tbody>
@@ -42,13 +42,13 @@
         <td>Commerce Regulation</td>
         <td class="high">0.63</td>
         <td>0.92</td>
-        <td>High — directly affects funding scope</td>
+        <td>High impact on funding scope</td>
       </tr>
       <tr>
         <td>Judicial Oversight & Remedies</td>
         <td class="high">0.74</td>
         <td>0.88</td>
-        <td>High — affects void ab initio findings</td>
+        <td>High — affects void ab initio</td>
       </tr>
       <tr>
         <td>Healthcare Policy & Funding</td>
@@ -60,7 +60,7 @@
         <td>Mobility & Transportation</td>
         <td class="high">0.81</td>
         <td>0.86</td>
-        <td>Critical — FMCSR scope violations</td>
+        <td>Critical — FMCSR scope</td>
       </tr>
       <tr>
         <td>Education & Access</td>
@@ -77,19 +77,22 @@
     </tbody>
   </table>
 
-  <p><strong>How CDI fits in the firing order:</strong><br>
-  CDA (flags) → <strong>CDI (weighted score 0–1)</strong> → CIRI (economic recovery value) → CIBS (budget allocation) → Integration (SHA-256 audit receipt)</p>
+  <h2>Position in Firing Order</h2>
+  <p>
+    Intake → System → CAE → <strong>CDA</strong> → <strong>CDI</strong> → CCRI → CFF → AFFE → <strong>CIRI</strong> → CIBS → CII → Macro → Integration
+  </p>
 
-  <p><strong>Files used:</strong><br>
-  • <a href="model.json">cdi/model.json</a> — domain weights<br>
-  • <a href="divergence.csv">cdi/divergence.csv</a> — live data</p>
+  <p><strong>Key files:</strong><br>
+    • <a href="model.json">model.json</a> — domain weights and scoring rules<br>
+    • <a href="divergence.csv">divergence.csv</a> — current divergence data
+  </p>
 
-  <p><strong>Next:</strong> <a href="../ciri/index.html">Run CIRI Calculator</a> using CDI divergence as input.</p>
+  <p><strong>Next step:</strong> <a href="../ciri/index.html">Open CIRI Calculator</a> — CDI scores feed directly into recovery calculations.</p>
 
   <small>
     © 2025 Terra Dawn Shouse — American Butterfly Effect (A.B.E.)<br>
     Licensed under CC BY-NC 4.0 · Integrity only — never for sale.<br>
-    Deterministic math. No bias. No drift.
+    Deterministic scoring. No bias. No drift.
   </small>
 
 </body>
