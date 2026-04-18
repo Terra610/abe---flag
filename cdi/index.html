@@ -24,10 +24,19 @@
   <h1>CDI — Constitutional Divergence Index</h1>
 
   <p><strong>Core module in the A.B.E. firing order.</strong><br>
-  CDA → <strong>CDI</strong> computes weighted 0–1 divergence scores across domains → CIRI translates those scores into measurable economic recovery value.</p>
+  CDA flags → CDI computes weighted divergence using the formal deterministic equations → CIRI translates into economic recovery value.</p>
+
+  <h2>Formal Deterministic Equations (Authoritative)</h2>
+  <p>These equations define all logic in A.B.E. (see <a href="../ABE_Formal_Equations.pdf">ABE_Formal_Equations.pdf</a>):</p>
+  <ol>
+    <li><strong>Authority Compliance:</strong> A(x) = 1 if (x ⊆ D ∧ x ⊆ J ∧ x ⊆ F); else 0</li>
+    <li><strong>Definition Integrity:</strong> ∆_def = |def_admin − def_statute| (must = 0)</li>
+    <li><strong>Funding Alignment:</strong> F_align = Σ(U_actual) − Σ(U_authorized)</li>
+    <li><strong>Jurisdictional Validity:</strong> J_valid = A(x) × (1 − ∆_def)</li>
+    <li><strong>Economic Externality Cascade:</strong> E_total = Σ(E_direct + E_secondary + E_tertiary)</li>
+  </ol>
 
   <h2>Divergence by Category (from divergence.csv)</h2>
-
   <table>
     <thead>
       <tr>
@@ -38,62 +47,24 @@
       </tr>
     </thead>
     <tbody>
-      <tr>
-        <td>Commerce Regulation</td>
-        <td class="high">0.63</td>
-        <td>0.92</td>
-        <td>High impact on funding scope</td>
-      </tr>
-      <tr>
-        <td>Judicial Oversight & Remedies</td>
-        <td class="high">0.74</td>
-        <td>0.88</td>
-        <td>High — affects void ab initio</td>
-      </tr>
-      <tr>
-        <td>Healthcare Policy & Funding</td>
-        <td class="mid">0.57</td>
-        <td>0.91</td>
-        <td>Moderate</td>
-      </tr>
-      <tr>
-        <td>Mobility & Transportation</td>
-        <td class="high">0.81</td>
-        <td>0.86</td>
-        <td>Critical — FMCSR scope violations</td>
-      </tr>
-      <tr>
-        <td>Education & Access</td>
-        <td class="low">0.45</td>
-        <td>0.94</td>
-        <td>Lower</td>
-      </tr>
-      <tr>
-        <td>Housing & Property Rights</td>
-        <td class="mid">0.68</td>
-        <td>0.89</td>
-        <td>Moderate</td>
-      </tr>
+      <tr><td>Commerce Regulation</td><td class="high">0.63</td><td>0.92</td><td>High impact on funding scope</td></tr>
+      <tr><td>Judicial Oversight & Remedies</td><td class="high">0.74</td><td>0.88</td><td>High — affects void ab initio</td></tr>
+      <tr><td>Healthcare Policy & Funding</td><td class="mid">0.57</td><td>0.91</td><td>Moderate</td></tr>
+      <tr><td>Mobility & Transportation</td><td class="high">0.81</td><td>0.86</td><td>Critical — FMCSR scope violations</td></tr>
+      <tr><td>Education & Access</td><td class="low">0.45</td><td>0.94</td><td>Lower</td></tr>
+      <tr><td>Housing & Property Rights</td><td class="mid">0.68</td><td>0.89</td><td>Moderate</td></tr>
     </tbody>
   </table>
 
   <h2>Position in Firing Order</h2>
-  <p>
-    Intake → System → CAE → CDA → <strong>CDI</strong> → CCRI → CFF → AFFE → CIRI → CIBS → CII → Macro → Integration
-  </p>
+  <p>Intake → System → CAE → CDA → <strong>CDI</strong> → CCRI → CFF → AFFE → CIRI → CIBS → CII → Macro → Integration</p>
 
-  <p><strong>Key files used by CDI:</strong><br>
-    • <a href="model.json">model.json</a> — domain weights and scoring rules<br>
-    • <a href="divergence.csv">divergence.csv</a> — current divergence data<br>
-    • <a href="runner.js">runner.js</a> — deterministic scoring logic
-  </p>
-
-  <p><strong>Next step in the chain:</strong> <a href="../ciri/index.html">Open CIRI Calculator</a> — CDI scores feed directly into recovery calculations.</p>
+  <p><strong>Next step:</strong> <a href="../ciri/index.html">Open CIRI Calculator</a> — CDI scores feed directly into recovery calculations using the formal equations above.</p>
 
   <small>
     © 2025 Terra Dawn Shouse — American Butterfly Effect (A.B.E.)<br>
     Licensed under CC BY-NC 4.0 · Integrity only — never for sale.<br>
-    Deterministic scoring. No bias. No drift.
+    Deterministic math. No bias. No drift.
   </small>
 
 </body>
