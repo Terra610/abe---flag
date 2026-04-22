@@ -1,0 +1,106 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ABE_MacroCascadeScenario_v1",
+  "description": "Scenario artifact for A.B.E. Macroeconomic Cascade (per-community and scaled totals).",
+  "type": "object",
+  "required": [
+    "version",
+    "module",
+    "communities",
+    "per_community",
+    "scenario_totals",
+    "assumptions",
+    "created_at"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "version": {
+      "type": "string",
+      "const": "1.0"
+    },
+    "module": {
+      "type": "string",
+      "const": "MACRO"
+    },
+    "communities": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Number of communities in this scenario."
+    },
+    "source_ciri_scenario": {
+      "type": ["string", "null"],
+      "description": "LocalStorage key of the CIRI scenario that seeded this run, if any."
+    },
+    "per_community": {
+      "type": "object",
+      "required": [
+        "investment",
+        "gdp",
+        "wages",
+        "local_spend",
+        "jobs",
+        "citizens_low",
+        "citizens_high",
+        "savings_annual"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "investment": { "type": "number" },
+        "gdp": { "type": "number" },
+        "wages": { "type": "number" },
+        "local_spend": { "type": "number" },
+        "jobs": { "type": "number" },
+        "citizens_low": { "type": "number" },
+        "citizens_high": { "type": "number" },
+        "savings_annual": { "type": "number" }
+      }
+    },
+    "scenario_totals": {
+      "type": "object",
+      "required": [
+        "investment",
+        "gdp",
+        "wages",
+        "local_spend",
+        "jobs",
+        "citizens_low",
+        "citizens_high",
+        "savings_annual"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "investment": { "type": "number" },
+        "gdp": { "type": "number" },
+        "wages": { "type": "number" },
+        "local_spend": { "type": "number" },
+        "jobs": { "type": "number" },
+        "citizens_low": { "type": "number" },
+        "citizens_high": { "type": "number" },
+        "savings_annual": { "type": "number" }
+      }
+    },
+    "assumptions": {
+      "type": "object",
+      "required": ["invest_min", "invest_max", "multipliers"],
+      "additionalProperties": false,
+      "properties": {
+        "invest_min": { "type": "number" },
+        "invest_max": { "type": "number" },
+        "multipliers": {
+          "type": "object",
+          "required": ["gdp", "wages", "local"],
+          "additionalProperties": false,
+          "properties": {
+            "gdp": { "type": "number" },
+            "wages": { "type": "number" },
+            "local": { "type": "number" }
+          }
+        }
+      }
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}
