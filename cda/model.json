@@ -1,126 +1,51 @@
 {
   "version": "1.0",
-  "updated": "2025-12-15T00:00:00Z",
   "module": "CDA",
-  "authority": {
-    "name": "A.B.E. — Constitutional Divergence Analyzer",
-    "license": "CC BY-NC 4.0"
+  "updated": "2026-04-23T00:00:00Z",
+  "title": "Constitutional Definition Audit",
+  "description": "Measures definition integrity, scope fidelity, and delegation drift across applied legal or administrative terms. CDA conditions later modules but does not replace the pioneer spine.",
+  "weights": {
+    "textual_fidelity": 0.34,
+    "scope_fidelity": 0.33,
+    "delegation_fidelity": 0.33
   },
-  "dimensions": {
-    "scope_alignment": {
-      "weight": 0.36,
-      "description": "Whether the rule is being applied within its lawful commercial/non-commercial scope."
-    },
-    "preemption_fidelity": {
-      "weight": 0.33,
-      "description": "Whether state practice respects federal supremacy and preemption boundaries."
-    },
-    "funding_integrity": {
-      "weight": 0.18,
-      "description": "Whether federal funding (e.g., MCSAP) is used within statutory and regulatory conditions."
-    },
-    "rights_and_process": {
-      "weight": 0.13,
-      "description": "Whether application respects right to travel, due process, and equal treatment."
-    }
+  "thresholds": {
+    "good": 0.85,
+    "warning": 0.65
   },
-  "flag_definitions": {
-    "scope_noncommercial_treated_as_commercial": {
-      "dimension": "scope_alignment",
-      "severity": 1.0,
-      "description": "State is treating non-commercial citizens as if they were commercial/DOT-regulated."
+  "definitions": [
+    {
+      "term": "driver",
+      "source_authority": "49 U.S.C. / 49 C.F.R. context",
+      "governing_definition": "A person engaged in the operation of a commercial motor vehicle in the regulated commercial context.",
+      "applied_definition": "Any person using a car on public roads regardless of commercial context.",
+      "scope_domain": "transportation / licensing",
+      "textual_fidelity": 0.40,
+      "scope_fidelity": 0.20,
+      "delegation_fidelity": 0.25,
+      "notes": "Illustrative drift example where a commercial definition is expanded into a general civilian population."
     },
-    "preemption_conflict": {
-      "dimension": "preemption_fidelity",
-      "severity": 1.0,
-      "description": "State rule conflicts with or expands beyond federal commercial scope under 49 U.S.C./49 CFR."
+    {
+      "term": "motor vehicle",
+      "source_authority": "49 U.S.C. / 49 C.F.R. context",
+      "governing_definition": "Vehicle definition bounded by specific commercial or regulated statutory context.",
+      "applied_definition": "Any privately used automobile in all contexts.",
+      "scope_domain": "transportation / enforcement",
+      "textual_fidelity": 0.45,
+      "scope_fidelity": 0.30,
+      "delegation_fidelity": 0.30,
+      "notes": "Illustrative drift example showing context collapse."
     },
-    "preemption_field": {
-      "dimension": "preemption_fidelity",
-      "severity": 0.9,
-      "description": "State appears to legislate in a field already occupied by Congress (field preemption)."
-    },
-    "ultra_vires_enforcement": {
-      "dimension": "scope_alignment",
-      "severity": 0.9,
-      "description": "Agency conduct goes beyond what its enabling statutes actually authorize."
-    },
-    "mcsap_off_mission": {
-      "dimension": "funding_integrity",
-      "severity": 0.9,
-      "description": "MCSAP or similar commercial enforcement funding is used for non-commercial activity."
-    },
-    "funding_conditions_ignored": {
-      "dimension": "funding_integrity",
-      "severity": 0.8,
-      "description": "Practice contradicts federal funding conditions or FMCSR adoption requirements."
-    },
-    "funding_nontransparent": {
-      "dimension": "funding_integrity",
-      "severity": 0.4,
-      "description": "Funding source and statutory authority are not transparent to affected people."
-    },
-    "right_to_travel_burdened": {
-      "dimension": "rights_and_process",
-      "severity": 0.85,
-      "description": "Practice burdens the right to travel for people not engaged in commerce."
-    },
-    "due_process_defects": {
-      "dimension": "rights_and_process",
-      "severity": 0.8,
-      "description": "Gaps in notice, hearing, or appeal before rights are restricted."
-    },
-    "selective_application": {
-      "dimension": "rights_and_process",
-      "severity": 0.5,
-      "description": "Rule is applied selectively or arbitrarily across similar cases."
+    {
+      "term": "commerce",
+      "source_authority": "U.S. Constitution Art. I, § 8 and implementing federal law",
+      "governing_definition": "Trade, traffic, transportation, and commercial intercourse within the governing constitutional and statutory scope.",
+      "applied_definition": "Any movement by any person in any setting.",
+      "scope_domain": "constitutional / transportation",
+      "textual_fidelity": 0.35,
+      "scope_fidelity": 0.20,
+      "delegation_fidelity": 0.20,
+      "notes": "Illustrative drift example where movement is collapsed into commerce."
     }
-  },
-  "scoring": {
-    "method": "weighted_flag_sum_clipped_0_1",
-    "notes": "Client-side CDA UI uses a simple sum of flag-based weights, clipped to [0,1]. That value is suitable as an input to CDI and CIRI.",
-    "dimension_weights": {
-      "scope_alignment": 0.36,
-      "preemption_fidelity": 0.33,
-      "funding_integrity": 0.18,
-      "rights_and_process": 0.13
-    }
-  },
-  "doctrine_integration": {
-    "source": "law/doctrines/doctrine_map.json",
-    "notes": "CDA maps each flag to one or more doctrine IDs from the doctrine map. The front-end populates doctrines_triggered based on CDA_FLAG_DOCTRINES.",
-    "flag_doctrine_map": {
-      "scope_noncommercial_treated_as_commercial": [
-        "police_power_doctrine",
-        "fmcsr_expansion"
-      ],
-      "preemption_conflict": [
-        "supremacy_clause"
-      ],
-      "preemption_field": [
-        "supremacy_clause"
-      ],
-      "ultra_vires_enforcement": [
-        "nondelegation"
-      ],
-      "mcsap_off_mission": [
-        "fmcsr_expansion",
-        "major_questions"
-      ],
-      "funding_conditions_ignored": [
-        "supremacy_clause"
-      ],
-      "funding_nontransparent": [],
-      "right_to_travel_burdened": [
-        "equal_protection",
-        "void_for_vagueness"
-      ],
-      "due_process_defects": [
-        "void_for_vagueness"
-      ],
-      "selective_application": [
-        "equal_protection"
-      ]
-    }
-  }
+  ]
 }
