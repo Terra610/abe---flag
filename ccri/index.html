@@ -1,55 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>CCRI — Constitutional Capital Recovery Index | A.B.E.</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <base href="/abe---flag/">
+  <link rel="stylesheet" href="abe-patch/assets/abe-patch.css" />
+  <style>
+    .ccri-wrap{max-width:1100px;margin:0 auto;padding:1.2rem 1rem 3rem}
+    .ccri-grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
+    .ccri-table{width:100%;border-collapse:collapse;font-size:.9rem;margin-top:.4rem}
+    .ccri-table th,.ccri-table td{
+      border:1px solid rgba(255,255,255,.08);
+      padding:.45rem .55rem;
+      text-align:left;
+    }
+    .ccri-table th{background:rgba(255,255,255,.04)}
+    .pill{
+      display:inline-block;padding:.1rem .55rem;border-radius:999px;
+      font-size:.8rem;border:1px solid rgba(255,255,255,.12)
+    }
+    .pill-low{border-color:#4bd28f;color:#4bd28f}
+    .pill-mod{border-color:#fff750;color:#fff750}
+    .pill-high{border-color:#ff6b6b;color:#ff6b6b}
+    .small-note{font-size:.85rem;color:#9fb3c8;margin-top:.25rem}
+  </style>
+</head>
+<body class="abe-page">
+
+<header class="abe-header">
+  <h1>CCRI — Constitutional Capital Recovery Index</h1>
+  <p class="tagline">
+    Measures constitutional divergence, suppressed lawful access, and recoverable constitutional capital produced by unlawful gatekeeping systems.
+  </p>
+  <nav class="chip-row">
+    <a class="chip" href="index.html">ABE Home</a>
+    <a class="chip" href="ciri/index.html">CIRI</a>
+    <a class="chip" href="cff/index.html">CFF</a>
+    <a class="chip" href="cibs/index.html">CIBS</a>
+    <a class="chip" href="affe/index.html">AFFE</a>
+    <a class="chip chip-alt" href="system/index.html">System Map</a>
+  </nav>
+</header>
+
+<main class="abe-main ccri-wrap">
+
+  <section class="card">
+    <h2>What CCRI Does</h2>
+    <p>
+      CCRI measures how unconstitutional gatekeeping suppresses access to lawful movement, economic participation,
+      and constitutional capital. It does not score people. It scores the divergence of systems, rules, and enforcement
+      dependencies that convert rights into conditional access points.
+    </p>
+    <ul>
+      <li>Flags unlawful dependence on DMV or DOT-linked status for non-regulated populations,</li>
+      <li>Measures constitutional divergence created by licensing and enforcement proxies,</li>
+      <li>Estimates the recoverable constitutional capital suppressed by those barriers.</li>
+    </ul>
+    <p>
+      CCRI is a structural measurement module. Its outputs are meant to feed downstream recovery and reinvestment analysis,
+      not consumer profiling.
+    </p>
+  </section>
+
+  <section class="card">
+    <h2>Inputs</h2>
+    <p>
+      CCRI reads scenarios defined in <code>ccri/inputs.json</code>.
+      Each scenario represents a specific policy environment, institution, or rule set to be tested for constitutional divergence.
+    </p>
+    <p class="small-note">
+      Edit <code>ccri/inputs.json</code> in the repo, then refresh this page to recompute results locally in-browser.
+    </p>
+    <p>
+      <a class="btn" href="ccri/inputs.json" download>Download inputs.json</a>
+      <a class="btn btn-ghost" href="ccri/README.md">Read CCRI documentation</a>
+    </p>
+  </section>
+
+  <section class="card">
+    <h2>Constitutional Capital Scores</h2>
+    <p class="small-note">
+      Scores are computed client-side using <code>ccri/model.json</code>. Nothing leaves your browser.
+    </p>
+    <table class="ccri-table" id="results-table">
+      <thead>
+        <tr>
+          <th>Scenario</th>
+          <th>Jurisdiction</th>
+          <th>Institution</th>
+          <th>Constitutional Score (0–100)</th>
+          <th>Divergence Class</th>
+          <th>Dependency Level</th>
+        </tr>
+      </thead>
+      <tbody id="results-body">
+        <tr><td colspan="6">Loading model…</td></tr>
+      </tbody>
+    </table>
+    <p class="small-note" id="results-summary"></p>
+    <button id="btn-export" class="btn" disabled>Download CCRI_results.csv</button>
+  </section>
+
+</main>
+
+<footer class="abe-footer">
+  <p>A.B.E. — American Butterfly Effect · CCRI module (local-only scoring)</p>
+</footer>
+
 <script>
-(async function(){
+(async function () {
   const bodyEl = document.getElementById('results-body');
   const sumEl = document.getElementById('results-summary');
   const btnExport = document.getElementById('btn-export');
 
-  async function loadJSON(path){
+  async function loadJSON(path) {
     const r = await fetch(path, { cache: 'no-store' });
-    if(!r.ok) throw new Error('Failed to load ' + path);
+    if (!r.ok) throw new Error('Failed to load ' + path);
     return r.json();
   }
 
-  function tierFromScore(score, thresholds){
-    if(score <= thresholds.high_risk) return 'HIGH';
-    if(score <= thresholds.moderate_risk) return 'MODERATE';
-    if(score <= thresholds.low_risk) return 'LOW';
+  function tierFromScore(score, thresholds) {
+    if (score <= thresholds.high_risk) return 'HIGH';
+    if (score <= thresholds.moderate_risk) return 'MODERATE';
+    if (score <= thresholds.low_risk) return 'LOW';
     return 'LOW';
   }
 
-  function pillClass(tier){
-    if(tier === 'HIGH') return 'pill pill-high';
-    if(tier === 'MODERATE') return 'pill pill-mod';
+  function pillClass(tier) {
+    if (tier === 'HIGH') return 'pill pill-high';
+    if (tier === 'MODERATE') return 'pill pill-mod';
     return 'pill pill-low';
   }
 
-  function average(values){
-    if(!Array.isArray(values) || !values.length) return 0;
+  function average(values) {
+    if (!Array.isArray(values) || !values.length) return 0;
     const nums = values.filter(v => typeof v === 'number' && !Number.isNaN(v));
-    if(!nums.length) return 0;
+    if (!nums.length) return 0;
     return nums.reduce((a, b) => a + b, 0) / nums.length;
   }
 
-  try{
+  function toFixedNumber(value, digits) {
+    return Number((value || 0).toFixed(digits));
+  }
+
+  try {
     const model = await loadJSON('ccri/model.json');
     const inp = await loadJSON('ccri/inputs.json');
 
-    const penalties = model.scoring_rules.penalties || {};
-    const thresholds = model.scoring_rules.thresholds || {
+    const penalties = (model.scoring_rules && model.scoring_rules.penalties) || {};
+    const thresholds = (model.scoring_rules && model.scoring_rules.thresholds) || {
       high_risk: 40,
       moderate_risk: 70,
       low_risk: 100
     };
-    const base = model.scoring_rules.base_score ?? 100;
+    const base = (model.scoring_rules && model.scoring_rules.base_score != null)
+      ? model.scoring_rules.base_score
+      : 100;
 
-    const scenarios = inp.scenarios || [];
-    if(!scenarios.length){
+    const scenarios = Array.isArray(inp.scenarios) ? inp.scenarios : [];
+    if (!scenarios.length) {
       bodyEl.innerHTML = '<tr><td colspan="6">No scenarios defined in ccri/inputs.json.</td></tr>';
       sumEl.textContent = 'No CCRI scenarios available.';
       return;
     }
 
-    const results = scenarios.map(s => {
+    const results = scenarios.map((s) => {
       let score = base;
       let dmvDependence = 0;
 
@@ -60,170 +176,85 @@
       const pop = s.population_impact || {};
       const ap = s.appeal_process || {};
 
-      if(ds.dmv_records && dmv.used_in_underwriting_decisions){
+      if (ds.dmv_records && dmv.used_in_underwriting_decisions) {
         score -= penalties.uses_dmv_in_underwriting || 0;
         dmvDependence += 2;
       }
 
-      if(ds.dmv_records && dmv.used_for_pricing_or_interest_rate){
+      if (ds.dmv_records && dmv.used_for_pricing_or_interest_rate) {
         score -= penalties.uses_dmv_for_pricing || 0;
         dmvDependence += 1;
       }
 
-      if(lic.requires_valid_license_to_apply){
+      if (lic.requires_valid_license_to_apply) {
         score -= penalties.requires_valid_license_to_apply || 0;
         dmvDependence += 1;
       }
 
-      if(lic.requires_valid_license_to_fund_loan){
+      if (lic.requires_valid_license_to_fund_loan) {
         score -= penalties.requires_valid_license_to_fund || 0;
         dmvDependence += 1;
       }
 
-      if(lic.requires_valid_license_to_test_drive){
+      if (lic.requires_valid_license_to_test_drive) {
         score -= penalties.requires_valid_license_to_test_drive || 0;
       }
 
       const drOverall = pop.denial_rate_overall ?? 0;
       const drNoLic = pop.denial_rate_for_suspended_or_no_license ?? 0;
 
-      if(drNoLic > drOverall + 0.15){
+      if (drNoLic > drOverall + 0.15) {
         score -= penalties.denial_rate_high_for_no_license || 0;
         dmvDependence += 1;
       }
 
-      if(ap.has_appeal_mechanism === false || ap.human_review_available === false){
+      if (ap.has_appeal_mechanism === false || ap.human_review_available === false) {
         score -= penalties.no_appeal_process || 0;
       }
 
-      if(ds.dot_or_fmcsa_records && dot.is_dot_regulated_population === false){
+      if (ds.dot_or_fmcsa_records && dot.is_dot_regulated_population === false) {
         score -= penalties.uses_dot_or_fmcsa_records_for_consumers || 0;
         dmvDependence += 2;
       }
 
-      if(score < 0) score = 0;
-      if(score > 100) score = 100;
+      if (score < 0) score = 0;
+      if (score > 100) score = 100;
 
-      const tier = tierFromScore(score, thresholds);
-      const cei = 1 - (score / 100);
+      const divergenceClass = tierFromScore(score, thresholds);
+      const constitutionalDivergenceIndex = 1 - (score / 100);
 
-      const apps = pop.applications_per_year || 0;
-      const affected = pop.estimated_noncommercial_applicants_affected || Math.round(apps * (drNoLic || drOverall));
-      const avgHarm = 2500;
-      const recoveryHint = cei * affected * avgHarm;
+      const applications = pop.applications_per_year || 0;
+      const affectedPopulation =
+        pop.estimated_noncommercial_applicants_affected ||
+        Math.round(applications * (drNoLic || drOverall));
+
+      const averageHarmPerAffectedCase = 2500;
+      const constitutionalCapitalRecoveryUsd =
+        constitutionalDivergenceIndex * affectedPopulation * averageHarmPerAffectedCase;
 
       return {
         id: s.id || '',
         jurisdiction: s.jurisdiction || '',
         institution: s.institution_name || s.institution_type || '',
-        score,
-        tier,
+        constitutional_score: score,
+        divergence_class: divergenceClass,
         dmvDependence,
-        exposure_index: cei,
-        applications: apps,
-        affected,
-        recovery_hint_usd: recoveryHint
+        constitutional_divergence_index: constitutionalDivergenceIndex,
+        applications,
+        affected_population: affectedPopulation,
+        constitutional_capital_recovery_usd: constitutionalCapitalRecoveryUsd
       };
     });
 
-    bodyEl.innerHTML = results.map(r => `
+    bodyEl.innerHTML = results.map((r) => `
       <tr>
         <td>${r.id}</td>
         <td>${r.jurisdiction}</td>
         <td>${r.institution}</td>
-        <td>${r.score.toFixed(0)}</td>
-        <td><span class="${pillClass(r.tier)}">${r.tier}</span></td>
+        <td>${r.constitutional_score.toFixed(0)}</td>
+        <td><span class="${pillClass(r.divergence_class)}">${r.divergence_class}</span></td>
         <td>${r.dmvDependence === 0 ? 'Low' : r.dmvDependence === 1 ? 'Medium' : 'High'}</td>
       </tr>
     `).join('');
 
-    const high = results.filter(r => r.tier === 'HIGH').length;
-    const mod = results.filter(r => r.tier === 'MODERATE').length;
-    const low = results.filter(r => r.tier === 'LOW').length;
-
-    sumEl.textContent =
-      `Scenarios scored: ${results.length} · HIGH: ${high} · MODERATE: ${mod} · LOW: ${low}. ` +
-      `CCRI artifact saved for downstream CIRI use.`;
-
-    const avgScore = average(results.map(r => r.score));
-    const avgExposure = average(results.map(r => r.exposure_index));
-    const avgFairness = average(results.map(r => {
-      if(r.dmvDependence === 0) return 100;
-      if(r.dmvDependence === 1) return 60;
-      return 20;
-    }));
-    const totalRecoveryHint = results.reduce((sum, r) => sum + (r.recovery_hint_usd || 0), 0);
-
-    const ccriArtifact = {
-      module: 'CCRI',
-      version: '1.0',
-      generated_at: new Date().toISOString(),
-      scenario_count: results.length,
-      scores: {
-        overall_risk_class: high > 0 ? 'HIGH' : mod > 0 ? 'MODERATE' : 'LOW',
-        data_integrity: Number(avgScore.toFixed(2)),
-        constitutional_alignment: Number((100 - (avgExposure * 100)).toFixed(2)),
-        access_fairness: Number(avgFairness.toFixed(2)),
-        economic_impact: Number(Math.min(100, totalRecoveryHint > 0 ? 75 : 25).toFixed(2))
-      },
-      aggregate: {
-        average_score: Number(avgScore.toFixed(2)),
-        average_exposure_index: Number(avgExposure.toFixed(4)),
-        total_estimated_affected_noncommercial: results.reduce((sum, r) => sum + (r.affected || 0), 0),
-        total_recovery_hint_usd: Math.round(totalRecoveryHint)
-      },
-      scenarios: results
-    };
-
-    try{
-      localStorage.setItem('ABE_CCRI_SCENARIO_V1', JSON.stringify(ccriArtifact));
-      localStorage.setItem('ABE_CCRI_LAST_RESULTS', JSON.stringify(results));
-    }catch(storageErr){
-      console.warn('Unable to save CCRI artifact to localStorage:', storageErr);
-    }
-
-    btnExport.disabled = false;
-    btnExport.onclick = () => {
-      const head = [
-        'id',
-        'jurisdiction',
-        'institution',
-        'score',
-        'tier',
-        'dmv_dependence',
-        'exposure_index',
-        'applications_per_year',
-        'estimated_affected_noncommercial',
-        'recovery_hint_usd'
-      ];
-
-      const body = results.map(r => [
-        r.id,
-        r.jurisdiction,
-        `"${String(r.institution).replace(/"/g, '""')}"`,
-        r.score.toFixed(0),
-        r.tier,
-        r.dmvDependence,
-        r.exposure_index.toFixed(4),
-        r.applications,
-        r.affected,
-        Math.round(r.recovery_hint_usd)
-      ].join(','));
-
-      const csv = [head.join(',')].concat(body).join('\n');
-      const blob = new Blob([csv], { type: 'text/csv' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'CCRI_results.csv';
-      a.click();
-      URL.revokeObjectURL(url);
-    };
-
-  }catch(err){
-    console.error(err);
-    bodyEl.innerHTML = `<tr><td colspan="6">Error loading model or inputs: ${err.message}</td></tr>`;
-    sumEl.textContent = 'Check that ccri/model.json and ccri/inputs.json exist and are valid JSON.';
-  }
-})();
-</script>
+    const high = results.filter(r => r.divergence_class === 'HIGH
