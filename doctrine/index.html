@@ -1,66 +1,217 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>A.B.E. Doctrines Overview</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Doctrines — A.B.E. Authority Layer</title>
+  <base href="/abe---flag/">
+  <link rel="stylesheet" href="abe-patch/assets/abe-patch.css">
   <style>
-    body{background:#0b0d12;color:#e6e6e6;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;margin:0}
-    header,footer{text-align:center;padding:1rem;background:#12161f;border-bottom:1px solid rgba(255,255,255,.08)}
-    footer{border-top:1px solid rgba(255,255,255,.08);border-bottom:none;margin-top:2rem;font-size:.85rem;color:#9fb3c8}
-    h1{color:#5ddfff;margin-bottom:.25rem}
-    p.lead{color:#c8d2df;margin-top:0}
-    nav a{color:#5ddfff;text-decoration:none}
-    nav a:hover{text-decoration:underline}
-    main{max-width:900px;margin:1.5rem auto;padding:0 1rem}
-    section{background:#141820;border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:1rem 1.25rem;margin-bottom:1rem}
-    a{color:#5ddfff;text-decoration:none}
+    :root{
+      --bg:#0b0d12;
+      --panel:#141820;
+      --ink:#e6e6e6;
+      --muted:#9fb3c8;
+      --line:rgba(255,255,255,.08);
+      --accent:#5ddfff;
+      --ok:#4bd28f;
+      --warn:#ffd166;
+      --bad:#ff6b6b;
+      --chip:#10151d;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--ink);
+      font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+    }
+    a{color:#80bfff;text-decoration:none}
     a:hover{text-decoration:underline}
-    iframe{width:100%;height:550px;border:1px solid rgba(255,255,255,.08);border-radius:10px}
-    code{background:rgba(255,255,255,.08);padding:.1rem .3rem;border-radius:6px}
+    header{
+      padding:20px;
+      background:#11151c;
+      border-bottom:1px solid var(--line);
+      text-align:center;
+    }
+    .sub{
+      color:var(--muted);
+      margin-top:6px;
+      max-width:980px;
+      margin-left:auto;
+      margin-right:auto;
+    }
+    .nav{
+      margin-top:12px;
+      display:flex;
+      gap:10px;
+      justify-content:center;
+      flex-wrap:wrap;
+    }
+    .nav a{
+      display:inline-block;
+      padding:8px 12px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      background:var(--chip);
+    }
+    main{
+      max-width:1120px;
+      margin:20px auto;
+      padding:0 16px 40px;
+    }
+    .card{
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:16px;
+      margin:12px 0;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+      gap:14px;
+    }
+    .doc-card{
+      background:#10151d;
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:14px;
+    }
+    .doc-card h3{
+      margin:.1rem 0 .35rem;
+      color:#e6f0ff;
+    }
+    .doc-card p{
+      margin:.35rem 0;
+      color:var(--muted);
+      font-size:.95rem;
+    }
+    .row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:10px;
+    }
+    .btn{
+      display:inline-block;
+      padding:8px 12px;
+      border:1px solid var(--line);
+      border-radius:10px;
+      background:#111827;
+      color:var(--ink);
+      text-decoration:none;
+      font-size:.92rem;
+    }
+    .btn:hover{
+      border-color:var(--accent);
+      text-decoration:none;
+    }
+    .pill{
+      display:inline-block;
+      padding:2px 8px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      font-size:.8rem;
+      color:var(--muted);
+      margin-bottom:.5rem;
+    }
+    footer{
+      text-align:center;
+      color:var(--muted);
+      font-size:.84rem;
+      padding:16px;
+      border-top:1px solid var(--line);
+      background:#11151c;
+    }
   </style>
 </head>
 <body>
 <header>
-  <h1>A.B.E. Doctrines Overview</h1>
-  <p class="lead">Foundational frameworks for the A.B.E. Integrity System.</p>
-  <nav>
-    <a href="../index.html">🏠 Home</a> ·
-    <a href="../integration/index.html">Integration</a> ·
-    <a href="../ciri/index.html">CIRI</a> ·
-    <a href="../cibs/index.html">CIBS</a> ·
-    <a href="../cii/index.html">CII</a> ·
-    <a href="../macro/index.html">Macro</a>
-  </nav>
+  <h1>A.B.E. Doctrine Layer</h1>
+  <div class="sub">
+    Foundational authority pages for the A.B.E. engine. These doctrines do not replace the core formulas.
+    They anchor the legal and constitutional logic that later modules rely on.
+  </div>
+  <div class="nav">
+    <a href="index.html">Home</a>
+    <a href="integration/index.html">Integration</a>
+    <a href="macro/index.html">Macro</a>
+    <a href="system/index.html">CLI</a>
+    <a href="doctrine/doctrine_map.html">Doctrine Map</a>
+  </div>
 </header>
 
 <main>
-  <section>
-    <h2>📘 A.B.E. — Citizens’ Rights Restoration Act (CRRA)</h2>
-<p>The foundational doctrine behind the A.B.E. engine, defining constitutional realignment, funding integrity, and the economic restoration pathway.</p>
-<p><strong>File:</strong> <code>./ABE-CRRA.pdf</code></p>
+  <section class="card">
+    <h2>Authority Structure</h2>
+    <p>
+      The pioneer formulas remain the engine block. The doctrine layer exists to anchor the constitutional,
+      remedial, and structural authority that later modules call on for alignment, nullity, and recovery.
+    </p>
+    <p>
+      Core role of this folder:
+      Constitutional Fidelity defines the alignment baseline, Void ab Initio defines invalidity,
+      and ABE-CRRA defines the restoration and realignment pathway.
+    </p>
+  </section>
 
-<iframe src="./ABE-CRRA.pdf"></iframe>
+  <section class="grid">
+    <article class="doc-card">
+      <div class="pill">Alignment Anchor</div>
+      <h3>Constitutional Fidelity</h3>
+      <p>
+        Defines constitutional alignment as the governing baseline for lawful operation, delegated authority,
+        and structural legitimacy.
+      </p>
+      <div class="row">
+        <a class="btn" href="doctrine/constitutional-fidelity.html">Open Page</a>
+        <a class="btn" href="doctrine/Constitutional Fidelity-1.pdf" download>Download PDF</a>
+      </div>
+    </article>
 
-<p><a href="./ABE-CRRA.pdf" download>⬇️ Download ABE-CRRA PDF</a></p>
-<p><a href="./abe-crra.html">🔗 Open Full Doctrine Viewer</a></p>
+    <article class="doc-card">
+      <div class="pill">Invalidity Rule</div>
+      <h3>Void ab Initio</h3>
+      <p>
+        Defines when an act, doctrine, or enforcement posture is void from the beginning and incapable of
+        generating lawful downstream authority.
+      </p>
+      <div class="row">
+        <a class="btn" href="doctrine/void-ab-initio.html">Open Page</a>
+        <a class="btn" href="doctrine/Void ab Initio.pdf" download>Download PDF</a>
+      </div>
+    </article>
 
-  <section>
-    <h2>📚 Individual Doctrine Pages</h2>
-    <ul>
-      <li><a href="./constitutional-fidelity.html">Constitutional Fidelity</a></li>
-      <li><a href="./void-ab-initio.html">Void ab initio</a></li>
-      <li><a href="./abe-crra.html">ABE - CRRA (Full Original Doctrine) </a></li>
-      <li><a href="./doctrine_map.html">Doctrine Map (structured view)</a></li>
-    </ul>
+    <article class="doc-card">
+      <div class="pill">Restoration Framework</div>
+      <h3>ABE — CRRA</h3>
+      <p>
+        The restoration doctrine tying constitutional realignment to measurable recovery, funding integrity,
+        and public restoration pathways.
+      </p>
+      <div class="row">
+        <a class="btn" href="doctrine/abe-crra.html">Open Page</a>
+        <a class="btn" href="doctrine/ABE-CRRA.pdf" download>Download PDF</a>
+      </div>
+    </article>
+
+    <article class="doc-card">
+      <div class="pill">Structured View</div>
+      <h3>Doctrine Map</h3>
+      <p>
+        Machine-readable and human-readable doctrine structure for use across integration, macro, and
+        later expansion modules.
+      </p>
+      <div class="row">
+        <a class="btn" href="doctrine/doctrine_map.html">Open Map</a>
+      </div>
+    </article>
   </section>
 </main>
 
 <footer>
-  © 2025 Terra Dawn Shouse ·
-  <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener" style="color:#5ddfff">
-    CC BY-NC 4.0 International License
-  </a> · Integrity only — never for sale.
+  © Terra Dawn Shouse · CC BY-NC 4.0 · Integrity only — never for sale.
 </footer>
 </body>
 </html>
