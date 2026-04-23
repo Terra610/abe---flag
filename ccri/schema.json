@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "CCRI_inputs_v1",
-  "description": "Schema for CCRI (Consumer Credit Risk Integrity) inputs.json scenario file.",
+  "description": "Schema for CCRI (Constitutional Capital Recovery Index) inputs.json scenario file.",
   "type": "object",
   "required": ["version", "module", "scenarios"],
   "additionalProperties": false,
@@ -35,11 +35,11 @@
           },
           "jurisdiction": {
             "type": "string",
-            "description": "State or region where the institution operates (e.g., 'Iowa')."
+            "description": "State or region where the institution or policy operates."
           },
           "institution_type": {
             "type": "string",
-            "description": "Type of institution being evaluated.",
+            "description": "Type of institution or system being evaluated.",
             "enum": [
               "bank",
               "credit_union",
@@ -72,7 +72,7 @@
           },
           "uses_ssn_for": {
             "type": "array",
-            "description": "Declared uses of SSN in the institution workflow.",
+            "description": "Declared uses of SSN in the workflow.",
             "items": {
               "type": "string",
               "enum": [
@@ -81,13 +81,13 @@
                 "irs_reporting",
                 "fraud_detection",
                 "third_party_background_checks",
+                "income_verification_tax_docs",
                 "unclassified_other"
               ]
             }
           },
           "data_sources_used": {
             "type": "object",
-            "description": "Binary map of which major data sources feed the underwriting system.",
             "required": [
               "credit_bureau",
               "paystubs_or_w2",
@@ -109,7 +109,6 @@
           },
           "dmv_usage_details": {
             "type": "object",
-            "description": "How DMV data is used inside the system, if at all.",
             "additionalProperties": false,
             "properties": {
               "pulled_for_identity_only": { "type": "boolean" },
@@ -135,13 +134,9 @@
           },
           "dot_or_fmcsa_usage_details": {
             "type": "object",
-            "description": "How DOT/FMCSA data is used, if at all.",
             "additionalProperties": false,
             "properties": {
-              "is_dot_regulated_population": {
-                "type": "boolean",
-                "description": "True if this scenario explicitly covers DOT-regulated safety-sensitive employees."
-              },
+              "is_dot_regulated_population": { "type": "boolean" },
               "pulls_cdl_or_safety_record": { "type": "boolean" },
               "uses_mcsap_or_fmcsr_flags": { "type": "boolean" },
               "notes": { "type": "string" }
@@ -149,7 +144,6 @@
           },
           "license_requirements": {
             "type": "object",
-            "description": "Which license-related gates are enforced.",
             "required": [
               "requires_valid_license_to_apply",
               "requires_valid_license_to_fund_loan",
@@ -166,7 +160,6 @@
           },
           "population_impact": {
             "type": "object",
-            "description": "High-level estimate of how many people are affected.",
             "required": [
               "applications_per_year",
               "denial_rate_overall"
@@ -195,12 +188,10 @@
           },
           "denial_reasons_top": {
             "type": "array",
-            "description": "Top denial reasons as recorded by the institution.",
             "items": { "type": "string" }
           },
           "appeal_process": {
             "type": "object",
-            "description": "Whether and how people can challenge denials.",
             "additionalProperties": false,
             "properties": {
               "has_appeal_mechanism": { "type": "boolean" },
@@ -208,12 +199,27 @@
               "notes": { "type": "string" }
             }
           },
+          "authority_compliance": {
+            "type": "boolean",
+            "description": "Fallback authority-compliance value when upstream CAE/CDA/CFF artifacts are unavailable."
+          },
+          "definition_integrity_zero": {
+            "type": "boolean",
+            "description": "Fallback flag indicating whether definition drift is zero."
+          },
+          "funding_alignment": {
+            "type": "boolean",
+            "description": "Fallback funding alignment flag when CFF artifact is unavailable."
+          },
+          "average_constitutional_capital_per_case_usd": {
+            "type": "number",
+            "minimum": 0
+          },
           "notes": {
-            "type": "string",
-            "description": "Freeform notes about this scenario."
+            "type": "string"
           }
         }
       }
     }
   }
-                    }
+                }
