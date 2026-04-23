@@ -1,251 +1,105 @@
-export async function run(scenario = {}, ctx = {}) {
-  const intake = scenario?.inputs?.intake || {};
-  const source = intake?.source || {};
+// cda/runner.js
+// CDA -> Constitutional Definition Audit
+// Measures integrity of applied definitions against controlling authority.
 
-  const rawText = [source.title, source.type, source.jurisdiction, source.text]
-    .filter(Boolean)
-    .join(" ")
-    .toLowerCase();
-
-  const claimedAuthority = [];
-  const controllingAuthority = ["U.S. Constitution"];
-
-  const doctrineTriggers = [];
-  const rightsImpacted = [];
-  const findings = [];
-
-  const hasStateTransport = hasAny(rawText, [
-    "state transportation code",
-    "driver's license",
-    "vehicle registration",
-    "traffic code",
-    "state transportation",
-    "license suspension"
-  ]);
-
-  const hasFederalCommerce = hasAny(rawText, [
-    "commerce",
-    "interstate commerce",
-    "motor carrier",
-    "commercial motor vehicle",
-    "for hire",
-    "carrier",
-    "dot regulated"
-  ]);
-
-  const hasPrivateTravel = hasAny(rawText, [
-    "private travel",
-    "personal travel",
-    "non-commercial",
-    "private",
-    "personal"
-  ]);
-
-  const hasFunding = hasAny(rawText, [
-    "mcsap",
-    "grant",
-    "funding",
-    "appropriation",
-    "federal funds",
-    "program funds",
-    "budget"
-  ]);
-
-  const hasCourtLanguage = hasAny(rawText, [
-    "court",
-    "judicial",
-    "qualified immunity",
-    "stare decisis",
-    "judge"
-  ]);
-
-  const hasSeizureOrDetention = hasAny(rawText, [
-    "stop",
-    "traffic stop",
-    "detained",
-    "arrest",
-    "seized",
-    "citation",
-    "charged"
-  ]);
-
-  const hasRASProblem = hasAny(rawText, [
-    "no probable cause",
-    "no reasonable suspicion",
-    "without reasonable suspicion",
-    "without articulable suspicion"
-  ]);
-
-  const hasVagueness = hasAny(rawText, [
-    "ambiguous",
-    "vague",
-    "undefined",
-    "unclear",
-    "interpretation"
-  ]);
-
-  if (hasStateTransport) {
-    claimedAuthority.push("state_transportation_enforcement");
-  }
-
-  if (hasFunding) {
-    claimedAuthority.push("funding_or_program_authority");
-  }
-
-  if (hasCourtLanguage) {
-    claimedAuthority.push("judicial_or_doctrinal_authority");
-  }
-
-  if (hasFederalCommerce) {
-    controllingAuthority.push("federal_commerce_authority");
-  }
-
-  if (hasPrivateTravel) {
-    controllingAuthority.push("private_noncommercial_status");
-    rightsImpacted.push("right_to_travel");
-    rightsImpacted.push("liberty_burden");
-  }
-
-  if (hasSeizureOrDetention) {
-    rightsImpacted.push("unreasonable_seizure");
-    rightsImpacted.push("due_process");
-  }
-
-  let authorityConflict = false;
-  let constitutionalViolation = false;
-  let voidAbInitioFlag = false;
-  let ultraViresFlag = false;
-  let fundingScopeConflict = false;
-  let offMissionFlag = false;
-  let jurisdictionStatus = "aligned";
-
-  if (hasStateTransport && hasPrivateTravel && !hasFederalCommerce) {
-    authorityConflict = true;
-    constitutionalViolation = true;
-    ultraViresFlag = true;
-    jurisdictionStatus = "ultra_vires";
-    findings.push("State transportation enforcement is being applied to private or non-commercial conduct without a clear commercial trigger.");
-    doctrineTriggers.push("commerce_nexus_failure");
-    doctrineTriggers.push("jurisdiction_failure");
-    doctrineTriggers.push("ultra_vires_enforcement");
-  }
-
-  if (hasFunding && hasPrivateTravel && !hasFederalCommerce) {
-    fundingScopeConflict = true;
-    offMissionFlag = true;
-    findings.push("Funding or program authority appears to be used outside approved mission scope.");
-    doctrineTriggers.push("funding_scope_conflict");
-    doctrineTriggers.push("off_mission_execution");
-  }
-
-  if (hasRASProblem) {
-    constitutionalViolation = true;
-    findings.push("Reasonable articulable suspicion appears defective or absent.");
-    doctrineTriggers.push("ras_defect");
-    rightsImpacted.push("due_process");
-    rightsImpacted.push("unreasonable_seizure");
-  }
-
-  if (hasVagueness) {
-    findings.push("Ambiguity or vagueness language appears in the source.");
-    doctrineTriggers.push("void_for_vagueness_risk");
-  }
-
-  if (hasCourtLanguage && rawText.includes("qualified immunity")) {
-    findings.push("Qualified immunity language appears in the source.");
-    doctrineTriggers.push("stare_decisis_inapplicable");
-  }
-
-  if (constitutionalViolation) {
-    voidAbInitioFlag = true;
-    ultraViresFlag = true;
-    if (jurisdictionStatus === "aligned") {
-      jurisdictionStatus = "void";
-    }
-    doctrineTriggers.push("void_ab_initio");
-    doctrineTriggers.push("constitutional_fidelity_breach");
-    findings.push("The action conflicts with controlling constitutional authority and is treated as void ab initio.");
-  }
-
-  if (!claimedAuthority.length) {
-    findings.push("No clear claimed authority was detected from the current input.");
-  }
-
-  if (!rightsImpacted.length) {
-    rightsImpacted.push("no_explicit_right_identified");
-  }
-
-  const result = {
-    claimed_authority: unique(claimedAuthority),
-    controlling_authority: unique(controllingAuthority),
-    authority_conflict: authorityConflict,
-    jurisdiction_status: jurisdictionStatus,
-    constitutional_violation: constitutionalViolation,
-    void_ab_initio_flag: voidAbInitioFlag,
-    ultra_vires_flag: ultraViresFlag,
-    funding_scope_conflict: fundingScopeConflict,
-    off_mission_flag: offMissionFlag,
-    doctrine_triggers: unique(doctrineTriggers),
-    rights_impacted: unique(rightsImpacted),
-    findings
-  };
-
-  return {
-    module: "cda",
-    version: "1.0.0",
-    timestamp: new Date().toISOString(),
-    input: {
-      intake
-    },
-    result,
-    plain_language: buildPlainLanguage(result)
-  };
+function num(v, fallback = 0) {
+  const n = Number(v);
+  return Number.isFinite(n) ? n : fallback;
 }
 
-function hasAny(text, phrases) {
-  return phrases.some(phrase => text.includes(phrase));
+function round(v, d = 6) {
+  return Number(num(v).toFixed(d));
 }
 
-function unique(arr) {
-  return [...new Set(arr)];
+function classify(score, good, warning) {
+  if (score >= good) return "LOW_DIVERGENCE";
+  if (score >= warning) return "MODERATE_DIVERGENCE";
+  return "HIGH_DIVERGENCE";
 }
 
-function buildPlainLanguage(result) {
-  const status = result.void_ab_initio_flag
-    ? "void_ab_initio"
-    : result.ultra_vires_flag
-      ? "ultra_vires"
-      : result.off_mission_flag
-        ? "off_mission"
-        : result.authority_conflict
-          ? "authority_conflict"
-          : "aligned";
+export async function run(_scenario = {}, ctx = {}) {
+  const model = ctx.model || {};
+  const weights = model.weights || {};
+  const thresholds = model.thresholds || {};
 
-  if (status === "aligned") {
+  const wText = num(weights.textual_fidelity, 0.34);
+  const wScope = num(weights.scope_fidelity, 0.33);
+  const wDelegation = num(weights.delegation_fidelity, 0.33);
+
+  const definitions = Array.isArray(model.definitions) ? model.definitions : [];
+
+  const scored = definitions.map(def => {
+    const textual = num(def.textual_fidelity, 0);
+    const scope = num(def.scope_fidelity, 0);
+    const delegation = num(def.delegation_fidelity, 0);
+
+    const integrity =
+      (textual * wText) +
+      (scope * wScope) +
+      (delegation * wDelegation);
+
+    const deltaDef = 1 - integrity;
+
     return {
-      status,
-      explanation:
-        "CDA did not find a clear constitutional authority conflict from the current input.",
-      what_authority_was_claimed: result.claimed_authority,
-      what_authority_controls: result.controlling_authority,
-      what_rights_are_impacted: result.rights_impacted,
-      what_doctrine_applies: result.doctrine_triggers
+      term: def.term || "",
+      source_authority: def.source_authority || "",
+      governing_definition: def.governing_definition || "",
+      applied_definition: def.applied_definition || "",
+      scope_domain: def.scope_domain || "",
+      textual_fidelity: round(textual, 6),
+      scope_fidelity: round(scope, 6),
+      delegation_fidelity: round(delegation, 6),
+      integrity_score: round(integrity, 6),
+      delta_def: round(deltaDef, 6),
+      notes: def.notes || ""
     };
-  }
+  });
+
+  const avgIntegrity =
+    scored.length
+      ? scored.reduce((s, x) => s + num(x.integrity_score, 0), 0) / scored.length
+      : 0;
+
+  const avgDelta =
+    scored.length
+      ? scored.reduce((s, x) => s + num(x.delta_def, 0), 0) / scored.length
+      : 0;
+
+  const good = num(thresholds.good, 0.85);
+  const warning = num(thresholds.warning, 0.65);
+
+  const flagged = scored.filter(x => num(x.integrity_score, 0) < warning);
 
   return {
-    status,
-    explanation:
-      result.void_ab_initio_flag
-        ? "The action conflicts with controlling constitutional authority. It is treated as void from the beginning, which collapses lawful jurisdiction and makes the enforcement ultra vires."
-        : result.ultra_vires_flag
-          ? "The action appears to have been executed outside lawful jurisdiction or authority."
-          : result.off_mission_flag
-            ? "The action appears outside approved funding or mission scope."
-            : "A controlling authority conflict was identified.",
-    what_authority_was_claimed: result.claimed_authority,
-    what_authority_controls: result.controlling_authority,
-    what_rights_are_impacted: result.rights_impacted,
-    what_doctrine_applies: result.doctrine_triggers
+    module: "CDA",
+    title: "Constitutional Definition Audit",
+    module_version: "1.0",
+    generated_at: new Date().toISOString(),
+    weights: {
+      textual_fidelity: round(wText, 6),
+      scope_fidelity: round(wScope, 6),
+      delegation_fidelity: round(wDelegation, 6)
+    },
+    thresholds: {
+      good: round(good, 6),
+      warning: round(warning, 6)
+    },
+    scores: {
+      definition_integrity: round(avgIntegrity, 6),
+      delta_def: round(avgDelta, 6),
+      overall_risk_class: classify(avgIntegrity, good, warning)
+    },
+    aggregate: {
+      definition_integrity: round(avgIntegrity, 6),
+      average_delta_def: round(avgDelta, 6),
+      definition_count: scored.length,
+      flagged_definition_count: flagged.length
+    },
+    definitions: scored,
+    flagged_definitions: flagged,
+    narrative:
+      scored.length
+        ? "CDA measured definition integrity against controlling authority and computed average scope drift."
+        : "CDA found no definitions to evaluate."
   };
-    }
+      }
