@@ -1,199 +1,306 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>AFFE — American Funding & Fidelity Explorer | A.B.E.</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>AFFE — After-Effects and Forward Fidelity Engine</title>
   <base href="/abe---flag/">
-  <link rel="stylesheet" href="abe-patch/assets/abe-patch.css"/>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <style>
-    .affe-wrap{
-      max-width:1100px;
-      margin:0 auto;
-      padding:1.5rem 1rem 3rem;
+    :root{
+      --bg:#0b0d12;
+      --panel:#141820;
+      --panel2:#10151d;
+      --ink:#e6e6e6;
+      --muted:#9fb3c8;
+      --line:rgba(255,255,255,.08);
+      --ok:#4bd28f;
+      --warn:#ffd166;
+      --bad:#ff6b6b;
     }
-    .affe-header h1{
-      margin:0 0 .25rem;
-      font-size:1.9rem;
-    }
-    .affe-header .tagline{
-      max-width:780px;
-      color:var(--muted);
-      font-size:.98rem;
-    }
-    .affe-grid{
-      display:grid;
-      gap:1.1rem;
-    }
-    @media(min-width:900px){
-      .affe-grid{
-        grid-template-columns:1.4fr 1.6fr;
-      }
-    }
-    .affe-card{
-      background:var(--panel);
-      border-radius:14px;
-      border:1px solid var(--line);
-      padding:1rem 1.1rem 1.2rem;
-      box-shadow:0 18px 40px rgba(0,0,0,.45);
-      min-height:0;
-    }
-    .affe-card h2{
-      margin:.1rem 0 .4rem;
-      font-size:1.15rem;
-    }
-    .affe-card h3{
-      margin:.35rem 0 .3rem;
-      font-size:1rem;
-    }
-    .affe-sub{
-      color:var(--muted);
-      font-size:.9rem;
-    }
-    .affe-upload{
-      margin-top:.4rem;
-      padding:.7rem .75rem;
-      border-radius:12px;
-      border:1px dashed var(--line);
-      background:#050712;
-      font-size:.88rem;
-    }
-    .affe-upload label{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      padding:.45rem .9rem;
-      border-radius:999px;
-      border:1px solid var(--accent);
-      background:#050712;
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      background:var(--bg);
       color:var(--ink);
-      cursor:pointer;
-      gap:.35rem;
-      margin-bottom:.3rem;
+      font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
     }
-    .affe-upload input[type="file"]{
-      display:none;
+    a{color:#80bfff;text-decoration:none}
+    a:hover{text-decoration:underline}
+    header{
+      padding:20px;
+      text-align:center;
+      background:#11151c;
+      border-bottom:1px solid var(--line);
     }
-    .affe-file-name{
-      display:block;
-      font-size:.84rem;
-      color:var(--muted);
-      margin-top:.15rem;
+    .nav{
+      margin-top:12px;
+      display:flex;
+      justify-content:center;
+      gap:10px;
+      flex-wrap:wrap;
     }
-    .affe-mini{
-      font-size:.82rem;
-      color:var(--muted);
-      margin-top:.3rem;
-    }
-    .affe-status{
-      margin-top:.6rem;
-      font-size:.84rem;
-      color:var(--muted);
-    }
-    .affe-status-ok{color:#4bd28f;}
-    .affe-status-warn{color:#ffba5c;}
-    .affe-status-bad{color:#ff8585;}
-    canvas{
-      width:100%!important;
-      height:260px!important;
-    }
-    table{
-      width:100%;
-      border-collapse:collapse;
-      margin-top:.4rem;
-      font-size:.82rem;
-    }
-    th,td{
+    .nav a{
+      display:inline-block;
+      padding:8px 12px;
       border:1px solid var(--line);
-      padding:.3rem .35rem;
+      border-radius:999px;
+      background:var(--panel2);
     }
-    th{
-      text-align:left;
-      background:#090d18;
+    main{
+      max-width:1260px;
+      margin:20px auto;
+      padding:0 16px 40px;
     }
-    .affe-good{color:#4bd28f;}
-    .affe-off{color:#ff8585;}
-    .affe-unclear{color:#ffba5c;}
+    .card{
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:16px;
+      margin:12px 0;
+    }
+    .kpi{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+      gap:12px;
+    }
+    .tile{
+      border:1px solid var(--line);
+      border-radius:12px;
+      background:var(--panel2);
+      padding:12px;
+    }
+    .label{color:var(--muted);font-size:.92rem;margin-bottom:4px}
+    .num{font-weight:800;font-size:1.2rem}
+    .ok{color:var(--ok)}
+    .warn{color:var(--warn)}
+    .bad{color:var(--bad)}
+    .small{color:var(--muted);font-size:.9rem}
+    pre{
+      white-space:pre-wrap;
+      overflow:auto;
+      background:#0f141b;
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:12px;
+      font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    }
+    .row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:10px;
+    }
+    button{
+      background:#10151d;
+      color:var(--ink);
+      border:1px solid var(--line);
+      border-radius:10px;
+      padding:10px 14px;
+      cursor:pointer;
+      font:inherit;
+    }
   </style>
 </head>
-<body class="abe-page">
-
-<header class="abe-header">
-  <div class="affe-wrap affe-header">
-    <a href="/abe---flag/index.html" class="chip">← A.B.E. Home</a>
-    <h1>AFFE — American Funding & Fidelity Explorer</h1>
-    <p class="tagline">
-      Explore ON_MISSION / OFF_MISSION / UNCLEAR funding patterns. AFFE reads your CFF artifact and
-      turns it into an audit-grade visual story.
-    </p>
-    <nav class="chip-row">
-      <a class="chip" href="intake/index.html">Intake</a>
-      <a class="chip" href="cda/index.html">CDA</a>
-      <a class="chip" href="ciri/index.html">CIRI</a>
-      <a class="chip" href="cff/index.html">CFF</a>
-      <span class="chip chip-alt">AFFE</span>
-      <a class="chip" href="law/index.html">Law Corpus</a>
-      <a class="chip" href="doctrine/index.html">Doctrines</a>
-      <a class="chip" href="integration/index.html">Integration</a>
-    </nav>
+<body>
+<header>
+  <h1>AFFE — After-Effects and Forward Fidelity Engine</h1>
+  <div class="small">
+    Final expansion stabilization module. AFFE measures durability, system stability, and forward integrity after recovery and propagation are already in motion.
+  </div>
+  <div class="nav">
+    <a href="index.html">Home</a>
+    <a href="integration/index.html">Integration</a>
+    <a href="macro/index.html">Macro</a>
+    <a href="cii/index.html">CII</a>
+    <a href="system/index.html">CLI</a>
   </div>
 </header>
 
-<main class="abe-main">
-  <div class="affe-wrap affe-grid">
-
-    <!-- LEFT: source + status -->
-    <section class="affe-card">
-      <h2>Step 1 — Load a CFF artifact</h2>
-      <p class="affe-sub">
-        AFFE looks for a <code>CFF</code> artifact generated in this browser
-        (<code>ABE_CFF_ARTIFACT_V1</code>). You can also upload one manually.
-      </p>
-
-      <div class="affe-upload">
-        <label>
-          <span>📎 Choose cff_artifact.json (optional)</span>
-          <input id="affe-file" type="file" accept=".json,application/json">
-        </label>
-        <span id="affe-file-name" class="affe-file-name">No file selected</span>
-        <div id="affe-status" class="affe-status">Status: looking for local CFF artifact…</div>
+<main>
+  <section class="card">
+    <h3>Status</h3>
+    <div class="kpi">
+      <div class="tile">
+        <div class="label">model.json</div>
+        <div id="k-model" class="num">checking…</div>
       </div>
-
-      <p class="affe-mini">
-        To generate a new artifact, go to CFF, upload your funding CSV, then save the
-        <code>cff_artifact.json</code>. AFFE will pick it up automatically in this browser.
-      </p>
-
-      <p class="affe-mini">
-        Law & Doctrine anchors:
-        <br>– Use LAW corpus for the statutory rails behind each program (MCSAP, FMCSA, CPS grants).  
-        <br>– Use Doctrines for Constitutional Fidelity + Void ab initio framing when OFF_MISSION is systemic.
-      </p>
-    </section>
-
-    <!-- RIGHT: charts + table -->
-    <section class="affe-card">
-      <h2>Step 2 — Patterns & programs</h2>
-
-      <h3>2.1 · ON/OFF/UNCLEAR split</h3>
-      <canvas id="affe-chart"></canvas>
-
-      <h3>2.2 · Per-program view (top 20 by OFF_MISSION amount)</h3>
-      <div id="affe-table-container">
-        <!-- table injected here -->
+      <div class="tile">
+        <div class="label">schema.json</div>
+        <div id="k-schema" class="num">checking…</div>
       </div>
-    </section>
+      <div class="tile">
+        <div class="label">runner.js</div>
+        <div id="k-runner" class="num">checking…</div>
+      </div>
+      <div class="tile">
+        <div class="label">Recovery Durability</div>
+        <div id="k-rec" class="num">—</div>
+      </div>
+      <div class="tile">
+        <div class="label">System Stability</div>
+        <div id="k-stab" class="num">—</div>
+      </div>
+      <div class="tile">
+        <div class="label">Forward Integrity</div>
+        <div id="k-fwd" class="num">—</div>
+      </div>
+      <div class="tile">
+        <div class="label">AFFE Effectiveness</div>
+        <div id="k-eff" class="num">—</div>
+      </div>
+      <div class="tile">
+        <div class="label">Stability Class</div>
+        <div id="k-class" class="num">—</div>
+      </div>
+    </div>
+  </section>
 
-  </div>
+  <section class="card">
+    <h3>Artifact Preview</h3>
+    <pre id="artifact-preview">—</pre>
+    <div class="row">
+      <button id="btn-run">Run AFFE</button>
+      <button id="btn-json" disabled>Export AFFE JSON</button>
+    </div>
+  </section>
+
+  <section class="card">
+    <h3>Diagnostics</h3>
+    <div id="diag" class="small">No issues yet.</div>
+  </section>
 </main>
 
-<footer class="abe-footer">
-  <p>
-    CC BY-NC 4.0 · DOI <a href="https://doi.org/10.5281/zenodo.17586107">10.5281/zenodo.17586107</a> · Integrity only — never for sale.
-  </p>
-</footer>
+<script type="module">
+  import { run } from "/abe---flag/affe/runner.js";
 
-<script src="affe/local.js"></script>
+  const artifactPreviewEl = document.getElementById("artifact-preview");
+  const diagEl = document.getElementById("diag");
+  const btnRun = document.getElementById("btn-run");
+  const btnJson = document.getElementById("btn-json");
+
+  let lastArtifact = null;
+
+  function set(id, txt, cls){
+    const el = document.getElementById(id);
+    el.textContent = txt;
+    el.className = cls ? ("num " + cls) : "num";
+  }
+
+  async function fetchJSON(path){
+    const r = await fetch(path, { cache: "no-store" });
+    if(!r.ok) throw new Error(path + ": HTTP " + r.status);
+    return r.json();
+  }
+
+  function safeParse(raw){
+    try { return JSON.parse(raw); } catch { return null; }
+  }
+
+  function fmt(v, digits = 6){
+    const n = Number(v);
+    return Number.isFinite(n) ? n.toFixed(digits) : "—";
+  }
+
+  function createDownload(filename, mime, content){
+    const blob = new Blob([content], { type: mime });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  function paintArtifact(artifact){
+    lastArtifact = artifact;
+
+    set("k-rec", fmt(artifact?.scores?.recovery_durability, 6), Number(artifact?.scores?.recovery_durability) >= 0.85 ? "ok" : Number(artifact?.scores?.recovery_durability) >= 0.65 ? "warn" : "bad");
+    set("k-stab", fmt(artifact?.scores?.system_stability, 6), Number(artifact?.scores?.system_stability) >= 0.85 ? "ok" : Number(artifact?.scores?.system_stability) >= 0.65 ? "warn" : "bad");
+    set("k-fwd", fmt(artifact?.scores?.forward_integrity, 6), Number(artifact?.scores?.forward_integrity) >= 0.85 ? "ok" : Number(artifact?.scores?.forward_integrity) >= 0.65 ? "warn" : "bad");
+    set("k-eff", fmt(artifact?.scores?.effectiveness, 6), Number(artifact?.scores?.effectiveness) >= 0.85 ? "ok" : Number(artifact?.scores?.effectiveness) >= 0.65 ? "warn" : "bad");
+    set("k-class", artifact?.scores?.overall_risk_class || "—", (artifact?.scores?.overall_risk_class || "").includes("HIGH") ? "ok" : (artifact?.scores?.overall_risk_class || "").includes("MODERATE") ? "warn" : "bad");
+
+    artifactPreviewEl.textContent = JSON.stringify(artifact, null, 2);
+    btnJson.disabled = false;
+  }
+
+  async function boot(){
+    try{
+      await fetchJSON("affe/model.json");
+      set("k-model", "OK", "ok");
+
+      await fetchJSON("affe/schema.json");
+      set("k-schema", "OK", "ok");
+
+      set("k-runner", "OK", "ok");
+
+      const raw = localStorage.getItem("ABE_AFFE_ARTIFACT_V1") || localStorage.getItem("abe_affe_artifact");
+      if(raw){
+        const parsed = safeParse(raw);
+        if(parsed){
+          paintArtifact(parsed);
+          diagEl.textContent = "Existing AFFE artifact loaded from localStorage.";
+          return;
+        }
+      }
+
+      diagEl.textContent = "No stored AFFE artifact yet. Press Run AFFE.";
+    }catch(e){
+      console.error(e);
+      set("k-model", "ERR", "bad");
+      set("k-schema", "ERR", "bad");
+      set("k-runner", "ERR", "bad");
+      diagEl.textContent = e.message || String(e);
+      artifactPreviewEl.textContent = "AFFE boot failed.";
+    }
+  }
+
+  btnRun.onclick = async () => {
+    try{
+      diagEl.textContent = "Running AFFE...";
+      const [model, schema] = await Promise.all([
+        fetchJSON("affe/model.json"),
+        fetchJSON("affe/schema.json")
+      ]);
+
+      const cii = safeParse(localStorage.getItem("ABE_CII_PORTFOLIO_V1") || localStorage.getItem("abe_cii_artifact") || "null");
+      const integration = safeParse(localStorage.getItem("ABE_INTEGRATION_ARTIFACT_V1") || localStorage.getItem("abe_integration_artifact") || localStorage.getItem("ABE_AUDIT_RECEIPT_V1") || "null");
+      const macro = safeParse(localStorage.getItem("ABE_MACRO_ARTIFACT_V1") || localStorage.getItem("abe_macro_artifact") || "null");
+
+      const artifact = await run({}, {
+        model,
+        schema,
+        priorCore: {
+          CII: cii ? { artifact: cii } : {}
+        },
+        expansions: {
+          INTEGRATION: integration,
+          MACRO: macro
+        }
+      });
+
+      localStorage.setItem("ABE_AFFE_ARTIFACT_V1", JSON.stringify(artifact));
+      localStorage.setItem("abe_affe_artifact", JSON.stringify(artifact));
+
+      paintArtifact(artifact);
+      diagEl.textContent = "AFFE executed successfully and artifact saved.";
+    }catch(e){
+      console.error(e);
+      diagEl.textContent = e.message || String(e);
+      artifactPreviewEl.textContent = "AFFE execution failed.";
+    }
+  };
+
+  btnJson.onclick = () => {
+    if(!lastArtifact) return;
+    createDownload(
+      "ABE_AFFE_ARTIFACT_V1.json",
+      "application/json",
+      JSON.stringify(lastArtifact, null, 2)
+    );
+  };
+
+  boot();
+</script>
 </body>
 </html>
