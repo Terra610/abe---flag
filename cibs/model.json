@@ -1,0 +1,50 @@
+{
+  "version": "1.0",
+  "module": "CIBS",
+  "updated": "2026-04-22T00:00:00Z",
+  "title": "Constitutional Integrity Baseline Schema",
+  "description": "Allocates total recovery R_T across baseline categories using the Shouse Baseline Allocation Function and optional quarterly phasing.",
+  "formulas": {
+    "allocation": "B_i = R_T * p_i",
+    "conservation": "sum(B_i) = R_T",
+    "quarterly": "B_i,q = B_i * f_q"
+  },
+  "categories": [
+    {
+      "key": "mobility_restoration",
+      "label": "Mobility Restoration",
+      "p_i": 0.25
+    },
+    {
+      "key": "workforce_reentry",
+      "label": "Workforce Reentry",
+      "p_i": 0.25
+    },
+    {
+      "key": "housing_stabilization",
+      "label": "Housing Stabilization",
+      "p_i": 0.25
+    },
+    {
+      "key": "community_rebuild",
+      "label": "Community Rebuild",
+      "p_i": 0.25
+    }
+  ],
+  "quarter_factors": [
+    0.25,
+    0.25,
+    0.25,
+    0.25
+  ],
+  "downstream_links": [
+    {
+      "target": "cii",
+      "purpose": "Supplies project/category allocations for propagation scoring."
+    },
+    {
+      "target": "abe",
+      "purpose": "Supplies the recovery allocation component for final aggregation."
+    }
+  ]
+}
