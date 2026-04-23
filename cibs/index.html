@@ -1,272 +1,492 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>CIBS — Community Budget Schema | A.B.E.</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>CIBS — Constitutional Integrity Baseline Schema</title>
   <base href="/abe---flag/">
-  <link rel="stylesheet" href="../abe-patch/assets/abe-patch.css"/>
+  <link rel="stylesheet" href="abe-patch/assets/abe-patch.css">
   <style>
-    .cibs-wrap{
-      max-width:1100px;
-      margin:0 auto;
-      padding:1.5rem 1rem 3rem;
+    :root{
+      --bg:#0b0d12;
+      --panel:#141820;
+      --ink:#e6e6e6;
+      --muted:#9fb3c8;
+      --line:rgba(255,255,255,.08);
+      --ok:#4bd28f;
+      --warn:#ffd166;
+      --bad:#ff6b6b;
+      --brand:#5ddfff;
+      --chip:#10151d;
     }
-    .cibs-header h1{
-      margin:0 0 .25rem;
-      font-size:1.9rem;
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--ink);
+      font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
     }
-    .cibs-header .tagline{
-      max-width:780px;
+    a{color:#80bfff;text-decoration:none}
+    a:hover{text-decoration:underline}
+    header{
+      padding:20px;
+      background:#11151c;
+      border-bottom:1px solid var(--line);
+      text-align:center;
+    }
+    .sub{
       color:var(--muted);
-      font-size:.98rem;
+      margin-top:6px;
+      max-width:980px;
+      margin-left:auto;
+      margin-right:auto;
     }
-    .cibs-grid{
-      display:grid;
-      gap:1.1rem;
+    .nav{
+      margin-top:12px;
+      display:flex;
+      gap:10px;
+      justify-content:center;
+      flex-wrap:wrap;
     }
-    @media(min-width:900px){
-      .cibs-grid{
-        grid-template-columns:1.4fr 1.6fr;
-      }
-    }
-    .cibs-card{
-      background:var(--panel);
-      border-radius:14px;
+    .nav a{
+      display:inline-block;
+      padding:8px 12px;
       border:1px solid var(--line);
-      padding:1rem 1.1rem 1.2rem;
-      box-shadow:0 18px 40px rgba(0,0,0,.45);
-      min-height:0;
+      border-radius:999px;
+      background:var(--chip);
     }
-    .cibs-card h2{
-      margin:.1rem 0 .4rem;
-      font-size:1.15rem;
+    main{
+      max-width:1240px;
+      margin:20px auto;
+      padding:0 16px 40px;
     }
-    .cibs-card h3{
-      margin:.35rem 0 .3rem;
-      font-size:1rem;
+    .card{
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:14px;
+      margin:12px 0;
     }
-    .cibs-sub{
+    .kpi{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+      gap:12px;
+    }
+    .tile{
+      border:1px solid var(--line);
+      border-radius:10px;
+      padding:12px;
+      background:#10151d;
+    }
+    .label{
+      color:var(--muted);
+      font-size:.92rem;
+      margin-bottom:4px;
+    }
+    .num{
+      font-weight:800;
+      font-size:1.2rem;
+    }
+    .ok{color:var(--ok)}
+    .warn{color:var(--warn)}
+    .bad{color:var(--bad)}
+    .small{
       color:var(--muted);
       font-size:.9rem;
     }
-    label{
-      display:block;
-      font-size:.86rem;
-      color:var(--muted);
-      margin:.55rem 0 .18rem;
-    }
-    input[type="number"]{
-      width:100%;
-      background:#050712;
-      border-radius:9px;
-      border:1px solid var(--line);
-      padding:.45rem .6rem;
-      color:var(--ink);
-      font-size:.88rem;
-    }
-    .cibs-row{
+    .btnrow{
       display:flex;
+      gap:10px;
       flex-wrap:wrap;
-      gap:.6rem;
+      margin-top:10px;
     }
-    .cibs-row > div{
-      flex:1 1 160px;
+    button{
+      background:#10151d;
+      color:var(--ink);
+      border:1px solid var(--line);
+      border-radius:10px;
+      padding:10px 14px;
+      cursor:pointer;
+      font:inherit;
     }
-    .cibs-mini{
-      font-size:.82rem;
-      color:var(--muted);
-      margin-top:.3rem;
+    button:hover{border-color:rgba(255,255,255,.18)}
+    button:disabled{opacity:.55;cursor:not-allowed}
+    table{
+      width:100%;
+      border-collapse:collapse;
+      margin-top:8px;
+      font-size:.95rem;
     }
-    .cibs-status{
-      margin-top:.6rem;
-      font-size:.84rem;
-      color:var(--muted);
+    th,td{
+      border:1px solid var(--line);
+      padding:10px 8px;
+      vertical-align:top;
+      text-align:left;
     }
-    .cibs-status-ok{color:#4bd28f;}
-    .cibs-status-warn{color:#ffba5c;}
-    .cibs-status-bad{color:#ff8585;}
-    .cibs-cat-grid{
-      display:grid;
-      gap:.45rem;
-      margin-top:.4rem;
+    th{
+      background:#10151d;
+      color:#dfefff;
+      position:sticky;
+      top:0;
     }
-    @media(min-width:900px){
-      .cibs-cat-grid{
-        grid-template-columns:repeat(2,minmax(0,1fr));
-      }
-    }
-    .cibs-cat{
-      background:#050712;
+    .table-wrap{
+      overflow:auto;
       border-radius:10px;
       border:1px solid var(--line);
-      padding:.45rem .55rem .5rem;
-      font-size:.85rem;
     }
-    .cibs-cat-header{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:.4rem;
-      margin-bottom:.2rem;
-    }
-    .cibs-cat-name{
-      font-weight:600;
-    }
-    .cibs-cat-perc{
-      width:72px;
-    }
-    .cibs-cat-amount{
-      margin-top:.15rem;
-      font-size:.88rem;
-    }
-    .btn{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      margin-top:.8rem;
-      padding:.45rem 1.05rem;
-      border-radius:999px;
-      border:1px solid var(--accent);
-      background:#050712;
-      color:var(--ink);
-      font-size:.9rem;
-      cursor:pointer;
-      gap:.4rem;
-    }
-    .btn:hover{
-      box-shadow:0 0 0 1px rgba(93,223,255,.36),0 0 18px rgba(93,223,255,.25);
-    }
-    .btn-ghost{
-      border-color:var(--line);
-      margin-left:.3rem;
-    }
-    .btn-ghost:hover{
-      box-shadow:none;
-      background:#080b15;
-    }
-    .btn:disabled{
-      opacity:.55;
-      cursor:default;
-      box-shadow:none;
+    code, pre{
+      font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
     }
     pre{
-      margin:.45rem 0 .7rem;
-      background:#050712;
-      border-radius:10px;
-      border:1px solid var(--line);
-      padding:.6rem .7rem;
-      font-family:ui-monospace,SFMono-Regular,Consolas,monospace;
-      font-size:.82rem;
-      max-height:260px;
-      overflow:auto;
       white-space:pre-wrap;
-      color:var(--ink);
+      overflow:auto;
+      background:#10151d;
+      border:1px solid var(--line);
+      border-radius:10px;
+      padding:12px;
+    }
+    ul.compact{
+      margin:8px 0 0 18px;
+      padding:0;
     }
   </style>
 </head>
-<body class="abe-page">
-
-<header class="abe-header">
-  <div class="cibs-wrap cibs-header">
-    <a href="/abe---flag/index.html" class="chip">← A.B.E. Home</a>
-    <h1>CIBS — Community Budget Schema</h1>
-    <p class="tagline">
-      Turn CIRI recovery (R<sub>T</sub>) into a simple, transparent budget for housing, clinics, food, mobility,
-      workforce, and justice repair — ready for CII to turn into projects.
-    </p>
-    <nav class="chip-row">
-      <a class="chip" href="../intake/index.html">Intake</a>
-      <a class="chip" href="../cda/index.html">CDA</a>
-      <a class="chip" href="../ciri/index.html">CIRI</a>
-      <span class="chip chip-alt">CIBS</span>
-      <a class="chip" href="../cii/index.html">CII</a>
-      <a class="chip" href="../macro/index.html">Macro</a>
-      <a class="chip" href="../integration/index.html">Integration</a>
-    </nav>
+<body>
+<header>
+  <h1>CIBS — Constitutional Integrity Baseline Schema</h1>
+  <div class="sub">
+    Core pioneer allocation module. CIBS consumes <code>R_T</code> from CIRI, allocates it by category using
+    <code>B_i = R_T · p_i</code>, preserves conservation of total recovery, and optionally phases allocations quarterly.
+  </div>
+  <div class="nav">
+    <a href="index.html">Home</a>
+    <a href="cdi/index.html">CDI</a>
+    <a href="ciri/index.html">CIRI</a>
+    <a href="cii/index.html">CII</a>
+    <a href="system/index.html">CLI</a>
+    <a href="integration/index.html">Integration</a>
   </div>
 </header>
 
-<main class="abe-main">
-  <div class="cibs-wrap cibs-grid">
+<main>
+  <div class="card">
+    <h3>Canonical Formula Stack</h3>
+    <div class="small">CIBS executes the original pioneer allocation formulas:</div>
+    <ul class="compact">
+      <li><code>B_i = R_T · p_i</code></li>
+      <li><code>Σ_i B_i = R_T</code></li>
+      <li><code>B_i,q = B_i · f_q</code></li>
+    </ul>
+  </div>
 
-    <!-- LEFT: total + template -->
-    <section class="cibs-card">
-      <h2>Step 1 — Recovery pool & template</h2>
-      <p class="cibs-sub">
-        CIBS looks for your last CIRI scenario in this browser. You can override the total or tweak
-        category percentages at any time. Percentages should add up to 100%.
-      </p>
-
-      <label for="cibs-total">Total recovery (R<sub>T</sub>) from CIRI (USD)</label>
-      <input id="cibs-total" type="number" min="0" step="1" value="0">
-
-      <p id="cibs-bridge" class="cibs-mini">
-        CIRI bridge: looking for ABE_CIRI_SCENARIO_V2 in this browser…
-      </p>
-
-      <h3>1.1 · Category template</h3>
-      <div class="cibs-row">
-        <div>
-          <label>Preset template</label>
-          <select id="cibs-template">
-            <option value="default" selected>Default · housing/health/food/mobility/work</option>
-            <option value="housing_heavy">Housing-heavy</option>
-            <option value="workforce_heavy">Workforce-heavy</option>
-          </select>
-        </div>
-        <div>
-          <label for="cibs-template-lock">Lock template totals</label>
-          <input id="cibs-template-lock" type="checkbox" checked>
-          <span class="cibs-mini">Keep sum at 100% when you tweak individual fields.</span>
-        </div>
+  <div class="card">
+    <h3>Status</h3>
+    <div class="kpi">
+      <div class="tile">
+        <div class="label">model.json</div>
+        <div id="k-model" class="num">checking…</div>
       </div>
-
-      <div id="cibs-cats" class="cibs-cat-grid">
-        <!-- categories injected by JS -->
+      <div class="tile">
+        <div class="label">inputs.json</div>
+        <div id="k-inputs" class="num">checking…</div>
       </div>
+      <div class="tile">
+        <div class="label">Runner</div>
+        <div id="k-runner" class="num">checking…</div>
+      </div>
+      <div class="tile">
+        <div class="label">CIRI upstream</div>
+        <div id="k-ciri" class="num">checking…</div>
+      </div>
+      <div class="tile">
+        <div class="label">R_T</div>
+        <div id="k-rt" class="num">—</div>
+      </div>
+      <div class="tile">
+        <div class="label">Allocated Total</div>
+        <div id="k-total" class="num">—</div>
+      </div>
+      <div class="tile">
+        <div class="label">Conservation Error</div>
+        <div id="k-error" class="num">—</div>
+      </div>
+      <div class="tile">
+        <div class="label">Allocation Integrity</div>
+        <div id="k-integrity" class="num">—</div>
+      </div>
+    </div>
+  </div>
 
-      <button id="cibs-recalc" class="btn">
-        <span>⚖ Recalculate allocations</span>
-      </button>
-      <span id="cibs-status" class="cibs-status">Status: ready — using default template.</span>
-    </section>
+  <div class="card">
+    <h3>Category Allocations</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Category</th>
+            <th>Share p_i</th>
+            <th>B_i</th>
+            <th>Q1</th>
+            <th>Q2</th>
+            <th>Q3</th>
+            <th>Q4</th>
+          </tr>
+        </thead>
+        <tbody id="alloc-body">
+          <tr><td colspan="7">Loading…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 
-    <!-- RIGHT: outputs + receipts -->
-    <section class="cibs-card">
-      <h2>Step 2 — Budget & receipts</h2>
+  <div class="card">
+    <h3>Artifact Preview</h3>
+    <pre id="artifact-preview">—</pre>
+    <div class="btnrow">
+      <button id="btn-run">Run CIBS</button>
+      <button id="btn-json" disabled>Export CIBS JSON</button>
+      <button id="btn-csv" disabled>Export Allocations CSV</button>
+    </div>
+  </div>
 
-      <h3>2.1 · Budget preview</h3>
-      <pre id="cibs-json">{}</pre>
-
-      <h3>2.2 · Downloads</h3>
-      <button id="cibs-download-csv" class="btn" disabled>
-        ⬇ Download cibs_budget.csv
-      </button>
-      <button id="cibs-download-json" class="btn btn-ghost" disabled>
-        ⬇ Download cibs_budget.json
-      </button>
-
-      <p id="cibs-hash" class="cibs-mini">
-        Audit hash: —  
-        (SHA-256 of this CIBS budget. Any tampering will change this value.)
-      </p>
-
-      <p class="cibs-mini">
-        Next step: open <strong>CII</strong> to convert this budget into real project portfolios
-        (housing units, clinic capacity, transit passes, child care slots, and more).
-      </p>
-    </section>
-
+  <div class="card">
+    <h3>Diagnostics</h3>
+    <div id="diag" class="small">No issues yet.</div>
   </div>
 </main>
 
-<footer class="abe-footer">
-  <p>
-    CC BY-NC 4.0 · DOI <a href="https://doi.org/10.5281/zenodo.17586107">10.5281/zenodo.17586107</a> · Integrity only — never for sale.
-  </p>
-</footer>
+<script type="module">
+  import { run } from "/abe---flag/cibs/runner.js";
 
-<script src="local.js"></script>
+  const artifactPreviewEl = document.getElementById("artifact-preview");
+  const diagEl = document.getElementById("diag");
+  const allocBodyEl = document.getElementById("alloc-body");
+  const btnRun = document.getElementById("btn-run");
+  const btnJson = document.getElementById("btn-json");
+  const btnCsv = document.getElementById("btn-csv");
+
+  let lastArtifact = null;
+
+  function set(id, txt, cls){
+    const el = document.getElementById(id);
+    el.textContent = txt;
+    el.className = cls ? ("num " + cls) : "num";
+  }
+
+  async function fetchJSON(path){
+    const r = await fetch(path, { cache: "no-store" });
+    if(!r.ok) throw new Error(path + ": HTTP " + r.status);
+    return r.json();
+  }
+
+  function safeParse(raw){
+    try { return JSON.parse(raw); } catch { return null; }
+  }
+
+  function readFirst(keys){
+    for(const key of keys){
+      const raw = localStorage.getItem(key);
+      if(!raw) continue;
+      const parsed = safeParse(raw);
+      if(parsed) return { key, value: parsed };
+    }
+    return null;
+  }
+
+  function fmt(v, digits = 4){
+    const n = Number(v);
+    return Number.isFinite(n) ? n.toFixed(digits) : "—";
+  }
+
+  function money(v){
+    const n = Number(v);
+    return Number.isFinite(n)
+      ? "$" + n.toLocaleString(undefined, { maximumFractionDigits: 0 })
+      : "—";
+  }
+
+  function createDownload(filename, mime, content){
+    const blob = new Blob([content], { type: mime });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  function renderAllocations(categories){
+    const rows = (categories || []).map(cat => {
+      const q = Array.isArray(cat.quarterly) ? cat.quarterly : [];
+      const q1 = q[0]?.B_i_q ?? null;
+      const q2 = q[1]?.B_i_q ?? null;
+      const q3 = q[2]?.B_i_q ?? null;
+      const q4 = q[3]?.B_i_q ?? null;
+
+      return `
+        <tr>
+          <td>${cat.label || cat.key || "—"}</td>
+          <td>${fmt(cat.p_i, 6)}</td>
+          <td>${money(cat.B_i)}</td>
+          <td>${money(q1)}</td>
+          <td>${money(q2)}</td>
+          <td>${money(q3)}</td>
+          <td>${money(q4)}</td>
+        </tr>
+      `;
+    }).join("");
+
+    allocBodyEl.innerHTML = rows || '<tr><td colspan="7">No allocation data available.</td></tr>';
+  }
+
+  function paintArtifact(artifact){
+    lastArtifact = artifact;
+
+    const RT = artifact?.aggregate?.RT;
+    const total = artifact?.aggregate?.total_budget_allocated;
+    const error = artifact?.scores?.allocation_conservation_error;
+    const integrity = artifact?.scores?.allocation_integrity;
+
+    set("k-rt", money(RT), RT > 0 ? "ok" : "warn");
+    set("k-total", money(total), total > 0 ? "ok" : "warn");
+    set("k-error", fmt(error, 6), Number(error) > 0.0001 ? "bad" : "ok");
+    set("k-integrity", Number(integrity) === 1 ? "LOCKED" : "DRIFT", Number(integrity) === 1 ? "ok" : "bad");
+
+    renderAllocations(artifact?.categories || []);
+    artifactPreviewEl.textContent = JSON.stringify(artifact, null, 2);
+    btnJson.disabled = false;
+    btnCsv.disabled = false;
+  }
+
+  async function boot(){
+    try{
+      await fetchJSON("cibs/model.json");
+      set("k-model", "OK", "ok");
+
+      await fetchJSON("cibs/inputs.json");
+      set("k-inputs", "OK", "ok");
+
+      set("k-runner", "OK", "ok");
+
+      const ciriRef = readFirst([
+        "ABE_CIRI_SCENARIO_V2",
+        "ABE_CIRI_SCENARIO_V1",
+        "abe_ciri_artifact"
+      ]);
+
+      if(ciriRef){
+        set("k-ciri", "READY", "ok");
+      }else{
+        set("k-ciri", "NONE", "warn");
+      }
+
+      const existing = readFirst([
+        "ABE_CIBS_BUDGET_V1",
+        "abe_cibs_artifact"
+      ]);
+
+      if(existing){
+        paintArtifact(existing.value);
+        diagEl.textContent = "Existing CIBS artifact loaded from localStorage.";
+      }else{
+        diagEl.textContent = "No stored CIBS artifact yet. Press Run CIBS.";
+        allocBodyEl.innerHTML = '<tr><td colspan="7">No artifact executed yet.</td></tr>';
+      }
+
+    }catch(e){
+      console.error(e);
+      set("k-model", "ERR", "bad");
+      set("k-inputs", "ERR", "bad");
+      set("k-runner", "ERR", "bad");
+      set("k-ciri", "ERR", "bad");
+      diagEl.textContent = e.message || String(e);
+      artifactPreviewEl.textContent = "Module boot failed.";
+      allocBodyEl.innerHTML = `<tr><td colspan="7">${e.message || String(e)}</td></tr>`;
+    }
+  }
+
+  btnRun.onclick = async () => {
+    try{
+      diagEl.textContent = "Running CIBS...";
+      const [model, inputs] = await Promise.all([
+        fetchJSON("cibs/model.json"),
+        fetchJSON("cibs/inputs.json")
+      ]);
+
+      const ciriRef = readFirst([
+        "ABE_CIRI_SCENARIO_V2",
+        "ABE_CIRI_SCENARIO_V1",
+        "abe_ciri_artifact"
+      ]);
+
+      const ctx = {
+        model,
+        inputs,
+        priorCore: ciriRef ? { CIRI: { artifact: ciriRef.value } } : {},
+        expansions: {}
+      };
+
+      const scenario = inputs?.scenario || inputs?.scenarios?.[0] || inputs || {};
+      const artifact = await run(scenario, ctx);
+
+      localStorage.setItem("ABE_CIBS_BUDGET_V1", JSON.stringify(artifact));
+      localStorage.setItem("abe_cibs_artifact", JSON.stringify(artifact));
+
+      paintArtifact(artifact);
+      diagEl.textContent = "CIBS executed successfully and artifact saved.";
+
+    }catch(e){
+      console.error(e);
+      diagEl.textContent = e.message || String(e);
+      artifactPreviewEl.textContent = "CIBS execution failed.";
+    }
+  };
+
+  btnJson.onclick = () => {
+    if(!lastArtifact) return;
+    createDownload(
+      "ABE_CIBS_BUDGET_V1.json",
+      "application/json",
+      JSON.stringify(lastArtifact, null, 2)
+    );
+  };
+
+  btnCsv.onclick = () => {
+    if(!lastArtifact) return;
+
+    const header = [
+      "key",
+      "label",
+      "p_i",
+      "B_i",
+      "Q1",
+      "Q2",
+      "Q3",
+      "Q4"
+    ];
+
+    const rows = (lastArtifact.categories || []).map(cat => {
+      const q = Array.isArray(cat.quarterly) ? cat.quarterly : [];
+      return [
+        cat.key || "",
+        `"${String(cat.label || "").replace(/"/g, '""')}"`,
+        cat.p_i ?? "",
+        cat.B_i ?? "",
+        q[0]?.B_i_q ?? "",
+        q[1]?.B_i_q ?? "",
+        q[2]?.B_i_q ?? "",
+        q[3]?.B_i_q ?? ""
+      ].join(",");
+    });
+
+    createDownload(
+      "CIBS_allocations.csv",
+      "text/csv",
+      [header.join(",")].concat(rows).join("\n")
+    );
+  };
+
+  boot();
+</script>
 </body>
 </html>
