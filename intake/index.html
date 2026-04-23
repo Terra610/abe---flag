@@ -3,10 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Intake — ABE Entry Interface</title>
-
+  <title>Intake — ABE Launch Control</title>
   <base href="/abe---flag/">
-
   <style>
     :root{
       --bg:#0b0d12;
@@ -19,211 +17,195 @@
       --warn:#ffd166;
       --bad:#ff6b6b;
     }
-
     *{box-sizing:border-box}
-
-    body{
-      margin:0;
-      background:var(--bg);
-      color:var(--ink);
-      font:16px/1.6 system-ui;
-    }
-
-    header{
-      padding:20px;
-      text-align:center;
-      background:#11151c;
-      border-bottom:1px solid var(--line);
-    }
-
-    a{color:#80bfff;text-decoration:none}
-
-    .nav{
-      margin-top:10px;
-      display:flex;
-      justify-content:center;
-      gap:10px;
-      flex-wrap:wrap;
-    }
-
-    .nav a{
-      padding:8px 12px;
-      border:1px solid var(--line);
-      border-radius:999px;
-      background:var(--panel2);
-    }
-
-    main{
-      max-width:1000px;
-      margin:20px auto;
-      padding:0 16px;
-    }
-
-    .card{
-      background:var(--panel);
-      border:1px solid var(--line);
-      border-radius:12px;
-      padding:16px;
-      margin:12px 0;
-    }
-
+    body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+    header{padding:20px;text-align:center;background:#11151c;border-bottom:1px solid var(--line)}
+    main{max-width:1100px;margin:20px auto;padding:0 16px 40px}
+    .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;margin:12px 0}
+    .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
     textarea{
-      width:100%;
-      min-height:180px;
-      background:#0f141b;
-      color:var(--ink);
-      border:1px solid var(--line);
-      border-radius:10px;
-      padding:10px;
-      font-family:monospace;
+      width:100%;min-height:180px;background:#0f141b;color:var(--ink);
+      border:1px solid var(--line);border-radius:10px;padding:10px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace
     }
-
-    .row{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      margin-top:10px;
+    input[type="file"]{
+      width:100%;background:#0f141b;color:var(--ink);
+      border:1px solid var(--line);border-radius:10px;padding:10px
     }
-
     button{
-      background:#10151d;
-      color:var(--ink);
-      border:1px solid var(--line);
-      border-radius:10px;
-      padding:10px 14px;
-      cursor:pointer;
+      background:#10151d;color:var(--ink);border:1px solid var(--line);
+      border-radius:10px;padding:10px 14px;cursor:pointer;font:inherit
     }
-
-    .status{
-      margin-top:10px;
-      font-size:.9rem;
-      color:var(--muted);
-    }
-
+    button:disabled{opacity:.55;cursor:not-allowed}
     pre{
-      white-space:pre-wrap;
-      background:#0f141b;
-      border:1px solid var(--line);
-      border-radius:10px;
-      padding:12px;
+      white-space:pre-wrap;overflow:auto;background:#0f141b;
+      border:1px solid var(--line);border-radius:10px;padding:12px;
+      font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace
     }
+    .small{color:var(--muted);font-size:.9rem}
+    .ok{color:var(--ok)} .warn{color:var(--warn)} .bad{color:var(--bad)}
   </style>
 </head>
-
 <body>
-
 <header>
-  <h1>📥 Intake — ABE Entry Interface</h1>
-  <div>Normalize inputs → generate intake artifact → feed pipeline</div>
-
-  <div class="nav">
-    <a href="index.html">Home</a>
-    <a href="integration/index.html">Integration</a>
-    <a href="system/index.html">CLI</a>
-  </div>
+  <h1>Intake — ABE Launch Control</h1>
+  <div class="small">Upload files or paste text. The engine runs the full chain automatically.</div>
 </header>
 
 <main>
-
   <section class="card">
-    <h3>Paste Input (JSON or Text)</h3>
-    <textarea id="input"></textarea>
-
-    <div class="row">
-      <button id="btn-parse">Parse Input</button>
-      <button id="btn-clear">Clear</button>
-    </div>
-
-    <div class="status" id="status">Waiting for input…</div>
+    <h3>Upload Files</h3>
+    <input id="file-input" type="file" multiple>
+    <div class="small">Accepted: any browser-readable files. Text-like files are read directly. Other files are recorded as metadata for traceability.</div>
   </section>
 
   <section class="card">
-    <h3>Generated Intake Artifact</h3>
-    <pre id="output">—</pre>
-
-    <div class="row">
-      <button id="btn-save" disabled>Save to Engine</button>
-      <button id="btn-download" disabled>Download JSON</button>
-    </div>
+    <h3>Paste Text or JSON</h3>
+    <textarea id="paste-input" placeholder="Paste text, JSON, notes, case facts, or structured data here..."></textarea>
   </section>
 
+  <section class="card">
+    <h3>Launch</h3>
+    <div class="row">
+      <button id="btn-run">Run Full Pipeline</button>
+      <button id="btn-download" disabled>Download Final Report JSON</button>
+    </div>
+    <div id="status" class="small">Waiting for intake…</div>
+  </section>
+
+  <section class="card">
+    <h3>Intake Artifact</h3>
+    <pre id="intake-preview">—</pre>
+  </section>
+
+  <section class="card">
+    <h3>Final Pipeline Report</h3>
+    <pre id="report-preview">—</pre>
+  </section>
 </main>
 
-<script>
-const inputEl = document.getElementById("input");
-const outputEl = document.getElementById("output");
-const statusEl = document.getElementById("status");
+<script type="module">
+  import { runABEFullPipelineWithReport } from "/abe---flag/system/cli.js";
 
-let artifact = null;
+  const fileInput = document.getElementById("file-input");
+  const pasteInput = document.getElementById("paste-input");
+  const statusEl = document.getElementById("status");
+  const intakePreviewEl = document.getElementById("intake-preview");
+  const reportPreviewEl = document.getElementById("report-preview");
+  const btnRun = document.getElementById("btn-run");
+  const btnDownload = document.getElementById("btn-download");
 
-function safeParse(text){
-  try { return JSON.parse(text); }
-  catch { return null; }
-}
+  let lastReport = null;
 
-function createArtifact(data){
-  return {
-    module: "INTAKE",
-    version: "1.0",
-    timestamp: new Date().toISOString(),
-    hash: crypto.randomUUID(),
-    payload: data
+  function safeParse(raw){
+    try { return JSON.parse(raw); } catch { return null; }
+  }
+
+  function makeHashSeed(){
+    return (crypto?.randomUUID ? crypto.randomUUID() : String(Date.now()));
+  }
+
+  async function readFiles(files){
+    const out = [];
+    for (const file of files) {
+      const entry = {
+        name: file.name,
+        type: file.type || "application/octet-stream",
+        size: file.size,
+        lastModified: file.lastModified
+      };
+
+      const canReadAsText =
+        file.type.startsWith("text/") ||
+        file.name.endsWith(".json") ||
+        file.name.endsWith(".txt") ||
+        file.name.endsWith(".md") ||
+        file.name.endsWith(".csv") ||
+        file.name.endsWith(".html") ||
+        file.name.endsWith(".js");
+
+      if (canReadAsText) {
+        try {
+          entry.text = await file.text();
+        } catch (_) {
+          entry.text = null;
+        }
+      }
+
+      out.push(entry);
+    }
+    return out;
+  }
+
+  function buildIntakeArtifact(payload) {
+    return {
+      module: "INTAKE",
+      version: "1.0",
+      generated_at: new Date().toISOString(),
+      intake_id: makeHashSeed(),
+      payload
+    };
+  }
+
+  function saveIntakeArtifact(artifact){
+    localStorage.setItem("ABE_INTAKE_ARTIFACT_V1", JSON.stringify(artifact));
+    localStorage.setItem("abe_intake_artifact", JSON.stringify(artifact));
+  }
+
+  function downloadJSON(filename, data){
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  btnRun.onclick = async () => {
+    try {
+      btnRun.disabled = true;
+      btnDownload.disabled = true;
+      statusEl.textContent = "Reading intake…";
+
+      const files = await readFiles(Array.from(fileInput.files || []));
+      const rawPaste = pasteInput.value.trim();
+      const parsedPaste = safeParse(rawPaste);
+
+      const intakeArtifact = buildIntakeArtifact({
+        files,
+        pasted_text: rawPaste || null,
+        pasted_json: parsedPaste || null
+      });
+
+      saveIntakeArtifact(intakeArtifact);
+      intakePreviewEl.textContent = JSON.stringify(intakeArtifact, null, 2);
+
+      statusEl.textContent = "Launching full pipeline…";
+      const report = await runABEFullPipelineWithReport();
+      lastReport = report;
+
+      reportPreviewEl.textContent = JSON.stringify(report, null, 2);
+
+      if (report.ok) {
+        statusEl.innerHTML = '<span class="ok">Full pipeline completed successfully.</span>';
+        btnDownload.disabled = false;
+      } else {
+        statusEl.innerHTML = '<span class="bad">Pipeline failed.</span>';
+      }
+
+    } catch (e) {
+      console.error(e);
+      statusEl.innerHTML = '<span class="bad">' + (e.message || String(e)) + '</span>';
+      reportPreviewEl.textContent = "Launch failed.";
+    } finally {
+      btnRun.disabled = false;
+    }
   };
-}
 
-document.getElementById("btn-parse").onclick = () => {
-  const raw = inputEl.value.trim();
-
-  if(!raw){
-    statusEl.textContent = "No input provided.";
-    return;
-  }
-
-  let parsed = safeParse(raw);
-
-  if(!parsed){
-    parsed = { raw_text: raw };
-  }
-
-  artifact = createArtifact(parsed);
-
-  outputEl.textContent = JSON.stringify(artifact, null, 2);
-
-  statusEl.textContent = "Input normalized and artifact created.";
-
-  document.getElementById("btn-save").disabled = false;
-  document.getElementById("btn-download").disabled = false;
-};
-
-document.getElementById("btn-clear").onclick = () => {
-  inputEl.value = "";
-  outputEl.textContent = "—";
-  statusEl.textContent = "Cleared.";
-};
-
-document.getElementById("btn-save").onclick = () => {
-  if(!artifact) return;
-
-  localStorage.setItem("ABE_INTAKE_ARTIFACT_V1", JSON.stringify(artifact));
-  localStorage.setItem("abe_intake_artifact", JSON.stringify(artifact));
-
-  statusEl.textContent = "Saved to engine. Ready for pipeline.";
-};
-
-document.getElementById("btn-download").onclick = () => {
-  if(!artifact) return;
-
-  const blob = new Blob([JSON.stringify(artifact,null,2)], {type:"application/json"});
-  const url = URL.createObjectURL(blob);
-
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "ABE_INTAKE_ARTIFACT_V1.json";
-  a.click();
-
-  URL.revokeObjectURL(url);
-};
+  btnDownload.onclick = () => {
+    if (!lastReport) return;
+    downloadJSON("ABE_FULL_PIPELINE_REPORT.json", lastReport);
+  };
 </script>
-
 </body>
 </html>
