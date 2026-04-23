@@ -1,122 +1,114 @@
 {
-  "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "ABE CDA Output Schema",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CDA_Model_v1",
   "type": "object",
   "required": [
-    "module",
     "version",
-    "timestamp",
-    "input",
-    "result",
-    "plain_language"
+    "module",
+    "updated",
+    "title",
+    "weights",
+    "definitions"
   ],
+  "additionalProperties": true,
   "properties": {
-    "module": {
-      "type": "string",
-      "const": "cda"
-    },
     "version": {
       "type": "string"
     },
-    "timestamp": {
+    "module": {
+      "type": "string",
+      "const": "CDA"
+    },
+    "updated": {
       "type": "string"
     },
-    "input": {
-      "type": "object"
+    "title": {
+      "type": "string"
     },
-    "result": {
+    "description": {
+      "type": "string"
+    },
+    "weights": {
       "type": "object",
       "required": [
-        "claimed_authority",
-        "controlling_authority",
-        "authority_conflict",
-        "jurisdiction_status",
-        "constitutional_violation",
-        "void_ab_initio_flag",
-        "ultra_vires_flag",
-        "funding_scope_conflict",
-        "off_mission_flag",
-        "doctrine_triggers",
-        "rights_impacted",
-        "findings"
+        "textual_fidelity",
+        "scope_fidelity",
+        "delegation_fidelity"
       ],
       "properties": {
-        "claimed_authority": {
-          "type": "array",
-          "items": { "type": "string" }
+        "textual_fidelity": {
+          "type": "number"
         },
-        "controlling_authority": {
-          "type": "array",
-          "items": { "type": "string" }
+        "scope_fidelity": {
+          "type": "number"
         },
-        "authority_conflict": {
-          "type": "boolean"
-        },
-        "jurisdiction_status": {
-          "type": "string"
-        },
-        "constitutional_violation": {
-          "type": "boolean"
-        },
-        "void_ab_initio_flag": {
-          "type": "boolean"
-        },
-        "ultra_vires_flag": {
-          "type": "boolean"
-        },
-        "funding_scope_conflict": {
-          "type": "boolean"
-        },
-        "off_mission_flag": {
-          "type": "boolean"
-        },
-        "doctrine_triggers": {
-          "type": "array",
-          "items": { "type": "string" }
-        },
-        "rights_impacted": {
-          "type": "array",
-          "items": { "type": "string" }
-        },
-        "findings": {
-          "type": "array",
-          "items": { "type": "string" }
+        "delegation_fidelity": {
+          "type": "number"
         }
-      },
-      "additionalProperties": true
+      }
     },
-    "plain_language": {
+    "thresholds": {
       "type": "object",
-      "required": [
-        "status",
-        "explanation"
-      ],
       "properties": {
-        "status": {
-          "type": "string"
+        "good": {
+          "type": "number"
         },
-        "explanation": {
-          "type": "string"
-        },
-        "what_authority_was_claimed": {
-          "type": "array",
-          "items": { "type": "string" }
-        },
-        "what_authority_controls": {
-          "type": "array",
-          "items": { "type": "string" }
-        },
-        "what_rights_are_impacted": {
-          "type": "array",
-          "items": { "type": "string" }
-        },
-        "what_doctrine_applies": {
-          "type": "array",
-          "items": { "type": "string" }
+        "warning": {
+          "type": "number"
         }
-      },
-      "additionalProperties": true
+      }
+    },
+    "definitions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "term",
+          "source_authority",
+          "governing_definition",
+          "applied_definition",
+          "scope_domain",
+          "textual_fidelity",
+          "scope_fidelity",
+          "delegation_fidelity"
+        ],
+        "properties": {
+          "term": {
+            "type": "string"
+          },
+          "source_authority": {
+            "type": "string"
+          },
+          "governing_definition": {
+            "type": "string"
+          },
+          "applied_definition": {
+            "type": "string"
+          },
+          "scope_domain": {
+            "type": "string"
+          },
+          "textual_fidelity": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "scope_fidelity": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "delegation_fidelity": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "notes": {
+            "type": "string"
+          }
+        }
+      }
     }
-  },
-  "additionalProperties": true
+  }
 }
