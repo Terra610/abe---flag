@@ -1,61 +1,38 @@
 {
   "version": "1.0",
   "module": "CCRI",
-  "updated": "2026-04-22T00:00:00Z",
+  "updated": "2026-04-23T00:00:00Z",
+  "title": "Constitutional Capital Recovery Index",
+  "description": "Measures constitutional divergence, suppressed lawful access, and recoverable constitutional capital produced by unlawful gatekeeping systems.",
   "authority": {
     "name": "A.B.E. — Constitutional Capital Recovery Index (CCRI)",
-    "license": "CC BY-NC 4.0"
+    "license": "CC BY-NC 4.0",
+    "engine_role": "Expansion recovery module",
+    "note": "CCRI enriches the A.B.E. system and does not replace the pioneer spine."
   },
   "inputs": {
     "file": "ccri/inputs.json",
     "schema": "ccri/schema.json",
     "entity": "scenario",
     "id_field": "id",
-    "description": "Each scenario describes one institution or policy set and how DMV, DOT, and license data are used in access, mobility, or credit decisions affecting constitutional capital."
+    "description": "Each scenario describes one institution or policy environment where DMV, DOT, license, or similar status data may suppress lawful access and constitutional capital."
   },
-  "metrics": [
-    {
-      "key": "dmv_gate_rate",
-      "label": "DMV-gated applicants (share)",
-      "description": "Share of applicants whose access depends on DMV or license-status rules."
-    },
-    {
-      "key": "noncommercial_affected",
-      "label": "Noncommercial applicants affected",
-      "description": "Estimated count of noncommercial applicants impacted by DMV-based or DOT-contaminated gatekeeping."
-    },
-    {
-      "key": "dot_misuse_flag",
-      "label": "DOT / FMCSA misuse flag",
-      "description": "Indicator for scenarios where DOT/FMCSA-style enforcement or MCSAP signals touch non-DOT-regulated populations."
-    },
-    {
-      "key": "appeal_barrier_flag",
-      "label": "No appeal / human review flag",
-      "description": "Indicator for systems where denials based on DMV or license data cannot be meaningfully challenged."
-    },
-    {
-      "key": "ccri_system_integrity_index",
-      "label": "CCRI System Integrity Index",
-      "description": "0–1 style index summarizing how independent the system is from DMV/DOT overreach and whether appeal safeguards exist."
-    }
-  ],
   "dimensions": {
     "data_integrity": {
-      "weight": 0.3,
-      "description": "How strictly the institution limits itself to lawful, relevant, and minimally intrusive data sources."
+      "weight": 0.30,
+      "description": "How strictly the system limits itself to lawful, relevant, and minimally intrusive data sources."
     },
     "constitutional_alignment": {
       "weight": 0.35,
-      "description": "Whether the rules respect federal supremacy, the right to travel, and limits on state police power."
+      "description": "Whether rules respect supremacy, right to travel, and limits on delegated police power."
     },
     "access_fairness": {
-      "weight": 0.2,
-      "description": "Whether similarly situated applicants are treated alike without unlawful DMV/DOT-based discrimination."
+      "weight": 0.20,
+      "description": "Whether similarly situated people are treated alike without unlawful status-based gating."
     },
     "economic_impact": {
       "weight": 0.15,
-      "description": "Estimated effect on work access, income, and community-level productivity when barriers are in place."
+      "description": "Estimated effect on work access, income, and community participation when barriers are imposed."
     }
   },
   "average_constitutional_capital_per_case_usd": 2500,
@@ -88,19 +65,15 @@
   "downstream_links": [
     {
       "target": "ciri",
-      "purpose": "Convert CCRI divergence and population counts into recoverable economic value, mobility restoration, and work access."
+      "purpose": "Provides recovery hints and divergence context for risk and injury modeling."
     },
     {
-      "target": "cff",
-      "purpose": "Quantify financial and legal exposure where unlawful DMV or DOT signals are embedded in decision systems."
+      "target": "integration",
+      "purpose": "Provides domain-specific constitutional capital recovery context to the final receipt."
     },
     {
-      "target": "cibs",
-      "purpose": "Translate CCRI corrections into budget categories for reinvestment."
-    },
-    {
-      "target": "affe",
-      "purpose": "Model long-term stability and recovery once the system is realigned."
+      "target": "macro",
+      "purpose": "Provides domain-specific recovery context to later cascade modeling."
     }
   ]
 }
