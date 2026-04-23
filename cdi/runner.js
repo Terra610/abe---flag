@@ -1,190 +1,194 @@
+// cdi/runner.js
+// CDI -> Constitutional Divergence Index
+// Canonical formulas:
+//   S_r = w1*s1 + w2*s2 + w3*s3 + w4*s4 + w5*s5
+//   CDI = 1 - e^(-S_r / R)
+
+function num(v, fallback = 0) {
+  const n = Number(v);
+  return Number.isFinite(n) ? n : fallback;
+}
+
+function clamp(v, min, max) {
+  return Math.max(min, Math.min(max, v));
+}
+
+function round(v, d = 4) {
+  return Number(num(v).toFixed(d));
+}
+
+function firstNum(...vals) {
+  for (const v of vals) {
+    const n = Number(v);
+    if (Number.isFinite(n)) return n;
+  }
+  return null;
+}
+
+function getExpansion(ctx, name) {
+  return ctx?.expansions?.[name] || null;
+}
+
+function deriveInputs(scenario = {}, ctx = {}) {
+  const model = ctx.model || {};
+  const defaults = model.defaults || {};
+  const cae = getExpansion(ctx, "CAE");
+  const cda = getExpansion(ctx, "CDA");
+  const ccri = getExpansion(ctx, "CCRI");
+
+  const s1 = firstNum(
+    scenario.s1,
+    scenario.stops_per_1000,
+    defaults.s1,
+    0
+  );
+
+  const s2 = firstNum(
+    scenario.s2,
+    scenario.charge_mix_ratio,
+    defaults.s2,
+    0
+  );
+
+  const s3 = firstNum(
+    scenario.s3,
+    scenario.average_time_to_counsel,
+    defaults.s3,
+    0
+  );
+
+  const s4 = firstNum(
+    scenario.s4,
+    scenario.dismissal_rate,
+    defaults.s4,
+    0
+  );
+
+  const s5 = firstNum(
+    scenario.s5,
+    scenario.pretext_ratio,
+    defaults.s5,
+    0
+  );
+
+  const w1 = firstNum(scenario.w1, model.weights?.w1, defaults.w1, 1);
+  const w2 = firstNum(scenario.w2, model.weights?.w2, defaults.w2, 1);
+  const w3 = firstNum(scenario.w3, model.weights?.w3, defaults.w3, 1);
+  const w4 = firstNum(scenario.w4, model.weights?.w4, defaults.w4, 1);
+  const w5 = firstNum(scenario.w5, model.weights?.w5, defaults.w5, 1);
+
+  const R = firstNum(
+    scenario.R,
+    scenario.normalization_constant,
+    model.normalization_constant,
+    defaults.R,
+    100
+  );
+
+  const alignmentHint = firstNum(
+    cae?.summary?.average_alignment,
+    cae?.aggregate?.average_alignment,
+    cae?.scores?.constitutional_alignment,
+    1
+  );
+
+  const definitionIntegrity = firstNum(
+    cda?.scores?.definition_integrity,
+    cda?.aggregate?.definition_integrity,
+    1
+  );
+
+  const ccriDivergence = firstNum(
+    ccri?.scores?.constitutional_divergence_index,
+    ccri?.aggregate?.average_divergence_index,
+    null
+  );
+
+  return {
+    s1, s2, s3, s4, s5,
+    w1, w2, w3, w4, w5,
+    R,
+    alignmentHint,
+    definitionIntegrity,
+    ccriDivergence
+  };
+}
+
 export async function run(scenario = {}, ctx = {}) {
-  const cda = scenario?.derived?.cda || scenario?.inputs?.cda || null;
+  const inputs = deriveInputs(scenario, ctx);
 
-  const model = await loadJson("./model.json");
-  const csvRows = await loadCsv("./divergence.csv");
+  let Sr =
+    (inputs.w1 * inputs.s1) +
+    (inputs.w2 * inputs.s2) +
+    (inputs.w3 * inputs.s3) +
+    (inputs.w4 * inputs.s4) +
+    (inputs.w5 * inputs.s5);
 
-  const domains = Array.isArray(model?.domains) ? model.domains : [];
-  const header = csvRows.length ? csvRows[0] : [];
-  const body = csvRows.slice(1);
-
-  const categoryIndex = header.indexOf("Category");
-  const divergenceIndex = header.indexOf("Divergence");
-  const confidenceIndex = header.indexOf("Confidence");
-
-  const domainScores = [];
-  let weightedDivergence = 0;
-  let weightedConfidence = 0;
-  let totalWeight = 0;
-
-  for (const domain of domains) {
-    const domainName = domain?.name || "";
-    const domainWeight = Number(domain?.weight) || 0;
-
-    const matchingRow = body.find(row => String(row[categoryIndex] || "").trim() === domainName);
-
-    let rawDivergence = matchingRow ? Number(matchingRow[divergenceIndex]) || 0 : 0;
-    const rawConfidence = matchingRow ? Number(matchingRow[confidenceIndex]) || 0 : 0;
-
-    rawDivergence = applyCdaAdjustment(domain.key, rawDivergence, cda);
-
-    const weightedDomainDivergence = round4(rawDivergence * domainWeight);
-    const weightedDomainConfidence = round4(rawConfidence * domainWeight);
-
-    weightedDivergence += weightedDomainDivergence;
-    weightedConfidence += weightedDomainConfidence;
-    totalWeight += domainWeight;
-
-    domainScores.push({
-      key: domain.key,
-      category: domainName,
-      weight: domainWeight,
-      divergence: rawDivergence,
-      confidence: rawConfidence,
-      weighted_divergence: weightedDomainDivergence,
-      weighted_confidence: weightedDomainConfidence,
-      sigma_band: classifySigma(rawDivergence)
-    });
+  if (inputs.alignmentHint != null) {
+    Sr = Sr * (2 - clamp(inputs.alignmentHint, 0, 1));
   }
 
-  const normalizedWeightedDivergence =
-    totalWeight > 0 ? round4(weightedDivergence / totalWeight) : 0;
-
-  const normalizedWeightedConfidence =
-    totalWeight > 0 ? round4(weightedConfidence / totalWeight) : 0;
-
-  const overallSigmaBand = classifySigma(normalizedWeightedDivergence);
-
-  const highestDomain = domainScores
-    .slice()
-    .sort((a, b) => b.weighted_divergence - a.weighted_divergence)[0];
-
-  const findings = [];
-
-  if (normalizedWeightedDivergence > 0) {
-    findings.push(`Weighted constitutional divergence computed at ${normalizedWeightedDivergence}.`);
-  } else {
-    findings.push("No constitutional divergence was computed from the current domain inputs.");
+  if (inputs.definitionIntegrity != null) {
+    Sr = Sr * (2 - clamp(inputs.definitionIntegrity, 0, 1));
   }
 
-  if (normalizedWeightedConfidence > 0) {
-    findings.push(`Weighted confidence computed at ${normalizedWeightedConfidence}.`);
+  if (inputs.ccriDivergence != null) {
+    Sr = Sr * (1 + clamp(inputs.ccriDivergence, 0, 1) * 0.25);
   }
 
-  if (highestDomain) {
-    findings.push(`Highest weighted divergence domain: ${highestDomain.category} (${highestDomain.weighted_divergence}).`);
-  }
+  const Rsafe = inputs.R > 0 ? inputs.R : 1;
+  const cdi = 1 - Math.exp(-(Sr / Rsafe));
 
-  if (cda?.void_ab_initio_flag || cda?.result?.void_ab_initio_flag) {
-    findings.push("CDA triggered void ab initio, which elevated domain severity in the constitutional divergence profile.");
-  }
+  const divergenceClass =
+    cdi >= 0.8 ? "HIGH" :
+    cdi >= 0.45 ? "MODERATE" :
+    "LOW";
 
   return {
-    module: "cdi",
-    version: model?.version || "1.0.0",
-    timestamp: new Date().toISOString(),
-    input: {
-      model_version: model?.version || "unknown",
-      source_file: "divergence.csv"
+    module: "CDI",
+    title: "Constitutional Divergence Index",
+    module_version: "1.0",
+    generated_at: new Date().toISOString(),
+    formulas: {
+      Sr: "S_r = w1*s1 + w2*s2 + w3*s3 + w4*s4 + w5*s5",
+      CDI: "CDI = 1 - e^(-S_r / R)"
     },
-    result: {
-      domain_scores: domainScores,
-      weighted_divergence: normalizedWeightedDivergence,
-      weighted_confidence: normalizedWeightedConfidence,
-      overall_sigma_band: overallSigmaBand
+    inputs: {
+      s1: round(inputs.s1, 6),
+      s2: round(inputs.s2, 6),
+      s3: round(inputs.s3, 6),
+      s4: round(inputs.s4, 6),
+      s5: round(inputs.s5, 6),
+      w1: round(inputs.w1, 6),
+      w2: round(inputs.w2, 6),
+      w3: round(inputs.w3, 6),
+      w4: round(inputs.w4, 6),
+      w5: round(inputs.w5, 6),
+      R: round(Rsafe, 6)
     },
-    findings,
-    plain_language: buildPlainLanguage({
-      weightedDivergence: normalizedWeightedDivergence,
-      weightedConfidence: normalizedWeightedConfidence,
-      overallSigmaBand,
-      highestDomain
-    })
+    scores: {
+      divergence_score: round(cdi, 6),
+      constitutional_divergence_index: round(cdi, 6),
+      overall_risk_class: divergenceClass,
+      weighted_signal: round(Sr, 6)
+    },
+    aggregate: {
+      S_r: round(Sr, 6),
+      normalization_constant: round(Rsafe, 6),
+      average_divergence_index: round(cdi, 6)
+    },
+    metrics: {
+      stops_per_1000: round(inputs.s1, 6),
+      charge_mix_ratio: round(inputs.s2, 6),
+      average_time_to_counsel: round(inputs.s3, 6),
+      dismissal_rate: round(inputs.s4, 6),
+      pretext_ratio: round(inputs.s5, 6)
+    },
+    narrative:
+      divergenceClass === "HIGH"
+        ? "High constitutional divergence detected. Jurisdiction has materially departed from baseline integrity."
+        : divergenceClass === "MODERATE"
+        ? "Moderate constitutional divergence detected. Several indicators show measurable deviation from baseline."
+        : "Low constitutional divergence detected. Current divergence remains bounded."
   };
 }
-
-function applyCdaAdjustment(domainKey, divergence, cda) {
-  const result = cda?.result || cda || {};
-  let adjusted = Number(divergence) || 0;
-
-  if (result.void_ab_initio_flag) {
-    adjusted += 0.15;
-  }
-
-  if (result.ultra_vires_flag) {
-    adjusted += 0.10;
-  }
-
-  if (result.off_mission_flag) {
-    adjusted += 0.08;
-  }
-
-  if (result.funding_scope_conflict && ["healthcare", "housing", "education", "transport"].includes(domainKey)) {
-    adjusted += 0.05;
-  }
-
-  if (result.doctrine_triggers?.includes("commerce_nexus_failure") && domainKey === "commerce") {
-    adjusted += 0.10;
-  }
-
-  if (result.doctrine_triggers?.includes("jurisdiction_failure") && domainKey === "justice") {
-    adjusted += 0.08;
-  }
-
-  return Math.min(1, round4(adjusted));
-}
-
-async function loadJson(path) {
-  const res = await fetch(path);
-  if (!res.ok) throw new Error(`Failed to load JSON: ${path}`);
-  return res.json();
-}
-
-async function loadCsv(path) {
-  const res = await fetch(path);
-  if (!res.ok) throw new Error(`Failed to load CSV: ${path}`);
-  const text = await res.text();
-  return text.trim().split(/\r?\n/).map(line => line.split(",").map(cell => cell.trim()));
-}
-
-function round4(n) {
-  return Math.round((Number(n) || 0) * 10000) / 10000;
-}
-
-function classifySigma(divergence) {
-  const d = Number(divergence) || 0;
-  if (d >= 0.80) return "4σ severe divergence";
-  if (d >= 0.60) return "3σ high divergence";
-  if (d >= 0.40) return "2σ material divergence";
-  if (d >= 0.20) return "1σ emerging divergence";
-  return "baseline-aligned";
-}
-
-function buildPlainLanguage(data) {
-  if ((Number(data.weightedDivergence) || 0) === 0) {
-    return {
-      status: "aligned",
-      explanation:
-        "CDI did not compute measurable constitutional divergence from the current domain inputs.",
-      what_to_do_next: [
-        "Confirm divergence.csv values are populated correctly.",
-        "Confirm domain names match model.json.",
-        "Confirm CDA is supplying conflict flags when present."
-      ]
-    };
-  }
-
-  return {
-    status: "divergence_measured",
-    explanation:
-      "CDI computed weighted constitutional divergence across the defined domains. This measures how far the current profile departs from constitutional fidelity.",
-    what_this_output_means: [
-      `Weighted divergence: ${data.weightedDivergence}`,
-      `Weighted confidence: ${data.weightedConfidence}`,
-      `Overall sigma band: ${data.overallSigmaBand}`,
-      data.highestDomain
-        ? `Highest divergence domain: ${data.highestDomain.category}`
-        : "No dominant divergence domain was identified."
-    ]
-  };
-      }
