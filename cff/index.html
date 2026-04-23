@@ -1,304 +1,354 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>CFF — Constitutional Funding Forensics | A.B.E.</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>CFF — Cash Flow Forensics</title>
   <base href="/abe---flag/">
-  <link rel="stylesheet" href="abe-patch/assets/abe-patch.css"/>
   <style>
-    .cff-wrap{
-      max-width:1100px;
-      margin:0 auto;
-      padding:1.5rem 1rem 3rem;
+    :root{
+      --bg:#0b0d12;
+      --panel:#141820;
+      --panel2:#10151d;
+      --ink:#e6e6e6;
+      --muted:#9fb3c8;
+      --line:rgba(255,255,255,.08);
+      --ok:#4bd28f;
+      --warn:#ffd166;
+      --bad:#ff6b6b;
     }
-    .cff-header h1{
-      margin:0 0 .25rem;
-      font-size:1.9rem;
-    }
-    .cff-header .tagline{
-      max-width:780px;
-      color:var(--muted);
-      font-size:.98rem;
-    }
-    .cff-grid{
-      display:grid;
-      gap:1.1rem;
-    }
-    @media(min-width:900px){
-      .cff-grid{
-        grid-template-columns:1.4fr 1.6fr;
-      }
-    }
-    .cff-card{
-      background:var(--panel);
-      border-radius:14px;
-      border:1px solid var(--line);
-      padding:1rem 1.1rem 1.2rem;
-      box-shadow:0 18px 40px rgba(0,0,0,.45);
-      min-height:0;
-    }
-    .cff-card h2{
-      margin:.1rem 0 .4rem;
-      font-size:1.15rem;
-    }
-    .cff-card h3{
-      margin:.35rem 0 .3rem;
-      font-size:1rem;
-    }
-    .cff-sub{
-      color:var(--muted);
-      font-size:.9rem;
-    }
-    .cff-upload{
-      margin-top:.4rem;
-      padding:.7rem .75rem;
-      border-radius:12px;
-      border:1px dashed var(--line);
-      background:#050712;
-      font-size:.88rem;
-    }
-    .cff-upload label{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      padding:.45rem .9rem;
-      border-radius:999px;
-      border:1px solid var(--accent);
-      background:#050712;
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      background:var(--bg);
       color:var(--ink);
-      cursor:pointer;
-      gap:.35rem;
-      margin-bottom:.3rem;
+      font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
     }
-    .cff-upload input[type="file"]{
-      display:none;
+    a{color:#80bfff;text-decoration:none}
+    a:hover{text-decoration:underline}
+    header{
+      padding:20px;
+      text-align:center;
+      background:#11151c;
+      border-bottom:1px solid var(--line);
     }
-    .cff-file-name{
-      display:block;
-      font-size:.84rem;
-      color:var(--muted);
-      margin-top:.15rem;
-    }
-    .cff-mini{
-      font-size:.82rem;
-      color:var(--muted);
-      margin-top:.25rem;
-    }
-    .cff-status{
-      margin-top:.6rem;
-      font-size:.84rem;
-      color:var(--muted);
-    }
-    .cff-status-ok{color:#4bd28f;}
-    .cff-status-warn{color:#ffba5c;}
-    .cff-status-bad{color:#ff8585;}
-    .cff-kpi-row{
+    .nav{
+      margin-top:12px;
       display:flex;
+      justify-content:center;
+      gap:10px;
       flex-wrap:wrap;
-      gap:.6rem;
-      margin-top:.5rem;
     }
-    .cff-kpi{
-      flex:1 1 140px;
-      min-width:140px;
-      max-width:220px;
-      background:#050712;
-      border-radius:10px;
+    .nav a{
+      display:inline-block;
+      padding:8px 12px;
       border:1px solid var(--line);
-      padding:.45rem .55rem .5rem;
-      font-size:.85rem;
+      border-radius:999px;
+      background:var(--panel2);
     }
-    .cff-kpi-label{
-      color:var(--muted);
-      font-size:.82rem;
+    main{
+      max-width:1320px;
+      margin:20px auto;
+      padding:0 16px 40px;
     }
-    .cff-kpi-value{
-      font-weight:600;
-      font-size:1rem;
-      margin-top:.1rem;
-    }
-    .cff-kpi-tag{
-      font-size:.78rem;
-      color:var(--muted);
-      margin-top:.15rem;
-    }
-    pre{
-      margin:.45rem 0 .7rem;
-      background:#050712;
-      border-radius:10px;
+    .card{
+      background:var(--panel);
       border:1px solid var(--line);
-      padding:.6rem .7rem;
-      font-family:ui-monospace,SFMono-Regular,Consolas,monospace;
-      font-size:.82rem;
-      max-height:260px;
-      overflow:auto;
-      white-space:pre-wrap;
-      color:var(--ink);
+      border-radius:14px;
+      padding:16px;
+      margin:12px 0;
     }
+    .kpi{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+      gap:12px;
+    }
+    .tile{
+      border:1px solid var(--line);
+      border-radius:12px;
+      background:var(--panel2);
+      padding:12px;
+    }
+    .label{color:var(--muted);font-size:.92rem;margin-bottom:4px}
+    .num{font-weight:800;font-size:1.2rem}
+    .ok{color:var(--ok)}
+    .warn{color:var(--warn)}
+    .bad{color:var(--bad)}
+    .small{color:var(--muted);font-size:.9rem}
     table{
       width:100%;
       border-collapse:collapse;
-      margin-top:.4rem;
-      font-size:.82rem;
+      margin-top:8px;
+      font-size:.94rem;
     }
     th,td{
       border:1px solid var(--line);
-      padding:.3rem .35rem;
+      padding:10px 8px;
+      text-align:left;
+      vertical-align:top;
     }
     th{
-      text-align:left;
-      background:#090d18;
+      background:#0f141b;
+      color:#dfefff;
+      position:sticky;
+      top:0;
     }
-    .cff-good{color:#4bd28f;}
-    .cff-off{color:#ff8585;}
-    .cff-unclear{color:#ffba5c;}
-    .btn-run{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      margin-top:.6rem;
-      padding:.42rem .95rem;
-      border-radius:999px;
-      border:1px solid var(--accent);
-      background:#050712;
-      color:var(--ink);
-      font-size:.88rem;
-      cursor:pointer;
-      gap:.4rem;
-    }
-    .btn-run:hover{
-      box-shadow:0 0 0 1px rgba(93,223,255,.36),0 0 18px rgba(93,223,255,.25);
-    }
-    .btn-download{
-      margin-top:.45rem;
-      padding:.36rem .85rem;
-      border-radius:999px;
+    .table-wrap{
+      overflow:auto;
       border:1px solid var(--line);
-      background:#050712;
+      border-radius:12px;
+    }
+    pre{
+      white-space:pre-wrap;
+      overflow:auto;
+      background:#0f141b;
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:12px;
+      font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    }
+    .row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:10px;
+    }
+    button{
+      background:#10151d;
       color:var(--ink);
-      font-size:.84rem;
+      border:1px solid var(--line);
+      border-radius:10px;
+      padding:10px 14px;
       cursor:pointer;
-    }
-    .btn-download:disabled{
-      opacity:.5;
-      cursor:default;
-    }
-    .cff-hash{
-      font-size:.8rem;
-      color:var(--muted);
-      margin-top:.3rem;
+      font:inherit;
     }
   </style>
 </head>
-<body class="abe-page">
-
-<header class="abe-header">
-  <div class="cff-wrap cff-header">
-    <a href="/abe---flag/index.html" class="chip">← A.B.E. Home</a>
-    <h1>CFF — Constitutional Funding Forensics</h1>
-    <p class="tagline">
-      Upload a simple CSV of program line items and see which dollars are ON_MISSION, OFF_MISSION, or UNCLEAR —
-      based on how they match their own federal authority and funding rules.
-    </p>
-    <nav class="chip-row">
-      <a class="chip" href="intake/index.html">Intake</a>
-      <a class="chip" href="cda/index.html">CDA</a>
-      <a class="chip" href="ciri/index.html">CIRI</a>
-      <span class="chip chip-alt">CFF</span>
-      <a class="chip" href="law/index.html">Law Corpus</a>
-      <a class="chip" href="doctrine/index.html">Doctrines</a>
-      <a class="chip" href="integration/index.html">Integration</a>
-    </nav>
+<body>
+<header>
+  <h1>CFF — Cash Flow Forensics</h1>
+  <div class="small">
+    Expansion funding module. CFF measures funding alignment, flagged use, and fidelity across monitored funding streams.
+  </div>
+  <div class="nav">
+    <a href="index.html">Home</a>
+    <a href="cda/index.html">CDA</a>
+    <a href="cae/index.html">CAE</a>
+    <a href="integration/index.html">Integration</a>
+    <a href="macro/index.html">Macro</a>
+    <a href="system/index.html">CLI</a>
   </div>
 </header>
 
-<main class="abe-main">
-  <div class="cff-wrap cff-grid">
-
-    <!-- LEFT: upload + status -->
-    <section class="cff-card">
-      <h2>Step 1 — Upload funding lines</h2>
-      <p class="cff-sub">
-        CFF expects a CSV with at least these columns:
-      </p>
-      <pre>program_name, federal_authority_citation, state_or_jurisdiction,
-agency, line_item_description, spend_category_code, amount_usd</pre>
-      <p class="cff-mini">
-        <strong>spend_category_code</strong> must be one of:
-        <code>ON_MISSION</code>, <code>OFF_MISSION</code>, or <code>UNCLEAR</code>.
-        CFF totals these and produces a forensic summary + hash receipt.
-      </p>
-
-      <div class="cff-upload">
-        <label>
-          <span>📎 Choose CSV file</span>
-          <input id="cff-file" type="file" accept=".csv,text/csv">
-        </label>
-        <span id="cff-file-name" class="cff-file-name">No file selected</span>
-        <button id="cff-run" class="btn-run">
-          <span>🧮 Run CFF on this CSV</span>
-        </button>
-        <div id="cff-status" class="cff-status">Status: waiting for CSV…</div>
+<main>
+  <section class="card">
+    <h3>Status</h3>
+    <div class="kpi">
+      <div class="tile">
+        <div class="label">model.json</div>
+        <div id="k-model" class="num">checking…</div>
       </div>
-
-      <p class="cff-mini">
-        Intake bridge: if your Intake artifact points to specific grants or programs,
-        use those names in <code>program_name</code> and <code>line_item_description</code>.
-        CFF does not phone home — everything happens in this tab.
-      </p>
-    </section>
-
-    <!-- RIGHT: results -->
-    <section class="cff-card">
-      <h2>Step 2 — Review totals & receipts</h2>
-
-      <h3>2.1 · Totals by category</h3>
-      <div class="cff-kpi-row">
-        <div class="cff-kpi">
-          <div class="cff-kpi-label">ON_MISSION</div>
-          <div id="kpi-on-count" class="cff-kpi-value">—</div>
-          <div id="kpi-on-amount" class="cff-kpi-tag">—</div>
-        </div>
-        <div class="cff-kpi">
-          <div class="cff-kpi-label">OFF_MISSION</div>
-          <div id="kpi-off-count" class="cff-kpi-value cff-off">—</div>
-          <div id="kpi-off-amount" class="cff-kpi-tag">—</div>
-        </div>
-        <div class="cff-kpi">
-          <div class="cff-kpi-label">UNCLEAR</div>
-          <div id="kpi-unc-count" class="cff-kpi-value cff-unclear">—</div>
-          <div id="kpi-unc-amount" class="cff-kpi-tag">—</div>
-        </div>
+      <div class="tile">
+        <div class="label">schema.json</div>
+        <div id="k-schema" class="num">checking…</div>
       </div>
-
-      <h3>2.2 · Sample rows (top 20)</h3>
-      <div id="cff-table-container">
-        <!-- table injected here -->
+      <div class="tile">
+        <div class="label">runner.js</div>
+        <div id="k-runner" class="num">checking…</div>
       </div>
-
-      <h3>2.3 · CFF artifact & hash</h3>
-      <button id="cff-download-json" class="btn-download" disabled>
-        ⬇ Download cff_artifact.json
-      </button>
-      <button id="cff-download-summary" class="btn-download" disabled>
-        ⬇ Download cff_summary.csv
-      </button>
-      <div id="cff-hash" class="cff-hash">
-        Audit hash: —  
-        (SHA-256 of the CFF artifact. Any tampering will change this value.)
+      <div class="tile">
+        <div class="label">Funding Alignment</div>
+        <div id="k-align" class="num">—</div>
       </div>
-    </section>
+      <div class="tile">
+        <div class="label">Average Fidelity</div>
+        <div id="k-fidelity" class="num">—</div>
+      </div>
+      <div class="tile">
+        <div class="label">Flagged Funds</div>
+        <div id="k-flagged" class="num">—</div>
+      </div>
+    </div>
+  </section>
 
-  </div>
+  <section class="card">
+    <h3>Funding Streams</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Stream</th>
+            <th>Program</th>
+            <th>Authorized USD</th>
+            <th>Actual USD</th>
+            <th>Flagged USD</th>
+            <th>Alignment</th>
+            <th>Fidelity</th>
+          </tr>
+        </thead>
+        <tbody id="streams-body">
+          <tr><td colspan="7">Loading…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="card">
+    <h3>Artifact Preview</h3>
+    <pre id="artifact-preview">—</pre>
+    <div class="row">
+      <button id="btn-run">Run CFF</button>
+      <button id="btn-json" disabled>Export CFF JSON</button>
+    </div>
+  </section>
+
+  <section class="card">
+    <h3>Diagnostics</h3>
+    <div id="diag" class="small">No issues yet.</div>
+  </section>
 </main>
 
-<footer class="abe-footer">
-  <p>
-    CC BY-NC 4.0 · DOI <a href="https://doi.org/10.5281/zenodo.17586107">10.5281/zenodo.17586107</a> · Integrity only — never for sale.
-  </p>
-</footer>
+<script type="module">
+  import { run } from "/abe---flag/cff/runner.js";
 
-<script src="cff/local.js"></script>
+  const artifactPreviewEl = document.getElementById("artifact-preview");
+  const streamsBodyEl = document.getElementById("streams-body");
+  const diagEl = document.getElementById("diag");
+  const btnRun = document.getElementById("btn-run");
+  const btnJson = document.getElementById("btn-json");
+
+  let lastArtifact = null;
+
+  function set(id, txt, cls){
+    const el = document.getElementById(id);
+    el.textContent = txt;
+    el.className = cls ? ("num " + cls) : "num";
+  }
+
+  async function fetchJSON(path){
+    const r = await fetch(path, { cache: "no-store" });
+    if(!r.ok) throw new Error(path + ": HTTP " + r.status);
+    return r.json();
+  }
+
+  function safeParse(raw){
+    try { return JSON.parse(raw); } catch { return null; }
+  }
+
+  function fmt(v, digits = 6){
+    const n = Number(v);
+    return Number.isFinite(n) ? n.toFixed(digits) : "—";
+  }
+
+  function money(v){
+    const n = Number(v);
+    return Number.isFinite(n)
+      ? "$" + n.toLocaleString(undefined, { maximumFractionDigits: 0 })
+      : "—";
+  }
+
+  function createDownload(filename, mime, content){
+    const blob = new Blob([content], { type: mime });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  function renderStreams(streams){
+    const rows = (streams || []).map(s => `
+      <tr>
+        <td>${s.stream_id || "—"}</td>
+        <td>${s.program_name || "—"}</td>
+        <td>${money(s.authorized_use_usd)}</td>
+        <td>${money(s.actual_use_usd)}</td>
+        <td>${money(s.flagged_use_usd)}</td>
+        <td>${fmt(s.funding_alignment, 6)}</td>
+        <td>${fmt(s.fidelity_score, 6)}</td>
+      </tr>
+    `).join("");
+
+    streamsBodyEl.innerHTML = rows || '<tr><td colspan="7">No funding streams found.</td></tr>';
+  }
+
+  function paintArtifact(artifact){
+    lastArtifact = artifact;
+
+    set("k-align", fmt(artifact?.scores?.funding_alignment, 6), Number(artifact?.scores?.funding_alignment) >= 0.85 ? "ok" : Number(artifact?.scores?.funding_alignment) >= 0.65 ? "warn" : "bad");
+    set("k-fidelity", fmt(artifact?.scores?.fidelity_score, 6), Number(artifact?.scores?.fidelity_score) >= 0.85 ? "ok" : Number(artifact?.scores?.fidelity_score) >= 0.65 ? "warn" : "bad");
+    set("k-flagged", money(artifact?.scores?.total_flagged_funds), Number(artifact?.scores?.total_flagged_funds) > 0 ? "warn" : "ok");
+
+    renderStreams(artifact?.funding_streams || []);
+    artifactPreviewEl.textContent = JSON.stringify(artifact, null, 2);
+    btnJson.disabled = false;
+  }
+
+  async function boot(){
+    try{
+      await fetchJSON("cff/model.json");
+      set("k-model", "OK", "ok");
+
+      await fetchJSON("cff/schema.json");
+      set("k-schema", "OK", "ok");
+
+      set("k-runner", "OK", "ok");
+
+      const raw = localStorage.getItem("ABE_CFF_ARTIFACT_V1") || localStorage.getItem("abe_cff_artifact");
+      if(raw){
+        const parsed = safeParse(raw);
+        if(parsed){
+          paintArtifact(parsed);
+          diagEl.textContent = "Existing CFF artifact loaded from localStorage.";
+          return;
+        }
+      }
+
+      diagEl.textContent = "No stored CFF artifact yet. Press Run CFF.";
+      streamsBodyEl.innerHTML = '<tr><td colspan="7">No artifact executed yet.</td></tr>';
+    }catch(e){
+      console.error(e);
+      set("k-model", "ERR", "bad");
+      set("k-schema", "ERR", "bad");
+      set("k-runner", "ERR", "bad");
+      diagEl.textContent = e.message || String(e);
+      artifactPreviewEl.textContent = "CFF boot failed.";
+    }
+  }
+
+  btnRun.onclick = async () => {
+    try{
+      diagEl.textContent = "Running CFF...";
+      const [model, schema] = await Promise.all([
+        fetchJSON("cff/model.json"),
+        fetchJSON("cff/schema.json")
+      ]);
+
+      const artifact = await run({}, { model, schema });
+
+      localStorage.setItem("ABE_CFF_ARTIFACT_V1", JSON.stringify(artifact));
+      localStorage.setItem("abe_cff_artifact", JSON.stringify(artifact));
+
+      paintArtifact(artifact);
+      diagEl.textContent = "CFF executed successfully and artifact saved.";
+    }catch(e){
+      console.error(e);
+      diagEl.textContent = e.message || String(e);
+      artifactPreviewEl.textContent = "CFF execution failed.";
+    }
+  };
+
+  btnJson.onclick = () => {
+    if(!lastArtifact) return;
+    createDownload(
+      "ABE_CFF_ARTIFACT_V1.json",
+      "application/json",
+      JSON.stringify(lastArtifact, null, 2)
+    );
+  };
+
+  boot();
+</script>
 </body>
 </html>
