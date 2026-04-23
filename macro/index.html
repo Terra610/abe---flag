@@ -333,3 +333,129 @@
 
     renderSectors(artifact?.sectors || []);
     artifactPreviewEl.textContent = JSON.stringify(artifact, null, 2);
+    btnJson.disabled = false;
+    btnCsv.disabled = false;
+  }
+
+  async function boot(){
+    try{
+      await fetchJSON("macro/model.json");
+      set("k-model", "OK", "ok");
+
+      await fetchJSON("macro/inputs.json");
+      set("k-inputs", "OK", "ok");
+
+      const integrationRef = readFirst([
+        "ABE_INTEGRATION_ARTIFACT_V1",
+        "abe_integration_artifact",
+        "ABE_AUDIT_RECEIPT_V1"
+      ]);
+
+      if(integrationRef){
+        set("k-int", "READY", "ok");
+      }else{
+        set("k-int", "NONE", "warn");
+      }
+
+      const existing = readFirst([
+        "ABE_MACRO_ARTIFACT_V1",
+        "abe_macro_artifact"
+      ]);
+
+      if(existing){
+        paintArtifact(existing.value);
+        diagEl.textContent = "Existing macro artifact loaded from localStorage.";
+      }else{
+        diagEl.textContent = "No stored macro artifact yet. Press Run Macro.";
+      }
+
+    }catch(e){
+      console.error(e);
+      set("k-model", "ERR", "bad");
+      set("k-inputs", "ERR", "bad");
+      set("k-int", "ERR", "bad");
+      diagEl.textContent = e.message || String(e);
+      artifactPreviewEl.textContent = "Macro module boot failed.";
+      sectorBodyEl.innerHTML = `<tr><td colspan="6">${e.message || String(e)}</td></tr>`;
+    }
+  }
+
+  btnRun.onclick = async () => {
+    try{
+      diagEl.textContent = "Running macro cascade...";
+      const [model, inputs] = await Promise.all([
+        fetchJSON("macro/model.json"),
+        fetchJSON("macro/inputs.json")
+      ]);
+
+      const integrationRef = readFirst([
+        "ABE_INTEGRATION_ARTIFACT_V1",
+        "abe_integration_artifact",
+        "ABE_AUDIT_RECEIPT_V1"
+      ]);
+
+      const ctx = {
+        model,
+        inputs,
+        integration: integrationRef ? integrationRef.value : null
+      };
+
+      const scenario = inputs?.scenario || inputs || {};
+      const artifact = await run(scenario, ctx);
+
+      localStorage.setItem("ABE_MACRO_ARTIFACT_V1", JSON.stringify(artifact));
+      localStorage.setItem("abe_macro_artifact", JSON.stringify(artifact));
+
+      paintArtifact(artifact);
+      diagEl.textContent = "Macro cascade executed successfully.";
+
+    }catch(e){
+      console.error(e);
+      diagEl.textContent = e.message || String(e);
+      artifactPreviewEl.textContent = "Macro execution failed.";
+    }
+  };
+
+  btnJson.onclick = () => {
+    if(!lastArtifact) return;
+    createDownload(
+      "ABE_MACRO_ARTIFACT_V1.json",
+      "application/json",
+      JSON.stringify(lastArtifact, null, 2)
+    );
+  };
+
+  btnCsv.onclick = () => {
+    if(!lastArtifact) return;
+
+    const header = [
+      "key",
+      "label",
+      "share",
+      "allocated_usd",
+      "multiplier",
+      "gain_usd",
+      "jobs_supported"
+    ];
+
+    const rows = (lastArtifact.sectors || []).map(s => [
+      s.key || "",
+      `"${String(s.label || "").replace(/"/g, '""')}"`,
+      s.share ?? "",
+      s.allocated_usd ?? "",
+      s.multiplier ?? "",
+      s.gain_usd ?? "",
+      s.jobs_supported ?? ""
+    ].join(","));
+
+    createDownload(
+      "ABE_macro_sectors.csv",
+      "text/csv",
+      [header.join(",")].concat(rows).join("\n")
+    );
+  };
+
+  boot();
+</script>
+</body>
+</html>
