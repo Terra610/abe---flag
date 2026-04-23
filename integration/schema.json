@@ -1,14 +1,52 @@
 {
-  "version": "1.0",
-  "about": "Integration page knows exactly which KPIs to display and from where.",
-  "kpis": [
-    {"key":"cibs_total","label":"Public Allocation (CIBS)","source":"/cibs/auto_budget.csv","method":"sum_column:value"},
-    {"key":"ciri_total","label":"Modeled Recovery (CIRI)","source":"/ciri/inputs.csv","method":"ciri_total_recovery_v2"},
-    {"key":"ciri_index","label":"CIRI Index","source":"/ciri/inputs.csv","method":"ciri_index"},
-    {"key":"roi_case","label":"ROI per Case","source":"/ciri/inputs.csv","method":"roi_per_case"}
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ABE_Integration_Artifact_v1",
+  "type": "object",
+  "required": [
+    "module",
+    "title",
+    "version",
+    "generated_at",
+    "cli_execution_order",
+    "phi_inputs",
+    "signature_formula",
+    "core_receipts"
   ],
-  "meta": {
-    "doi": "10.5281/zenodo.17586107",
-    "license": "CC BY-NC 4.0"
+  "additionalProperties": true,
+  "properties": {
+    "module": {
+      "type": "string",
+      "const": "ABE"
+    },
+    "title": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string"
+    },
+    "generated_at": {
+      "type": "string"
+    },
+    "cli_execution_order": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "phi_inputs": {
+      "type": "object",
+      "required": ["CIRI", "CIBS", "CII", "CDI"],
+      "additionalProperties": true
+    },
+    "signature_formula": {
+      "type": "object",
+      "required": ["expression", "numerator", "denominator", "value"],
+      "additionalProperties": true
+    },
+    "core_receipts": {
+      "type": "object",
+      "required": ["CDI", "CIRI", "CIBS", "CII"],
+      "additionalProperties": true
+    }
   }
 }
