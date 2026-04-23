@@ -145,4 +145,4 @@ export async function run(scenario, ctx = {}) {
     ],
     notes: "CCRI runner active and aligned to Constitutional Capital Recovery Index semantics."
   };
-    }
+}
