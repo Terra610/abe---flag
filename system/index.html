@@ -3,153 +3,204 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>ABE CLI — Deterministic Execution Controller</title>
   <base href="/abe---flag/">
-  <title>ABE System Map</title>
-  <link rel="stylesheet" href="assets/theme.css">
+  <style>
+    :root{
+      --bg:#0b0d12;
+      --panel:#141820;
+      --ink:#e6e6e6;
+      --muted:#9fb3c8;
+      --line:rgba(255,255,255,.08);
+      --ok:#4bd28f;
+      --warn:#ffd166;
+      --bad:#ff6b6b;
+      --brand:#5ddfff;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--ink);
+      font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+    }
+    a{color:#80bfff;text-decoration:none}
+    a:hover{text-decoration:underline}
+    header{
+      padding:20px;
+      text-align:center;
+      background:#11151c;
+      border-bottom:1px solid var(--line);
+    }
+    main{
+      max-width:1100px;
+      margin:20px auto;
+      padding:0 16px 40px;
+    }
+    .card{
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:14px;
+      margin:12px 0;
+    }
+    .kpi{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+      gap:12px;
+    }
+    .tile{
+      background:#10151d;
+      border:1px solid var(--line);
+      border-radius:10px;
+      padding:12px;
+    }
+    .label{color:var(--muted);font-size:.92rem}
+    .num{font-weight:800;font-size:1.15rem}
+    .ok{color:var(--ok)}
+    .warn{color:var(--warn)}
+    .bad{color:var(--bad)}
+    .row{display:flex;gap:10px;flex-wrap:wrap}
+    button{
+      background:#10151d;
+      color:var(--ink);
+      border:1px solid var(--line);
+      border-radius:10px;
+      padding:10px 14px;
+      font:inherit;
+      cursor:pointer;
+    }
+    pre{
+      white-space:pre-wrap;
+      overflow:auto;
+      background:#10151d;
+      border:1px solid var(--line);
+      border-radius:10px;
+      padding:12px;
+      font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    }
+  </style>
 </head>
 <body>
-  <main class="wrap">
-    <header class="hero panel">
-      <div class="pill">Local-only · no servers · no logins · no telemetry</div>
-      <h1>ABE System Map</h1>
-      <p class="tagline">
-        A.B.E. runs like an engine: modules fire in order, use the same uploaded data,
-        and produce auditable receipts that prove integrity without tracking.
-      </p>
-      <div class="module-nav" style="margin-top:16px;">
-        <a href="/abe---flag/index.html"><button>Home</button></a>
-        <a href="/abe---flag/intake/index.html"><button>Start</button></a>
-        <a href="/abe---flag/integration/index.html"><button>Go to Integration / Run</button></a>
-      </div>
-    </header>
+<header>
+  <h1>ABE CLI</h1>
+  <div>Deterministic core execution controller</div>
+  <div style="margin-top:10px">
+    <a href="index.html">Home</a> ·
+    <a href="cdi/index.html">CDI</a> ·
+    <a href="ciri/index.html">CIRI</a> ·
+    <a href="cibs/index.html">CIBS</a> ·
+    <a href="cii/index.html">CII</a> ·
+    <a href="integration/index.html">Integration</a>
+  </div>
+</header>
 
-    <section class="panel">
-      <h2>What this page is</h2>
-      <p>
-        This page displays the authoritative <code>system/map.json</code> file that the engine references.
-        It shows the module list, firing order, evidence paths, and raw map data so users and auditors can
-        see how the engine is wired together.
-      </p>
-    </section>
+<main>
+  <div class="card">
+    <h3>Locked Core Order</h3>
+    <pre id="spec">Loading spec…</pre>
+  </div>
 
-    <section class="panel">
-      <h2>Engine Flow</h2>
-      <div id="flow-box">Loading engine flow…</div>
-    </section>
+  <div class="card">
+    <h3>Engine Status</h3>
+    <div class="kpi">
+      <div class="tile"><div class="label">CDI</div><div id="k-cdi" class="num">—</div></div>
+      <div class="tile"><div class="label">CIRI</div><div id="k-ciri" class="num">—</div></div>
+      <div class="tile"><div class="label">CIBS</div><div id="k-cibs" class="num">—</div></div>
+      <div class="tile"><div class="label">CII</div><div id="k-cii" class="num">—</div></div>
+      <div class="tile"><div class="label">ABE</div><div id="k-abe" class="num">—</div></div>
+    </div>
+  </div>
 
-    <section class="panel">
-      <h2>Firing Order</h2>
-      <pre id="firing-order">Loading firing order…</pre>
-    </section>
+  <div class="card">
+    <h3>Controls</h3>
+    <div class="row">
+      <button id="run">Run ABE Engine</button>
+      <button id="reload">Reload Last ABE Artifact</button>
+      <button id="clear">Clear Core Artifacts</button>
+    </div>
+  </div>
 
-    <section class="panel">
-      <h2>Modules</h2>
-      <div id="modules-grid" class="grid cols-3">
-        <div class="card">Loading modules…</div>
-      </div>
-    </section>
+  <div class="card">
+    <h3>Execution Report</h3>
+    <pre id="report">Waiting for run…</pre>
+  </div>
+</main>
 
-    <section class="panel">
-      <h2>Raw Map</h2>
-      <p>This is the authoritative system map file that the engine references.</p>
-      <pre id="raw-map">Loading raw map…</pre>
-    </section>
-  </main>
+<script type="module">
+  import { runABEWithReport, getABEExecutionSpec } from "/abe---flag/system/cli.js";
 
-  <script>
-    const flowBox = document.getElementById("flow-box");
-    const firingOrderEl = document.getElementById("firing-order");
-    const modulesGrid = document.getElementById("modules-grid");
-    const rawMapEl = document.getElementById("raw-map");
+  const specEl = document.getElementById("spec");
+  const reportEl = document.getElementById("report");
 
-    function esc(str) {
-      return String(str)
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;");
+  const tiles = {
+    CDI: document.getElementById("k-cdi"),
+    CIRI: document.getElementById("k-ciri"),
+    CIBS: document.getElementById("k-cibs"),
+    CII: document.getElementById("k-cii"),
+    ABE: document.getElementById("k-abe")
+  };
+
+  function setTile(name, txt, cls) {
+    const el = tiles[name];
+    el.textContent = txt;
+    el.className = "num " + (cls || "");
+  }
+
+  function paintFromArtifact() {
+    const refs = {
+      CDI: localStorage.getItem("ABE_CDI_SCENARIO_V1") || localStorage.getItem("abe_cdi_artifact"),
+      CIRI: localStorage.getItem("ABE_CIRI_SCENARIO_V2") || localStorage.getItem("ABE_CIRI_SCENARIO_V1") || localStorage.getItem("abe_ciri_artifact"),
+      CIBS: localStorage.getItem("ABE_CIBS_BUDGET_V1") || localStorage.getItem("abe_cibs_artifact"),
+      CII: localStorage.getItem("ABE_CII_PORTFOLIO_V1") || localStorage.getItem("abe_cii_artifact"),
+      ABE: localStorage.getItem("ABE_INTEGRATION_ARTIFACT_V1") || localStorage.getItem("abe_integration_artifact")
+    };
+
+    for (const [name, raw] of Object.entries(refs)) {
+      if (raw) setTile(name, "READY", "ok");
+      else setTile(name, "—", "");
     }
+  }
 
-    async function loadMap() {
-      const res = await fetch("system/map.json", { cache: "no-store" });
-      if (!res.ok) {
-        throw new Error("Could not load system/map.json (HTTP " + res.status + ")");
-      }
-      return await res.json();
+  specEl.textContent = JSON.stringify(getABEExecutionSpec(), null, 2);
+  paintFromArtifact();
+
+  document.getElementById("run").onclick = async () => {
+    reportEl.textContent = "Running deterministic core spine…";
+    const result = await runABEWithReport();
+    reportEl.textContent = JSON.stringify(result, null, 2);
+
+    if (result.ok) {
+      setTile("CDI", "DONE", "ok");
+      setTile("CIRI", "DONE", "ok");
+      setTile("CIBS", "DONE", "ok");
+      setTile("CII", "DONE", "ok");
+      setTile("ABE", "DONE", "ok");
+    } else {
+      setTile("ABE", "ERR", "bad");
     }
+  };
 
-    function renderFlow(map) {
-      const flows = Array.isArray(map.flows)
-        ? map.flows
-        : Array.isArray(map.flow)
-          ? map.flow
-          : [];
+  document.getElementById("reload").onclick = () => {
+    paintFromArtifact();
+    const raw =
+      localStorage.getItem("ABE_INTEGRATION_ARTIFACT_V1") ||
+      localStorage.getItem("abe_integration_artifact") ||
+      "{}";
+    reportEl.textContent = JSON.stringify(JSON.parse(raw), null, 2);
+  };
 
-      if (!flows.length) {
-        flowBox.innerHTML = `
-          <div class="status-box small">
-            No flow array found in map.json. Raw map is shown below.
-          </div>
-        `;
-        return;
-      }
-
-      flowBox.innerHTML = flows.map((f) => `
-        <section class="card" style="margin-bottom:12px;">
-          <h3>${esc(f.from)} → ${esc(f.to)}</h3>
-          <p><strong>Control:</strong> ${esc(f.control || "—")}</p>
-          <p><strong>Evidence:</strong></p>
-          <ul>
-            ${(Array.isArray(f.evidence) ? f.evidence : []).map(e => `<li><code>${esc(e)}</code></li>`).join("")}
-          </ul>
-        </section>
-      `).join("");
-    }
-
-    function renderFiringOrder(map) {
-      const order = map?.engine_contract?.firing_order || [];
-      firingOrderEl.textContent = order.length
-        ? JSON.stringify(order, null, 2)
-        : "No firing order found.";
-    }
-
-    function renderModules(map) {
-      const modules = map.modules || {};
-      const entries = Object.entries(modules);
-
-      if (!entries.length) {
-        modulesGrid.innerHTML = `<div class="card">No modules found.</div>`;
-        return;
-      }
-
-      modulesGrid.innerHTML = entries.map(([key, mod]) => `
-        <section class="card">
-          <h3>${esc(mod.name || key)}</h3>
-          <p><strong>Long name:</strong> ${esc(mod.long_name || "—")}</p>
-          <p><strong>Purpose:</strong> ${esc(mod.purpose || "—")}</p>
-          <p><strong>Status:</strong> ${esc(mod.status || "—")}</p>
-          <p><strong>UI:</strong> <code>${esc(mod.ui || "—")}</code></p>
-          ${mod.ui ? `<a href="/abe---flag/${esc(mod.ui)}"><button>Open</button></a>` : ""}
-        </section>
-      `).join("");
-    }
-
-    async function boot() {
-      try {
-        const map = await loadMap();
-        renderFlow(map);
-        renderFiringOrder(map);
-        renderModules(map);
-        rawMapEl.textContent = JSON.stringify(map, null, 2);
-      } catch (err) {
-        console.error(err);
-        flowBox.innerHTML = `<div class="status-box small">Failed to load flow data.</div>`;
-        firingOrderEl.textContent = "Failed to load firing order.";
-        modulesGrid.innerHTML = `<div class="card">Failed to load modules.</div>`;
-        rawMapEl.textContent = "Failed to load raw map.";
-      }
-    }
-
-    boot();
-  </script>
+  document.getElementById("clear").onclick = () => {
+    [
+      "ABE_CDI_SCENARIO_V1","abe_cdi_artifact",
+      "ABE_CIRI_SCENARIO_V2","ABE_CIRI_SCENARIO_V1","abe_ciri_artifact",
+      "ABE_CIBS_BUDGET_V1","abe_cibs_artifact",
+      "ABE_CII_PORTFOLIO_V1","abe_cii_artifact",
+      "ABE_INTEGRATION_ARTIFACT_V1","abe_integration_artifact","ABE_AUDIT_RECEIPT_V1"
+    ].forEach(k => localStorage.removeItem(k));
+    paintFromArtifact();
+    reportEl.textContent = "Core artifacts cleared.";
+  };
+</script>
 </body>
 </html>
