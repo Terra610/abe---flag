@@ -1,31 +1,64 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "AFFE — Appropriation Fidelity & Funding Extractor",
+  "title": "AFFE_Model_v1",
   "type": "object",
-  "description": "Normalized funding row produced by AFFE for CFF.",
-  "properties": {
-    "program_name": { "type": "string" },
-    "federal_authority_citation": { "type": "string" },
-    "fiscal_year": { "type": "integer" },
-    "state_or_jurisdiction": { "type": "string" },
-    "agency": { "type": "string" },
-    "line_item_description": { "type": "string" },
-    "spend_category_code": {
-      "type": "string",
-      "enum": ["ON_MISSION", "OFF_MISSION", "UNCLEAR"]
-    },
-    "amount_usd": { "type": "number" },
-    "notes": { "type": "string" }
-  },
   "required": [
-    "program_name",
-    "federal_authority_citation",
-    "fiscal_year",
-    "state_or_jurisdiction",
-    "agency",
-    "line_item_description",
-    "spend_category_code",
-    "amount_usd"
+    "version",
+    "module",
+    "updated",
+    "title",
+    "weights"
   ],
-  "additionalProperties": false
+  "additionalProperties": true,
+  "properties": {
+    "version": {
+      "type": "string"
+    },
+    "module": {
+      "type": "string",
+      "const": "AFFE"
+    },
+    "updated": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "weights": {
+      "type": "object",
+      "required": [
+        "recovery_durability",
+        "system_stability",
+        "forward_integrity"
+      ],
+      "properties": {
+        "recovery_durability": {
+          "type": "number"
+        },
+        "system_stability": {
+          "type": "number"
+        },
+        "forward_integrity": {
+          "type": "number"
+        }
+      }
+    },
+    "thresholds": {
+      "type": "object",
+      "properties": {
+        "good": {
+          "type": "number"
+        },
+        "warning": {
+          "type": "number"
+        }
+      }
+    },
+    "defaults": {
+      "type": "object"
+    }
+  }
 }
