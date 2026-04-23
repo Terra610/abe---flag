@@ -1,0 +1,25 @@
+{
+  "version": "1.0",
+  "module": "CIRI",
+  "scenario": {
+    "id": "baseline_case_cluster_01",
+    "jurisdiction": "Iowa",
+    "C_a": 5000,
+    "C_bar": 2500,
+    "F_e": 1750000,
+    "D_j": 0.42,
+    "J": 1.0,
+    "P_e": 5000,
+    "E_bar": 1800,
+    "H_r": 0.35,
+    "M_bar": 0.65,
+    "t_bar_a": 12.0,
+    "w_bar": 22.0,
+    "L_e": 450000,
+    "P_bar": 0.62,
+    "lambda": 1.4,
+    "T_c": 500000,
+    "K": 1000000,
+    "notes": "Baseline CIRI scenario using the original RT formula components."
+  }
+}
