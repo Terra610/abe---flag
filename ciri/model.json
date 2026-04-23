@@ -1,0 +1,41 @@
+{
+  "version": "1.0",
+  "module": "CIRI",
+  "updated": "2026-04-22T00:00:00Z",
+  "title": "Constitutional Integrity Risk Index",
+  "description": "Calculates total constitutional risk and recovery potential using the original Shouse CIRI formulation, then normalizes it into a bounded index.",
+  "formulas": {
+    "RT": "R_T = (C_a*C_bar) + F_e + (C_a*D_j*J) + (P_e*E_bar) + (H_r*M_bar*t_bar_a) + (C_a*P_e*w_bar*t_bar_a) + (L_e*P_bar*lambda) - T_c",
+    "CIRI": "CIRI = 1 - e^(-R_T / K)",
+    "ROI_case": "ROI_case = R_T / C_a"
+  },
+  "defaults": {
+    "C_a": 1,
+    "C_bar": 0,
+    "F_e": 0,
+    "D_j": 0,
+    "J": 1,
+    "P_e": 0,
+    "E_bar": 0,
+    "H_r": 0,
+    "M_bar": 0,
+    "t_bar_a": 0,
+    "w_bar": 0,
+    "L_e": 0,
+    "P_bar": 0,
+    "lambda": 0,
+    "T_c": 0,
+    "K": 1000000
+  },
+  "normalization_constant": 1000000,
+  "downstream_links": [
+    {
+      "target": "cibs",
+      "purpose": "Supplies total recovery/risk term R_T for baseline allocation."
+    },
+    {
+      "target": "abe",
+      "purpose": "Provides the constitutional risk component consumed by final aggregation."
+    }
+  ]
+}
