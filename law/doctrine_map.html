@@ -186,7 +186,7 @@
   }
 
   try {
-    const res = await fetch('law/doctrines/doctrine_map.json', {cache: 'no-store'});
+    const res = await fetch('law/doctrine_map.json', {cache: 'no-store'});
     if (!res.ok) throw new Error('HTTP ' + res.status);
     data = await res.json();
     render();
