@@ -1,78 +1,69 @@
 {
-  "module": "cdi",
-  "name": "Constitution Divergence Index",
-  "version": "1.0.0",
-  "category": "core",
-  "purpose": "Quantify constitutional divergence across weighted domains and classify the severity of deviation from constitutional fidelity.",
-  "description": "CDI measures divergence magnitude by domain using deterministic weights and confidence values. It converts domain-level constitutional deviation into a weighted divergence profile that downstream modules can consume.",
-  "domains": [
-    { "key": "commerce", "name": "Commerce Regulation", "weight": 0.25 },
-    { "key": "justice", "name": "Judicial Oversight & Remedies", "weight": 0.20 },
-    { "key": "healthcare", "name": "Healthcare Policy & Funding", "weight": 0.15 },
-    { "key": "transport", "name": "Mobility & Transportation", "weight": 0.10 },
-    { "key": "education", "name": "Education & Access", "weight": 0.15 },
-    { "key": "housing", "name": "Housing & Property Rights", "weight": 0.15 }
-  ],
-  "sigma_bands": {
-    "baseline_aligned": [0.00, 0.19],
-    "emerging_divergence_1sigma": [0.20, 0.39],
-    "material_divergence_2sigma": [0.40, 0.59],
-    "high_divergence_3sigma": [0.60, 0.79],
-    "severe_divergence_4sigma": [0.80, 1.00]
+  "version": "1.0",
+  "module": "CDI",
+  "updated": "2026-04-22T00:00:00Z",
+  "title": "Constitutional Divergence Index",
+  "description": "Quantifies real-time constitutional risk by measuring how far a jurisdiction or decision system has diverged from baseline integrity.",
+  "formulas": {
+    "signal": "S_r = w1*s1 + w2*s2 + w3*s3 + w4*s4 + w5*s5",
+    "index": "CDI = 1 - e^(-S_r / R)"
   },
-  "inputs": [
+  "weights": {
+    "w1": 1.0,
+    "w2": 1.0,
+    "w3": 1.0,
+    "w4": 1.0,
+    "w5": 1.0
+  },
+  "defaults": {
+    "s1": 0,
+    "s2": 0,
+    "s3": 0,
+    "s4": 0,
+    "s5": 0,
+    "w1": 1.0,
+    "w2": 1.0,
+    "w3": 1.0,
+    "w4": 1.0,
+    "w5": 1.0,
+    "R": 100
+  },
+  "normalization_constant": 100,
+  "metrics": [
     {
-      "name": "cda_artifact",
-      "required": false,
-      "source": "cda",
-      "description": "Structured authority and doctrine findings from CDA."
+      "key": "s1",
+      "label": "Stops per 1,000 residents",
+      "description": "Observed stop volume normalized per 1,000 residents."
     },
     {
-      "name": "model_json",
-      "required": true,
-      "source": "cdi/model.json",
-      "description": "Domain weight definitions."
+      "key": "s2",
+      "label": "Charge mix ratio",
+      "description": "Measures charging drift relative to expected lawful mix."
     },
     {
-      "name": "divergence_csv",
-      "required": true,
-      "source": "cdi/divergence.csv",
-      "description": "Domain divergence and confidence values."
+      "key": "s3",
+      "label": "Average time-to-counsel",
+      "description": "Average elapsed time before meaningful access to counsel."
+    },
+    {
+      "key": "s4",
+      "label": "Dismissal rate",
+      "description": "Dismissal ratio reflecting structural unreliability or overreach."
+    },
+    {
+      "key": "s5",
+      "label": "Pretext ratio",
+      "description": "Share of actions indicating pretext-based initiation."
     }
   ],
-  "outputs": [
+  "downstream_links": [
     {
-      "name": "domain_scores",
-      "type": "array",
-      "description": "Weighted divergence results by domain."
+      "target": "ciri",
+      "purpose": "Feeds divergence intensity into risk and recovery computation."
     },
     {
-      "name": "weighted_divergence",
-      "type": "number",
-      "description": "Overall weighted constitutional divergence."
-    },
-    {
-      "name": "weighted_confidence",
-      "type": "number",
-      "description": "Overall weighted confidence."
-    },
-    {
-      "name": "overall_sigma_band",
-      "type": "string",
-      "description": "Severity band of constitutional divergence."
+      "target": "abe",
+      "purpose": "Provides the divergence component consumed by the final ABE aggregation."
     }
-  ],
-  "logic_contract": {
-    "deterministic": true,
-    "local_only": true,
-    "requires_remote_calls": false
-  },
-  "audit_fields": [
-    "module",
-    "version",
-    "timestamp",
-    "input",
-    "result",
-    "plain_language"
   ]
 }
