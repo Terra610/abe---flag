@@ -1,0 +1,36 @@
+{
+  "version": "1.0",
+  "module": "CIBS",
+  "scenario": {
+    "id": "baseline_allocation_01",
+    "categories": [
+      {
+        "key": "mobility_restoration",
+        "label": "Mobility Restoration",
+        "p_i": 0.30
+      },
+      {
+        "key": "workforce_reentry",
+        "label": "Workforce Reentry",
+        "p_i": 0.25
+      },
+      {
+        "key": "housing_stabilization",
+        "label": "Housing Stabilization",
+        "p_i": 0.25
+      },
+      {
+        "key": "community_rebuild",
+        "label": "Community Rebuild",
+        "p_i": 0.20
+      }
+    ],
+    "f_q": [
+      0.25,
+      0.25,
+      0.25,
+      0.25
+    ],
+    "notes": "Baseline CIBS allocation schedule using normalized category shares and even quarterly phasing."
+  }
+}
