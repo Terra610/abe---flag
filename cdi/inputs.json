@@ -1,0 +1,20 @@
+{
+  "version": "1.0",
+  "module": "CDI",
+  "scenario": {
+    "id": "baseline_jurisdiction_01",
+    "jurisdiction": "Iowa",
+    "s1": 22.0,
+    "s2": 0.48,
+    "s3": 14.0,
+    "s4": 0.31,
+    "s5": 0.42,
+    "w1": 1.0,
+    "w2": 1.1,
+    "w3": 1.2,
+    "w4": 0.9,
+    "w5": 1.3,
+    "R": 100,
+    "notes": "Baseline CDI scenario using the original five-pillar divergence structure."
+  }
+}
