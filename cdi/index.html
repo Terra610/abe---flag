@@ -1,71 +1,487 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>CDI — Constitutional Divergence Index</title>
-  <link rel="stylesheet" href="../assets/theme.css">
-  <link rel="stylesheet" href="../abe-patch/assets/abe-patch.css">
+  <base href="/abe---flag/">
+  <link rel="stylesheet" href="abe-patch/assets/abe-patch.css">
   <style>
-    table { width:100%; border-collapse:collapse; margin:20px 0; }
-    th, td { padding:12px; text-align:left; border-bottom:1px solid #243244; }
-    th { background:#111824; }
-    .high { color:#ff6b6b; }
-    .mid  { color:#ffd166; }
-    .low  { color:#06d6a0; }
+    :root{
+      --bg:#0b0d12;
+      --panel:#141820;
+      --ink:#e6e6e6;
+      --muted:#9fb3c8;
+      --line:rgba(255,255,255,.08);
+      --ok:#4bd28f;
+      --warn:#ffd166;
+      --bad:#ff6b6b;
+      --brand:#5ddfff;
+      --chip:#10151d;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--ink);
+      font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+    }
+    a{color:#80bfff;text-decoration:none}
+    a:hover{text-decoration:underline}
+    header{
+      padding:20px;
+      background:#11151c;
+      border-bottom:1px solid var(--line);
+      text-align:center;
+    }
+    .sub{
+      color:var(--muted);
+      margin-top:6px;
+      max-width:980px;
+      margin-left:auto;
+      margin-right:auto;
+    }
+    .nav{
+      margin-top:12px;
+      display:flex;
+      gap:10px;
+      justify-content:center;
+      flex-wrap:wrap;
+    }
+    .nav a{
+      display:inline-block;
+      padding:8px 12px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      background:var(--chip);
+    }
+    main{
+      max-width:1240px;
+      margin:20px auto;
+      padding:0 16px 40px;
+    }
+    .card{
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:14px;
+      margin:12px 0;
+    }
+    .kpi{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+      gap:12px;
+    }
+    .tile{
+      border:1px solid var(--line);
+      border-radius:10px;
+      padding:12px;
+      background:#10151d;
+    }
+    .label{
+      color:var(--muted);
+      font-size:.92rem;
+      margin-bottom:4px;
+    }
+    .num{
+      font-weight:800;
+      font-size:1.2rem;
+    }
+    .ok{color:var(--ok)}
+    .warn{color:var(--warn)}
+    .bad{color:var(--bad)}
+    .small{
+      color:var(--muted);
+      font-size:.9rem;
+    }
+    .btnrow{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:10px;
+    }
+    button{
+      background:#10151d;
+      color:var(--ink);
+      border:1px solid var(--line);
+      border-radius:10px;
+      padding:10px 14px;
+      cursor:pointer;
+      font:inherit;
+    }
+    button:hover{border-color:rgba(255,255,255,.18)}
+    button:disabled{opacity:.55;cursor:not-allowed}
+    table{
+      width:100%;
+      border-collapse:collapse;
+      margin-top:8px;
+      font-size:.95rem;
+    }
+    th,td{
+      border:1px solid var(--line);
+      padding:10px 8px;
+      vertical-align:top;
+      text-align:left;
+    }
+    th{
+      background:#10151d;
+      color:#dfefff;
+      position:sticky;
+      top:0;
+    }
+    .table-wrap{
+      overflow:auto;
+      border-radius:10px;
+      border:1px solid var(--line);
+    }
+    .pill{
+      display:inline-block;
+      border-radius:999px;
+      padding:2px 8px;
+      font-size:.82rem;
+      border:1px solid var(--line);
+      font-weight:700;
+      letter-spacing:.02em;
+    }
+    .pill-high{color:var(--bad);border-color:rgba(255,107,107,.35)}
+    .pill-mod{color:var(--warn);border-color:rgba(255,209,102,.35)}
+    .pill-low{color:var(--ok);border-color:rgba(75,210,143,.35)}
+    code, pre{
+      font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    }
+    pre{
+      white-space:pre-wrap;
+      overflow:auto;
+      background:#10151d;
+      border:1px solid var(--line);
+      border-radius:10px;
+      padding:12px;
+    }
+    ul.compact{
+      margin:8px 0 0 18px;
+      padding:0;
+    }
   </style>
 </head>
 <body>
+<header>
+  <h1>CDI — Constitutional Divergence Index</h1>
+  <div class="sub">
+    Core pioneer divergence module. CDI computes the weighted structural divergence signal
+    <code>S_r</code> and transforms it into a bounded divergence score using the
+    Shouse Divergence Curve.
+  </div>
+  <div class="nav">
+    <a href="index.html">Home</a>
+    <a href="ciri/index.html">CIRI</a>
+    <a href="cibs/index.html">CIBS</a>
+    <a href="cii/index.html">CII</a>
+    <a href="system/index.html">CLI</a>
+    <a href="integration/index.html">Integration</a>
+  </div>
+</header>
 
-  <div class="abe-utility-bar">
-    ← <a href="../index.html">A.B.E. Home</a>
-    <span class="abe-badge">Core Module</span>
+<main>
+  <div class="card">
+    <h3>Canonical Formula Stack</h3>
+    <div class="small">CDI executes the original pioneer divergence formulas:</div>
+    <ul class="compact">
+      <li><code>S_r = w1·s1 + w2·s2 + w3·s3 + w4·s4 + w5·s5</code></li>
+      <li><code>CDI = 1 - e^(-S_r / R)</code></li>
+    </ul>
+    <div class="small">
+      Where:
+      <code>s1</code> = stops per 1,000 residents,
+      <code>s2</code> = charge mix ratio,
+      <code>s3</code> = average time-to-counsel,
+      <code>s4</code> = dismissal rate,
+      <code>s5</code> = pretext ratio.
+    </div>
   </div>
 
-  <h1>CDI — Constitutional Divergence Index</h1>
+  <div class="card">
+    <h3>Status</h3>
+    <div class="kpi">
+      <div class="tile">
+        <div class="label">model.json</div>
+        <div id="k-model" class="num">checking…</div>
+      </div>
+      <div class="tile">
+        <div class="label">inputs.json</div>
+        <div id="k-inputs" class="num">checking…</div>
+      </div>
+      <div class="tile">
+        <div class="label">Runner</div>
+        <div id="k-runner" class="num">checking…</div>
+      </div>
+      <div class="tile">
+        <div class="label">S_r</div>
+        <div id="k-sr" class="num">—</div>
+      </div>
+      <div class="tile">
+        <div class="label">CDI</div>
+        <div id="k-cdi" class="num">—</div>
+      </div>
+      <div class="tile">
+        <div class="label">Divergence Class</div>
+        <div id="k-risk" class="num">—</div>
+      </div>
+    </div>
+  </div>
 
-  <p><strong>Core module in the A.B.E. firing order.</strong><br>
-  CDA flags → CDI computes weighted divergence using the formal deterministic equations → CIRI translates into economic recovery value.</p>
+  <div class="card">
+    <h3>Divergence Inputs and Weights</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Signal</th>
+            <th>Label</th>
+            <th>Value</th>
+            <th>Weight</th>
+            <th>Weighted Contribution</th>
+          </tr>
+        </thead>
+        <tbody id="signals-body">
+          <tr><td colspan="5">Loading…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 
-  <h2>Formal Deterministic Equations (Authoritative)</h2>
-  <p>These equations define all logic in A.B.E. (see <a href="../ABE_Formal_Equations.pdf">ABE_Formal_Equations.pdf</a>):</p>
-  <ol>
-    <li><strong>Authority Compliance:</strong> A(x) = 1 if (x ⊆ D ∧ x ⊆ J ∧ x ⊆ F); else 0</li>
-    <li><strong>Definition Integrity:</strong> ∆_def = |def_admin − def_statute| (must = 0)</li>
-    <li><strong>Funding Alignment:</strong> F_align = Σ(U_actual) − Σ(U_authorized)</li>
-    <li><strong>Jurisdictional Validity:</strong> J_valid = A(x) × (1 − ∆_def)</li>
-    <li><strong>Economic Externality Cascade:</strong> E_total = Σ(E_direct + E_secondary + E_tertiary)</li>
-  </ol>
+  <div class="card">
+    <h3>Artifact Preview</h3>
+    <pre id="artifact-preview">—</pre>
+    <div class="btnrow">
+      <button id="btn-run">Run CDI</button>
+      <button id="btn-json" disabled>Export CDI JSON</button>
+      <button id="btn-csv" disabled>Export Signals CSV</button>
+    </div>
+  </div>
 
-  <h2>Divergence by Category (from divergence.csv)</h2>
-  <table>
-    <thead>
-      <tr>
-        <th>Category</th>
-        <th>Divergence (0–1.0)</th>
-        <th>Confidence</th>
-        <th>Impact on CIRI</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr><td>Commerce Regulation</td><td class="high">0.63</td><td>0.92</td><td>High impact on funding scope</td></tr>
-      <tr><td>Judicial Oversight & Remedies</td><td class="high">0.74</td><td>0.88</td><td>High — affects void ab initio</td></tr>
-      <tr><td>Healthcare Policy & Funding</td><td class="mid">0.57</td><td>0.91</td><td>Moderate</td></tr>
-      <tr><td>Mobility & Transportation</td><td class="high">0.81</td><td>0.86</td><td>Critical — FMCSR scope violations</td></tr>
-      <tr><td>Education & Access</td><td class="low">0.45</td><td>0.94</td><td>Lower</td></tr>
-      <tr><td>Housing & Property Rights</td><td class="mid">0.68</td><td>0.89</td><td>Moderate</td></tr>
-    </tbody>
-  </table>
+  <div class="card">
+    <h3>Diagnostics</h3>
+    <div id="diag" class="small">No issues yet.</div>
+  </div>
+</main>
 
-  <h2>Position in Firing Order</h2>
-  <p>Intake → System → CAE → CDA → <strong>CDI</strong> → CCRI → CFF → AFFE → CIRI → CIBS → CII → Macro → Integration</p>
+<script type="module">
+  import { run } from "/abe---flag/cdi/runner.js";
 
-  <p><strong>Next step:</strong> <a href="../ciri/index.html">Open CIRI Calculator</a> — CDI scores feed directly into recovery calculations using the formal equations above.</p>
+  const artifactPreviewEl = document.getElementById("artifact-preview");
+  const diagEl = document.getElementById("diag");
+  const signalsBodyEl = document.getElementById("signals-body");
+  const btnRun = document.getElementById("btn-run");
+  const btnJson = document.getElementById("btn-json");
+  const btnCsv = document.getElementById("btn-csv");
 
-  <small>
-    © 2025 Terra Dawn Shouse — American Butterfly Effect (A.B.E.)<br>
-    Licensed under CC BY-NC 4.0 · Integrity only — never for sale.<br>
-    Deterministic math. No bias. No drift.
-  </small>
+  let lastArtifact = null;
 
+  function set(id, txt, cls){
+    const el = document.getElementById(id);
+    el.textContent = txt;
+    el.className = cls ? ("num " + cls) : "num";
+  }
+
+  async function fetchJSON(path){
+    const r = await fetch(path, { cache: "no-store" });
+    if(!r.ok) throw new Error(path + ": HTTP " + r.status);
+    return r.json();
+  }
+
+  function safeParse(raw){
+    try { return JSON.parse(raw); } catch { return null; }
+  }
+
+  function readFirst(keys){
+    for(const key of keys){
+      const raw = localStorage.getItem(key);
+      if(!raw) continue;
+      const parsed = safeParse(raw);
+      if(parsed) return { key, value: parsed };
+    }
+    return null;
+  }
+
+  function fmt(v, digits = 4){
+    const n = Number(v);
+    return Number.isFinite(n) ? n.toFixed(digits) : "—";
+  }
+
+  function createDownload(filename, mime, content){
+    const blob = new Blob([content], { type: mime });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  function renderSignals(inputs){
+    const defs = [
+      { key: "s1", label: "Stops per 1,000 residents", w: "w1" },
+      { key: "s2", label: "Charge mix ratio", w: "w2" },
+      { key: "s3", label: "Average time-to-counsel", w: "w3" },
+      { key: "s4", label: "Dismissal rate", w: "w4" },
+      { key: "s5", label: "Pretext ratio", w: "w5" }
+    ];
+
+    const rows = defs.map(row => {
+      const signal = Number(inputs?.[row.key]);
+      const weight = Number(inputs?.[row.w]);
+      const contribution = Number.isFinite(signal) && Number.isFinite(weight)
+        ? signal * weight
+        : null;
+
+      return `
+        <tr>
+          <td>${row.key}</td>
+          <td>${row.label}</td>
+          <td>${fmt(signal, 6)}</td>
+          <td>${fmt(weight, 6)}</td>
+          <td>${fmt(contribution, 6)}</td>
+        </tr>
+      `;
+    }).join("");
+
+    signalsBodyEl.innerHTML = rows || '<tr><td colspan="5">No signal data available.</td></tr>';
+  }
+
+  function paintArtifact(artifact){
+    lastArtifact = artifact;
+
+    const Sr = artifact?.aggregate?.S_r ?? artifact?.scores?.weighted_signal;
+    const cdi = artifact?.scores?.constitutional_divergence_index ?? artifact?.scores?.divergence_score;
+    const risk = artifact?.scores?.overall_risk_class || "—";
+
+    set("k-sr", fmt(Sr, 6), Number(Sr) > 0 ? "ok" : "warn");
+    set("k-cdi", fmt(cdi, 6), cdi >= 0.8 ? "bad" : cdi >= 0.45 ? "warn" : "ok");
+    set("k-risk", risk, risk === "HIGH" ? "bad" : risk === "MODERATE" ? "warn" : "ok");
+
+    renderSignals(artifact?.inputs || {});
+    artifactPreviewEl.textContent = JSON.stringify(artifact, null, 2);
+    btnJson.disabled = false;
+    btnCsv.disabled = false;
+  }
+
+  async function boot(){
+    try{
+      await fetchJSON("cdi/model.json");
+      set("k-model", "OK", "ok");
+
+      await fetchJSON("cdi/inputs.json");
+      set("k-inputs", "OK", "ok");
+
+      set("k-runner", "OK", "ok");
+
+      const existing = readFirst([
+        "ABE_CDI_SCENARIO_V1",
+        "abe_cdi_artifact"
+      ]);
+
+      if(existing){
+        paintArtifact(existing.value);
+        diagEl.textContent = "Existing CDI artifact loaded from localStorage.";
+      }else{
+        diagEl.textContent = "No stored CDI artifact yet. Press Run CDI.";
+        signalsBodyEl.innerHTML = '<tr><td colspan="5">No artifact executed yet.</td></tr>';
+      }
+
+    }catch(e){
+      console.error(e);
+      set("k-model", "ERR", "bad");
+      set("k-inputs", "ERR", "bad");
+      set("k-runner", "ERR", "bad");
+      diagEl.textContent = e.message || String(e);
+      artifactPreviewEl.textContent = "Module boot failed.";
+      signalsBodyEl.innerHTML = `<tr><td colspan="5">${e.message || String(e)}</td></tr>`;
+    }
+  }
+
+  btnRun.onclick = async () => {
+    try{
+      diagEl.textContent = "Running CDI...";
+      const [model, inputs] = await Promise.all([
+        fetchJSON("cdi/model.json"),
+        fetchJSON("cdi/inputs.json")
+      ]);
+
+      const ctx = {
+        model,
+        inputs,
+        priorCore: {},
+        expansions: {}
+      };
+
+      const scenario = inputs?.scenario || inputs?.scenarios?.[0] || inputs || {};
+      const artifact = await run(scenario, ctx);
+
+      localStorage.setItem("ABE_CDI_SCENARIO_V1", JSON.stringify(artifact));
+      localStorage.setItem("abe_cdi_artifact", JSON.stringify(artifact));
+
+      paintArtifact(artifact);
+      diagEl.textContent = "CDI executed successfully and artifact saved.";
+
+    }catch(e){
+      console.error(e);
+      diagEl.textContent = e.message || String(e);
+      artifactPreviewEl.textContent = "CDI execution failed.";
+    }
+  };
+
+  btnJson.onclick = () => {
+    if(!lastArtifact) return;
+    createDownload(
+      "ABE_CDI_SCENARIO_V1.json",
+      "application/json",
+      JSON.stringify(lastArtifact, null, 2)
+    );
+  };
+
+  btnCsv.onclick = () => {
+    if(!lastArtifact) return;
+
+    const inputs = lastArtifact.inputs || {};
+    const defs = [
+      { key: "s1", label: "Stops per 1,000 residents", w: "w1" },
+      { key: "s2", label: "Charge mix ratio", w: "w2" },
+      { key: "s3", label: "Average time-to-counsel", w: "w3" },
+      { key: "s4", label: "Dismissal rate", w: "w4" },
+      { key: "s5", label: "Pretext ratio", w: "w5" }
+    ];
+
+    const header = [
+      "signal_key",
+      "label",
+      "signal_value",
+      "weight",
+      "weighted_contribution"
+    ];
+
+    const rows = defs.map(row => {
+      const signal = Number(inputs?.[row.key]);
+      const weight = Number(inputs?.[row.w]);
+      const contribution = Number.isFinite(signal) && Number.isFinite(weight)
+        ? signal * weight
+        : "";
+      return [
+        row.key,
+        `"${row.label.replace(/"/g, '""')}"`,
+        Number.isFinite(signal) ? signal : "",
+        Number.isFinite(weight) ? weight : "",
+        contribution
+      ].join(",");
+    });
+
+    createDownload(
+      "CDI_signals.csv",
+      "text/csv",
+      [header.join(",")].concat(rows).join("\n")
+    );
+  };
+
+  boot();
+</script>
 </body>
 </html>
