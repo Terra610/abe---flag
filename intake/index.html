@@ -1,336 +1,229 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Intake & AI Assistant | A.B.E.</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Intake — ABE Entry Interface</title>
 
-  <!-- GitHub Pages base -->
   <base href="/abe---flag/">
 
-  <!-- Global dark theme patch -->
-  <link rel="stylesheet" href="abe-patch/assets/abe-patch.css"/>
-
   <style>
-    .wrap{
-      max-width:1100px;
-      margin:0 auto;
-      padding:1.4rem 1rem 3rem;
+    :root{
+      --bg:#0b0d12;
+      --panel:#141820;
+      --panel2:#10151d;
+      --ink:#e6e6e6;
+      --muted:#9fb3c8;
+      --line:rgba(255,255,255,.08);
+      --ok:#4bd28f;
+      --warn:#ffd166;
+      --bad:#ff6b6b;
     }
 
-    .header h1{
-      margin:.2rem 0 .25rem;
-      font-size:1.85rem;
-      line-height:1.15;
-    }
-    .tagline{
-      max-width:860px;
-      color:var(--muted);
-      margin:.2rem 0 1rem;
-    }
+    *{box-sizing:border-box}
 
-    .toolbar{
-      display:flex;
-      flex-wrap:wrap;
-      gap:.5rem;
-      align-items:center;
-      margin: .75rem 0 1rem;
-    }
-
-    .chip{
-      display:inline-flex;
-      align-items:center;
-      gap:.45rem;
-      padding:.45rem .75rem;
-      border-radius:999px;
-      border:1px solid var(--line);
-      background:#0b0f19;
+    body{
+      margin:0;
+      background:var(--bg);
       color:var(--ink);
-      text-decoration:none;
-      font-size:.9rem;
-      cursor:pointer;
-      user-select:none;
-    }
-    .chip:hover{ border-color: rgba(93,223,255,.55); }
-    .chip.alt{
-      border-color: rgba(93,223,255,.35);
-      box-shadow:0 0 0 1px rgba(93,223,255,.15) inset;
-    }
-    .chip.danger{
-      border-color: rgba(255,133,133,.35);
+      font:16px/1.6 system-ui;
     }
 
-    .grid{
-      display:grid;
-      gap:1rem;
+    header{
+      padding:20px;
+      text-align:center;
+      background:#11151c;
+      border-bottom:1px solid var(--line);
     }
-    @media(min-width:980px){
-      .grid{
-        grid-template-columns: 1.05fr 1.15fr;
-      }
+
+    a{color:#80bfff;text-decoration:none}
+
+    .nav{
+      margin-top:10px;
+      display:flex;
+      justify-content:center;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    .nav a{
+      padding:8px 12px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      background:var(--panel2);
+    }
+
+    main{
+      max-width:1000px;
+      margin:20px auto;
+      padding:0 16px;
     }
 
     .card{
-      background:#10131c;
+      background:var(--panel);
       border:1px solid var(--line);
-      border-radius:16px;
-      padding:1rem 1rem 1.05rem;
-      box-shadow:0 18px 40px rgba(0,0,0,.4);
-      min-height:0;
-    }
-    .card h2{
-      margin:.1rem 0 .35rem;
-      font-size:1.05rem;
-    }
-    .sub{
-      color:var(--muted);
-      font-size:.9rem;
-      margin:.1rem 0 .75rem;
-    }
-
-    .filebox{
-      display:flex;
-      flex-wrap:wrap;
-      gap:.6rem;
-      align-items:flex-start;
-      padding:.65rem .75rem;
-      border:1px solid var(--line);
-      border-radius:14px;
-      background:#0b0f19;
-      box-shadow:0 18px 40px rgba(0,0,0,.35);
-      margin: .5rem 0 1rem;
-    }
-    .filebox label{
-      color:var(--muted);
-      font-size:.9rem;
-      margin-right:.25rem;
-    }
-    input[type="file"]{
-      color:var(--ink);
-      max-width:100%;
-    }
-
-    #fileList{
-      width:100%;
-      margin-top:.35rem;
-      color:var(--muted);
-      font-size:.9rem;
-    }
-    #fileList ul{ margin:.35rem 0 0; padding-left:1.2rem; }
-    #fileList li{ margin:.15rem 0; }
-
-    .kv{
-      display:grid;
-      grid-template-columns: 170px 1fr;
-      gap:.35rem .75rem;
-      padding:.7rem .75rem;
-      border-radius:14px;
-      border:1px solid rgba(255,255,255,.08);
-      background:#050712;
-    }
-    @media(max-width:560px){
-      .kv{ grid-template-columns: 1fr; }
-    }
-    .k{ color:var(--muted); font-size:.88rem; }
-    .v{ color:var(--ink); font-size:.92rem; overflow-wrap:anywhere; }
-
-    .pill{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      padding:.18rem .55rem;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.12);
-      font-size:.78rem;
-      letter-spacing:.02em;
-      width:fit-content;
-      margin-right:.35rem;
-      margin-bottom:.35rem;
-    }
-    .pill.ok{ border-color: rgba(75,210,143,.45); color:#a9f3d1; }
-    .pill.warn{ border-color: rgba(255,186,92,.5); color:#ffe1b3; }
-    .pill.fail{ border-color: rgba(255,133,133,.5); color:#ffd0d0; }
-    .pill.note{ border-color: rgba(93,223,255,.35); color:#c7f4ff; }
-
-    pre.preview{
-      margin:0;
-      padding:.75rem .8rem;
       border-radius:12px;
-      border:1px solid rgba(255,255,255,.08);
-      background:#050712;
+      padding:16px;
+      margin:12px 0;
+    }
+
+    textarea{
+      width:100%;
+      min-height:180px;
+      background:#0f141b;
       color:var(--ink);
-      overflow:auto;
-      max-height:360px;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-      font-size:.82rem;
-      white-space:pre-wrap;
-      word-break:break-word;
+      border:1px solid var(--line);
+      border-radius:10px;
+      padding:10px;
+      font-family:monospace;
     }
 
     .row{
       display:flex;
+      gap:10px;
       flex-wrap:wrap;
-      gap:.5rem;
-      align-items:center;
-      margin:.6rem 0 0;
+      margin-top:10px;
     }
 
-    .miniBtn{
-      display:inline-flex;
-      align-items:center;
-      gap:.45rem;
-      padding:.45rem .7rem;
-      border-radius:12px;
-      border:1px solid rgba(255,255,255,.12);
-      background:#0b0f19;
+    button{
+      background:#10151d;
       color:var(--ink);
+      border:1px solid var(--line);
+      border-radius:10px;
+      padding:10px 14px;
       cursor:pointer;
-      font-size:.9rem;
     }
-    .miniBtn:hover{ border-color: rgba(93,223,255,.55); }
 
-    .hint{
-      margin-top:.65rem;
+    .status{
+      margin-top:10px;
+      font-size:.9rem;
       color:var(--muted);
-      font-size:.9rem;
     }
 
-    .warnBox{
-      margin-top:.75rem;
-      padding:.7rem .75rem;
-      border-radius:14px;
-      border:1px solid rgba(255,186,92,.28);
-      background: rgba(255,186,92,.06);
-      color: var(--ink);
+    pre{
+      white-space:pre-wrap;
+      background:#0f141b;
+      border:1px solid var(--line);
+      border-radius:10px;
+      padding:12px;
     }
-
-    .okBox{
-      margin-top:.75rem;
-      padding:.7rem .75rem;
-      border-radius:14px;
-      border:1px solid rgba(75,210,143,.28);
-      background: rgba(75,210,143,.06);
-      color: var(--ink);
-    }
-
-    .footerNote{
-      margin-top:1rem;
-      color:var(--muted);
-      font-size:.9rem;
-    }
-    .footerNote a{
-      color:var(--accent);
-      text-decoration:none;
-    }
-    .footerNote a:hover{ text-decoration:underline; }
   </style>
 </head>
 
-<body class="abe-page">
-  <header class="abe-header">
-    <div class="wrap header">
-      <a class="chip" href="index.html">← A.B.E. Home</a>
-      <h1>Intake & Assistant</h1>
-      <p class="tagline">
-        Upload documents locally (tickets, policies, reports, contracts). Nothing leaves your device.
-        This page helps you understand what you uploaded and what the engine will do next.
-      </p>
+<body>
 
-      <div class="toolbar" role="toolbar" aria-label="Intake controls">
-        <button class="chip" id="btnHome" type="button">Home</button>
-        <button class="chip" id="btnStart" type="button">Start</button>
-        <button class="chip alt" id="btnOpenIntegration" type="button">Go to Integration / Run</button>
-        <button class="chip danger" id="btnClear" type="button">Clear Local Intake</button>
-      </div>
+<header>
+  <h1>📥 Intake — ABE Entry Interface</h1>
+  <div>Normalize inputs → generate intake artifact → feed pipeline</div>
 
-      <div class="filebox">
-        <label for="fileInput"><strong>Upload files (local-only):</strong></label>
-        <input id="fileInput" type="file" multiple />
-        <div id="fileList"></div>
-      </div>
+  <div class="nav">
+    <a href="index.html">Home</a>
+    <a href="integration/index.html">Integration</a>
+    <a href="system/index.html">CLI</a>
+  </div>
+</header>
+
+<main>
+
+  <section class="card">
+    <h3>Paste Input (JSON or Text)</h3>
+    <textarea id="input"></textarea>
+
+    <div class="row">
+      <button id="btn-parse">Parse Input</button>
+      <button id="btn-clear">Clear</button>
     </div>
-  </header>
 
-  <main class="abe-main">
-    <div class="wrap">
-      <div class="grid">
+    <div class="status" id="status">Waiting for input…</div>
+  </section>
 
-        <!-- LEFT: Intake snapshot -->
-        <section class="card">
-          <h2>What you uploaded</h2>
-          <p class="sub">
-            This is a simple snapshot of your intake. The engine can run with uploads, or with a safe default scenario.
-          </p>
+  <section class="card">
+    <h3>Generated Intake Artifact</h3>
+    <pre id="output">—</pre>
 
-          <div class="kv" style="margin-bottom:.75rem;">
-            <div class="k">Storage</div>
-            <div class="v"><span class="pill note">Local-only</span> Stored in your browser’s local storage (not a server).</div>
-
-            <div class="k">Files found</div>
-            <div class="v" id="intakeCount">0</div>
-
-            <div class="k">Last updated</div>
-            <div class="v" id="intakeUpdated">—</div>
-
-            <div class="k">Next step</div>
-            <div class="v">
-              <span class="pill ok">Run</span> Open Integration and click <strong>Run Engine</strong>.
-            </div>
-          </div>
-
-          <div id="intakeNotice" class="warnBox" style="display:none;"></div>
-          <div id="intakeOk" class="okBox" style="display:none;"></div>
-
-          <div class="row">
-            <button class="miniBtn" id="btnSaveToScenario" type="button">Save Intake into Scenario</button>
-            <button class="miniBtn" id="btnDownloadIntake" type="button">Download intake_artifact.json</button>
-          </div>
-
-          <p class="hint">
-            <strong>Note:</strong> This assistant does not “judge people.” It only helps structure documents and explain what the engine is doing.
-          </p>
-
-          <p class="footerNote">
-            Want the proof layer? Go to <a href="integration/index.html">Integration / Audit</a>.
-          </p>
-        </section>
-
-        <!-- RIGHT: Assistant panel -->
-        <section class="card">
-          <h2>Assistant (local-only)</h2>
-          <p class="sub">
-            Plain-English guidance: what your files likely are, what modules will care, and what to do next.
-          </p>
-
-          <div style="margin-bottom:.6rem;">
-            <span class="pill note">No API</span>
-            <span class="pill note">No logins</span>
-            <span class="pill note">No tracking</span>
-            <span class="pill ok">Deterministic</span>
-          </div>
-
-          <pre id="assistantPreview" class="preview">Upload files to see assistant guidance.</pre>
-
-          <div class="row">
-            <button class="miniBtn" id="btnRefreshAssistant" type="button">Refresh Assistant</button>
-            <button class="miniBtn" id="btnCopyAssistant" type="button">Copy Guidance</button>
-          </div>
-
-          <p class="footerNote">
-            Tip: if you don’t have documents yet, you can still run a safe default scenario in Integration.
-          </p>
-        </section>
-
-      </div>
+    <div class="row">
+      <button id="btn-save" disabled>Save to Engine</button>
+      <button id="btn-download" disabled>Download JSON</button>
     </div>
-  </main>
+  </section>
 
-  <footer class="abe-footer">
-    <p>
-      A.B.E. — Intake · CC BY-NC 4.0 · Local-only (no tracking).
-    </p>
-  </footer>
+</main>
 
-  <script type="module" src="intake/assistant.js"></script>
+<script>
+const inputEl = document.getElementById("input");
+const outputEl = document.getElementById("output");
+const statusEl = document.getElementById("status");
+
+let artifact = null;
+
+function safeParse(text){
+  try { return JSON.parse(text); }
+  catch { return null; }
+}
+
+function createArtifact(data){
+  return {
+    module: "INTAKE",
+    version: "1.0",
+    timestamp: new Date().toISOString(),
+    hash: crypto.randomUUID(),
+    payload: data
+  };
+}
+
+document.getElementById("btn-parse").onclick = () => {
+  const raw = inputEl.value.trim();
+
+  if(!raw){
+    statusEl.textContent = "No input provided.";
+    return;
+  }
+
+  let parsed = safeParse(raw);
+
+  if(!parsed){
+    parsed = { raw_text: raw };
+  }
+
+  artifact = createArtifact(parsed);
+
+  outputEl.textContent = JSON.stringify(artifact, null, 2);
+
+  statusEl.textContent = "Input normalized and artifact created.";
+
+  document.getElementById("btn-save").disabled = false;
+  document.getElementById("btn-download").disabled = false;
+};
+
+document.getElementById("btn-clear").onclick = () => {
+  inputEl.value = "";
+  outputEl.textContent = "—";
+  statusEl.textContent = "Cleared.";
+};
+
+document.getElementById("btn-save").onclick = () => {
+  if(!artifact) return;
+
+  localStorage.setItem("ABE_INTAKE_ARTIFACT_V1", JSON.stringify(artifact));
+  localStorage.setItem("abe_intake_artifact", JSON.stringify(artifact));
+
+  statusEl.textContent = "Saved to engine. Ready for pipeline.";
+};
+
+document.getElementById("btn-download").onclick = () => {
+  if(!artifact) return;
+
+  const blob = new Blob([JSON.stringify(artifact,null,2)], {type:"application/json"});
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "ABE_INTAKE_ARTIFACT_V1.json";
+  a.click();
+
+  URL.revokeObjectURL(url);
+};
+</script>
+
 </body>
 </html>
