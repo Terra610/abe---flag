@@ -1,0 +1,34 @@
+{
+  "version": "1.0",
+  "module": "CII",
+  "scenario": {
+    "id": "baseline_propagation_01",
+    "projects": [
+      {
+        "key": "mobility_restoration",
+        "label": "Mobility Restoration",
+        "eta_p": 0.75,
+        "status": "active"
+      },
+      {
+        "key": "workforce_reentry",
+        "label": "Workforce Reentry",
+        "eta_p": 0.70,
+        "status": "design"
+      },
+      {
+        "key": "housing_stabilization",
+        "label": "Housing Stabilization",
+        "eta_p": 0.65,
+        "status": "active"
+      },
+      {
+        "key": "community_rebuild",
+        "label": "Community Rebuild",
+        "eta_p": 0.80,
+        "status": "scoping"
+      }
+    ],
+    "notes": "Baseline CII propagation scenario using project effectiveness and progress-stage weights."
+  }
+}
