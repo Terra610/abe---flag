@@ -1,53 +1,66 @@
 /* system/cli.js
    ABE deterministic execution controller
-   Core spine: CDI -> CIRI -> CIBS -> CII -> ABE
-   Expansions: CAE / CDA / CCRI feed core, CFF feeds CIRI, AFFE refines downstream
+   Full automatic pipeline:
+   Intake -> CDI -> CIRI -> CIBS -> CII -> ABE/Integration -> Macro
+   Expansions: CAE -> CDA -> CFF -> CCRI -> AFFE
 */
 
-const ABE_CORE_ORDER = ["CDI", "CIRI", "CIBS", "CII", "ABE"];
-const ABE_EXPANSIONS = ["CAE", "CDA", "CCRI", "CFF", "AFFE"];
-
 const STORAGE_KEYS = {
-  CAE: ["ABE_CAE_ARTIFACT_V1", "abe_cae_artifact"],
-  CDA: ["ABE_CDA_SCENARIO_V1", "abe_cda_artifact", "ABE_CDI_ARTIFACT_V1", "abe_cdi_artifact"],
-  CCRI: ["ABE_CCRI_SCENARIO_V1", "abe_ccri_artifact"],
-  CFF: ["ABE_CFF_ARTIFACT_V1", "abe_cff_artifact"],
-  AFFE: ["ABE_AFFE_ARTIFACT_V1", "abe_affe_artifact"],
+  INTAKE: ["ABE_INTAKE_ARTIFACT_V1", "abe_intake_artifact"],
 
   CDI: ["ABE_CDI_SCENARIO_V1", "abe_cdi_artifact"],
   CIRI: ["ABE_CIRI_SCENARIO_V2", "ABE_CIRI_SCENARIO_V1", "abe_ciri_artifact"],
   CIBS: ["ABE_CIBS_BUDGET_V1", "abe_cibs_artifact"],
   CII: ["ABE_CII_PORTFOLIO_V1", "abe_cii_artifact"],
-  ABE: ["ABE_INTEGRATION_ARTIFACT_V1", "abe_integration_artifact", "ABE_AUDIT_RECEIPT_V1"]
+
+  ABE: ["ABE_INTEGRATION_ARTIFACT_V1", "abe_integration_artifact", "ABE_AUDIT_RECEIPT_V1"],
+  MACRO: ["ABE_MACRO_ARTIFACT_V1", "abe_macro_artifact"],
+
+  CAE: ["ABE_CAE_ARTIFACT_V1", "abe_cae_artifact"],
+  CDA: ["ABE_CDA_SCENARIO_V1", "abe_cda_artifact"],
+  CFF: ["ABE_CFF_ARTIFACT_V1", "abe_cff_artifact"],
+  CCRI: ["ABE_CCRI_SCENARIO_V1", "abe_ccri_artifact"],
+  AFFE: ["ABE_AFFE_ARTIFACT_V1", "abe_affe_artifact"]
 };
 
 const MODULE_PATHS = {
   CDI: "/abe---flag/cdi/runner.js",
   CIRI: "/abe---flag/ciri/runner.js",
   CIBS: "/abe---flag/cibs/runner.js",
-  CII: "/abe---flag/cii/runner.js"
+  CII: "/abe---flag/cii/runner.js",
+  CAE: "/abe---flag/cae/runner.js",
+  CDA: "/abe---flag/cda/runner.js",
+  CFF: "/abe---flag/cff/runner.js",
+  CCRI: "/abe---flag/ccri/runner.js",
+  AFFE: "/abe---flag/affe/runner.js",
+  MACRO: "/abe---flag/macro/runner.js"
 };
 
 const MODULE_MODELS = {
   CDI: "/abe---flag/cdi/model.json",
   CIRI: "/abe---flag/ciri/model.json",
   CIBS: "/abe---flag/cibs/model.json",
-  CII: "/abe---flag/cii/model.json"
+  CII: "/abe---flag/cii/model.json",
+  CAE: "/abe---flag/cae/model.json",
+  CDA: "/abe---flag/cda/model.json",
+  CFF: "/abe---flag/cff/model.json",
+  CCRI: "/abe---flag/ccri/model.json",
+  AFFE: "/abe---flag/affe/model.json",
+  MACRO: "/abe---flag/macro/model.json",
+  INTEGRATION: "/abe---flag/integration/model.json"
 };
 
 const MODULE_INPUTS = {
   CDI: "/abe---flag/cdi/inputs.json",
   CIRI: "/abe---flag/ciri/inputs.json",
   CIBS: "/abe---flag/cibs/inputs.json",
-  CII: "/abe---flag/cii/inputs.json"
+  CII: "/abe---flag/cii/inputs.json",
+  CCRI: "/abe---flag/ccri/inputs.json",
+  MACRO: "/abe---flag/macro/inputs.json"
 };
 
 function nowIso() {
   return new Date().toISOString();
-}
-
-function deepClone(obj) {
-  return JSON.parse(JSON.stringify(obj));
 }
 
 function safeParse(raw) {
@@ -71,8 +84,7 @@ function readFirstLocalStorage(keys) {
 }
 
 function writeCanonical(moduleName, payload) {
-  const keys = STORAGE_KEYS[moduleName];
-  if (!keys || !keys.length) return;
+  const keys = STORAGE_KEYS[moduleName] || [];
   for (const key of keys) {
     try {
       localStorage.setItem(key, JSON.stringify(payload));
@@ -86,266 +98,203 @@ async function fetchJson(path) {
   return res.json();
 }
 
-function assert(condition, message) {
-  if (!condition) throw new Error(message);
-}
-
-function normalizeExpansionInputs(expansions) {
-  const cae = expansions.CAE?.value || null;
-  const cda = expansions.CDA?.value || null;
-  const ccri = expansions.CCRI?.value || null;
-  const cff = expansions.CFF?.value || null;
-  const affe = expansions.AFFE?.value || null;
-
-  const caeAlignment =
-    cae?.summary?.average_alignment ??
-    cae?.aggregate?.average_alignment ??
-    cae?.scores?.constitutional_alignment ??
-    cae?.scores?.alignment_score ??
-    null;
-
-  const cdaDefinitionIntegrity =
-    cda?.scores?.definition_integrity ??
-    cda?.aggregate?.definition_integrity ??
-    cda?.definition_integrity ??
-    null;
-
-  const ccriRecovery =
-    ccri?.aggregate?.total_constitutional_capital_recovery_usd ??
-    ccri?.scores?.economic_impact ??
-    null;
-
-  const ccriDivergence =
-    ccri?.scores?.constitutional_divergence_index ??
-    ccri?.aggregate?.average_divergence_index ??
-    null;
-
-  const cffFundingAlignment =
-    cff?.scores?.funding_alignment ??
-    cff?.aggregate?.funding_alignment ??
-    cff?.funding_alignment ??
-    null;
-
-  const affeEffectiveness =
-    affe?.scores?.effectiveness ??
-    affe?.aggregate?.effectiveness ??
-    affe?.effectiveness ??
-    null;
-
-  return {
-    authority_alignment: caeAlignment,
-    definition_integrity: cdaDefinitionIntegrity,
-    recovery_hint_usd: ccriRecovery,
-    divergence_hint: ccriDivergence,
-    funding_alignment: cffFundingAlignment,
-    effectiveness_hint: affeEffectiveness
-  };
-}
-
-function buildCoreSeed(expansions) {
-  const normalized = normalizeExpansionInputs(expansions);
-
-  return {
-    generated_at: nowIso(),
-    expansions_detected: Object.fromEntries(
-      Object.entries(expansions).map(([name, ref]) => [name, !!ref])
-    ),
-    upstream: normalized
-  };
-}
-
-function validateCoreArtifact(moduleName, artifact) {
-  assert(artifact && typeof artifact === "object", `${moduleName}: runner returned no artifact`);
-  assert(
-    artifact.module === moduleName || moduleName === "ABE",
-    `${moduleName}: artifact.module mismatch`
-  );
-}
-
-function makeAbeAggregate(coreResults, expansions) {
-  const cdi = coreResults.CDI?.artifact || {};
-  const ciri = coreResults.CIRI?.artifact || {};
-  const cibs = coreResults.CIBS?.artifact || {};
-  const cii = coreResults.CII?.artifact || {};
-
-  const cdiValue =
-    cdi.scores?.divergence_score ??
-    cdi.scores?.constitutional_divergence_index ??
-    cdi.aggregate?.average_divergence_index ??
-    0;
-
-  const ciriValue =
-    ciri.scores?.constitutional_risk_index ??
-    ciri.scores?.ciri ??
-    ciri.scores?.overall_risk_index ??
-    ciri.aggregate?.ciri ??
-    0;
-
-  const cibsValue =
-    cibs.aggregate?.total_budget_allocated ??
-    cibs.aggregate?.total_allocated ??
-    cibs.aggregate?.total_recovery_budget ??
-    0;
-
-  const ciiValue =
-    cii.scores?.constitutional_integrity_index ??
-    cii.scores?.cii ??
-    cii.aggregate?.cii ??
-    0;
-
-  const abeSignatureNumerator = Number(ciiValue || 0) + Number(cibsValue || 0);
-  const abeSignatureDenominator = Number(1 - cdiValue || 1);
-
-  const signature =
-    abeSignatureDenominator !== 0
-      ? abeSignatureNumerator / abeSignatureDenominator
-      : null;
-
-  const artifact = {
-    module: "ABE",
-    title: "American Butterfly Effect",
-    version: "1.0",
-    generated_at: nowIso(),
-    cli_execution_order: [...ABE_CORE_ORDER],
-    expansion_modules: [...ABE_EXPANSIONS],
-    upstream_expansions: Object.fromEntries(
-      Object.entries(expansions).map(([name, ref]) => [name, ref ? ref.key : null])
-    ),
-    phi_inputs: {
-      CIRI: ciriValue,
-      CIBS: cibsValue,
-      CII: ciiValue,
-      CDI: cdiValue
-    },
-    signature_formula: {
-      expression: "ABE = (∂C + ∂R) / ∂I",
-      numerator: abeSignatureNumerator,
-      denominator: abeSignatureDenominator,
-      value: signature
-    },
-    chain_formula: "ABE(x) = Φ(CIRI(x), CIBS(x), CII(x), CDI(x))",
-    core_receipts: {
-      CDI: coreResults.CDI?.artifact || null,
-      CIRI: coreResults.CIRI?.artifact || null,
-      CIBS: coreResults.CIBS?.artifact || null,
-      CII: coreResults.CII?.artifact || null
-    }
-  };
-
-  return artifact;
-}
-
 async function importRunner(moduleName) {
   const path = MODULE_PATHS[moduleName];
-  assert(path, `${moduleName}: no runner path configured`);
+  if (!path) throw new Error(`${moduleName}: no runner path configured`);
   const mod = await import(path);
-  assert(typeof mod.run === "function", `${moduleName}: runner missing exported run()`);
+  if (typeof mod.run !== "function") throw new Error(`${moduleName}: runner missing run()`);
   return mod.run;
 }
 
-async function loadModuleAssets(moduleName) {
-  const [model, inputs] = await Promise.all([
-    fetchJson(MODULE_MODELS[moduleName]),
-    fetchJson(MODULE_INPUTS[moduleName])
-  ]);
+async function loadAssets(moduleName) {
+  const model = MODULE_MODELS[moduleName] ? await fetchJson(MODULE_MODELS[moduleName]) : null;
+  const inputs = MODULE_INPUTS[moduleName] ? await fetchJson(MODULE_INPUTS[moduleName]) : null;
   return { model, inputs };
 }
 
-function buildModuleContext(moduleName, seed, priorCore, expansions, model, inputs) {
+function pickScenario(inputs) {
+  return inputs?.scenario || inputs?.scenarios?.[0] || inputs || {};
+}
+
+function getCorePhi(coreResults) {
+  const cdi = coreResults.CDI || {};
+  const ciri = coreResults.CIRI || {};
+  const cibs = coreResults.CIBS || {};
+  const cii = coreResults.CII || {};
+
   return {
-    module: moduleName,
+    CDI:
+      cdi?.scores?.constitutional_divergence_index ??
+      cdi?.scores?.divergence_score ??
+      cdi?.aggregate?.average_divergence_index ??
+      0,
+
+    CIRI:
+      ciri?.scores?.ciri ??
+      ciri?.scores?.constitutional_risk_index ??
+      0,
+
+    CIBS:
+      cibs?.aggregate?.total_budget_allocated ??
+      cibs?.aggregate?.RT ??
+      0,
+
+    CII:
+      cii?.scores?.cii ??
+      cii?.scores?.constitutional_integrity_index ??
+      0
+  };
+}
+
+function buildIntegrationArtifact(coreResults, integrationModel) {
+  const phi = getCorePhi(coreResults);
+  const numerator = Number(phi.CII || 0) + Number(phi.CIBS || 0);
+  const denominator = 1 - Number(phi.CDI || 0);
+  const signatureValue = denominator !== 0 ? numerator / denominator : null;
+
+  const ciri = coreResults.CIRI || {};
+  const cibs = coreResults.CIBS || {};
+
+  return {
+    module: "ABE",
+    title: "American Butterfly Effect",
+    version: integrationModel?.version || "1.0",
     generated_at: nowIso(),
-    seed: deepClone(seed),
-    priorCore: deepClone(priorCore),
-    expansions: Object.fromEntries(
-      Object.entries(expansions).map(([name, ref]) => [name, ref ? ref.value : null])
-    ),
-    model,
-    inputs
-  };
-}
-
-async function runCoreModule(moduleName, seed, priorCore, expansions) {
-  const run = await importRunner(moduleName);
-  const { model, inputs } = await loadModuleAssets(moduleName);
-  const ctx = buildModuleContext(moduleName, seed, priorCore, expansions, model, inputs);
-
-  const scenario =
-    inputs?.scenario ||
-    inputs?.scenarios?.[0] ||
-    inputs ||
-    {};
-
-  const artifact = await run(scenario, ctx);
-  validateCoreArtifact(moduleName, artifact);
-  writeCanonical(moduleName, artifact);
-
-  return {
-    module: moduleName,
-    artifact,
-    key: STORAGE_KEYS[moduleName]?.[0] || null
-  };
-}
-
-function collectExpansionArtifacts() {
-  return {
-    CAE: readFirstLocalStorage(STORAGE_KEYS.CAE),
-    CDA: readFirstLocalStorage(STORAGE_KEYS.CDA),
-    CCRI: readFirstLocalStorage(STORAGE_KEYS.CCRI),
-    CFF: readFirstLocalStorage(STORAGE_KEYS.CFF),
-    AFFE: readFirstLocalStorage(STORAGE_KEYS.AFFE)
-  };
-}
-
-function checkCorePreconditions(priorCore, nextModule) {
-  const ready = Object.keys(priorCore);
-
-  if (nextModule === "CDI") return;
-  if (nextModule === "CIRI") assert(ready.includes("CDI"), "CIRI blocked: CDI must run first");
-  if (nextModule === "CIBS") assert(ready.includes("CIRI"), "CIBS blocked: CIRI must run first");
-  if (nextModule === "CII") assert(ready.includes("CIBS"), "CII blocked: CIBS must run first");
-}
-
-export async function runABE(options = {}) {
-  const startedAt = nowIso();
-  const expansions = collectExpansionArtifacts();
-  const seed = buildCoreSeed(expansions);
-  const coreResults = {};
-
-  for (const moduleName of ["CDI", "CIRI", "CIBS", "CII"]) {
-    checkCorePreconditions(coreResults, moduleName);
-    coreResults[moduleName] = await runCoreModule(
-      moduleName,
-      seed,
-      coreResults,
-      expansions
-    );
-  }
-
-  const abeArtifact = makeAbeAggregate(coreResults, expansions);
-  writeCanonical("ABE", abeArtifact);
-
-  return {
-    ok: true,
-    started_at: startedAt,
-    finished_at: nowIso(),
-    execution_order: [...ABE_CORE_ORDER],
-    expansions_detected: Object.fromEntries(
-      Object.entries(expansions).map(([name, ref]) => [name, !!ref])
-    ),
-    results: {
-      CDI: coreResults.CDI?.artifact || null,
-      CIRI: coreResults.CIRI?.artifact || null,
-      CIBS: coreResults.CIBS?.artifact || null,
-      CII: coreResults.CII?.artifact || null,
-      ABE: abeArtifact
+    cli_execution_order: ["CDI", "CIRI", "CIBS", "CII", "ABE"],
+    chain_formula: integrationModel?.chain_formula || "ABE(x) = Φ(CIRI(x), CIBS(x), CII(x), CDI(x))",
+    phi_inputs: {
+      CDI: Number((phi.CDI || 0).toFixed(6)),
+      CIRI: Number((phi.CIRI || 0).toFixed(6)),
+      CIBS: Number((phi.CIBS || 0).toFixed(2)),
+      CII: Number((phi.CII || 0).toFixed(6))
+    },
+    signature_formula: {
+      expression: integrationModel?.signature_formula || "ABE = (∂C + ∂R) / ∂I",
+      numerator: Number(numerator.toFixed(6)),
+      denominator: Number(denominator.toFixed(6)),
+      value: signatureValue == null ? null : Number(signatureValue.toFixed(6))
+    },
+    aggregate: {
+      total_impacted_population:
+        ciri?.aggregate?.exposed_population ??
+        ciri?.aggregate?.case_count ??
+        0,
+      total_constitutional_capital_recovery_usd:
+        Math.round(
+          cibs?.aggregate?.total_budget_allocated ??
+          cibs?.aggregate?.RT ??
+          0
+        )
+    },
+    core_receipts: {
+      CDI: coreResults.CDI || null,
+      CIRI: coreResults.CIRI || null,
+      CIBS: coreResults.CIBS || null,
+      CII: coreResults.CII || null
     }
   };
 }
 
-export async function runABEWithReport(options = {}) {
+async function runCoreModule(moduleName, priorCore = {}) {
+  const run = await importRunner(moduleName);
+  const { model, inputs } = await loadAssets(moduleName);
+  const scenario = pickScenario(inputs);
+  const artifact = await run(scenario, { model, inputs, priorCore, expansions: {} });
+  writeCanonical(moduleName, artifact);
+  return artifact;
+}
+
+async function runExpansionModule(moduleName, args) {
+  const run = await importRunner(moduleName);
+  const { model, inputs } = await loadAssets(moduleName);
+  const scenario = pickScenario(inputs);
+  const artifact = await run(scenario, args(model, inputs, scenario));
+  writeCanonical(moduleName, artifact);
+  return artifact;
+}
+
+export async function runABEFullPipeline() {
+  const started_at = nowIso();
+
+  const intake = readFirstLocalStorage(STORAGE_KEYS.INTAKE)?.value || null;
+
+  const core = {};
+  core.CDI = await runCoreModule("CDI", {});
+  core.CIRI = await runCoreModule("CIRI", { CDI: { artifact: core.CDI } });
+  core.CIBS = await runCoreModule("CIBS", { CIRI: { artifact: core.CIRI } });
+  core.CII = await runCoreModule("CII", { CIBS: { artifact: core.CIBS } });
+
+  const integrationModel = await fetchJson(MODULE_MODELS.INTEGRATION);
+  const integration = buildIntegrationArtifact(core, integrationModel);
+  writeCanonical("ABE", integration);
+
+  const macro = await runExpansionModule("MACRO", (model, inputs) => ({
+    model,
+    inputs,
+    integration
+  }));
+
+  const cae = await runExpansionModule("CAE", (model, schema) => ({
+    model,
+    schema
+  }));
+
+  const cda = await runExpansionModule("CDA", (model, schema) => ({
+    model,
+    schema
+  }));
+
+  const cff = await runExpansionModule("CFF", (model, schema) => ({
+    model,
+    schema
+  }));
+
+  const ccri = await runExpansionModule("CCRI", (model, schema) => ({
+    model,
+    schema,
+    expansions: {
+      CAE: cae,
+      CDA: cda,
+      CFF: cff
+    }
+  }));
+
+  const affe = await runExpansionModule("AFFE", (model, schema) => ({
+    model,
+    schema,
+    priorCore: {
+      CII: { artifact: core.CII }
+    },
+    expansions: {
+      INTEGRATION: integration,
+      MACRO: macro
+    }
+  }));
+
+  return {
+    ok: true,
+    started_at,
+    finished_at: nowIso(),
+    intake,
+    results: {
+      CDI: core.CDI,
+      CIRI: core.CIRI,
+      CIBS: core.CIBS,
+      CII: core.CII,
+      ABE: integration,
+      MACRO: macro,
+      CAE: cae,
+      CDA: cda,
+      CFF: cff,
+      CCRI: ccri,
+      AFFE: affe
+    }
+  };
+}
+
+export async function runABEFullPipelineWithReport() {
   try {
-    return await runABE(options);
+    return await runABEFullPipeline();
   } catch (error) {
     return {
       ok: false,
@@ -358,12 +307,3 @@ export async function runABEWithReport(options = {}) {
     };
   }
 }
-
-export function getABEExecutionSpec() {
-  return {
-    core_order: [...ABE_CORE_ORDER],
-    expansion_modules: [...ABE_EXPANSIONS],
-    description:
-      "Core pioneers execute in locked deterministic order. Expansions enrich inputs but never reorder the spine."
-  };
-    }
