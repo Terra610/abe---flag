@@ -1,207 +1,170 @@
-// integration/orchestrator.js
-// Local-only orchestration helper for A.B.E.
-// Fixes engine/core pathing so Integration resolves its own core files correctly.
+import { createSessionMeta, finalizeSessionMeta } from "/abe---flag/integration/engine/core/session.js";
 
-import { scenarioGet, getOrCreateScenario } from "./engine/core/session.js";
-
-async function loadEngineManifest() {
-  const res = await fetch("./engine/core/engine.json", { cache: "no-store" });
-  if (!res.ok) {
-    throw new Error(`Could not load engine manifest (HTTP ${res.status})`);
-  }
-  return res.json();
-}
-
-function safeReadJson(key) {
+function safeParse(raw) {
   try {
-    const raw = localStorage.getItem(key);
-    return raw ? JSON.parse(raw) : null;
-  } catch (err) {
-    console.warn(`Could not parse localStorage key ${key}:`, err);
+    return JSON.parse(raw);
+  } catch {
     return null;
   }
 }
 
-function modulePresence() {
-  return {
-    intake: !!safeReadJson("abe_intake_artifact"),
-    cda: !!safeReadJson("abe_cda_artifact") || !!safeReadJson("ABE_CDA_SCENARIO_V1"),
-    cdi: !!safeReadJson("abe_cdi_artifact"),
-    cff: !!safeReadJson("abe_cff_artifact"),
-    affe: !!safeReadJson("abe_affe_artifact"),
-    ciri: !!safeReadJson("abe_ciri_artifact") || !!safeReadJson("ABE_CIRI_SCENARIO_V2"),
-    cibs: !!safeReadJson("abe_cibs_artifact") || !!safeReadJson("ABE_CIBS_BUDGET_V1"),
-    cii: !!safeReadJson("abe_cii_artifact") || !!safeReadJson("ABE_CII_PORTFOLIO_V1"),
-    macro: !!safeReadJson("abe_macro_artifact"),
-    integration: !!safeReadJson("abe_integration_artifact")
-  };
+function readFirst(keys) {
+  for (const key of keys || []) {
+    try {
+      const raw = localStorage.getItem(key);
+      if (!raw) continue;
+      const parsed = safeParse(raw);
+      if (parsed) {
+        return { key, value: parsed };
+      }
+    } catch (_) {}
+  }
+  return null;
 }
 
-function readinessScore(presence) {
-  const vals = Object.values(presence);
-  const present = vals.filter(Boolean).length;
-  return vals.length ? Math.round((present / vals.length) * 100) : 0;
+function writeAll(keys, payload) {
+  for (const key of keys || []) {
+    try {
+      localStorage.setItem(key, JSON.stringify(payload));
+    } catch (_) {}
+  }
 }
 
-function buildDownstreamView(presence) {
-  return {
-    from_cda: {
-      ready_for_cdi: !!presence.cda,
-      ready_for_cff: !!presence.cda,
-      ready_for_integration: !!presence.cda
-    },
-    from_cdi: {
-      ready_for_affe: !!presence.cdi,
-      ready_for_ciri: !!presence.cdi,
-      ready_for_integration: !!presence.cdi
-    },
-    from_cff: {
-      ready_for_affe: !!presence.cff,
-      ready_for_integration: !!presence.cff
-    },
-    from_affe: {
-      ready_for_ciri: !!presence.affe,
-      ready_for_integration: !!presence.affe
-    },
-    from_ciri: {
-      ready_for_cibs: !!presence.ciri,
-      ready_for_cii: !!presence.ciri,
-      ready_for_integration: !!presence.ciri
-    },
-    from_cibs: {
-      ready_for_cii: !!presence.cibs,
-      ready_for_integration: !!presence.cibs
-    },
-    from_cii: {
-      ready_for_macro: !!presence.cii,
-      ready_for_integration: !!presence.cii
-    },
-    from_macro: {
-      ready_for_integration: !!presence.macro
-    }
-  };
+function num(v, fallback = 0) {
+  const n = Number(v);
+  return Number.isFinite(n) ? n : fallback;
 }
 
-function buildModuleSummary(artifacts, presence) {
+function round(v, d = 6) {
+  return Number(num(v).toFixed(d));
+}
+
+function getPhiInputs(core) {
+  const cdi = core.CDI?.value || {};
+  const ciri = core.CIRI?.value || {};
+  const cibs = core.CIBS?.value || {};
+  const cii = core.CII?.value || {};
+
   return {
-    intake_title: artifacts.intake?.original_file_name || artifacts.intake?.doc_type || "",
-    cda_score:
-      artifacts.cda?.divergence_score ??
-      artifacts.cda?.result?.divergence_score ??
-      null,
-    cdi_weighted_divergence:
-      artifacts.cdi?.result?.weighted_divergence ?? null,
-    cff_classification:
-      artifacts.cff?.result?.classification ||
-      artifacts.cff?.classification ||
-      "",
-    affe_classification:
-      artifacts.affe?.result?.classification ||
-      artifacts.affe?.classification ||
-      "",
-    ciri_total_recovery:
-      artifacts.ciri?.result?.net_modeled_recovery ??
-      artifacts.ciri?.total_recovery ??
-      null,
-    cibs_budget_total:
-      artifacts.cibs?.budget?.available_budget ??
-      artifacts.cibs?.total_recovery ??
-      null,
-    cii_total_units:
-      artifacts.cii?.result?.total_units ??
-      (Array.isArray(artifacts.cii?.portfolio) ? artifacts.cii.portfolio.length : 0) ??
+    CDI:
+      cdi?.scores?.constitutional_divergence_index ??
+      cdi?.scores?.divergence_score ??
+      cdi?.aggregate?.average_divergence_index ??
       0,
-    cii_total_funded_amount:
-      artifacts.cii?.result?.total_funded_amount ??
-      artifacts.cii?.total_budget_in ??
-      null,
-    macro_uplift:
-      artifacts.macro?.result?.projected_macro_uplift ?? null,
-    presence
+
+    CIRI:
+      ciri?.scores?.ciri ??
+      ciri?.scores?.constitutional_risk_index ??
+      ciri?.aggregate?.ciri ??
+      0,
+
+    CIBS:
+      cibs?.aggregate?.total_budget_allocated ??
+      cibs?.aggregate?.total_recovery_budget ??
+      cibs?.aggregate?.RT ??
+      0,
+
+    CII:
+      cii?.scores?.cii ??
+      cii?.scores?.constitutional_integrity_index ??
+      cii?.aggregate?.cii ??
+      0
   };
 }
 
-function buildIntegritySummary(presence) {
-  const out = [];
-  if (!presence.intake) out.push("Missing Intake artifact.");
-  if (!presence.cda) out.push("Missing CDA artifact.");
-  if (!presence.cdi) out.push("Missing CDI artifact.");
-  if (!presence.cff) out.push("Missing CFF artifact.");
-  if (!presence.affe) out.push("Missing AFFE artifact.");
-  if (!presence.ciri) out.push("Missing CIRI artifact.");
-  if (!presence.cibs) out.push("Missing CIBS artifact.");
-  if (!presence.cii) out.push("Missing CII artifact.");
-  if (!out.length) out.push("All tracked module artifacts are present.");
-  return out;
-}
-
-function collectArtifacts() {
-  return {
-    intake: safeReadJson("abe_intake_artifact"),
-    cda: safeReadJson("abe_cda_artifact") || safeReadJson("ABE_CDA_SCENARIO_V1"),
-    cdi: safeReadJson("abe_cdi_artifact"),
-    cff: safeReadJson("abe_cff_artifact"),
-    affe: safeReadJson("abe_affe_artifact"),
-    ciri: safeReadJson("abe_ciri_artifact") || safeReadJson("ABE_CIRI_SCENARIO_V2"),
-    cibs: safeReadJson("abe_cibs_artifact") || safeReadJson("ABE_CIBS_BUDGET_V1"),
-    cii: safeReadJson("abe_cii_artifact") || safeReadJson("ABE_CII_PORTFOLIO_V1"),
-    macro: safeReadJson("abe_macro_artifact")
-  };
-}
-
-export async function buildIntegrationArtifact(meta = {}) {
-  const manifest = await loadEngineManifest();
-  const presence = modulePresence();
-  const artifacts = collectArtifacts();
-  const readiness = readinessScore(presence);
-  const downstream = buildDownstreamView(presence);
-  const summary = buildModuleSummary(artifacts, presence);
-  const integrity = buildIntegritySummary(presence);
-
-  const integratedTotal =
-    Number(summary.macro_uplift) ||
-    Number(summary.cii_total_funded_amount) ||
-    Number(summary.cibs_budget_total) ||
-    Number(summary.ciri_total_recovery) ||
+function getAggregate(core) {
+  const ciri = core.CIRI?.value || {};
+  const ccriLikePopulation =
+    ciri?.aggregate?.exposed_population ??
+    ciri?.aggregate?.case_count ??
     0;
 
-  const integrationArtifact = {
-    module: "integration",
-    version: manifest?.version || "1.0.0",
-    timestamp: new Date().toISOString(),
-    privacy: {
-      local_only: true,
-      telemetry: false,
-      remote_calls: false
-    },
-    integration: {
-      name: meta.name || "",
-      scope: meta.scope || "",
-      notes: meta.notes || ""
-    },
-    presence,
-    readiness_score: readiness,
-    integrated_total: integratedTotal,
-    module_summary: summary,
-    integrity_summary: integrity,
-    downstream_view: downstream,
-    audit_snapshot: {
-      timestamp: new Date().toISOString(),
-      modules_present: Object.entries(presence).filter(([, v]) => v).map(([k]) => k),
-      readiness_score: readiness,
-      integrated_total: integratedTotal,
-      intake_title: summary.intake_title || ""
-    }
+  const cibs = core.CIBS?.value || {};
+  const totalRecovery =
+    cibs?.aggregate?.total_budget_allocated ??
+    cibs?.aggregate?.RT ??
+    0;
+
+  return {
+    total_impacted_population: ccriLikePopulation,
+    total_constitutional_capital_recovery_usd: Math.round(num(totalRecovery))
   };
-
-  localStorage.setItem("abe_integration_artifact", JSON.stringify(integrationArtifact));
-  getOrCreateScenario("abe_integration_artifact", integrationArtifact);
-
-  return integrationArtifact;
 }
 
-export async function getIntegrationArtifact(meta = {}) {
-  const existing = scenarioGet("abe_integration_artifact") || safeReadJson("abe_integration_artifact");
-  if (existing) return existing;
-  return buildIntegrationArtifact(meta);
+function buildSignature(phi) {
+  const numerator = num(phi.CII) + num(phi.CIBS);
+  const denominator = 1 - num(phi.CDI);
+
+  return {
+    expression: "ABE = (∂C + ∂R) / ∂I",
+    numerator: round(numerator, 6),
+    denominator: round(denominator, 6),
+    value: denominator !== 0 ? round(numerator / denominator, 6) : null
+  };
+}
+
+function buildArtifact(model, core, session) {
+  const phi = getPhiInputs(core);
+  const signature = buildSignature(phi);
+  const aggregate = getAggregate(core);
+
+  return {
+    module: "ABE",
+    title: "American Butterfly Effect",
+    version: model.version || "1.0",
+    generated_at: new Date().toISOString(),
+    cli_execution_order: model.core_order || ["CDI", "CIRI", "CIBS", "CII", "ABE"],
+    chain_formula: model.chain_formula || "ABE(x) = Φ(CIRI(x), CIBS(x), CII(x), CDI(x))",
+    phi_inputs: {
+      CDI: round(phi.CDI, 6),
+      CIRI: round(phi.CIRI, 6),
+      CIBS: round(phi.CIBS, 6),
+      CII: round(phi.CII, 6)
+    },
+    signature_formula: signature,
+    aggregate,
+    core_receipts: {
+      CDI: core.CDI?.value || null,
+      CIRI: core.CIRI?.value || null,
+      CIBS: core.CIBS?.value || null,
+      CII: core.CII?.value || null
+    },
+    receipt_sources: {
+      CDI: core.CDI?.key || null,
+      CIRI: core.CIRI?.key || null,
+      CIBS: core.CIBS?.key || null,
+      CII: core.CII?.key || null
+    },
+    session: finalizeSessionMeta(session)
+  };
+}
+
+export async function runIntegration() {
+  const session = createSessionMeta();
+
+  const model = await fetch("/abe---flag/integration/model.json", { cache: "no-store" }).then(r => {
+    if (!r.ok) throw new Error("integration/model.json: HTTP " + r.status);
+    return r.json();
+  });
+
+  const core = {
+    CDI: readFirst(model.artifact_keys?.CDI || []),
+    CIRI: readFirst(model.artifact_keys?.CIRI || []),
+    CIBS: readFirst(model.artifact_keys?.CIBS || []),
+    CII: readFirst(model.artifact_keys?.CII || [])
+  };
+
+  const found = Object.values(core).filter(Boolean).length;
+  if (found < 4) {
+    throw new Error("Integration blocked: one or more core pioneer artifacts are missing.");
+  }
+
+  const artifact = buildArtifact(model, core, session);
+  writeAll(model.artifact_keys?.ABE || [], artifact);
+
+  return {
+    ok: true,
+    artifact,
+    core
+  };
     }
