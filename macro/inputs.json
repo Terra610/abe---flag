@@ -1,0 +1,10 @@
+{
+  "version": "1.0",
+  "module": "MACRO",
+  "scenario": {
+    "id": "macro_baseline_01",
+    "name": "ABE Macro Baseline",
+    "recovery_total_usd": 0,
+    "notes": "If recovery_total_usd is zero, Macro will attempt to read the final Integration/ABE artifact and use its total recovery figure."
+  }
+}
