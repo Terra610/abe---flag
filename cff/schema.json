@@ -1,56 +1,112 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "ABE_CFF_V1",
-  "description": "Constitutional Funding Forensics — CSV schema for lawful vs. unlawful federal expenditure analysis.",
+  "title": "CFF_Model_v1",
   "type": "object",
   "required": [
-    "program_name",
-    "federal_authority_citation",
-    "fiscal_year",
-    "state_or_jurisdiction",
-    "agency",
-    "line_item_description",
-    "spend_category_code",
-    "amount_usd"
+    "version",
+    "module",
+    "updated",
+    "title",
+    "weights",
+    "funding_streams"
   ],
+  "additionalProperties": true,
   "properties": {
-    "program_name": {
+    "version": {
+      "type": "string"
+    },
+    "module": {
       "type": "string",
-      "description": "Name of the federal funding stream (MCSAP, Medicaid, Title I, etc.)"
+      "const": "CFF"
     },
-    "federal_authority_citation": {
-      "type": "string",
-      "description": "Statutory basis for the program (e.g., 49 U.S.C. 31102)."
+    "updated": {
+      "type": "string"
     },
-    "fiscal_year": {
-      "type": ["string", "number"],
-      "description": "Funding fiscal year (e.g., 2024)."
+    "title": {
+      "type": "string"
     },
-    "state_or_jurisdiction": {
-      "type": "string",
-      "description": "State or territorial jurisdiction receiving funds."
+    "description": {
+      "type": "string"
     },
-    "agency": {
-      "type": "string",
-      "description": "Implementing state agency receiving or using the funds."
+    "weights": {
+      "type": "object",
+      "required": [
+        "appropriation_fidelity",
+        "use_fidelity",
+        "traceability_fidelity"
+      ],
+      "properties": {
+        "appropriation_fidelity": {
+          "type": "number"
+        },
+        "use_fidelity": {
+          "type": "number"
+        },
+        "traceability_fidelity": {
+          "type": "number"
+        }
+      }
     },
-    "line_item_description": {
-      "type": "string",
-      "description": "Description of the funded activity."
+    "thresholds": {
+      "type": "object",
+      "properties": {
+        "good": {
+          "type": "number"
+        },
+        "warning": {
+          "type": "number"
+        }
+      }
     },
-    "spend_category_code": {
-      "type": "string",
-      "enum": ["ON_MISSION", "OFF_MISSION", "UNCLEAR"],
-      "description": "CFF classification of whether expenditures align with statutory purpose."
-    },
-    "amount_usd": {
-      "type": ["string", "number"],
-      "description": "Dollar amount attached to the line item.",
-      "pattern": "^[0-9,.$\\-\\s]+$"
-    },
-    "notes": {
-      "type": "string",
-      "description": "Optional notes, audit references, GAO/OIG citations."
+    "funding_streams": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "stream_id",
+          "program_name",
+          "authorized_use_usd",
+          "actual_use_usd",
+          "appropriation_fidelity",
+          "use_fidelity",
+          "traceability_fidelity"
+        ],
+        "properties": {
+          "stream_id": {
+            "type": "string"
+          },
+          "program_name": {
+            "type": "string"
+          },
+          "authorized_use_usd": {
+            "type": "number",
+            "minimum": 0
+          },
+          "actual_use_usd": {
+            "type": "number",
+            "minimum": 0
+          },
+          "appropriation_fidelity": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "use_fidelity": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "traceability_fidelity": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "notes": {
+            "type": "string"
+          }
+        }
+      }
     }
   }
 }
