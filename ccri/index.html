@@ -1,260 +1,727 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>CCRI — Constitutional Capital Recovery Index | A.B.E.</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>CCRI — Constitutional Capital Recovery Index</title>
   <base href="/abe---flag/">
-  <link rel="stylesheet" href="abe-patch/assets/abe-patch.css" />
+  <link rel="stylesheet" href="abe-patch/assets/abe-patch.css">
   <style>
-    .ccri-wrap{max-width:1100px;margin:0 auto;padding:1.2rem 1rem 3rem}
-    .ccri-grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
-    .ccri-table{width:100%;border-collapse:collapse;font-size:.9rem;margin-top:.4rem}
-    .ccri-table th,.ccri-table td{
-      border:1px solid rgba(255,255,255,.08);
-      padding:.45rem .55rem;
+    :root{
+      --bg:#0b0d12;
+      --panel:#141820;
+      --ink:#e6e6e6;
+      --muted:#9fb3c8;
+      --line:rgba(255,255,255,.08);
+      --ok:#4bd28f;
+      --warn:#ffd166;
+      --bad:#ff6b6b;
+      --brand:#5ddfff;
+      --chip:#10151d;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--ink);
+      font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+    }
+    a{color:#80bfff;text-decoration:none}
+    a:hover{text-decoration:underline}
+    header{
+      padding:20px;
+      background:#11151c;
+      border-bottom:1px solid var(--line);
+      text-align:center;
+    }
+    .sub{
+      color:var(--muted);
+      margin-top:6px;
+      max-width:980px;
+      margin-left:auto;
+      margin-right:auto;
+    }
+    .nav{
+      margin-top:12px;
+      display:flex;
+      gap:10px;
+      justify-content:center;
+      flex-wrap:wrap;
+    }
+    .nav a{
+      display:inline-block;
+      padding:8px 12px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      background:var(--chip);
+    }
+    main{
+      max-width:1180px;
+      margin:20px auto;
+      padding:0 16px 40px;
+    }
+    .card{
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:14px;
+      margin:12px 0;
+    }
+    .kpi{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+      gap:12px;
+    }
+    .tile{
+      border:1px solid var(--line);
+      border-radius:10px;
+      padding:12px;
+      background:#10151d;
+    }
+    .label{
+      color:var(--muted);
+      font-size:.92rem;
+      margin-bottom:4px;
+    }
+    .num{
+      font-weight:800;
+      font-size:1.25rem;
+    }
+    .ok{color:var(--ok)}
+    .warn{color:var(--warn)}
+    .bad{color:var(--bad)}
+    .small{
+      color:var(--muted);
+      font-size:.9rem;
+    }
+    .btnrow{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:10px;
+    }
+    button{
+      background:#10151d;
+      color:var(--ink);
+      border:1px solid var(--line);
+      border-radius:10px;
+      padding:10px 14px;
+      cursor:pointer;
+      font:inherit;
+    }
+    button:hover{border-color:rgba(255,255,255,.18)}
+    button:disabled{opacity:.55;cursor:not-allowed}
+    table{
+      width:100%;
+      border-collapse:collapse;
+      margin-top:8px;
+      font-size:.95rem;
+    }
+    th,td{
+      border:1px solid var(--line);
+      padding:10px 8px;
+      vertical-align:top;
       text-align:left;
     }
-    .ccri-table th{background:rgba(255,255,255,.04)}
-    .pill{
-      display:inline-block;padding:.1rem .55rem;border-radius:999px;
-      font-size:.8rem;border:1px solid rgba(255,255,255,.12)
+    th{
+      background:#10151d;
+      color:#dfefff;
+      position:sticky;
+      top:0;
     }
-    .pill-low{border-color:#4bd28f;color:#4bd28f}
-    .pill-mod{border-color:#fff750;color:#fff750}
-    .pill-high{border-color:#ff6b6b;color:#ff6b6b}
-    .small-note{font-size:.85rem;color:#9fb3c8;margin-top:.25rem}
+    .table-wrap{
+      overflow:auto;
+      border-radius:10px;
+      border:1px solid var(--line);
+    }
+    .pill{
+      display:inline-block;
+      border-radius:999px;
+      padding:2px 8px;
+      font-size:.82rem;
+      border:1px solid var(--line);
+      font-weight:700;
+      letter-spacing:.02em;
+    }
+    .pill-high{color:var(--bad);border-color:rgba(255,107,107,.35)}
+    .pill-mod{color:var(--warn);border-color:rgba(255,209,102,.35)}
+    .pill-low{color:var(--ok);border-color:rgba(75,210,143,.35)}
+    code, pre{
+      font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    }
+    pre{
+      white-space:pre-wrap;
+      overflow:auto;
+      background:#10151d;
+      border:1px solid var(--line);
+      border-radius:10px;
+      padding:12px;
+    }
+    ul.compact{
+      margin:8px 0 0 18px;
+      padding:0;
+    }
   </style>
 </head>
-<body class="abe-page">
-
-<header class="abe-header">
+<body>
+<header>
   <h1>CCRI — Constitutional Capital Recovery Index</h1>
-  <p class="tagline">
-    Measures constitutional divergence, suppressed lawful access, and recoverable constitutional capital produced by unlawful gatekeeping systems.
-  </p>
-  <nav class="chip-row">
-    <a class="chip" href="index.html">ABE Home</a>
-    <a class="chip" href="ciri/index.html">CIRI</a>
-    <a class="chip" href="cff/index.html">CFF</a>
-    <a class="chip" href="cibs/index.html">CIBS</a>
-    <a class="chip" href="affe/index.html">AFFE</a>
-    <a class="chip chip-alt" href="system/index.html">System Map</a>
-  </nav>
+  <div class="sub">
+    Doctrine-ordered constitutional capital measurement. CCRI consumes upstream constitutional validity,
+    definition integrity, and funding alignment where available, then quantifies suppressed and recoverable
+    constitutional capital for downstream CIRI analysis.
+  </div>
+  <div class="nav">
+    <a href="index.html">Home</a>
+    <a href="cae/index.html">CAE</a>
+    <a href="cda/index.html">CDA</a>
+    <a href="cff/index.html">CFF</a>
+    <a href="ciri/index.html">CIRI</a>
+    <a href="integration/index.html">Integration</a>
+  </div>
 </header>
 
-<main class="abe-main ccri-wrap">
-
-  <section class="card">
-    <h2>What CCRI Does</h2>
-    <p>
-      CCRI measures how unconstitutional gatekeeping suppresses access to lawful movement, economic participation,
-      and constitutional capital. It does not score people. It scores the divergence of systems, rules, and enforcement
-      dependencies that convert rights into conditional access points.
-    </p>
-    <ul>
-      <li>Flags unlawful dependence on DMV or DOT-linked status for non-regulated populations,</li>
-      <li>Measures constitutional divergence created by licensing and enforcement proxies,</li>
-      <li>Estimates the recoverable constitutional capital suppressed by those barriers.</li>
+<main>
+  <div class="card">
+    <h3>Doctrine Execution Order</h3>
+    <div class="small">
+      CCRI is not a front-end scoring toy. It is a downstream constitutional capital module.
+      The order assumed here is:
+    </div>
+    <ul class="compact">
+      <li>CAE: constitutional alignment / clause integrity</li>
+      <li>CDA or CDI: definition integrity / divergence</li>
+      <li>CFF: funding alignment</li>
+      <li>Jurisdiction validity gate</li>
+      <li>CCRI: constitutional capital suppression and recovery</li>
+      <li>CIRI: injury / risk / recovery integration</li>
     </ul>
-    <p>
-      CCRI is a structural measurement module. Its outputs are meant to feed downstream recovery and reinvestment analysis,
-      not consumer profiling.
-    </p>
-  </section>
+  </div>
 
-  <section class="card">
-    <h2>Inputs</h2>
-    <p>
-      CCRI reads scenarios defined in <code>ccri/inputs.json</code>.
-      Each scenario represents a specific policy environment, institution, or rule set to be tested for constitutional divergence.
-    </p>
-    <p class="small-note">
-      Edit <code>ccri/inputs.json</code> in the repo, then refresh this page to recompute results locally in-browser.
-    </p>
-    <p>
-      <a class="btn" href="ccri/inputs.json" download>Download inputs.json</a>
-      <a class="btn btn-ghost" href="ccri/README.md">Read CCRI documentation</a>
-    </p>
-  </section>
+  <div class="card">
+    <h3>Status</h3>
+    <div class="kpi">
+      <div class="tile">
+        <div class="label">model.json</div>
+        <div id="k-model" class="num">checking…</div>
+      </div>
+      <div class="tile">
+        <div class="label">inputs.json</div>
+        <div id="k-inputs" class="num">checking…</div>
+      </div>
+      <div class="tile">
+        <div class="label">Upstream Artifacts</div>
+        <div id="k-upstream" class="num">checking…</div>
+      </div>
+      <div class="tile">
+        <div class="label">Doctrine Order</div>
+        <div id="k-order" class="num">checking…</div>
+      </div>
+      <div class="tile">
+        <div class="label">Aggregate Divergence</div>
+        <div id="k-div" class="num">—</div>
+      </div>
+      <div class="tile">
+        <div class="label">Recoverable Constitutional Capital</div>
+        <div id="k-rec" class="num">—</div>
+      </div>
+    </div>
+  </div>
 
-  <section class="card">
-    <h2>Constitutional Capital Scores</h2>
-    <p class="small-note">
-      Scores are computed client-side using <code>ccri/model.json</code>. Nothing leaves your browser.
-    </p>
-    <table class="ccri-table" id="results-table">
-      <thead>
-        <tr>
-          <th>Scenario</th>
-          <th>Jurisdiction</th>
-          <th>Institution</th>
-          <th>Constitutional Score (0–100)</th>
-          <th>Divergence Class</th>
-          <th>Dependency Level</th>
-        </tr>
-      </thead>
-      <tbody id="results-body">
-        <tr><td colspan="6">Loading model…</td></tr>
-      </tbody>
-    </table>
-    <p class="small-note" id="results-summary"></p>
-    <button id="btn-export" class="btn" disabled>Download CCRI_results.csv</button>
-  </section>
+  <div class="card">
+    <h3>Scenario Results</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Scenario</th>
+            <th>Jurisdiction</th>
+            <th>Constitutional Score</th>
+            <th>Divergence Class</th>
+            <th>J_valid</th>
+            <th>Definition Integrity</th>
+            <th>Funding Alignment</th>
+            <th>Affected Population</th>
+            <th>Recovery USD</th>
+          </tr>
+        </thead>
+        <tbody id="results-body">
+          <tr><td colspan="9">Loading…</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div id="results-summary" class="small" style="margin-top:10px;">Waiting for computation…</div>
+    <div class="btnrow">
+      <button id="btn-export" disabled>Export CCRI CSV</button>
+      <button id="btn-json" disabled>Export CCRI JSON</button>
+    </div>
+  </div>
 
+  <div class="card">
+    <h3>Diagnostics</h3>
+    <div id="diag" class="small">No issues yet.</div>
+  </div>
+
+  <div class="card">
+    <h3>Saved Artifact Preview</h3>
+    <pre id="artifact-preview">—</pre>
+  </div>
 </main>
 
-<footer class="abe-footer">
-  <p>A.B.E. — American Butterfly Effect · CCRI module (local-only scoring)</p>
-</footer>
-
 <script>
-(async function () {
+(async function(){
   const bodyEl = document.getElementById('results-body');
   const sumEl = document.getElementById('results-summary');
+  const diagEl = document.getElementById('diag');
+  const artifactPreviewEl = document.getElementById('artifact-preview');
   const btnExport = document.getElementById('btn-export');
+  const btnJson = document.getElementById('btn-json');
 
-  async function loadJSON(path) {
-    const r = await fetch(path, { cache: 'no-store' });
-    if (!r.ok) throw new Error('Failed to load ' + path);
+  function set(id, txt, cls){
+    const el = document.getElementById(id);
+    el.textContent = txt;
+    el.className = cls ? ('num ' + cls) : 'num';
+  }
+
+  async function fetchJSON(path){
+    const r = await fetch(path, { cache:'no-store' });
+    if(!r.ok) throw new Error(path + ': HTTP ' + r.status);
     return r.json();
   }
 
-  function tierFromScore(score, thresholds) {
-    if (score <= thresholds.high_risk) return 'HIGH';
-    if (score <= thresholds.moderate_risk) return 'MODERATE';
-    if (score <= thresholds.low_risk) return 'LOW';
+  function safeReadJSON(keys){
+    for(const key of keys){
+      try{
+        const raw = localStorage.getItem(key);
+        if(raw){
+          return { key, value: JSON.parse(raw) };
+        }
+      }catch(_e){}
+    }
+    return null;
+  }
+
+  function clamp(v, min, max){
+    return Math.max(min, Math.min(max, v));
+  }
+
+  function average(nums){
+    const arr = (nums || []).filter(v => typeof v === 'number' && !Number.isNaN(v));
+    if(!arr.length) return 0;
+    return arr.reduce((a,b)=>a+b,0) / arr.length;
+  }
+
+  function money(n){
+    const val = Number(n || 0);
+    return '$' + val.toLocaleString(undefined, { maximumFractionDigits: 0 });
+  }
+
+  function tierFromScore(score, thresholds){
+    if(score <= thresholds.high_risk) return 'HIGH';
+    if(score <= thresholds.moderate_risk) return 'MODERATE';
     return 'LOW';
   }
 
-  function pillClass(tier) {
-    if (tier === 'HIGH') return 'pill pill-high';
-    if (tier === 'MODERATE') return 'pill pill-mod';
+  function pillClass(tier){
+    if(tier === 'HIGH') return 'pill pill-high';
+    if(tier === 'MODERATE') return 'pill pill-mod';
     return 'pill pill-low';
   }
 
-  function average(values) {
-    if (!Array.isArray(values) || !values.length) return 0;
-    const nums = values.filter(v => typeof v === 'number' && !Number.isNaN(v));
-    if (!nums.length) return 0;
-    return nums.reduce((a, b) => a + b, 0) / nums.length;
+  function firstNumber(){
+    for(const arg of arguments){
+      if(typeof arg === 'number' && !Number.isNaN(arg)) return arg;
+    }
+    return null;
   }
 
-  function toFixedNumber(value, digits) {
-    return Number((value || 0).toFixed(digits));
+  function normalizeBooleanish(v, fallback){
+    if(typeof v === 'boolean') return v;
+    if(v === 1 || v === '1' || v === 'true' || v === 'TRUE') return true;
+    if(v === 0 || v === '0' || v === 'false' || v === 'FALSE') return false;
+    return fallback;
   }
 
-  try {
-    const model = await loadJSON('ccri/model.json');
-    const inp = await loadJSON('ccri/inputs.json');
+  function toFixedNumber(value, digits){
+    return Number((Number(value || 0)).toFixed(digits));
+  }
 
-    const penalties = (model.scoring_rules && model.scoring_rules.penalties) || {};
-    const thresholds = (model.scoring_rules && model.scoring_rules.thresholds) || {
+  function createDownload(filename, mime, content){
+    const blob = new Blob([content], { type: mime });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  try{
+    const model = await fetchJSON('ccri/model.json');
+    set('k-model', 'OK', 'ok');
+
+    const inputs = await fetchJSON('ccri/inputs.json');
+    set('k-inputs', 'OK', 'ok');
+
+    const caeArtifact = safeReadJSON([
+      'ABE_CAE_ARTIFACT_V1',
+      'abe_cae_artifact'
+    ]);
+
+    const cdaArtifact = safeReadJSON([
+      'ABE_CDA_SCENARIO_V1',
+      'ABE_CDI_ARTIFACT_V1',
+      'abe_cda_artifact',
+      'abe_cdi_artifact'
+    ]);
+
+    const cffArtifact = safeReadJSON([
+      'ABE_CFF_ARTIFACT_V1',
+      'abe_cff_artifact'
+    ]);
+
+    const upstreamFound = [caeArtifact, cdaArtifact, cffArtifact].filter(Boolean).length;
+    if(upstreamFound === 3){
+      set('k-upstream', 'FULL', 'ok');
+      set('k-order', 'LOCKED', 'ok');
+    }else if(upstreamFound > 0){
+      set('k-upstream', 'PARTIAL', 'warn');
+      set('k-order', 'FALLBACK', 'warn');
+    }else{
+      set('k-upstream', 'NONE', 'bad');
+      set('k-order', 'INPUT ONLY', 'bad');
+    }
+
+    const scoringRules = model.scoring_rules || {};
+    const penalties = scoringRules.penalties || {};
+    const thresholds = scoringRules.thresholds || {
       high_risk: 40,
       moderate_risk: 70,
       low_risk: 100
     };
-    const base = (model.scoring_rules && model.scoring_rules.base_score != null)
-      ? model.scoring_rules.base_score
-      : 100;
+    const baseScore = typeof scoringRules.base_score === 'number' ? scoringRules.base_score : 100;
+    const scenarios = Array.isArray(inputs.scenarios) ? inputs.scenarios : [];
 
-    const scenarios = Array.isArray(inp.scenarios) ? inp.scenarios : [];
-    if (!scenarios.length) {
-      bodyEl.innerHTML = '<tr><td colspan="6">No scenarios defined in ccri/inputs.json.</td></tr>';
-      sumEl.textContent = 'No CCRI scenarios available.';
+    if(!scenarios.length){
+      bodyEl.innerHTML = '<tr><td colspan="9">No scenarios found in ccri/inputs.json</td></tr>';
+      sumEl.textContent = 'No scenarios available.';
+      diagEl.textContent = 'Define at least one scenario in ccri/inputs.json.';
       return;
     }
 
-    const results = scenarios.map((s) => {
-      let score = base;
-      let dmvDependence = 0;
+    function deriveUpstreamFactorsForScenario(s){
+      const cae = caeArtifact && caeArtifact.value ? caeArtifact.value : null;
+      const cda = cdaArtifact && cdaArtifact.value ? cdaArtifact.value : null;
+      const cff = cffArtifact && cffArtifact.value ? cffArtifact.value : null;
 
+      const caeAlign =
+        firstNumber(
+          cae && cae.summary && cae.summary.average_alignment,
+          cae && cae.aggregate && cae.aggregate.average_alignment,
+          cae && cae.scores && cae.scores.constitutional_alignment,
+          cae && cae.scores && cae.scores.alignment_score
+        );
+
+      const cdaDefIntegrity =
+        firstNumber(
+          cda && cda.scores && cda.scores.definition_integrity,
+          cda && cda.aggregate && cda.aggregate.definition_integrity,
+          cda && cda.definition_integrity
+        );
+
+      const cffFundingAlignment =
+        firstNumber(
+          cff && cff.scores && cff.scores.funding_alignment,
+          cff && cff.aggregate && cff.aggregate.funding_alignment,
+          cff && cff.funding_alignment
+        );
+
+      const fallbackDefinitionIntegrity = normalizeBooleanish(
+        s.definition_integrity_zero,
+        true
+      ) ? 1 : 0;
+
+      const fallbackAuthorityCompliance = normalizeBooleanish(
+        s.authority_compliance,
+        true
+      ) ? 1 : 0;
+
+      const fallbackFundingAlignment = normalizeBooleanish(
+        s.funding_alignment,
+        true
+      ) ? 1 : 0;
+
+      const authorityCompliance =
+        firstNumber(
+          caeAlign != null ? (caeAlign >= 0.8 ? 1 : 0) : null,
+          s.authority_compliance_score,
+          fallbackAuthorityCompliance
+        );
+
+      const definitionIntegrity =
+        firstNumber(
+          cdaDefIntegrity != null
+            ? (cdaDefIntegrity > 1 ? clamp(cdaDefIntegrity / 100, 0, 1) : clamp(cdaDefIntegrity, 0, 1))
+            : null,
+          s.definition_integrity_score,
+          fallbackDefinitionIntegrity
+        );
+
+      const fundingAlignment =
+        firstNumber(
+          cffFundingAlignment != null
+            ? (cffFundingAlignment > 1 ? clamp(cffFundingAlignment / 100, 0, 1) : clamp(cffFundingAlignment, 0, 1))
+            : null,
+          s.funding_alignment_score,
+          fallbackFundingAlignment
+        );
+
+      const deltaDef = 1 - clamp(definitionIntegrity, 0, 1);
+      const A = authorityCompliance ? 1 : 0;
+      const J_valid = A * (1 - deltaDef);
+
+      return {
+        authorityCompliance: A,
+        definitionIntegrity: clamp(definitionIntegrity, 0, 1),
+        fundingAlignment: clamp(fundingAlignment, 0, 1),
+        deltaDef: clamp(deltaDef, 0, 1),
+        jValid: clamp(J_valid, 0, 1),
+        sourceFlags: {
+          cae: !!caeArtifact,
+          cda: !!cdaArtifact,
+          cff: !!cffArtifact
+        }
+      };
+    }
+
+    const results = scenarios.map((s, idx) => {
+      const pop = s.population_impact || {};
       const ds = s.data_sources_used || {};
       const dmv = s.dmv_usage_details || {};
       const dot = s.dot_or_fmcsa_usage_details || {};
       const lic = s.license_requirements || {};
-      const pop = s.population_impact || {};
       const ap = s.appeal_process || {};
 
-      if (ds.dmv_records && dmv.used_in_underwriting_decisions) {
-        score -= penalties.uses_dmv_in_underwriting || 0;
-        dmvDependence += 2;
+      const upstream = deriveUpstreamFactorsForScenario(s);
+
+      let score = baseScore;
+
+      if(upstream.authorityCompliance === 0){
+        score -= penalties.authority_failure || 35;
       }
 
-      if (ds.dmv_records && dmv.used_for_pricing_or_interest_rate) {
-        score -= penalties.uses_dmv_for_pricing || 0;
-        dmvDependence += 1;
+      if(upstream.definitionIntegrity < 1){
+        score -= Math.round((1 - upstream.definitionIntegrity) * (penalties.definition_drift || 30));
       }
 
-      if (lic.requires_valid_license_to_apply) {
-        score -= penalties.requires_valid_license_to_apply || 0;
-        dmvDependence += 1;
+      if(upstream.fundingAlignment < 1){
+        score -= Math.round((1 - upstream.fundingAlignment) * (penalties.funding_misalignment || 20));
       }
 
-      if (lic.requires_valid_license_to_fund_loan) {
-        score -= penalties.requires_valid_license_to_fund || 0;
-        dmvDependence += 1;
+      if(ds.dmv_records && dmv.used_in_underwriting_decisions){
+        score -= penalties.uses_dmv_in_underwriting || 10;
       }
 
-      if (lic.requires_valid_license_to_test_drive) {
-        score -= penalties.requires_valid_license_to_test_drive || 0;
+      if(ds.dmv_records && dmv.used_for_pricing_or_interest_rate){
+        score -= penalties.uses_dmv_for_pricing || 8;
       }
 
-      const drOverall = pop.denial_rate_overall ?? 0;
-      const drNoLic = pop.denial_rate_for_suspended_or_no_license ?? 0;
-
-      if (drNoLic > drOverall + 0.15) {
-        score -= penalties.denial_rate_high_for_no_license || 0;
-        dmvDependence += 1;
+      if(lic.requires_valid_license_to_apply){
+        score -= penalties.requires_valid_license_to_apply || 10;
       }
 
-      if (ap.has_appeal_mechanism === false || ap.human_review_available === false) {
-        score -= penalties.no_appeal_process || 0;
+      if(lic.requires_valid_license_to_fund_loan){
+        score -= penalties.requires_valid_license_to_fund || 8;
       }
 
-      if (ds.dot_or_fmcsa_records && dot.is_dot_regulated_population === false) {
-        score -= penalties.uses_dot_or_fmcsa_records_for_consumers || 0;
-        dmvDependence += 2;
+      if(lic.requires_valid_license_to_test_drive){
+        score -= penalties.requires_valid_license_to_test_drive || 4;
       }
 
-      if (score < 0) score = 0;
-      if (score > 100) score = 100;
+      const drOverall = firstNumber(pop.denial_rate_overall, 0) || 0;
+      const drNoLic = firstNumber(pop.denial_rate_for_suspended_or_no_license, drOverall) || 0;
+
+      if(drNoLic > drOverall + 0.15){
+        score -= penalties.denial_rate_high_for_no_license || 8;
+      }
+
+      if(ap.has_appeal_mechanism === false || ap.human_review_available === false){
+        score -= penalties.no_appeal_process || 8;
+      }
+
+      if(ds.dot_or_fmcsa_records && dot.is_dot_regulated_population === false){
+        score -= penalties.uses_dot_or_fmcsa_records_for_consumers || 10;
+      }
+
+      score = clamp(score, 0, 100);
 
       const divergenceClass = tierFromScore(score, thresholds);
       const constitutionalDivergenceIndex = 1 - (score / 100);
 
-      const applications = pop.applications_per_year || 0;
-      const affectedPopulation =
-        pop.estimated_noncommercial_applicants_affected ||
-        Math.round(applications * (drNoLic || drOverall));
+      const applications = firstNumber(pop.applications_per_year, s.applications_per_year, 0) || 0;
+      const affectedPopulation = firstNumber(
+        pop.estimated_noncommercial_applicants_affected,
+        s.affected_population,
+        Math.round(applications * (drNoLic || drOverall))
+      ) || 0;
 
-      const averageHarmPerAffectedCase = 2500;
+      const recoveryScalar = firstNumber(
+        s.average_constitutional_capital_per_case_usd,
+        model.average_constitutional_capital_per_case_usd,
+        2500
+      ) || 2500;
+
       const constitutionalCapitalRecoveryUsd =
-        constitutionalDivergenceIndex * affectedPopulation * averageHarmPerAffectedCase;
+        constitutionalDivergenceIndex *
+        (1 - upstream.jValid + 1) / 1 *
+        affectedPopulation *
+        recoveryScalar *
+        ((upstream.fundingAlignment + upstream.definitionIntegrity) / 2);
 
       return {
-        id: s.id || '',
-        jurisdiction: s.jurisdiction || '',
-        institution: s.institution_name || s.institution_type || '',
+        ordinal: idx + 1,
+        id: s.id || ('scenario_' + String(idx + 1).padStart(2, '0')),
+        jurisdiction: s.jurisdiction || 'Unspecified',
         constitutional_score: score,
         divergence_class: divergenceClass,
-        dmvDependence,
-        constitutional_divergence_index: constitutionalDivergenceIndex,
-        applications,
+        definition_integrity: upstream.definitionIntegrity,
+        funding_alignment: upstream.fundingAlignment,
+        j_valid: upstream.jValid,
         affected_population: affectedPopulation,
-        constitutional_capital_recovery_usd: constitutionalCapitalRecoveryUsd
+        recovery_usd: constitutionalCapitalRecoveryUsd,
+        upstream
       };
     });
 
-    bodyEl.innerHTML = results.map((r) => `
+    const avgDivergence = average(results.map(r => 1 - (r.constitutional_score / 100)));
+    const totalRecovery = results.reduce((sum, r) => sum + r.recovery_usd, 0);
+    const high = results.filter(r => r.divergence_class === 'HIGH').length;
+    const mod = results.filter(r => r.divergence_class === 'MODERATE').length;
+    const low = results.filter(r => r.divergence_class === 'LOW').length;
+
+    set('k-div', avgDivergence.toFixed(4), avgDivergence > 0.5 ? 'bad' : avgDivergence > 0.2 ? 'warn' : 'ok');
+    set('k-rec', money(totalRecovery), totalRecovery > 0 ? 'ok' : 'warn');
+
+    bodyEl.innerHTML = results.map(r => `
       <tr>
         <td>${r.id}</td>
         <td>${r.jurisdiction}</td>
-        <td>${r.institution}</td>
         <td>${r.constitutional_score.toFixed(0)}</td>
         <td><span class="${pillClass(r.divergence_class)}">${r.divergence_class}</span></td>
-        <td>${r.dmvDependence === 0 ? 'Low' : r.dmvDependence === 1 ? 'Medium' : 'High'}</td>
+        <td>${r.j_valid.toFixed(4)}</td>
+        <td>${r.definition_integrity.toFixed(4)}</td>
+        <td>${r.funding_alignment.toFixed(4)}</td>
+        <td>${r.affected_population.toLocaleString()}</td>
+        <td>${money(r.recovery_usd)}</td>
       </tr>
     `).join('');
 
-    const high = results.filter(r => r.divergence_class === 'HIGH
+    sumEl.textContent =
+      `Scenarios: ${results.length} · HIGH: ${high} · MODERATE: ${mod} · LOW: ${low}. ` +
+      `CCRI artifact written to localStorage as ABE_CCRI_SCENARIO_V1 for downstream CIRI use.`;
+
+    const artifact = {
+      module: 'CCRI',
+      title: 'Constitutional Capital Recovery Index',
+      version: '1.0',
+      generated_at: new Date().toISOString(),
+      doctrine_execution_order: [
+        'CAE',
+        'CDA_or_CDI',
+        'CFF',
+        'Jurisdiction_Validity',
+        'CCRI',
+        'CIRI'
+      ],
+      upstream_sources: {
+        cae: caeArtifact ? caeArtifact.key : null,
+        cda_or_cdi: cdaArtifact ? cdaArtifact.key : null,
+        cff: cffArtifact ? cffArtifact.key : null
+      },
+      scores: {
+        overall_risk_class: high > 0 ? 'HIGH_DIVERGENCE' : mod > 0 ? 'MODERATE_DIVERGENCE' : 'LOW_DIVERGENCE',
+        constitutional_divergence_index: toFixedNumber(avgDivergence, 4),
+        constitutional_recovery_strength: toFixedNumber(totalRecovery > 0 ? 1 : 0, 2),
+        scenario_count: results.length
+      },
+      aggregate: {
+        total_constitutional_capital_recovery_usd: Math.round(totalRecovery),
+        average_divergence_index: toFixedNumber(avgDivergence, 4),
+        total_impacted_population: results.reduce((sum, r) => sum + r.affected_population, 0)
+      },
+      scenarios: results.map(r => ({
+        id: r.id,
+        jurisdiction: r.jurisdiction,
+        constitutional_score: r.constitutional_score,
+        divergence_class: r.divergence_class,
+        j_valid: toFixedNumber(r.j_valid, 4),
+        definition_integrity: toFixedNumber(r.definition_integrity, 4),
+        funding_alignment: toFixedNumber(r.funding_alignment, 4),
+        affected_population: r.affected_population,
+        constitutional_capital_recovery_usd: Math.round(r.recovery_usd)
+      }))
+    };
+
+    localStorage.setItem('ABE_CCRI_SCENARIO_V1', JSON.stringify(artifact));
+    localStorage.setItem('ABE_CCRI_LAST_RESULTS', JSON.stringify(results));
+    artifactPreviewEl.textContent = JSON.stringify(artifact, null, 2);
+
+    btnExport.disabled = false;
+    btnJson.disabled = false;
+
+    btnExport.onclick = function(){
+      const header = [
+        'id',
+        'jurisdiction',
+        'constitutional_score',
+        'divergence_class',
+        'j_valid',
+        'definition_integrity',
+        'funding_alignment',
+        'affected_population',
+        'constitutional_capital_recovery_usd'
+      ];
+
+      const lines = results.map(r => [
+        r.id,
+        r.jurisdiction,
+        r.constitutional_score.toFixed(0),
+        r.divergence_class,
+        r.j_valid.toFixed(4),
+        r.definition_integrity.toFixed(4),
+        r.funding_alignment.toFixed(4),
+        r.affected_population,
+        Math.round(r.recovery_usd)
+      ].join(','));
+
+      createDownload('CCRI_results.csv', 'text/csv', [header.join(',')].concat(lines).join('\n'));
+    };
+
+    btnJson.onclick = function(){
+      createDownload('ABE_CCRI_SCENARIO_V1.json', 'application/json', JSON.stringify(artifact, null, 2));
+    };
+
+    const diag = [];
+    if(!caeArtifact) diag.push('CAE artifact not found. Authority compliance is using scenario fallback values.');
+    if(!cdaArtifact) diag.push('CDA/CDI artifact not found. Definition integrity is using scenario fallback values.');
+    if(!cffArtifact) diag.push('CFF artifact not found. Funding alignment is using scenario fallback values.');
+    if(caeArtifact && cdaArtifact && cffArtifact){
+      diag.push('Full upstream doctrine chain detected.');
+    }
+    diagEl.innerHTML = '<ul>' + diag.map(x => `<li>${x}</li>`).join('') + '</ul>';
+
+  }catch(e){
+    console.error(e);
+    set('k-model', 'ERR', 'bad');
+    set('k-inputs', 'ERR', 'bad');
+    set('k-upstream', 'ERR', 'bad');
+    set('k-order', 'ERR', 'bad');
+    bodyEl.innerHTML = `<tr><td colspan="9">Error: ${e.message}</td></tr>`;
+    sumEl.textContent = 'CCRI computation failed.';
+    diagEl.textContent = e.message || String(e);
+    artifactPreviewEl.textContent = 'No artifact generated.';
+  }
+})();
+</script>
+</body>
+</html>
