@@ -1,0 +1,90 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CAE Model",
+  "type": "object",
+  "required": ["version", "updated", "authority", "weights", "clauses"],
+  "properties": {
+    "version": { "type": "string" },
+    "updated": { "type": "string", "format": "date-time" },
+    "authority": {
+      "type": "object",
+      "required": ["name", "license", "doi"],
+      "properties": {
+        "name": { "type": "string" },
+        "license": { "type": "string" },
+        "doi": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "weights": {
+      "type": "object",
+      "required": ["clarity_of_scope", "constitutional_nexus", "operational_fidelity"],
+      "properties": {
+        "clarity_of_scope": { "type": "number", "minimum": 0, "maximum": 1 },
+        "constitutional_nexus": { "type": "number", "minimum": 0, "maximum": 1 },
+        "operational_fidelity": { "type": "number", "minimum": 0, "maximum": 1 }
+      },
+      "additionalProperties": false
+    },
+    "clauses": {
+      "type": "array",
+      "minItems": 3,
+      "items": {
+        "type": "object",
+        "required": [
+          "clause_id",
+          "title",
+          "constitutional_anchor",
+          "statutes",
+          "regulations",
+          "intent",
+          "scope_notes",
+          "alignment_score",
+          "confidence",
+          "tags",
+          "source_hash",
+          "evidence_links"
+        ],
+        "properties": {
+          "clause_id": { "type": "string" },
+          "title": { "type": "string" },
+          "constitutional_anchor": { "type": "string" },
+          "statutes": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string" }
+          },
+          "regulations": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string" }
+          },
+          "intent": { "type": "string" },
+          "scope_notes": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string" }
+          },
+          "alignment_score": { "type": "number", "minimum": 0, "maximum": 1 },
+          "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+          "tags": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string" }
+          },
+          "source_hash": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}$"
+          },
+          "evidence_links": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string", "format": "uri" }
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}
