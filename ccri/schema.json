@@ -3,7 +3,11 @@
   "title": "CCRI_inputs_v1",
   "description": "Schema for CCRI (Constitutional Capital Recovery Index) inputs.json scenario file.",
   "type": "object",
-  "required": ["version", "module", "scenarios"],
+  "required": [
+    "version",
+    "module",
+    "scenarios"
+  ],
   "additionalProperties": false,
   "properties": {
     "version": {
@@ -30,16 +34,13 @@
         "additionalProperties": false,
         "properties": {
           "id": {
-            "type": "string",
-            "description": "Unique identifier for this CCRI scenario."
+            "type": "string"
           },
           "jurisdiction": {
-            "type": "string",
-            "description": "State or region where the institution or policy operates."
+            "type": "string"
           },
           "institution_type": {
             "type": "string",
-            "description": "Type of institution or system being evaluated.",
             "enum": [
               "bank",
               "credit_union",
@@ -51,8 +52,7 @@
             ]
           },
           "institution_name": {
-            "type": "string",
-            "description": "Optional human-readable institution name."
+            "type": "string"
           },
           "loan_types": {
             "type": "array",
@@ -72,7 +72,6 @@
           },
           "uses_ssn_for": {
             "type": "array",
-            "description": "Declared uses of SSN in the workflow.",
             "items": {
               "type": "string",
               "enum": [
@@ -200,16 +199,13 @@
             }
           },
           "authority_compliance": {
-            "type": "boolean",
-            "description": "Fallback authority-compliance value when upstream CAE/CDA/CFF artifacts are unavailable."
+            "type": "boolean"
           },
           "definition_integrity_zero": {
-            "type": "boolean",
-            "description": "Fallback flag indicating whether definition drift is zero."
+            "type": "boolean"
           },
           "funding_alignment": {
-            "type": "boolean",
-            "description": "Fallback funding alignment flag when CFF artifact is unavailable."
+            "type": "boolean"
           },
           "average_constitutional_capital_per_case_usd": {
             "type": "number",
@@ -222,4 +218,4 @@
       }
     }
   }
-                }
+}
