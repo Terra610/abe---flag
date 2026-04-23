@@ -1,93 +1,117 @@
 {
-  "version": "1.0.2",
-  "updated": "2025-11-15T00:00:00Z",
+  "version": "1.0",
+  "module": "CAE",
+  "updated": "2026-04-23T00:00:00Z",
+  "title": "Constitutional Alignment Engine",
+  "description": "Validates constitutional alignment inputs and computes clause-level and aggregate alignment for use by later A.B.E. expansion modules.",
   "authority": {
-    "name": "A.B.E. — Constitutional Alignment Engine (CAE)",
     "license": "CC BY-NC 4.0",
-    "doi": "10.5281/zenodo.17586107"
+    "engine_role": "Expansion validator",
+    "note": "CAE conditions later modules but does not replace the pioneer spine."
   },
   "weights": {
-    "clarity_of_scope": 0.35,
-    "constitutional_nexus": 0.35,
-    "operational_fidelity": 0.30
+    "clarity_of_scope": 0.34,
+    "constitutional_nexus": 0.33,
+    "operational_fidelity": 0.33
   },
-
-  "categories": [
+  "summary": {
+    "alignment_threshold": 0.8,
+    "divergence_threshold": 0.8
+  },
+  "articles": [
     {
-      "key": "constitutional_alignment",
-      "name": "Constitutional Alignment",
-      "multiplier": 1.0
-    },
-    {
-      "key": "federal_scope",
-      "name": "Federal Scope Verification",
-      "multiplier": 0.9
-    },
-    {
-      "key": "state_scope",
-      "name": "State Scope Verification",
-      "multiplier": 0.85
-    }
-  ],
-
-  "clauses": [
-    {
-      "clause_id": "CommerceClause_FMCSA_Scope",
-      "title": "Federal Motor Carrier Safety — Commercial Nexus (Interstate)",
-      "constitutional_anchor": "U.S. Const. art. I, §8, cl.3 (Commerce Clause)",
-      "statutes": ["49 U.S.C. ch. 311–315"],
-      "regulations": ["49 CFR Parts 350–399"],
-      "intent": "Safety regulation of commercial motor carriers in interstate (and certain intrastate) commerce.",
-      "scope_notes": [
-        "FMCSA authority attaches to commerce (for-hire carriage / business use), not private, non-commercial travel.",
-        "States may diverge for intrastate carriers, but must retain the commercial nexus."
-      ],
-      "alignment_score": 0.86,
-      "confidence": 0.82,
-      "tags": ["FMCSA", "commerce-nexus", "transport"],
-      "source_hash": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
-      "evidence_links": [
-        "https://www.ecfr.gov/current/title-49/subtitle-B/chapter-III",
-        "https://uscode.house.gov/view.xhtml?path=/prelim@title49/subtitle6/partB"
+      "title": "Article I",
+      "clauses": [
+        {
+          "clause_id": "A1-C1",
+          "reference": "Legislative Authority",
+          "title": "Legislative Vesting",
+          "constitutional_anchor": "U.S. Const. art. I",
+          "intent": "Legislative power must remain grounded in constitutional delegation.",
+          "statutes": [
+            "U.S. Constitution Article I"
+          ],
+          "regulations": [
+            "None"
+          ],
+          "scope_notes": [
+            "Authority cannot exceed delegated constitutional scope."
+          ],
+          "tags": [
+            "delegation",
+            "legislative_power"
+          ],
+          "evidence_links": [
+            "doctrine/constitutional-fidelity.html"
+          ],
+          "alignment_score": 0.95,
+          "confidence": 0.95,
+          "source_hash": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+        }
       ]
     },
     {
-      "clause_id": "CFR40_13h_DOT_Testing_SafetySensitiveOnly",
-      "title": "49 CFR §40.13(h) — DOT Testing Applies Only to Safety-Sensitive Employees",
-      "constitutional_anchor": "U.S. Const. art. I, §8, cl.3; due process & equal protection (5th/14th)",
-      "statutes": ["49 U.S.C. §31306", "49 U.S.C. §45102"],
-      "regulations": ["49 CFR §40.13(h)"],
-      "intent": "Alcohol/drug testing regime is limited to DOT-regulated, safety-sensitive roles — not the general public.",
-      "scope_notes": [
-        "Implied-consent constructs cannot expand DOT testing to non-DOT citizens absent lawful nexus.",
-        "Misapplication increases divergence (jurisdictional overreach)."
-      ],
-      "alignment_score": 0.91,
-      "confidence": 0.78,
-      "tags": ["Part40", "testing-scope", "safety-sensitive"],
-      "source_hash": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
-      "evidence_links": [
-        "https://www.ecfr.gov/current/title-49/subtitle-A/part-40#p-40.13(h)"
+      "title": "Article VI",
+      "clauses": [
+        {
+          "clause_id": "A6-C2",
+          "reference": "Supremacy Clause",
+          "title": "Federal Supremacy",
+          "constitutional_anchor": "U.S. Const. art. VI, cl. 2",
+          "intent": "Conflicting lower-order action cannot displace controlling constitutional or federal authority.",
+          "statutes": [
+            "U.S. Const. art. VI, cl. 2"
+          ],
+          "regulations": [
+            "None"
+          ],
+          "scope_notes": [
+            "State or administrative conflict must yield to controlling federal authority."
+          ],
+          "tags": [
+            "supremacy",
+            "preemption"
+          ],
+          "evidence_links": [
+            "doctrine/constitutional-fidelity.html",
+            "doctrine/void-ab-initio.html"
+          ],
+          "alignment_score": 0.94,
+          "confidence": 0.94,
+          "source_hash": "sha256:2222222222222222222222222222222222222222222222222222222222222222"
+        }
       ]
     },
     {
-      "clause_id": "FHWA_FMCSA_TruckParking_2025_Memo",
-      "title": "FHWA–FMCSA 2025 Memo — Truck Parking Eligibility (Titles 23 & 49)",
-      "constitutional_anchor": "U.S. Const. art. I, §8, cl.3 (Commerce / freight system)",
-      "statutes": ["23 U.S.C.", "49 U.S.C."],
-      "regulations": ["23 CFR Part 450"],
-      "intent": "Clarifies federal funds eligibility for truck parking within freight/logistics (commercial) scope.",
-      "scope_notes": [
-        "State Freight Plans must assess commercial-vehicle parking; scope remains freight-centric.",
-        "Confirms the policy intent is commercial operators, not private motorists."
-      ],
-      "alignment_score": 0.88,
-      "confidence": 0.74,
-      "tags": ["FHWA", "truck-parking", "freight"],
-      "source_hash": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
-      "evidence_links": [
-        "https://www.fhwa.dot.gov/",
-        "https://www.fmcsa.dot.gov/"
+      "title": "Structural Integrity",
+      "clauses": [
+        {
+          "clause_id": "SI-01",
+          "reference": "Operational Fidelity",
+          "title": "Constitutional Fidelity",
+          "constitutional_anchor": "A.B.E. doctrine: Constitutional Fidelity",
+          "intent": "Execution must remain aligned with controlling constitutional authority and not drift through administrative convenience.",
+          "statutes": [
+            "A.B.E. Constitutional Fidelity doctrine"
+          ],
+          "regulations": [
+            "None"
+          ],
+          "scope_notes": [
+            "Execution drift is a measurable constitutional failure."
+          ],
+          "tags": [
+            "fidelity",
+            "alignment",
+            "execution"
+          ],
+          "evidence_links": [
+            "doctrine/constitutional-fidelity.html"
+          ],
+          "alignment_score": 0.92,
+          "confidence": 0.93,
+          "source_hash": "sha256:3333333333333333333333333333333333333333333333333333333333333333"
+        }
       ]
     }
   ]
