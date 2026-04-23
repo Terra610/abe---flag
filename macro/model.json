@@ -1,26 +1,74 @@
 {
-  "version": "1.1",
-  "updated": "2025-12-08T00:00:00Z",
+  "version": "1.0",
   "module": "MACRO",
-  "authority": {
-    "name": "A.B.E. — Macroeconomic Cascade Model",
-    "license": "CC BY-NC 4.0"
+  "updated": "2026-04-22T00:00:00Z",
+  "title": "ABE Macro Cascade Model",
+  "description": "Consumes settled ABE recovery outputs and propagates them into sector-level and cross-domain macroeconomic cascade estimates.",
+  "formulas": {
+    "sector_gain": "G_s = B_s * m_s",
+    "total_gain": "G_total = Σ G_s",
+    "jobs_supported": "J_s = G_s / j_s",
+    "macro_index": "M = 1 - e^(-G_total / K_m)"
   },
-  "inputs": {
-    "communities": {
-      "type": "integer",
-      "min": 1,
-      "description": "Number of communities to scale a single restored-community model across."
+  "normalization_constant": 1000000000,
+  "defaults": {
+    "recovery_total_usd": 0
+  },
+  "sectors": [
+    {
+      "key": "mobility_transport",
+      "label": "Mobility & Transport",
+      "share": 0.22,
+      "multiplier": 1.8,
+      "jobs_per_dollar": 95000
     },
-    "ciri_scenario_ref": {
-      "type": "string",
-      "description": "Optional reference to the CIRI scenario key in localStorage (e.g., ABE_CIRI_SCENARIO_V2)."
+    {
+      "key": "housing_stability",
+      "label": "Housing Stability",
+      "share": 0.18,
+      "multiplier": 1.6,
+      "jobs_per_dollar": 110000
+    },
+    {
+      "key": "workforce_reentry",
+      "label": "Workforce Reentry",
+      "share": 0.16,
+      "multiplier": 1.9,
+      "jobs_per_dollar": 85000
+    },
+    {
+      "key": "community_rebuild",
+      "label": "Community Rebuild",
+      "share": 0.14,
+      "multiplier": 1.7,
+      "jobs_per_dollar": 105000
+    },
+    {
+      "key": "small_business",
+      "label": "Small Business",
+      "share": 0.12,
+      "multiplier": 2.1,
+      "jobs_per_dollar": 80000
+    },
+    {
+      "key": "health_social_support",
+      "label": "Health & Social Support",
+      "share": 0.10,
+      "multiplier": 1.5,
+      "jobs_per_dollar": 120000
+    },
+    {
+      "key": "innovation_education",
+      "label": "Innovation & Education",
+      "share": 0.08,
+      "multiplier": 2.0,
+      "jobs_per_dollar": 90000
     }
-  },
-  "outputs": {
-    "schema_file": "macro/schema.json",
-    "artifact_type": "ABE_MacroCascadeScenario_v1",
-    "local_storage_key": "ABE_MACRO_SCENARIO_V1",
-    "csv_download_pattern": "ABE_MacroCascade_{communities}_communities.csv"
-  }
+  ],
+  "downstream_links": [
+    {
+      "target": "integration",
+      "purpose": "Macro results may be included alongside final attestation receipts."
+    }
+  ]
 }
