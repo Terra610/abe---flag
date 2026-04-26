@@ -3,204 +3,678 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>ABE CLI — Deterministic Execution Controller</title>
+  <title>ABE CLI — Full Pipeline Dashboard</title>
   <base href="/abe---flag/">
   <style>
     :root{
       --bg:#0b0d12;
       --panel:#141820;
+      --panel2:#10151d;
       --ink:#e6e6e6;
       --muted:#9fb3c8;
       --line:rgba(255,255,255,.08);
       --ok:#4bd28f;
       --warn:#ffd166;
       --bad:#ff6b6b;
-      --brand:#5ddfff;
+      --accent:#80bfff;
     }
+
     *{box-sizing:border-box}
+
     body{
       margin:0;
       background:var(--bg);
       color:var(--ink);
       font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
     }
-    a{color:#80bfff;text-decoration:none}
+
+    a{
+      color:var(--accent);
+      text-decoration:none;
+    }
+
     a:hover{text-decoration:underline}
+
     header{
-      padding:20px;
+      padding:24px 16px;
       text-align:center;
       background:#11151c;
       border-bottom:1px solid var(--line);
     }
-    main{
-      max-width:1100px;
-      margin:20px auto;
-      padding:0 16px 40px;
+
+    header h1{
+      margin:0;
+      font-size:2rem;
+      line-height:1.2;
     }
+
+    .sub{
+      color:var(--muted);
+      margin-top:8px;
+    }
+
+    .nav{
+      margin-top:14px;
+      display:flex;
+      flex-wrap:wrap;
+      justify-content:center;
+      gap:10px;
+    }
+
+    .nav a{
+      display:inline-block;
+      padding:8px 12px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      background:var(--panel2);
+    }
+
+    main{
+      max-width:1220px;
+      margin:20px auto;
+      padding:0 16px 44px;
+    }
+
     .card{
       background:var(--panel);
       border:1px solid var(--line);
-      border-radius:12px;
-      padding:14px;
+      border-radius:14px;
+      padding:16px;
       margin:12px 0;
     }
-    .kpi{
+
+    .grid{
       display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+      grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
       gap:12px;
     }
+
     .tile{
-      background:#10151d;
+      background:var(--panel2);
       border:1px solid var(--line);
-      border-radius:10px;
-      padding:12px;
+      border-radius:12px;
+      padding:14px;
     }
-    .label{color:var(--muted);font-size:.92rem}
-    .num{font-weight:800;font-size:1.15rem}
+
+    .tile .label{
+      color:var(--muted);
+      font-size:.9rem;
+      margin-bottom:4px;
+    }
+
+    .tile .value{
+      font-size:1.25rem;
+      font-weight:800;
+      word-break:break-word;
+    }
+
     .ok{color:var(--ok)}
     .warn{color:var(--warn)}
     .bad{color:var(--bad)}
-    .row{display:flex;gap:10px;flex-wrap:wrap}
+
+    .row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:12px;
+    }
+
     button{
       background:#10151d;
       color:var(--ink);
       border:1px solid var(--line);
       border-radius:10px;
       padding:10px 14px;
-      font:inherit;
       cursor:pointer;
+      font:inherit;
     }
+
+    button:hover{
+      border-color:rgba(128,191,255,.6);
+    }
+
+    button:disabled{
+      opacity:.55;
+      cursor:not-allowed;
+    }
+
     pre{
       white-space:pre-wrap;
       overflow:auto;
-      background:#10151d;
+      background:#0f141b;
       border:1px solid var(--line);
-      border-radius:10px;
+      border-radius:12px;
       padding:12px;
       font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+      font-size:.88rem;
+      max-height:620px;
+    }
+
+    .small{
+      color:var(--muted);
+      font-size:.92rem;
+    }
+
+    .steps{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top:10px;
+    }
+
+    .step{
+      border:1px solid var(--line);
+      border-radius:999px;
+      padding:6px 10px;
+      background:#0f141b;
+      color:var(--muted);
+      font-size:.88rem;
+    }
+
+    .step.done{
+      color:var(--ok);
+      border-color:rgba(75,210,143,.4);
+    }
+
+    .step.fail{
+      color:var(--bad);
+      border-color:rgba(255,107,107,.4);
+    }
+
+    .explain{
+      background:#0f141b;
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:14px;
+    }
+
+    .explain p{
+      margin:.35rem 0;
+    }
+
+    .module-table{
+      width:100%;
+      border-collapse:collapse;
+      margin-top:10px;
+      font-size:.93rem;
+    }
+
+    .module-table th,
+    .module-table td{
+      border:1px solid var(--line);
+      padding:9px 8px;
+      text-align:left;
+      vertical-align:top;
+    }
+
+    .module-table th{
+      background:#0f141b;
+      color:#dfefff;
+    }
+
+    .table-wrap{
+      overflow:auto;
+      border:1px solid var(--line);
+      border-radius:12px;
     }
   </style>
 </head>
+
 <body>
 <header>
   <h1>ABE CLI</h1>
-  <div>Deterministic core execution controller</div>
-  <div style="margin-top:10px">
-    <a href="index.html">Home</a> ·
-    <a href="cdi/index.html">CDI</a> ·
-    <a href="ciri/index.html">CIRI</a> ·
-    <a href="cibs/index.html">CIBS</a> ·
-    <a href="cii/index.html">CII</a> ·
+  <div class="sub">Full deterministic pipeline dashboard</div>
+
+  <div class="nav">
+    <a href="index.html">Home</a>
+    <a href="intake/index.html">Intake</a>
     <a href="integration/index.html">Integration</a>
+    <a href="macro/index.html">Macro</a>
+    <a href="rt/index.html">RT</a>
+    <a href="learn/index.html">Learn</a>
   </div>
 </header>
 
 <main>
-  <div class="card">
-    <h3>Locked Core Order</h3>
-    <pre id="spec">Loading spec…</pre>
-  </div>
 
-  <div class="card">
-    <h3>Engine Status</h3>
-    <div class="kpi">
-      <div class="tile"><div class="label">CDI</div><div id="k-cdi" class="num">—</div></div>
-      <div class="tile"><div class="label">CIRI</div><div id="k-ciri" class="num">—</div></div>
-      <div class="tile"><div class="label">CIBS</div><div id="k-cibs" class="num">—</div></div>
-      <div class="tile"><div class="label">CII</div><div id="k-cii" class="num">—</div></div>
-      <div class="tile"><div class="label">ABE</div><div id="k-abe" class="num">—</div></div>
-    </div>
-  </div>
+  <section class="card">
+    <h2>Run Full Pipeline</h2>
+    <p class="small">
+      This page runs the complete ABE module chain and displays the results in plain language.
+      The full JSON remains available below for audit and verification.
+    </p>
 
-  <div class="card">
-    <h3>Controls</h3>
+    <div class="steps" id="steps"></div>
+
     <div class="row">
-      <button id="run">Run ABE Engine</button>
-      <button id="reload">Reload Last ABE Artifact</button>
-      <button id="clear">Clear Core Artifacts</button>
+      <button id="btn-run">Run Full Pipeline</button>
+      <button id="btn-download" disabled>Download Final Report JSON</button>
+      <button id="btn-clear">Clear Stored Results</button>
     </div>
-  </div>
 
-  <div class="card">
-    <h3>Execution Report</h3>
-    <pre id="report">Waiting for run…</pre>
-  </div>
+    <p id="status" class="small">Waiting to run.</p>
+  </section>
+
+  <section class="card">
+    <h2>Plain-Language Result</h2>
+    <div id="plain-explainer" class="explain small">
+      Run the pipeline to generate a user-readable summary.
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Key Results</h2>
+    <div class="grid">
+      <div class="tile">
+        <div class="label">Total Recovery Capital</div>
+        <div id="k-recovery" class="value">—</div>
+        <div class="small">Source: Integration / CIBS</div>
+      </div>
+
+      <div class="tile">
+        <div class="label">Deployment Capital</div>
+        <div id="k-deployment" class="value">—</div>
+        <div class="small">Source: RT</div>
+      </div>
+
+      <div class="tile">
+        <div class="label">Economic Activation</div>
+        <div id="k-activation" class="value">—</div>
+        <div class="small">Source: RT</div>
+      </div>
+
+      <div class="tile">
+        <div class="label">Macro Gain</div>
+        <div id="k-macro" class="value">—</div>
+        <div class="small">Source: MACRO</div>
+      </div>
+
+      <div class="tile">
+        <div class="label">RT Execution Readiness</div>
+        <div id="k-rt" class="value">—</div>
+        <div class="small">Source: RT</div>
+      </div>
+
+      <div class="tile">
+        <div class="label">AFFE Stability</div>
+        <div id="k-affe" class="value">—</div>
+        <div class="small">Source: AFFE</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Module Status</h2>
+    <div class="table-wrap">
+      <table class="module-table">
+        <thead>
+          <tr>
+            <th>Order</th>
+            <th>Module</th>
+            <th>Name</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="module-status">
+          <tr><td colspan="4">No run yet.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>RT Capital Activation Sectors</h2>
+    <p class="small">
+      These sectors show how recovery capital is converted into deployment pathways and modeled activation value.
+    </p>
+    <div class="table-wrap">
+      <table class="module-table">
+        <thead>
+          <tr>
+            <th>Sector</th>
+            <th>Deployment</th>
+            <th>Activation</th>
+            <th>Readiness</th>
+          </tr>
+        </thead>
+        <tbody id="rt-sectors">
+          <tr><td colspan="4">No RT output yet.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Final Audit JSON</h2>
+    <pre id="json-preview">—</pre>
+  </section>
+
 </main>
 
 <script type="module">
-  import { runABEWithReport, getABEExecutionSpec } from "/abe---flag/system/cli.js";
+  import { runABEFullPipelineWithReport } from "/abe---flag/system/cli.js";
 
-  const specEl = document.getElementById("spec");
-  const reportEl = document.getElementById("report");
+  const ORDER = [
+    ["INTAKE", "Document Intake + OCR Bridge"],
+    ["CAE", "Constitutional Alignment Engine"],
+    ["CDA", "Constitutional Divergence Analyzer"],
+    ["CDI", "Constitutional Divergence Index"],
+    ["CIRI", "Constitutional Integrity ROI Engine"],
+    ["CIBS", "Constitutional Integrity Baseline Schema"],
+    ["CII", "Constitutional Integrity Index"],
+    ["INTEGRATION", "Audit & SHA-256 Integrity Layer"],
+    ["MACRO", "Macroeconomic Cascade Model"],
+    ["RT", "Rebuild Together Engine"],
+    ["CFF", "Constitutional Funding Forensics"],
+    ["CCRI", "Consumer Credit Risk Integrity"],
+    ["AFFE", "American Funding & Fidelity Explorer"]
+  ];
 
-  const tiles = {
-    CDI: document.getElementById("k-cdi"),
-    CIRI: document.getElementById("k-ciri"),
-    CIBS: document.getElementById("k-cibs"),
-    CII: document.getElementById("k-cii"),
-    ABE: document.getElementById("k-abe")
-  };
+  const STORAGE_KEYS = [
+    "ABE_FULL_PIPELINE_REPORT",
+    "ABE_INTAKE_ARTIFACT_V1",
+    "abe_intake_artifact",
+    "ABE_CAE_ARTIFACT_V1",
+    "ABE_CDA_SCENARIO_V1",
+    "ABE_CDI_SCENARIO_V1",
+    "ABE_CIRI_SCENARIO_V2",
+    "ABE_CIBS_BUDGET_V1",
+    "ABE_CII_PORTFOLIO_V1",
+    "ABE_INTEGRATION_ARTIFACT_V1",
+    "abe_integration_artifact",
+    "ABE_AUDIT_RECEIPT_V1",
+    "ABE_MACRO_ARTIFACT_V1",
+    "ABE_RT_ARTIFACT_V1",
+    "ABE_CFF_ARTIFACT_V1",
+    "ABE_CCRI_SCENARIO_V1",
+    "ABE_AFFE_ARTIFACT_V1"
+  ];
 
-  function setTile(name, txt, cls) {
-    const el = tiles[name];
-    el.textContent = txt;
-    el.className = "num " + (cls || "");
+  const btnRun = document.getElementById("btn-run");
+  const btnDownload = document.getElementById("btn-download");
+  const btnClear = document.getElementById("btn-clear");
+  const statusEl = document.getElementById("status");
+  const stepsEl = document.getElementById("steps");
+  const plainEl = document.getElementById("plain-explainer");
+  const jsonEl = document.getElementById("json-preview");
+  const moduleStatusEl = document.getElementById("module-status");
+  const rtSectorsEl = document.getElementById("rt-sectors");
+
+  let lastReport = null;
+
+  function money(v){
+    const n = Number(v);
+    return Number.isFinite(n)
+      ? "$" + n.toLocaleString(undefined, { maximumFractionDigits: 0 })
+      : "—";
   }
 
-  function paintFromArtifact() {
-    const refs = {
-      CDI: localStorage.getItem("ABE_CDI_SCENARIO_V1") || localStorage.getItem("abe_cdi_artifact"),
-      CIRI: localStorage.getItem("ABE_CIRI_SCENARIO_V2") || localStorage.getItem("ABE_CIRI_SCENARIO_V1") || localStorage.getItem("abe_ciri_artifact"),
-      CIBS: localStorage.getItem("ABE_CIBS_BUDGET_V1") || localStorage.getItem("abe_cibs_artifact"),
-      CII: localStorage.getItem("ABE_CII_PORTFOLIO_V1") || localStorage.getItem("abe_cii_artifact"),
-      ABE: localStorage.getItem("ABE_INTEGRATION_ARTIFACT_V1") || localStorage.getItem("abe_integration_artifact")
-    };
+  function number(v, digits = 6){
+    const n = Number(v);
+    return Number.isFinite(n) ? n.toFixed(digits) : "—";
+  }
 
-    for (const [name, raw] of Object.entries(refs)) {
-      if (raw) setTile(name, "READY", "ok");
-      else setTile(name, "—", "");
+  function safeGet(obj, path, fallback = undefined){
+    try{
+      return path.split(".").reduce((o,k)=>o?.[k], obj) ?? fallback;
+    }catch{
+      return fallback;
     }
   }
 
-  specEl.textContent = JSON.stringify(getABEExecutionSpec(), null, 2);
-  paintFromArtifact();
+  function downloadJSON(filename, data){
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
 
-  document.getElementById("run").onclick = async () => {
-    reportEl.textContent = "Running deterministic core spine…";
-    const result = await runABEWithReport();
-    reportEl.textContent = JSON.stringify(result, null, 2);
+  function paintSteps(report){
+    const results = report?.results || {};
+    stepsEl.innerHTML = "";
 
-    if (result.ok) {
-      setTile("CDI", "DONE", "ok");
-      setTile("CIRI", "DONE", "ok");
-      setTile("CIBS", "DONE", "ok");
-      setTile("CII", "DONE", "ok");
-      setTile("ABE", "DONE", "ok");
-    } else {
-      setTile("ABE", "ERR", "bad");
+    ORDER.forEach(([key]) => {
+      const span = document.createElement("span");
+      span.className = "step";
+      span.textContent = key;
+
+      if(report?.ok && (key === "INTAKE" ? true : !!results[key])){
+        span.classList.add("done");
+      }
+
+      if(report && !report.ok){
+        span.classList.add("fail");
+      }
+
+      stepsEl.appendChild(span);
+    });
+  }
+
+  function paintModuleStatus(report){
+    const results = report?.results || {};
+
+    moduleStatusEl.innerHTML = ORDER.map(([key, name], idx) => {
+      const exists = key === "INTAKE"
+        ? !!report?.intake || !!results?.INTAKE || true
+        : !!results[key];
+
+      const status = report?.ok
+        ? (exists ? '<span class="ok">Complete</span>' : '<span class="warn">No artifact</span>')
+        : '<span class="bad">Not complete</span>';
+
+      return `
+        <tr>
+          <td>${idx + 1}</td>
+          <td>${key}</td>
+          <td>${name}</td>
+          <td>${status}</td>
+        </tr>
+      `;
+    }).join("");
+  }
+
+  function extractNumbers(report){
+    const r = report?.results || {};
+
+    const recovery =
+      r?.INTEGRATION?.aggregate?.total_constitutional_capital_recovery_usd ??
+      r?.CIBS?.aggregate?.total_budget_allocated ??
+      r?.CIBS?.aggregate?.RT ??
+      0;
+
+    const deployment =
+      r?.RT?.scores?.total_deployment_usd ??
+      r?.RT?.aggregate?.D_total ??
+      0;
+
+    const activation =
+      r?.RT?.scores?.total_activation_usd ??
+      r?.RT?.aggregate?.A_total ??
+      0;
+
+    const macroGain =
+      r?.MACRO?.aggregate?.total_gain_usd ??
+      r?.MACRO?.scores?.total_gain_usd ??
+      0;
+
+    const rtStatus =
+      r?.RT?.scores?.overall_status ??
+      "—";
+
+    const affeStatus =
+      r?.AFFE?.scores?.overall_risk_class ??
+      "—";
+
+    return { recovery, deployment, activation, macroGain, rtStatus, affeStatus };
+  }
+
+  function paintKeyResults(report){
+    const n = extractNumbers(report);
+
+    document.getElementById("k-recovery").textContent = money(n.recovery);
+    document.getElementById("k-deployment").textContent = money(n.deployment);
+    document.getElementById("k-activation").textContent = money(n.activation);
+    document.getElementById("k-macro").textContent = money(n.macroGain);
+    document.getElementById("k-rt").textContent = n.rtStatus;
+    document.getElementById("k-affe").textContent = n.affeStatus;
+
+    document.getElementById("k-recovery").className = "value ok";
+    document.getElementById("k-deployment").className = "value ok";
+    document.getElementById("k-activation").className = "value ok";
+    document.getElementById("k-macro").className = "value ok";
+  }
+
+  function paintExplainer(report){
+    if(!report?.ok){
+      plainEl.innerHTML = `
+        <p><strong>The pipeline did not complete.</strong></p>
+        <p>${report?.error?.message || "An unknown error occurred."}</p>
+        <p>The JSON output below contains the technical failure record.</p>
+      `;
+      return;
+    }
+
+    const n = extractNumbers(report);
+
+    plainEl.innerHTML = `
+      <p><strong>ABE completed the full engine chain.</strong></p>
+      <p>
+        The system processed the intake, measured divergence, converted that divergence into a recovery-capital estimate,
+        allocated that recovery into deployment pathways, modeled macroeconomic activation, and generated a final stability reading.
+      </p>
+      <p>
+        <strong>Total Recovery Capital:</strong> ${money(n.recovery)}.
+        This is the modeled recoverable capital value produced by the current inputs and formulas.
+      </p>
+      <p>
+        <strong>Deployment Capital:</strong> ${money(n.deployment)}.
+        This is the amount RT mapped into capital activation sectors.
+      </p>
+      <p>
+        <strong>Economic Activation:</strong> ${money(n.activation)}.
+        This is the modeled activity generated after sector multipliers and effectiveness factors are applied.
+      </p>
+      <p>
+        <strong>Macro Gain:</strong> ${money(n.macroGain)}.
+        This is the broader modeled economic cascade from the MACRO module.
+      </p>
+      <p>
+        The JSON report remains available below so engineers, auditors, or reviewers can verify the full calculation chain.
+      </p>
+    `;
+  }
+
+  function paintRTSectors(report){
+    const sectors = report?.results?.RT?.capital_activation_sectors || [];
+
+    if(!sectors.length){
+      rtSectorsEl.innerHTML = '<tr><td colspan="4">No RT sector output available.</td></tr>';
+      return;
+    }
+
+    rtSectorsEl.innerHTML = sectors.map(s => `
+      <tr>
+        <td>
+          <strong>${s.name || s.key || "—"}</strong>
+          <div class="small">${s.description || ""}</div>
+        </td>
+        <td>${money(s.D_i)}</td>
+        <td>${money(s.A_i)}</td>
+        <td>${number(s.eta_i, 4)}</td>
+      </tr>
+    `).join("");
+  }
+
+  function paintReport(report){
+    lastReport = report;
+
+    localStorage.setItem("ABE_FULL_PIPELINE_REPORT", JSON.stringify(report));
+
+    paintSteps(report);
+    paintModuleStatus(report);
+    paintKeyResults(report);
+    paintExplainer(report);
+    paintRTSectors(report);
+
+    jsonEl.textContent = JSON.stringify(report, null, 2);
+
+    btnDownload.disabled = !report;
+  }
+
+  function loadStored(){
+    const raw = localStorage.getItem("ABE_FULL_PIPELINE_REPORT");
+    if(!raw) return;
+
+    try{
+      const parsed = JSON.parse(raw);
+      if(parsed){
+        paintReport(parsed);
+        statusEl.innerHTML = parsed.ok
+          ? '<span class="ok">Loaded stored full pipeline report.</span>'
+          : '<span class="warn">Loaded stored failed report.</span>';
+      }
+    }catch{}
+  }
+
+  btnRun.onclick = async () => {
+    try{
+      btnRun.disabled = true;
+      btnDownload.disabled = true;
+      statusEl.textContent = "Running full ABE pipeline…";
+
+      const report = await runABEFullPipelineWithReport();
+
+      paintReport(report);
+
+      statusEl.innerHTML = report.ok
+        ? '<span class="ok">Full pipeline completed successfully.</span>'
+        : '<span class="bad">Pipeline failed. See JSON report below.</span>';
+
+    }catch(e){
+      const report = {
+        ok:false,
+        started_at:new Date().toISOString(),
+        finished_at:new Date().toISOString(),
+        error:{
+          message:e?.message || String(e),
+          stack:e?.stack || null
+        }
+      };
+
+      paintReport(report);
+      statusEl.innerHTML = '<span class="bad">Pipeline failed.</span>';
+    }finally{
+      btnRun.disabled = false;
     }
   };
 
-  document.getElementById("reload").onclick = () => {
-    paintFromArtifact();
-    const raw =
-      localStorage.getItem("ABE_INTEGRATION_ARTIFACT_V1") ||
-      localStorage.getItem("abe_integration_artifact") ||
-      "{}";
-    reportEl.textContent = JSON.stringify(JSON.parse(raw), null, 2);
+  btnDownload.onclick = () => {
+    if(!lastReport) return;
+    downloadJSON("ABE_FULL_PIPELINE_REPORT.json", lastReport);
   };
 
-  document.getElementById("clear").onclick = () => {
-    [
-      "ABE_CDI_SCENARIO_V1","abe_cdi_artifact",
-      "ABE_CIRI_SCENARIO_V2","ABE_CIRI_SCENARIO_V1","abe_ciri_artifact",
-      "ABE_CIBS_BUDGET_V1","abe_cibs_artifact",
-      "ABE_CII_PORTFOLIO_V1","abe_cii_artifact",
-      "ABE_INTEGRATION_ARTIFACT_V1","abe_integration_artifact","ABE_AUDIT_RECEIPT_V1"
-    ].forEach(k => localStorage.removeItem(k));
-    paintFromArtifact();
-    reportEl.textContent = "Core artifacts cleared.";
+  btnClear.onclick = () => {
+    STORAGE_KEYS.forEach(k => localStorage.removeItem(k));
+    lastReport = null;
+    jsonEl.textContent = "—";
+    plainEl.textContent = "Stored results cleared. Run the pipeline again.";
+    rtSectorsEl.innerHTML = '<tr><td colspan="4">No RT output yet.</td></tr>';
+    moduleStatusEl.innerHTML = '<tr><td colspan="4">No run yet.</td></tr>';
+    document.getElementById("k-recovery").textContent = "—";
+    document.getElementById("k-deployment").textContent = "—";
+    document.getElementById("k-activation").textContent = "—";
+    document.getElementById("k-macro").textContent = "—";
+    document.getElementById("k-rt").textContent = "—";
+    document.getElementById("k-affe").textContent = "—";
+    stepsEl.innerHTML = "";
+    statusEl.textContent = "Stored results cleared.";
+    btnDownload.disabled = true;
   };
+
+  loadStored();
 </script>
 </body>
 </html>
