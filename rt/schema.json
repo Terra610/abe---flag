@@ -1,0 +1,126 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "RT_Model_v1",
+  "type": "object",
+  "required": [
+    "version",
+    "module",
+    "updated",
+    "title",
+    "description",
+    "formula",
+    "defaults",
+    "capital_activation_sectors"
+  ],
+  "additionalProperties": true,
+  "properties": {
+    "version": {
+      "type": "string"
+    },
+    "module": {
+      "type": "string",
+      "const": "RT"
+    },
+    "updated": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "formula": {
+      "type": "object",
+      "required": [
+        "deployment",
+        "activation",
+        "total_activation",
+        "execution_index"
+      ],
+      "properties": {
+        "deployment": {
+          "type": "string"
+        },
+        "activation": {
+          "type": "string"
+        },
+        "total_activation": {
+          "type": "string"
+        },
+        "execution_index": {
+          "type": "string"
+        }
+      }
+    },
+    "defaults": {
+      "type": "object",
+      "required": [
+        "quarter_factors",
+        "normalization_constant"
+      ],
+      "properties": {
+        "quarter_factors": {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 4,
+          "items": {
+            "type": "number",
+            "minimum": 0
+          }
+        },
+        "normalization_constant": {
+          "type": "number",
+          "minimum": 1
+        }
+      }
+    },
+    "capital_activation_sectors": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "key",
+          "name",
+          "description",
+          "allocation_share",
+          "activation_multiplier",
+          "effectiveness",
+          "progress_weight"
+        ],
+        "additionalProperties": true,
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "allocation_share": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "activation_multiplier": {
+            "type": "number",
+            "minimum": 0
+          },
+          "effectiveness": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "progress_weight": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          }
+        }
+      }
+    }
+  }
+}
