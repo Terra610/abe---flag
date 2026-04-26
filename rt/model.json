@@ -1,0 +1,127 @@
+{
+  "version": "1.0",
+  "module": "RT",
+  "updated": "2026-04-26T00:00:00Z",
+  "title": "Rebuild Together Engine",
+  "description": "Transforms recovery allocations, propagation scores, and macro projections into structured capital deployment pathways and measurable economic activation.",
+  "formula": {
+    "deployment": "D_i = B_i * a_i",
+    "activation": "A_i = D_i * m_i * eta_i",
+    "total_activation": "A_total = sum(A_i)",
+    "execution_index": "RTI = sum((D_i / D_total) * eta_i * w_i)"
+  },
+  "defaults": {
+    "quarter_factors": [0.25, 0.25, 0.25, 0.25],
+    "normalization_constant": 1000000000
+  },
+  "capital_activation_sectors": [
+    {
+      "key": "mobility_access",
+      "name": "Mobility Access",
+      "description": "Restores transportation access, participation capacity, workforce mobility, and local economic circulation.",
+      "allocation_share": 0.12,
+      "activation_multiplier": 1.6,
+      "effectiveness": 0.8,
+      "progress_weight": 0.8
+    },
+    {
+      "key": "residential_continuity",
+      "name": "Residential Continuity Systems",
+      "description": "Prevents displacement and stabilizes housing conditions through protected housing, renovation, and continuity supports.",
+      "allocation_share": 0.12,
+      "activation_multiplier": 1.5,
+      "effectiveness": 0.75,
+      "progress_weight": 0.8
+    },
+    {
+      "key": "community_infrastructure",
+      "name": "Community Infrastructure",
+      "description": "Deploys capital into local facilities, public-facing services, community centers, and civic infrastructure.",
+      "allocation_share": 0.1,
+      "activation_multiplier": 1.7,
+      "effectiveness": 0.78,
+      "progress_weight": 0.6
+    },
+    {
+      "key": "youth_workforce",
+      "name": "Youth & Workforce Systems",
+      "description": "Supports youth programs, workforce reentry, training, entrepreneurship, and skills development.",
+      "allocation_share": 0.1,
+      "activation_multiplier": 1.9,
+      "effectiveness": 0.82,
+      "progress_weight": 0.6
+    },
+    {
+      "key": "health_systems",
+      "name": "Health Systems Optimization",
+      "description": "Improves access, reduces cost burden, and increases system efficiency in healthcare delivery.",
+      "allocation_share": 0.09,
+      "activation_multiplier": 1.6,
+      "effectiveness": 0.78,
+      "progress_weight": 0.6
+    },
+    {
+      "key": "agriculture_systems",
+      "name": "Food & Agricultural Systems",
+      "description": "Stabilizes food production, supports farmers, and increases supply chain resilience.",
+      "allocation_share": 0.08,
+      "activation_multiplier": 1.8,
+      "effectiveness": 0.8,
+      "progress_weight": 0.6
+    },
+    {
+      "key": "technology_infrastructure",
+      "name": "Technology & Infrastructure Systems",
+      "description": "Expands digital access, system automation, secure public tools, and infrastructure scalability.",
+      "allocation_share": 0.08,
+      "activation_multiplier": 2.0,
+      "effectiveness": 0.85,
+      "progress_weight": 0.5
+    },
+    {
+      "key": "household_stability",
+      "name": "Household Stability Systems",
+      "description": "Supports individuals and families facing displacement, economic hardship, job loss, eviction, or instability.",
+      "allocation_share": 0.08,
+      "activation_multiplier": 1.5,
+      "effectiveness": 0.8,
+      "progress_weight": 0.7
+    },
+    {
+      "key": "human_security",
+      "name": "Human Security Systems",
+      "description": "Supports public-facing programs that reduce human trafficking, sex trafficking, exploitation, and vulnerability pathways.",
+      "allocation_share": 0.07,
+      "activation_multiplier": 1.6,
+      "effectiveness": 0.82,
+      "progress_weight": 0.7
+    },
+    {
+      "key": "legal_access",
+      "name": "Legal Access Infrastructure",
+      "description": "Expands access to legal resources, attorney-fee support, court filing support, and protective legal pathways.",
+      "allocation_share": 0.07,
+      "activation_multiplier": 1.4,
+      "effectiveness": 0.78,
+      "progress_weight": 0.7
+    },
+    {
+      "key": "companion_animal",
+      "name": "Companion Animal Stability Systems",
+      "description": "Maintains animal welfare during economic disruption, domestic violence displacement, housing loss, and hardship transitions through shelter, sanctuary, fostering, and Purple Leash-style supports.",
+      "allocation_share": 0.04,
+      "activation_multiplier": 1.3,
+      "effectiveness": 0.76,
+      "progress_weight": 0.6
+    },
+    {
+      "key": "social_security_veterans",
+      "name": "Seniors & Veterans Stability",
+      "description": "Supports seniors, veterans, disabled populations, and fixed-income households through stability-centered capital pathways.",
+      "allocation_share": 0.05,
+      "activation_multiplier": 1.4,
+      "effectiveness": 0.76,
+      "progress_weight": 0.6
+    }
+  ]
+}
