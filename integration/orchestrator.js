@@ -1,170 +1,200 @@
-import { createSessionMeta, finalizeSessionMeta } from "/abe---flag/integration/engine/core/session.js";
+// integration/orchestrator.js
+// ABE Integration Orchestrator
+// Binds module artifacts into a deterministic audit receipt.
 
-function safeParse(raw) {
-  try {
-    return JSON.parse(raw);
-  } catch {
-    return null;
-  }
+const STORAGE_KEYS = {
+  INTAKE: ["ABE_INTAKE_ARTIFACT_V1", "abe_intake_artifact"],
+  CAE: ["ABE_CAE_ARTIFACT_V1", "abe_cae_artifact"],
+  CDA: ["ABE_CDA_SCENARIO_V1", "abe_cda_artifact"],
+  CDI: ["ABE_CDI_SCENARIO_V1", "abe_cdi_artifact"],
+  CIRI: ["ABE_CIRI_SCENARIO_V2", "ABE_CIRI_SCENARIO_V1", "abe_ciri_artifact"],
+  CIBS: ["ABE_CIBS_BUDGET_V1", "abe_cibs_artifact"],
+  CII: ["ABE_CII_PORTFOLIO_V1", "abe_cii_artifact"],
+  INTEGRATION: ["ABE_INTEGRATION_ARTIFACT_V1", "abe_integration_artifact", "ABE_AUDIT_RECEIPT_V1"],
+  MACRO: ["ABE_MACRO_ARTIFACT_V1", "abe_macro_artifact"],
+  RT: ["ABE_RT_ARTIFACT_V1", "abe_rt_artifact"],
+  CFF: ["ABE_CFF_ARTIFACT_V1", "abe_cff_artifact"],
+  CCRI: ["ABE_CCRI_SCENARIO_V1", "abe_ccri_artifact"],
+  AFFE: ["ABE_AFFE_ARTIFACT_V1", "abe_affe_artifact"]
+};
+
+function nowIso(){
+  return new Date().toISOString();
 }
 
-function readFirst(keys) {
-  for (const key of keys || []) {
-    try {
-      const raw = localStorage.getItem(key);
-      if (!raw) continue;
-      const parsed = safeParse(raw);
-      if (parsed) {
-        return { key, value: parsed };
-      }
-    } catch (_) {}
+function safeParse(raw){
+  try { return JSON.parse(raw); } catch { return null; }
+}
+
+function readFirst(keys){
+  for(const key of keys || []){
+    const raw = localStorage.getItem(key);
+    if(!raw) continue;
+    const parsed = safeParse(raw);
+    if(parsed) return parsed;
   }
   return null;
 }
 
-function writeAll(keys, payload) {
-  for (const key of keys || []) {
-    try {
-      localStorage.setItem(key, JSON.stringify(payload));
-    } catch (_) {}
-  }
-}
-
-function num(v, fallback = 0) {
+function num(v, fallback = 0){
   const n = Number(v);
   return Number.isFinite(n) ? n : fallback;
 }
 
-function round(v, d = 6) {
+function round(v, d = 6){
   return Number(num(v).toFixed(d));
 }
 
-function getPhiInputs(core) {
-  const cdi = core.CDI?.value || {};
-  const ciri = core.CIRI?.value || {};
-  const cibs = core.CIBS?.value || {};
-  const cii = core.CII?.value || {};
+async function sha256(text){
+  const data = new TextEncoder().encode(text);
+  const hash = await crypto.subtle.digest("SHA-256", data);
+  return Array.from(new Uint8Array(hash))
+    .map(b => b.toString(16).padStart(2, "0"))
+    .join("");
+}
+
+function readArtifacts(){
+  const artifacts = {};
+  for(const [module, keys] of Object.entries(STORAGE_KEYS)){
+    if(module === "INTEGRATION") continue;
+    artifacts[module] = readFirst(keys);
+  }
+  return artifacts;
+}
+
+function extractPhi(artifacts){
+  const CDI = artifacts.CDI || {};
+  const CIRI = artifacts.CIRI || {};
+  const CIBS = artifacts.CIBS || {};
+  const CII = artifacts.CII || {};
 
   return {
     CDI:
-      cdi?.scores?.constitutional_divergence_index ??
-      cdi?.scores?.divergence_score ??
-      cdi?.aggregate?.average_divergence_index ??
+      CDI?.scores?.constitutional_divergence_index ??
+      CDI?.scores?.divergence_score ??
+      CDI?.aggregate?.average_divergence_index ??
       0,
 
     CIRI:
-      ciri?.scores?.ciri ??
-      ciri?.scores?.constitutional_risk_index ??
-      ciri?.aggregate?.ciri ??
+      CIRI?.scores?.ciri ??
+      CIRI?.scores?.constitutional_risk_index ??
+      CIRI?.scores?.constitutional_integrity_risk_index ??
       0,
 
     CIBS:
-      cibs?.aggregate?.total_budget_allocated ??
-      cibs?.aggregate?.total_recovery_budget ??
-      cibs?.aggregate?.RT ??
+      CIBS?.aggregate?.total_budget_allocated ??
+      CIBS?.aggregate?.RT ??
+      CIBS?.scores?.total_budget_allocated ??
       0,
 
     CII:
-      cii?.scores?.cii ??
-      cii?.scores?.constitutional_integrity_index ??
-      cii?.aggregate?.cii ??
+      CII?.scores?.cii ??
+      CII?.scores?.constitutional_integrity_index ??
+      CII?.aggregate?.constitutional_integrity_index ??
       0
   };
 }
 
-function getAggregate(core) {
-  const ciri = core.CIRI?.value || {};
-  const ccriLikePopulation =
-    ciri?.aggregate?.exposed_population ??
-    ciri?.aggregate?.case_count ??
-    0;
-
-  const cibs = core.CIBS?.value || {};
-  const totalRecovery =
-    cibs?.aggregate?.total_budget_allocated ??
-    cibs?.aggregate?.RT ??
-    0;
-
+function extractMoney(artifacts){
   return {
-    total_impacted_population: ccriLikePopulation,
-    total_constitutional_capital_recovery_usd: Math.round(num(totalRecovery))
+    recovery_capital_usd:
+      artifacts?.INTEGRATION?.aggregate?.total_constitutional_capital_recovery_usd ??
+      artifacts?.CIBS?.aggregate?.total_budget_allocated ??
+      artifacts?.CIBS?.aggregate?.RT ??
+      0,
+
+    macro_gain_usd:
+      artifacts?.MACRO?.aggregate?.total_gain_usd ??
+      artifacts?.MACRO?.scores?.total_gain_usd ??
+      0,
+
+    rt_deployment_usd:
+      artifacts?.RT?.scores?.total_deployment_usd ??
+      artifacts?.RT?.aggregate?.D_total ??
+      0,
+
+    rt_activation_usd:
+      artifacts?.RT?.scores?.total_activation_usd ??
+      artifacts?.RT?.aggregate?.A_total ??
+      0
   };
 }
 
-function buildSignature(phi) {
+export async function buildIntegrationReceipt(model = {}){
+  const artifacts = readArtifacts();
+  const phi = extractPhi(artifacts);
+  const money = extractMoney(artifacts);
+
   const numerator = num(phi.CII) + num(phi.CIBS);
   const denominator = 1 - num(phi.CDI);
+  const signatureValue = denominator !== 0 ? numerator / denominator : null;
 
-  return {
-    expression: "ABE = (∂C + ∂R) / ∂I",
-    numerator: round(numerator, 6),
-    denominator: round(denominator, 6),
-    value: denominator !== 0 ? round(numerator / denominator, 6) : null
-  };
-}
-
-function buildArtifact(model, core, session) {
-  const phi = getPhiInputs(core);
-  const signature = buildSignature(phi);
-  const aggregate = getAggregate(core);
-
-  return {
-    module: "ABE",
-    title: "American Butterfly Effect",
+  const receiptCore = {
+    module: "INTEGRATION",
+    title: "Audit & SHA-256 Integrity Layer",
     version: model.version || "1.0",
-    generated_at: new Date().toISOString(),
-    cli_execution_order: model.core_order || ["CDI", "CIRI", "CIBS", "CII", "ABE"],
-    chain_formula: model.chain_formula || "ABE(x) = Φ(CIRI(x), CIBS(x), CII(x), CDI(x))",
+    generated_at: nowIso(),
+    chain_formula: model.chain_formula || "ABE(x) = Phi(CIRI(x), CIBS(x), CII(x), CDI(x), MACRO(x), RT(x))",
+    signature_formula: {
+      expression: model.signature_formula || "ABE = (dC + dR) / dI",
+      numerator: round(numerator, 6),
+      denominator: round(denominator, 6),
+      value: signatureValue === null ? null : round(signatureValue, 6)
+    },
+    execution_order: model.execution_order || [
+      "INTAKE",
+      "CAE",
+      "CDA",
+      "CDI",
+      "CIRI",
+      "CIBS",
+      "CII",
+      "INTEGRATION",
+      "MACRO",
+      "RT",
+      "CFF",
+      "CCRI",
+      "AFFE"
+    ],
     phi_inputs: {
       CDI: round(phi.CDI, 6),
       CIRI: round(phi.CIRI, 6),
-      CIBS: round(phi.CIBS, 6),
+      CIBS: round(phi.CIBS, 2),
       CII: round(phi.CII, 6)
     },
-    signature_formula: signature,
-    aggregate,
-    core_receipts: {
-      CDI: core.CDI?.value || null,
-      CIRI: core.CIRI?.value || null,
-      CIBS: core.CIBS?.value || null,
-      CII: core.CII?.value || null
+    aggregate: {
+      total_constitutional_capital_recovery_usd: round(money.recovery_capital_usd, 2),
+      macro_gain_usd: round(money.macro_gain_usd, 2),
+      rt_deployment_usd: round(money.rt_deployment_usd, 2),
+      rt_activation_usd: round(money.rt_activation_usd, 2)
     },
-    receipt_sources: {
-      CDI: core.CDI?.key || null,
-      CIRI: core.CIRI?.key || null,
-      CIBS: core.CIBS?.key || null,
-      CII: core.CII?.key || null
-    },
-    session: finalizeSessionMeta(session)
-  };
-}
-
-export async function runIntegration() {
-  const session = createSessionMeta();
-
-  const model = await fetch("/abe---flag/integration/model.json", { cache: "no-store" }).then(r => {
-    if (!r.ok) throw new Error("integration/model.json: HTTP " + r.status);
-    return r.json();
-  });
-
-  const core = {
-    CDI: readFirst(model.artifact_keys?.CDI || []),
-    CIRI: readFirst(model.artifact_keys?.CIRI || []),
-    CIBS: readFirst(model.artifact_keys?.CIBS || []),
-    CII: readFirst(model.artifact_keys?.CII || [])
-  };
-
-  const found = Object.values(core).filter(Boolean).length;
-  if (found < 4) {
-    throw new Error("Integration blocked: one or more core pioneer artifacts are missing.");
-  }
-
-  const artifact = buildArtifact(model, core, session);
-  writeAll(model.artifact_keys?.ABE || [], artifact);
-
-  return {
-    ok: true,
-    artifact,
-    core
-  };
+    artifacts_seen: Object.fromEntries(
+      Object.entries(artifacts).map(([k,v]) => [k, !!v])
+    ),
+    artifact_bundle: artifacts,
+    integrity: {
+      hash_algorithm: "SHA-256",
+      local_only: true,
+      deterministic: true,
+      no_backend: true,
+      no_login: true
     }
+  };
+
+  const canonical = JSON.stringify(receiptCore, null, 2);
+  const hash = await sha256(canonical);
+
+  const receipt = {
+    ...receiptCore,
+    integrity: {
+      ...receiptCore.integrity,
+      receipt_hash: "sha256:" + hash
+    }
+  };
+
+  localStorage.setItem("ABE_INTEGRATION_ARTIFACT_V1", JSON.stringify(receipt));
+  localStorage.setItem("abe_integration_artifact", JSON.stringify(receipt));
+  localStorage.setItem("ABE_AUDIT_RECEIPT_V1", JSON.stringify(receipt));
+
+  return receipt;
+}
