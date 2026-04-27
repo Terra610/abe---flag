@@ -3,209 +3,234 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Integration — ABE Deterministic Collector</title>
+  <title>Integration — ABE Audit & Integrity Layer</title>
   <base href="/abe---flag/">
-  <link rel="stylesheet" href="abe-patch/abe-patch.css">
   <style>
     :root{
       --bg:#0b0d12;
       --panel:#141820;
+      --panel2:#10151d;
       --ink:#e6e6e6;
       --muted:#9fb3c8;
       --line:rgba(255,255,255,.08);
       --ok:#4bd28f;
       --warn:#ffd166;
       --bad:#ff6b6b;
-      --chip:#10151d;
+      --accent:#80bfff;
     }
     *{box-sizing:border-box}
-    body{
-      margin:0;
-      background:var(--bg);
-      color:var(--ink);
-      font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-    }
-    a{color:#80bfff;text-decoration:none}
+    body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+    a{color:var(--accent);text-decoration:none}
     a:hover{text-decoration:underline}
-    header{
-      padding:20px;
-      background:#11151c;
-      border-bottom:1px solid var(--line);
-      text-align:center;
-    }
-    .sub{
-      color:var(--muted);
-      margin-top:6px;
-      max-width:980px;
-      margin-left:auto;
-      margin-right:auto;
-    }
-    .nav{
-      margin-top:12px;
-      display:flex;
-      gap:10px;
-      justify-content:center;
-      flex-wrap:wrap;
-    }
-    .nav a{
-      display:inline-block;
-      padding:8px 12px;
-      border:1px solid var(--line);
-      border-radius:999px;
-      background:var(--chip);
-    }
-    main{
-      max-width:1240px;
-      margin:20px auto;
-      padding:0 16px 40px;
-    }
-    .card{
-      background:var(--panel);
-      border:1px solid var(--line);
-      border-radius:12px;
-      padding:14px;
-      margin:12px 0;
-    }
-    .kpi{
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-      gap:12px;
-    }
-    .tile{
-      border:1px solid var(--line);
-      border-radius:10px;
-      padding:12px;
-      background:#10151d;
-    }
-    .label{
-      color:var(--muted);
-      font-size:.92rem;
-      margin-bottom:4px;
-    }
-    .num{
-      font-weight:800;
-      font-size:1.2rem;
-    }
-    .ok{color:var(--ok)}
-    .warn{color:var(--warn)}
-    .bad{color:var(--bad)}
-    .small{
-      color:var(--muted);
-      font-size:.9rem;
-    }
-    .btnrow{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      margin-top:10px;
-    }
-    button{
-      background:#10151d;
-      color:var(--ink);
-      border:1px solid var(--line);
-      border-radius:10px;
-      padding:10px 14px;
-      cursor:pointer;
-      font:inherit;
-    }
-    button:hover{border-color:rgba(255,255,255,.18)}
+    header{padding:22px 16px;text-align:center;background:#11151c;border-bottom:1px solid var(--line)}
+    header h1{margin:0;font-size:2rem}
+    .sub{color:var(--muted);margin-top:8px}
+    .nav{margin-top:12px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+    .nav a{display:inline-block;padding:8px 12px;border:1px solid var(--line);border-radius:999px;background:var(--panel2)}
+    main{max-width:1220px;margin:20px auto;padding:0 16px 44px}
+    .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;margin:12px 0}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+    .tile{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:14px}
+    .label{color:var(--muted);font-size:.9rem;margin-bottom:4px}
+    .value{font-size:1.15rem;font-weight:800;word-break:break-word}
+    .ok{color:var(--ok)} .warn{color:var(--warn)} .bad{color:var(--bad)}
+    .small{color:var(--muted);font-size:.92rem}
+    .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+    button{background:#10151d;color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:10px 14px;cursor:pointer;font:inherit}
     button:disabled{opacity:.55;cursor:not-allowed}
-    pre{
-      white-space:pre-wrap;
-      overflow:auto;
-      background:#10151d;
-      border:1px solid var(--line);
-      border-radius:10px;
-      padding:12px;
-      font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
-    }
+    pre{white-space:pre-wrap;overflow:auto;max-height:620px;background:#0f141b;border:1px solid var(--line);border-radius:12px;padding:12px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.88rem}
+    table{width:100%;border-collapse:collapse;font-size:.93rem}
+    th,td{border:1px solid var(--line);padding:9px 8px;text-align:left;vertical-align:top}
+    th{background:#0f141b;color:#dfefff}
+    .table-wrap{overflow:auto;border:1px solid var(--line);border-radius:12px}
   </style>
 </head>
 <body>
 <header>
-  <h1>Integration — ABE Deterministic Collector</h1>
-  <div class="sub">
-    Reads the canonical pioneer artifacts, computes the ABE aggregate,
-    applies the signature formula, and writes the final attestation receipt.
-  </div>
+  <h1>Integration</h1>
+  <div class="sub">Audit & SHA-256 Integrity Layer</div>
   <div class="nav">
     <a href="index.html">Home</a>
-    <a href="cdi/index.html">CDI</a>
-    <a href="ciri/index.html">CIRI</a>
-    <a href="cibs/index.html">CIBS</a>
-    <a href="cii/index.html">CII</a>
     <a href="system/index.html">CLI</a>
+    <a href="macro/index.html">Macro</a>
+    <a href="rt/index.html">RT</a>
+    <a href="learn/index.html">Learn</a>
   </div>
 </header>
 
 <main>
-  <div class="card">
-    <h3>Locked Core Order</h3>
-    <div class="small">
-      CDI → CIRI → CIBS → CII → ABE
+  <section class="card">
+    <h2>Build Integration Receipt</h2>
+    <p class="small">
+      This layer binds the current local module artifacts into one deterministic audit receipt.
+      RT is included as the deployment bridge between Macro and downstream stability analysis.
+    </p>
+    <div class="row">
+      <button id="btn-build">Build Receipt</button>
+      <button id="btn-download" disabled>Download Receipt JSON</button>
     </div>
-  </div>
+    <p id="status" class="small">Waiting.</p>
+  </section>
 
-  <div class="card">
-    <h3>Status</h3>
-    <div class="kpi">
+  <section class="card">
+    <h2>Plain-Language Result</h2>
+    <div id="explain" class="small">
+      Build the receipt to generate a readable summary.
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Key Values</h2>
+    <div class="grid">
       <div class="tile">
-        <div class="label">model.json</div>
-        <div id="k-model" class="num">checking…</div>
+        <div class="label">Recovery Capital</div>
+        <div id="k-recovery" class="value">—</div>
       </div>
       <div class="tile">
-        <div class="label">CDI</div>
-        <div id="k-cdi" class="num">—</div>
+        <div class="label">RT Deployment</div>
+        <div id="k-deploy" class="value">—</div>
       </div>
       <div class="tile">
-        <div class="label">CIRI</div>
-        <div id="k-ciri" class="num">—</div>
+        <div class="label">RT Activation</div>
+        <div id="k-activate" class="value">—</div>
       </div>
       <div class="tile">
-        <div class="label">CIBS</div>
-        <div id="k-cibs" class="num">—</div>
+        <div class="label">Macro Gain</div>
+        <div id="k-macro" class="value">—</div>
       </div>
       <div class="tile">
-        <div class="label">CII</div>
-        <div id="k-cii" class="num">—</div>
-      </div>
-      <div class="tile">
-        <div class="label">ABE</div>
-        <div id="k-abe" class="num">—</div>
+        <div class="label">Receipt Hash</div>
+        <div id="k-hash" class="value">—</div>
       </div>
     </div>
-  </div>
+  </section>
 
-  <div class="card">
-    <h3>Phi Inputs</h3>
-    <pre id="phi-preview">—</pre>
-  </div>
-
-  <div class="card">
-    <h3>Aggregate</h3>
-    <pre id="aggregate-preview">—</pre>
-  </div>
-
-  <div class="card">
-    <h3>Explanation</h3>
-    <div id="explain" class="small">No explanation yet.</div>
-  </div>
-
-  <div class="card">
-    <h3>Artifact Preview</h3>
-    <pre id="artifact-preview">—</pre>
-    <div class="btnrow">
-      <button id="btn-run">Run Integration</button>
-      <button id="btn-json" disabled>Export Integration JSON</button>
+  <section class="card">
+    <h2>Artifacts Seen</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Module</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="seen-body">
+          <tr><td colspan="2">No receipt built yet.</td></tr>
+        </tbody>
+      </table>
     </div>
-  </div>
+  </section>
 
-  <div class="card">
-    <h3>Diagnostics</h3>
-    <div id="diag" class="small">No issues yet.</div>
-  </div>
+  <section class="card">
+    <h2>Audit Receipt JSON</h2>
+    <pre id="json">—</pre>
+  </section>
 </main>
 
-<script type="module" src="/abe---flag/integration/local.js"></script>
+<script type="module">
+  import { buildIntegrationReceipt } from "/abe---flag/integration/orchestrator.js";
+
+  const btnBuild = document.getElementById("btn-build");
+  const btnDownload = document.getElementById("btn-download");
+  const statusEl = document.getElementById("status");
+  const jsonEl = document.getElementById("json");
+  const seenBody = document.getElementById("seen-body");
+  const explainEl = document.getElementById("explain");
+
+  let lastReceipt = null;
+
+  function money(v){
+    const n = Number(v);
+    return Number.isFinite(n)
+      ? "$" + n.toLocaleString(undefined, { maximumFractionDigits: 0 })
+      : "—";
+  }
+
+  async function fetchJSON(path){
+    const res = await fetch(path, { cache: "no-store" });
+    if(!res.ok) throw new Error(`${path}: HTTP ${res.status}`);
+    return res.json();
+  }
+
+  function downloadJSON(filename, data){
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type:"application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  function paint(receipt){
+    lastReceipt = receipt;
+    btnDownload.disabled = false;
+
+    document.getElementById("k-recovery").textContent = money(receipt?.aggregate?.total_constitutional_capital_recovery_usd);
+    document.getElementById("k-deploy").textContent = money(receipt?.aggregate?.rt_deployment_usd);
+    document.getElementById("k-activate").textContent = money(receipt?.aggregate?.rt_activation_usd);
+    document.getElementById("k-macro").textContent = money(receipt?.aggregate?.macro_gain_usd);
+    document.getElementById("k-hash").textContent = receipt?.integrity?.receipt_hash || "—";
+
+    const seen = receipt?.artifacts_seen || {};
+    seenBody.innerHTML = Object.keys(seen).map(k => `
+      <tr>
+        <td>${k}</td>
+        <td>${seen[k] ? '<span class="ok">Seen</span>' : '<span class="warn">Missing</span>'}</td>
+      </tr>
+    `).join("");
+
+    explainEl.innerHTML = `
+      <p><strong>Integration receipt completed.</strong></p>
+      <p>
+        The system bound the available module artifacts into one local audit receipt.
+        This includes the core chain, macro output, and RT deployment output when present.
+      </p>
+      <p>
+        <strong>Recovery Capital:</strong> ${money(receipt?.aggregate?.total_constitutional_capital_recovery_usd)}.
+        <strong>RT Deployment:</strong> ${money(receipt?.aggregate?.rt_deployment_usd)}.
+        <strong>RT Activation:</strong> ${money(receipt?.aggregate?.rt_activation_usd)}.
+      </p>
+      <p>
+        The SHA-256 hash below verifies the receipt content for local audit integrity.
+      </p>
+    `;
+
+    jsonEl.textContent = JSON.stringify(receipt, null, 2);
+  }
+
+  btnBuild.onclick = async () => {
+    try{
+      btnBuild.disabled = true;
+      statusEl.textContent = "Building receipt…";
+
+      const model = await fetchJSON("integration/model.json");
+      const receipt = await buildIntegrationReceipt(model);
+
+      paint(receipt);
+      statusEl.innerHTML = '<span class="ok">Receipt built successfully.</span>';
+    }catch(e){
+      console.error(e);
+      statusEl.innerHTML = '<span class="bad">' + (e.message || String(e)) + '</span>';
+      jsonEl.textContent = "Integration failed.";
+    }finally{
+      btnBuild.disabled = false;
+    }
+  };
+
+  btnDownload.onclick = () => {
+    if(!lastReceipt) return;
+    downloadJSON("ABE_INTEGRATION_ARTIFACT_V1.json", lastReceipt);
+  };
+
+  const stored = localStorage.getItem("ABE_INTEGRATION_ARTIFACT_V1") || localStorage.getItem("abe_integration_artifact");
+  if(stored){
+    try{
+      paint(JSON.parse(stored));
+      statusEl.innerHTML = '<span class="ok">Loaded stored integration receipt.</span>';
+    }catch{}
+  }
+</script>
 </body>
 </html>
