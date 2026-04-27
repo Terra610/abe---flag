@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>AFFE — After-Effects and Forward Fidelity Engine</title>
+  <title>AFFE — American Funding & Fidelity Explorer</title>
   <base href="/abe---flag/">
   <style>
     :root{
@@ -16,6 +16,7 @@
       --ok:#4bd28f;
       --warn:#ffd166;
       --bad:#ff6b6b;
+      --accent:#80bfff;
     }
     *{box-sizing:border-box}
     body{
@@ -24,19 +25,21 @@
       color:var(--ink);
       font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
     }
-    a{color:#80bfff;text-decoration:none}
+    a{color:var(--accent);text-decoration:none}
     a:hover{text-decoration:underline}
     header{
-      padding:20px;
+      padding:22px 16px;
       text-align:center;
       background:#11151c;
       border-bottom:1px solid var(--line);
     }
+    header h1{margin:0;font-size:2rem}
+    .sub{color:var(--muted);margin-top:8px}
     .nav{
       margin-top:12px;
       display:flex;
-      justify-content:center;
       gap:10px;
+      justify-content:center;
       flex-wrap:wrap;
     }
     .nav a{
@@ -47,9 +50,9 @@
       background:var(--panel2);
     }
     main{
-      max-width:1260px;
+      max-width:1220px;
       margin:20px auto;
-      padding:0 16px 40px;
+      padding:0 16px 44px;
     }
     .card{
       background:var(--panel);
@@ -58,37 +61,28 @@
       padding:16px;
       margin:12px 0;
     }
-    .kpi{
+    .grid{
       display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+      grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
       gap:12px;
     }
     .tile{
+      background:var(--panel2);
       border:1px solid var(--line);
       border-radius:12px;
-      background:var(--panel2);
-      padding:12px;
+      padding:14px;
     }
-    .label{color:var(--muted);font-size:.92rem;margin-bottom:4px}
-    .num{font-weight:800;font-size:1.2rem}
+    .label{color:var(--muted);font-size:.9rem;margin-bottom:4px}
+    .value{font-size:1.18rem;font-weight:800;word-break:break-word}
     .ok{color:var(--ok)}
     .warn{color:var(--warn)}
     .bad{color:var(--bad)}
-    .small{color:var(--muted);font-size:.9rem}
-    pre{
-      white-space:pre-wrap;
-      overflow:auto;
-      background:#0f141b;
-      border:1px solid var(--line);
-      border-radius:12px;
-      padding:12px;
-      font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
-    }
+    .small{color:var(--muted);font-size:.92rem}
     .row{
       display:flex;
       gap:10px;
       flex-wrap:wrap;
-      margin-top:10px;
+      margin-top:12px;
     }
     button{
       background:#10151d;
@@ -99,101 +93,152 @@
       cursor:pointer;
       font:inherit;
     }
+    button:disabled{opacity:.55;cursor:not-allowed}
+    pre{
+      white-space:pre-wrap;
+      overflow:auto;
+      max-height:620px;
+      background:#0f141b;
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:12px;
+      font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+      font-size:.88rem;
+    }
+    table{
+      width:100%;
+      border-collapse:collapse;
+      font-size:.93rem;
+    }
+    th,td{
+      border:1px solid var(--line);
+      padding:9px 8px;
+      text-align:left;
+      vertical-align:top;
+    }
+    th{background:#0f141b;color:#dfefff}
+    .table-wrap{
+      overflow:auto;
+      border:1px solid var(--line);
+      border-radius:12px;
+    }
   </style>
 </head>
+
 <body>
 <header>
-  <h1>AFFE — After-Effects and Forward Fidelity Engine</h1>
-  <div class="small">
-    Final expansion stabilization module. AFFE measures durability, system stability, and forward integrity after recovery and propagation are already in motion.
-  </div>
+  <h1>AFFE</h1>
+  <div class="sub">American Funding & Fidelity Explorer</div>
   <div class="nav">
     <a href="index.html">Home</a>
+    <a href="system/index.html">CLI</a>
     <a href="integration/index.html">Integration</a>
     <a href="macro/index.html">Macro</a>
-    <a href="cii/index.html">CII</a>
-    <a href="system/index.html">CLI</a>
+    <a href="rt/index.html">RT</a>
+    <a href="learn/index.html">Learn</a>
   </div>
 </header>
 
 <main>
   <section class="card">
-    <h3>Status</h3>
-    <div class="kpi">
+    <h2>Post-Deployment Stability Check</h2>
+    <p class="small">
+      AFFE reads RT, Integration, and CII outputs to measure whether deployed recovery capital is producing stable, forward-moving system results.
+    </p>
+    <div class="row">
+      <button id="btn-run">Run AFFE</button>
+      <button id="btn-download" disabled>Download AFFE JSON</button>
+    </div>
+    <p id="status" class="small">Waiting.</p>
+  </section>
+
+  <section class="card">
+    <h2>Plain-Language Result</h2>
+    <div id="explain" class="small">
+      Run AFFE to generate a readable stability summary.
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Key Stability Values</h2>
+    <div class="grid">
       <div class="tile">
-        <div class="label">model.json</div>
-        <div id="k-model" class="num">checking…</div>
+        <div class="label">AFFE Index</div>
+        <div id="k-index" class="value">—</div>
+        <div class="small">American Funding & Fidelity Index</div>
       </div>
       <div class="tile">
-        <div class="label">schema.json</div>
-        <div id="k-schema" class="num">checking…</div>
-      </div>
-      <div class="tile">
-        <div class="label">runner.js</div>
-        <div id="k-runner" class="num">checking…</div>
-      </div>
-      <div class="tile">
-        <div class="label">Recovery Durability</div>
-        <div id="k-rec" class="num">—</div>
-      </div>
-      <div class="tile">
-        <div class="label">System Stability</div>
-        <div id="k-stab" class="num">—</div>
-      </div>
-      <div class="tile">
-        <div class="label">Forward Integrity</div>
-        <div id="k-fwd" class="num">—</div>
-      </div>
-      <div class="tile">
-        <div class="label">AFFE Effectiveness</div>
-        <div id="k-eff" class="num">—</div>
+        <div class="label">Stability Signal</div>
+        <div id="k-signal" class="value">—</div>
+        <div class="small">Combined RT + CII + recovery signal</div>
       </div>
       <div class="tile">
         <div class="label">Stability Class</div>
-        <div id="k-class" class="num">—</div>
+        <div id="k-class" class="value">—</div>
+        <div class="small">Post-deployment stability reading</div>
+      </div>
+      <div class="tile">
+        <div class="label">RT Execution Index</div>
+        <div id="k-rti" class="value">—</div>
+        <div class="small">Source: RT</div>
+      </div>
+      <div class="tile">
+        <div class="label">Total Activation</div>
+        <div id="k-activation" class="value">—</div>
+        <div class="small">Source: RT</div>
+      </div>
+      <div class="tile">
+        <div class="label">Recovery Base</div>
+        <div id="k-recovery" class="value">—</div>
+        <div class="small">Source: Integration</div>
       </div>
     </div>
   </section>
 
   <section class="card">
-    <h3>Artifact Preview</h3>
-    <pre id="artifact-preview">—</pre>
-    <div class="row">
-      <button id="btn-run">Run AFFE</button>
-      <button id="btn-json" disabled>Export AFFE JSON</button>
+    <h2>Trace</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Required Input</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="trace-body">
+          <tr><td colspan="2">No run yet.</td></tr>
+        </tbody>
+      </table>
     </div>
   </section>
 
   <section class="card">
-    <h3>Diagnostics</h3>
-    <div id="diag" class="small">No issues yet.</div>
+    <h2>AFFE Artifact JSON</h2>
+    <pre id="json">—</pre>
   </section>
 </main>
 
 <script type="module">
   import { run } from "/abe---flag/affe/runner.js";
 
-  const artifactPreviewEl = document.getElementById("artifact-preview");
-  const diagEl = document.getElementById("diag");
   const btnRun = document.getElementById("btn-run");
-  const btnJson = document.getElementById("btn-json");
+  const btnDownload = document.getElementById("btn-download");
+  const statusEl = document.getElementById("status");
+  const explainEl = document.getElementById("explain");
+  const jsonEl = document.getElementById("json");
+  const traceBody = document.getElementById("trace-body");
 
   let lastArtifact = null;
 
-  function set(id, txt, cls){
-    const el = document.getElementById(id);
-    el.textContent = txt;
-    el.className = cls ? ("num " + cls) : "num";
-  }
-
-  async function fetchJSON(path){
-    const r = await fetch(path, { cache: "no-store" });
-    if(!r.ok) throw new Error(path + ": HTTP " + r.status);
-    return r.json();
-  }
-
   function safeParse(raw){
     try { return JSON.parse(raw); } catch { return null; }
+  }
+
+  function money(v){
+    const n = Number(v);
+    return Number.isFinite(n)
+      ? "$" + n.toLocaleString(undefined, { maximumFractionDigits: 0 })
+      : "—";
   }
 
   function fmt(v, digits = 6){
@@ -201,8 +246,24 @@
     return Number.isFinite(n) ? n.toFixed(digits) : "—";
   }
 
-  function createDownload(filename, mime, content){
-    const blob = new Blob([content], { type: mime });
+  async function fetchJSON(path){
+    const res = await fetch(path, { cache: "no-store" });
+    if(!res.ok) throw new Error(`${path}: HTTP ${res.status}`);
+    return res.json();
+  }
+
+  function readFirst(keys){
+    for(const key of keys){
+      const raw = localStorage.getItem(key);
+      if(!raw) continue;
+      const parsed = safeParse(raw);
+      if(parsed) return parsed;
+    }
+    return null;
+  }
+
+  function downloadJSON(filename, data){
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type:"application/json" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
@@ -211,96 +272,134 @@
     URL.revokeObjectURL(url);
   }
 
-  function paintArtifact(artifact){
-    lastArtifact = artifact;
-
-    set("k-rec", fmt(artifact?.scores?.recovery_durability, 6), Number(artifact?.scores?.recovery_durability) >= 0.85 ? "ok" : Number(artifact?.scores?.recovery_durability) >= 0.65 ? "warn" : "bad");
-    set("k-stab", fmt(artifact?.scores?.system_stability, 6), Number(artifact?.scores?.system_stability) >= 0.85 ? "ok" : Number(artifact?.scores?.system_stability) >= 0.65 ? "warn" : "bad");
-    set("k-fwd", fmt(artifact?.scores?.forward_integrity, 6), Number(artifact?.scores?.forward_integrity) >= 0.85 ? "ok" : Number(artifact?.scores?.forward_integrity) >= 0.65 ? "warn" : "bad");
-    set("k-eff", fmt(artifact?.scores?.effectiveness, 6), Number(artifact?.scores?.effectiveness) >= 0.85 ? "ok" : Number(artifact?.scores?.effectiveness) >= 0.65 ? "warn" : "bad");
-    set("k-class", artifact?.scores?.overall_risk_class || "—", (artifact?.scores?.overall_risk_class || "").includes("HIGH") ? "ok" : (artifact?.scores?.overall_risk_class || "").includes("MODERATE") ? "warn" : "bad");
-
-    artifactPreviewEl.textContent = JSON.stringify(artifact, null, 2);
-    btnJson.disabled = false;
+  function setClassByStatus(el, value){
+    el.className = "value";
+    if(String(value).includes("HIGH")) el.classList.add("ok");
+    else if(String(value).includes("MODERATE")) el.classList.add("warn");
+    else if(String(value).includes("LOW")) el.classList.add("bad");
   }
 
-  async function boot(){
-    try{
-      await fetchJSON("affe/model.json");
-      set("k-model", "OK", "ok");
+  function paintTrace(trace){
+    const rows = [
+      ["RT output", trace?.rt_seen],
+      ["Integration output", trace?.integration_seen],
+      ["CII output", trace?.cii_seen]
+    ];
 
-      await fetchJSON("affe/schema.json");
-      set("k-schema", "OK", "ok");
+    traceBody.innerHTML = rows.map(([label, seen]) => `
+      <tr>
+        <td>${label}</td>
+        <td>${seen ? '<span class="ok">Seen</span>' : '<span class="warn">Missing</span>'}</td>
+      </tr>
+    `).join("");
+  }
 
-      set("k-runner", "OK", "ok");
+  function paint(artifact){
+    lastArtifact = artifact;
+    btnDownload.disabled = false;
 
-      const raw = localStorage.getItem("ABE_AFFE_ARTIFACT_V1") || localStorage.getItem("abe_affe_artifact");
-      if(raw){
-        const parsed = safeParse(raw);
-        if(parsed){
-          paintArtifact(parsed);
-          diagEl.textContent = "Existing AFFE artifact loaded from localStorage.";
-          return;
-        }
-      }
+    const index = artifact?.scores?.american_funding_fidelity_index;
+    const signal = artifact?.scores?.stability_signal;
+    const cls = artifact?.scores?.overall_risk_class;
+    const rti = artifact?.inputs?.RT_execution_index;
+    const activation = artifact?.inputs?.total_activation_usd;
+    const recovery = artifact?.inputs?.recovery_base_usd;
 
-      diagEl.textContent = "No stored AFFE artifact yet. Press Run AFFE.";
-    }catch(e){
-      console.error(e);
-      set("k-model", "ERR", "bad");
-      set("k-schema", "ERR", "bad");
-      set("k-runner", "ERR", "bad");
-      diagEl.textContent = e.message || String(e);
-      artifactPreviewEl.textContent = "AFFE boot failed.";
-    }
+    document.getElementById("k-index").textContent = fmt(index, 6);
+    document.getElementById("k-signal").textContent = fmt(signal, 6);
+    document.getElementById("k-class").textContent = cls || "—";
+    document.getElementById("k-rti").textContent = fmt(rti, 6);
+    document.getElementById("k-activation").textContent = money(activation);
+    document.getElementById("k-recovery").textContent = money(recovery);
+
+    setClassByStatus(document.getElementById("k-class"), cls);
+
+    explainEl.innerHTML = `
+      <p><strong>AFFE completed the post-deployment stability check.</strong></p>
+      <p>
+        The module compared RT deployment output, total activation value, recovery capital, and CII effectiveness to estimate whether the system is moving toward stable recovery.
+      </p>
+      <p>
+        <strong>AFFE Index:</strong> ${fmt(index, 6)}.
+        This is the final stability reading produced from the current RT and Integration artifacts.
+      </p>
+      <p>
+        <strong>Total Activation:</strong> ${money(activation)}.
+        This is the modeled economic activity RT generated from deployed recovery capital.
+      </p>
+      <p>
+        <strong>Stability Class:</strong> ${cls || "—"}.
+      </p>
+      <p>
+        The JSON below remains available for audit and engineering review.
+      </p>
+    `;
+
+    paintTrace(artifact?.trace || {});
+    jsonEl.textContent = JSON.stringify(artifact, null, 2);
   }
 
   btnRun.onclick = async () => {
     try{
-      diagEl.textContent = "Running AFFE...";
-      const [model, schema] = await Promise.all([
-        fetchJSON("affe/model.json"),
-        fetchJSON("affe/schema.json")
+      btnRun.disabled = true;
+      statusEl.textContent = "Running AFFE…";
+
+      const model = await fetchJSON("affe/model.json");
+
+      const cii = readFirst([
+        "ABE_CII_PORTFOLIO_V1",
+        "abe_cii_artifact"
       ]);
 
-      const cii = safeParse(localStorage.getItem("ABE_CII_PORTFOLIO_V1") || localStorage.getItem("abe_cii_artifact") || "null");
-      const integration = safeParse(localStorage.getItem("ABE_INTEGRATION_ARTIFACT_V1") || localStorage.getItem("abe_integration_artifact") || localStorage.getItem("ABE_AUDIT_RECEIPT_V1") || "null");
-      const macro = safeParse(localStorage.getItem("ABE_MACRO_ARTIFACT_V1") || localStorage.getItem("abe_macro_artifact") || "null");
+      const integration = readFirst([
+        "ABE_INTEGRATION_ARTIFACT_V1",
+        "abe_integration_artifact",
+        "ABE_AUDIT_RECEIPT_V1"
+      ]);
+
+      const rt = readFirst([
+        "ABE_RT_ARTIFACT_V1",
+        "abe_rt_artifact"
+      ]);
 
       const artifact = await run({}, {
         model,
-        schema,
         priorCore: {
           CII: cii ? { artifact: cii } : {}
         },
         expansions: {
           INTEGRATION: integration,
-          MACRO: macro
+          RT: rt
         }
       });
 
       localStorage.setItem("ABE_AFFE_ARTIFACT_V1", JSON.stringify(artifact));
       localStorage.setItem("abe_affe_artifact", JSON.stringify(artifact));
 
-      paintArtifact(artifact);
-      diagEl.textContent = "AFFE executed successfully and artifact saved.";
+      paint(artifact);
+      statusEl.innerHTML = '<span class="ok">AFFE completed successfully.</span>';
     }catch(e){
       console.error(e);
-      diagEl.textContent = e.message || String(e);
-      artifactPreviewEl.textContent = "AFFE execution failed.";
+      statusEl.innerHTML = '<span class="bad">' + (e.message || String(e)) + '</span>';
+      jsonEl.textContent = "AFFE failed.";
+    }finally{
+      btnRun.disabled = false;
     }
   };
 
-  btnJson.onclick = () => {
+  btnDownload.onclick = () => {
     if(!lastArtifact) return;
-    createDownload(
-      "ABE_AFFE_ARTIFACT_V1.json",
-      "application/json",
-      JSON.stringify(lastArtifact, null, 2)
-    );
+    downloadJSON("ABE_AFFE_ARTIFACT_V1.json", lastArtifact);
   };
 
-  boot();
+  const stored = localStorage.getItem("ABE_AFFE_ARTIFACT_V1") || localStorage.getItem("abe_affe_artifact");
+  if(stored){
+    const parsed = safeParse(stored);
+    if(parsed){
+      paint(parsed);
+      statusEl.innerHTML = '<span class="ok">Loaded stored AFFE artifact.</span>';
+    }
+  }
 </script>
 </body>
 </html>
