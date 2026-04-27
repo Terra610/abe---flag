@@ -28,11 +28,7 @@
       font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
     }
 
-    a{
-      color:var(--accent);
-      text-decoration:none;
-    }
-
+    a{color:var(--accent);text-decoration:none}
     a:hover{text-decoration:underline}
 
     header{
@@ -70,7 +66,7 @@
     }
 
     main{
-      max-width:1220px;
+      max-width:1240px;
       margin:20px auto;
       padding:0 16px 44px;
     }
@@ -103,7 +99,7 @@
     }
 
     .tile .value{
-      font-size:1.25rem;
+      font-size:1.18rem;
       font-weight:800;
       word-break:break-word;
     }
@@ -129,14 +125,8 @@
       font:inherit;
     }
 
-    button:hover{
-      border-color:rgba(128,191,255,.6);
-    }
-
-    button:disabled{
-      opacity:.55;
-      cursor:not-allowed;
-    }
+    button:hover{border-color:rgba(128,191,255,.6)}
+    button:disabled{opacity:.55;cursor:not-allowed}
 
     pre{
       white-space:pre-wrap;
@@ -188,9 +178,7 @@
       padding:14px;
     }
 
-    .explain p{
-      margin:.35rem 0;
-    }
+    .explain p{margin:.35rem 0}
 
     .module-table{
       width:100%;
@@ -231,6 +219,7 @@
     <a href="integration/index.html">Integration</a>
     <a href="macro/index.html">Macro</a>
     <a href="rt/index.html">RT</a>
+    <a href="affe/index.html">AFFE</a>
     <a href="learn/index.html">Learn</a>
   </div>
 </header>
@@ -296,8 +285,20 @@
       </div>
 
       <div class="tile">
-        <div class="label">AFFE Stability</div>
-        <div id="k-affe" class="value">—</div>
+        <div class="label">AFFE Index</div>
+        <div id="k-affe-index" class="value">—</div>
+        <div class="small">Source: AFFE</div>
+      </div>
+
+      <div class="tile">
+        <div class="label">AFFE Stability Signal</div>
+        <div id="k-affe-signal" class="value">—</div>
+        <div class="small">Source: AFFE</div>
+      </div>
+
+      <div class="tile">
+        <div class="label">AFFE Stability Class</div>
+        <div id="k-affe-class" class="value">—</div>
         <div class="small">Source: AFFE</div>
       </div>
     </div>
@@ -384,10 +385,15 @@
     "abe_integration_artifact",
     "ABE_AUDIT_RECEIPT_V1",
     "ABE_MACRO_ARTIFACT_V1",
+    "abe_macro_artifact",
     "ABE_RT_ARTIFACT_V1",
+    "abe_rt_artifact",
     "ABE_CFF_ARTIFACT_V1",
+    "abe_cff_artifact",
     "ABE_CCRI_SCENARIO_V1",
-    "ABE_AFFE_ARTIFACT_V1"
+    "abe_ccri_artifact",
+    "ABE_AFFE_ARTIFACT_V1",
+    "abe_affe_artifact"
   ];
 
   const btnRun = document.getElementById("btn-run");
@@ -412,14 +418,6 @@
   function number(v, digits = 6){
     const n = Number(v);
     return Number.isFinite(n) ? n.toFixed(digits) : "—";
-  }
-
-  function safeGet(obj, path, fallback = undefined){
-    try{
-      return path.split(".").reduce((o,k)=>o?.[k], obj) ?? fallback;
-    }catch{
-      return fallback;
-    }
   }
 
   function downloadJSON(filename, data){
@@ -458,7 +456,7 @@
 
     moduleStatusEl.innerHTML = ORDER.map(([key, name], idx) => {
       const exists = key === "INTAKE"
-        ? !!report?.intake || !!results?.INTAKE || true
+        ? true
         : !!results[key];
 
       const status = report?.ok
@@ -504,11 +502,39 @@
       r?.RT?.scores?.overall_status ??
       "—";
 
-    const affeStatus =
+    const affeIndex =
+      r?.AFFE?.scores?.american_funding_fidelity_index ??
+      0;
+
+    const affeSignal =
+      r?.AFFE?.scores?.stability_signal ??
+      0;
+
+    const affeClass =
       r?.AFFE?.scores?.overall_risk_class ??
       "—";
 
-    return { recovery, deployment, activation, macroGain, rtStatus, affeStatus };
+    return {
+      recovery,
+      deployment,
+      activation,
+      macroGain,
+      rtStatus,
+      affeIndex,
+      affeSignal,
+      affeClass
+    };
+  }
+
+  function setStatusClass(id, text){
+    const el = document.getElementById(id);
+    el.textContent = text || "—";
+    el.className = "value";
+
+    const s = String(text || "");
+    if(s.includes("HIGH")) el.classList.add("ok");
+    else if(s.includes("MODERATE")) el.classList.add("warn");
+    else if(s.includes("LOW") || s.includes("EARLY")) el.classList.add("bad");
   }
 
   function paintKeyResults(report){
@@ -519,7 +545,10 @@
     document.getElementById("k-activation").textContent = money(n.activation);
     document.getElementById("k-macro").textContent = money(n.macroGain);
     document.getElementById("k-rt").textContent = n.rtStatus;
-    document.getElementById("k-affe").textContent = n.affeStatus;
+
+    document.getElementById("k-affe-index").textContent = number(n.affeIndex, 6);
+    document.getElementById("k-affe-signal").textContent = number(n.affeSignal, 6);
+    setStatusClass("k-affe-class", n.affeClass);
 
     document.getElementById("k-recovery").className = "value ok";
     document.getElementById("k-deployment").className = "value ok";
@@ -543,7 +572,7 @@
       <p><strong>ABE completed the full engine chain.</strong></p>
       <p>
         The system processed the intake, measured divergence, converted that divergence into a recovery-capital estimate,
-        allocated that recovery into deployment pathways, modeled macroeconomic activation, and generated a final stability reading.
+        allocated that recovery into deployment pathways, modeled macroeconomic activation, and generated a final post-deployment stability reading.
       </p>
       <p>
         <strong>Total Recovery Capital:</strong> ${money(n.recovery)}.
@@ -555,11 +584,22 @@
       </p>
       <p>
         <strong>Economic Activation:</strong> ${money(n.activation)}.
-        This is the modeled activity generated after sector multipliers and effectiveness factors are applied.
+        This is the modeled activity generated after RT sector multipliers and effectiveness factors are applied.
       </p>
       <p>
         <strong>Macro Gain:</strong> ${money(n.macroGain)}.
         This is the broader modeled economic cascade from the MACRO module.
+      </p>
+      <p>
+        <strong>AFFE Index:</strong> ${number(n.affeIndex, 6)}.
+        This is the final funding-and-fidelity stability reading after RT deployment is evaluated.
+      </p>
+      <p>
+        <strong>AFFE Stability Signal:</strong> ${number(n.affeSignal, 6)}.
+        This combines RT execution, activation value, recovery capital, and CII effectiveness.
+      </p>
+      <p>
+        <strong>AFFE Stability Class:</strong> ${n.affeClass}.
       </p>
       <p>
         The JSON report remains available below so engineers, auditors, or reviewers can verify the full calculation chain.
@@ -659,16 +699,21 @@
   btnClear.onclick = () => {
     STORAGE_KEYS.forEach(k => localStorage.removeItem(k));
     lastReport = null;
+
     jsonEl.textContent = "—";
     plainEl.textContent = "Stored results cleared. Run the pipeline again.";
     rtSectorsEl.innerHTML = '<tr><td colspan="4">No RT output yet.</td></tr>';
     moduleStatusEl.innerHTML = '<tr><td colspan="4">No run yet.</td></tr>';
+
     document.getElementById("k-recovery").textContent = "—";
     document.getElementById("k-deployment").textContent = "—";
     document.getElementById("k-activation").textContent = "—";
     document.getElementById("k-macro").textContent = "—";
     document.getElementById("k-rt").textContent = "—";
-    document.getElementById("k-affe").textContent = "—";
+    document.getElementById("k-affe-index").textContent = "—";
+    document.getElementById("k-affe-signal").textContent = "—";
+    document.getElementById("k-affe-class").textContent = "—";
+
     stepsEl.innerHTML = "";
     statusEl.textContent = "Stored results cleared.";
     btnDownload.disabled = true;
