@@ -1,112 +1,130 @@
-# 🦋 The American Butterfly Effect (A.B.E.)
-
-**A universal constitutional fidelity & recovery framework**  
-_Transforming divergence into measurable harm, recovery, and lawful reinvestment through truth, math, and verifiable governance._
-
----
-
-## 🌍 Overview
-
-**A.B.E.** is a modular, deterministic data engine that measures **divergence** from any foundational framework, quantifies resulting **harm/exposure**, and models **lawful recovery and reinvestment**.
-
-At its core is the **Constitution Divergence Index (CDI)**, which applies **2σ–4σ statistical weighting** to score deviation, drift, and priority. This weighted divergence then flows into:
-- **AFFE** → Harm & exposure modeling
-- **CIRI** → Constitutional Integrity & Recovery Index (economic loss & recoverable value)
-- **CIBS** → Constitutional Investment & Budget System (lawful reallocation)
-- **CII** → Citizen Impact Index (real-world outcomes)
-
-The entire pipeline is **local-only**, fully auditable, and designed for transparency.
-
----
-
-## 🚀 Universal Scalability
-
-This framework is **not limited to the U.S. Constitution**. It is deliberately designed as a **domain-, jurisdiction-, and industry-agnostic template**.
-
-### How to Adapt It
-1. Replace the baseline framework files in `/doctrine/` with your own (national constitution, treaty, corporate charter, industry standard, or AI governance policy).
-2. Adjust domain weights in the configuration layer.
-3. The **2–4σ divergence scoring**, harm quantification, and closed-loop recovery mechanics remain unchanged.
-
-### Example Use Cases
-- **National / Global Governance** — Any country can fork the repo and swap in their own constitution or regional charter.
-- **AI Governance** — Use the EU AI Act, NIST AI RMF, company Responsible AI principles, or a custom "AI Constitution" as the baseline. Measure model bias, transparency, or safety divergence in real time.
-- **Industry & Sector Standards** — Apply to ISO standards, GDPR compliance, healthcare ethics codes, financial regulations, or supply-chain integrity frameworks.
-- **Markets & Economics** — Quantify market integrity drift, regulatory exposure, or systemic risk across any financial or trade system.
-- **Corporate & Organizational Governance** — Track fidelity to a company charter, board policies, or ESG commitments.
-
-The engine scales from local audits to national policy to global institutions — all while staying fully deterministic and verifiable.
-
----
-
-## 🧱 Repository Structure
-
-The repo is organized as a modular "engine spine" with each subsystem in its own folder:
-
-- `intake/` — Data ingestion
-- `cda/` — Constitutional Data Aggregator
-- `cdi/` — Constitution Divergence Index (core 2–4σ scoring)
-- `cff/` — Constitutional Fidelity Framework
-- `affe/` — Aggregate Fidelity & Financial Exposure
-- `ciri/` — Constitutional Integrity & Recovery Index
-- `cibs/` — Constitutional Investment & Budget System
-- `cii/` — Citizen Impact Index
-- `macro/` — Macro-level synthesis
-- `integration/` — Verification & audit layer
-- `doctrine/` — Foundational legal texts and principles
-- `system/` — System map and transparency tools
-
-Each module contains its own `index.html` for standalone exploration.
-
----
-
-## 🧭 How It Works (Core Pipeline)
-
-1. **Intake & CDA** — Gather observable data.
-2. **CDI** — Compute weighted divergence using 2σ–4σ scoring against the chosen framework.
-3. **AFFE → CIRI** — Translate divergence into measurable economic harm and recoverable value.
-4. **CIBS** — Model lawful reinvestment into public goods (infrastructure, justice, education, etc.).
-5. **CII** — Quantify tangible citizen/societal impact.
-6. **Integration Layer** — Ensure full auditability and integrity.
-
-The result is a **closed-loop system** that turns measurable drift into verifiable restoration.
-
----
-
-## 🧩 Key Acronyms
-
-| Term              | Meaning |
-|-------------------|--------|
-| **ABE**           | American Butterfly Effect — The overarching restoration framework |
-| **CDI**           | Constitution Divergence Index — 2σ–4σ weighted divergence scoring |
-| **CIRI**          | Constitutional Integrity & Recovery Index — Calculates loss and recoverable value |
-| **CIBS**          | Constitutional Investment & Budget System — Lawful reallocation engine |
-| **CII**           | Citizen Impact Index — Measures real-world outcomes |
-| **AFFE**          | Aggregate Fidelity & Financial Exposure — Harm modeling |
-| **Suprema Lex Terrae** | “The supreme law of the land” — Foundational legal authority |
-
----
-
-## 🕊️ License & Citation
-
-**Full License:**  
-This work is licensed under a **Creative Commons Attribution-NonCommercial 4.0 International License (CC BY-NC 4.0)**.
-
-> “No money requested. No publicity requested. Integrity only — never for sale.”
-
-**Preferred Citation:**  
-Shouse, T. (2026). American Butterfly Effect (ABE). Zenodo.  
-DOI: [10.5281/zenodo.17586107](https://doi.org/10.5281/zenodo.17586107)
-
-When using or referencing any part of this framework (code, models, outputs, or methodology), please include the above citation.
-
----
-
-## 🧭 Quick Start
-
-```bash
-# Clone the repository
-git clone https://github.com/Terra610/abe---flag.git
+🦋 The American Butterfly Effect (A.B.E.)
+A deterministic capital discovery, recovery, and deployment engine
+Local-only · auditable · no backend · no login · no black box
+🌍 Overview
+A.B.E. is a modular, deterministic engine that identifies constrained capital flow inside complex systems, quantifies recoverable value, models deployment pathways, and verifies post-deployment stability.
+It transforms:
+system friction → measurable signal → recoverable capital → structured allocation → deployment → economic activation → stability verification
+A.B.E. operates entirely in the browser. No servers. No accounts. No external dependencies.
+💡 Capital Insight
+Most systems are not inefficient by design.
+They become inefficient when:
+capital is constrained
+participation is limited
+allocation is fragmented
+processes introduce friction
+A.B.E. does not change the system.
+It reveals where value exists inside the system by showing:
+where capital is constrained
+how much can be recovered
+how it can be deployed
+whether deployment produces stable outcomes
+🔗 Full Engine Chain
+INTAKE → CAE → CDA → CDI → CIRI → CIBS → CII → INTEGRATION → MACRO → RT → CFF → CCRI → AFFE
+Users can run the full pipeline automatically from:
+system/index.html
+🧱 Repository Structure
+intake/ — Document Intake + OCR Bridge
+cae/ — Constitutional Alignment Engine
+cda/ — Constitutional Divergence Analyzer
+cdi/ — Constitutional Divergence Index
+ciri/ — Constitutional Integrity ROI Engine
+cibs/ — Constitutional Integrity Baseline Schema
+cii/ — Constitutional Integrity Index
+integration/ — Audit & SHA-256 Integrity Layer
+macro/ — Macroeconomic Cascade Model
+rt/ — Rebuild Together Engine
+cff/ — Constitutional Funding Forensics
+ccri/ — Consumer Credit Risk Integrity
+affe/ — American Funding & Fidelity Explorer
+law/ — Authority Layer
+doctrine/ — Framework Mapping Layer
+learn/ — Guided Engine Learning Interface
+system/ — Command Interface & Execution Layer
+assets/ — Shared Front-End Assets
+🧠 Core Formula Chain
+CDI — Shouse Divergence Curve
+S_r = (w1 · s1) + (w2 · s2) + (w3 · s3) + (w4 · s4) + (w5 · s5)
+CDI = 1 - e^(-S_r / R)
+CIRI — Recovery / ROI Function
+R_T =
+(C_a · C̄) + F_e + (C_a · D_j · J)
+(P_e · Ē)
+(H_r · M̄ · t̄_a)
+(C_a · P_e · w̄ · t̄_a)
+(L_e · P̄ · λ)
+T_c
+CIRI = 1 - e^(-R_T / K)
+ROI_case = R_T / C_a
+CIBS — Shouse Baseline Allocation Function
+B_i = R_T · p_i
+Σ B_i = R_T
+B_i,q = B_i · f_q
+CII — Shouse Alignment Propagation Model
+CII = Σ ((B_p / R_T) · η_p · w_p)
+RT — Rebuild Together Deployment Function
+D_i = B_i · a_i
+A_i = D_i · m_i · η_i
+A_total = Σ A_i
+RTI = Σ ((D_i / D_total) · η_i · w_i)
+AFFE — Post-Deployment Stability Function
+S = (RTI · η) + (A_total / R_T)
+AFFE = 1 - e^(-S / K)
+📊 What the Engine Produces
+A.B.E. generates:
+divergence score
+recoverable capital estimate
+allocation structure
+propagation index (CII)
+macroeconomic projection
+RT deployment + activation
+AFFE stability score
+SHA-256 audit receipt
+full pipeline JSON report
+💼 Constitutional Capital
+A.B.E. models constitutional capital as recoverable economic value generated when system conditions align with their governing framework.
+This value emerges through:
+reduced friction
+increased participation
+improved allocation
+recovered cost efficiency
+structured deployment
+measurable stability
+This is not speculative value.
+It is modeled from measurable system conditions.
+🌐 Universal Scalability
+A.B.E. is framework-agnostic and can be applied to:
+national governance systems
+regulatory frameworks
+corporate governance structures
+financial markets
+healthcare systems
+AI governance models
+supply chains
+industry standards
+To adapt the engine:
+Replace baseline framework files in doctrine/ or law/
+Adjust model weights and sector configurations
+Run the pipeline
+The engine logic remains unchanged.
+🔒 Privacy & Execution
+runs locally in the browser
+no backend
+no login
+no tracking
+no API dependency
+no centralized data storage
+All outputs remain user-controlled.
+🚀 Quick Start
+git clone https://github.com/Terra610/abe---flag.git⁠�
 cd abe---flag
-
-# Open any module's index.html in your browser (e.g., cdi/index.html)
+Open:
+index.html
+system/index.html
+Recommended flow:
+Start Intake → Run Full Pipeline → Read Results → Download JSON
+🕊️ License & Citation
+Creative Commons Attribution-NonCommercial 4.0 (CC BY-NC 4.0)
+Integrity only — never for sale
+Shouse, T. (2026). American Butterfly Effect (A.B.E.). Zenodo.
+https://doi.org/10.5281/zenodo.17586107⁠
