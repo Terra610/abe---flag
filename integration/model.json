@@ -1,49 +1,57 @@
 {
   "version": "1.0",
   "module": "INTEGRATION",
-  "updated": "2026-04-22T00:00:00Z",
-  "title": "ABE Integration Layer",
-  "description": "Deterministic collector for the pioneer core spine. Reads CDI, CIRI, CIBS, and CII artifacts, computes the ABE aggregate, and writes the final attestation receipt.",
-  "core_order": [
+  "updated": "2026-04-26T00:00:00Z",
+  "title": "Audit & SHA-256 Integrity Layer",
+  "description": "Final integrity layer that binds core outputs, macro projections, RT deployment outputs, and expansion artifacts into one deterministic audit receipt.",
+  "chain_formula": "ABE(x) = Phi(CIRI(x), CIBS(x), CII(x), CDI(x), MACRO(x), RT(x))",
+  "signature_formula": "ABE = (dC + dR) / dI",
+  "execution_order": [
+    "INTAKE",
+    "CAE",
+    "CDA",
     "CDI",
     "CIRI",
     "CIBS",
     "CII",
-    "ABE"
+    "INTEGRATION",
+    "MACRO",
+    "RT",
+    "CFF",
+    "CCRI",
+    "AFFE"
   ],
-  "chain_formula": "ABE(x) = Φ(CIRI(x), CIBS(x), CII(x), CDI(x))",
-  "signature_formula": "ABE = (∂C + ∂R) / ∂I",
+  "core_order": [
+    "CDI",
+    "CIRI",
+    "CIBS",
+    "CII"
+  ],
+  "deployment_order": [
+    "MACRO",
+    "RT",
+    "AFFE"
+  ],
   "artifact_keys": {
-    "CDI": [
-      "ABE_CDI_SCENARIO_V1",
-      "abe_cdi_artifact"
-    ],
-    "CIRI": [
-      "ABE_CIRI_SCENARIO_V2",
-      "ABE_CIRI_SCENARIO_V1",
-      "abe_ciri_artifact"
-    ],
-    "CIBS": [
-      "ABE_CIBS_BUDGET_V1",
-      "abe_cibs_artifact"
-    ],
-    "CII": [
-      "ABE_CII_PORTFOLIO_V1",
-      "abe_cii_artifact"
-    ],
-    "ABE": [
-      "ABE_INTEGRATION_ARTIFACT_V1",
-      "abe_integration_artifact",
-      "ABE_AUDIT_RECEIPT_V1"
-    ]
+    "INTAKE": "ABE_INTAKE_ARTIFACT_V1",
+    "CAE": "ABE_CAE_ARTIFACT_V1",
+    "CDA": "ABE_CDA_SCENARIO_V1",
+    "CDI": "ABE_CDI_SCENARIO_V1",
+    "CIRI": "ABE_CIRI_SCENARIO_V2",
+    "CIBS": "ABE_CIBS_BUDGET_V1",
+    "CII": "ABE_CII_PORTFOLIO_V1",
+    "INTEGRATION": "ABE_INTEGRATION_ARTIFACT_V1",
+    "MACRO": "ABE_MACRO_ARTIFACT_V1",
+    "RT": "ABE_RT_ARTIFACT_V1",
+    "CFF": "ABE_CFF_ARTIFACT_V1",
+    "CCRI": "ABE_CCRI_SCENARIO_V1",
+    "AFFE": "ABE_AFFE_ARTIFACT_V1"
   },
-  "status_thresholds": {
-    "complete": 4,
-    "partial": 1
-  },
-  "display": {
-    "show_core_receipts": true,
-    "show_signature_components": true,
-    "show_phi_inputs": true
+  "integrity": {
+    "hash_algorithm": "SHA-256",
+    "local_only": true,
+    "deterministic": true,
+    "no_backend": true,
+    "no_login": true
   }
 }
