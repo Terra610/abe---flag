@@ -3,176 +3,473 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <base href="/abe---flag/">
   <title>A.B.E. — American Butterfly Effect</title>
-  <link rel="stylesheet" href="assets/theme.css">
+  <base href="/abe---flag/">
+  <style>
+    :root{
+      --bg:#0b0d12;
+      --panel:#141820;
+      --panel2:#10151d;
+      --ink:#e6e6e6;
+      --muted:#9fb3c8;
+      --line:rgba(255,255,255,.08);
+      --ok:#4bd28f;
+      --warn:#ffd166;
+      --bad:#ff6b6b;
+      --accent:#80bfff;
+      --glow:rgba(128,191,255,.18);
+    }
+
+    *{box-sizing:border-box}
+
+    body{
+      margin:0;
+      background:
+        radial-gradient(circle at top, rgba(128,191,255,.08), transparent 34rem),
+        var(--bg);
+      color:var(--ink);
+      font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+    }
+
+    a{
+      color:var(--accent);
+      text-decoration:none;
+    }
+
+    a:hover{text-decoration:underline}
+
+    header{
+      padding:34px 16px 28px;
+      text-align:center;
+      background:#11151c;
+      border-bottom:1px solid var(--line);
+    }
+
+    .badge{
+      display:inline-block;
+      padding:6px 12px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      background:#0f141b;
+      color:var(--muted);
+      font-size:.9rem;
+      margin-bottom:12px;
+    }
+
+    h1{
+      margin:0;
+      font-size:clamp(2rem,5vw,4rem);
+      line-height:1.08;
+      letter-spacing:-.03em;
+    }
+
+    .subtitle{
+      max-width:920px;
+      margin:14px auto 0;
+      color:var(--muted);
+      font-size:1.08rem;
+    }
+
+    .hero-actions{
+      display:flex;
+      justify-content:center;
+      flex-wrap:wrap;
+      gap:12px;
+      margin-top:22px;
+    }
+
+    .btn{
+      display:inline-block;
+      padding:11px 16px;
+      border:1px solid var(--line);
+      border-radius:12px;
+      background:var(--panel2);
+      color:var(--ink);
+      font-weight:700;
+      text-decoration:none;
+    }
+
+    .btn:hover{
+      text-decoration:none;
+      border-color:rgba(128,191,255,.65);
+      box-shadow:0 0 0 4px var(--glow);
+    }
+
+    .btn.primary{
+      background:#122033;
+      border-color:rgba(128,191,255,.45);
+    }
+
+    main{
+      max-width:1240px;
+      margin:22px auto;
+      padding:0 16px 48px;
+    }
+
+    .card{
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:18px;
+      margin:14px 0;
+    }
+
+    .card h2,
+    .card h3{
+      margin-top:0;
+    }
+
+    .small{
+      color:var(--muted);
+      font-size:.94rem;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+      gap:12px;
+    }
+
+    .module{
+      background:var(--panel2);
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:14px;
+      min-height:150px;
+    }
+
+    .module h3{
+      margin:.1rem 0 .35rem;
+      font-size:1.05rem;
+    }
+
+    .module .layer{
+      display:inline-block;
+      font-size:.78rem;
+      color:var(--muted);
+      border:1px solid var(--line);
+      border-radius:999px;
+      padding:2px 8px;
+      margin-bottom:8px;
+    }
+
+    .module p{
+      margin:.35rem 0;
+      color:var(--muted);
+      font-size:.92rem;
+    }
+
+    .module a{
+      display:inline-block;
+      margin-top:8px;
+      font-weight:700;
+    }
+
+    .flow{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      align-items:center;
+      margin-top:10px;
+    }
+
+    .step{
+      border:1px solid var(--line);
+      background:#0f141b;
+      color:var(--muted);
+      border-radius:999px;
+      padding:7px 10px;
+      font-size:.86rem;
+    }
+
+    .arrow{
+      color:var(--muted);
+      font-size:.9rem;
+    }
+
+    .kpi{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+      gap:12px;
+    }
+
+    .tile{
+      background:#0f141b;
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:14px;
+    }
+
+    .tile .label{
+      color:var(--muted);
+      font-size:.9rem;
+      margin-bottom:4px;
+    }
+
+    .tile .value{
+      font-size:1.2rem;
+      font-weight:800;
+    }
+
+    .plain{
+      background:#0f141b;
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:16px;
+    }
+
+    .plain p{
+      margin:.45rem 0;
+    }
+
+    footer{
+      text-align:center;
+      color:var(--muted);
+      border-top:1px solid var(--line);
+      background:#11151c;
+      padding:18px 12px;
+      font-size:.9rem;
+    }
+
+    code{
+      background:#0f141b;
+      border:1px solid var(--line);
+      border-radius:6px;
+      padding:1px 5px;
+    }
+  </style>
 </head>
+
 <body>
-  <main class="wrap">
-    <header class="hero panel">
-      <div class="pill">Local-only · deterministic · constitutional fidelity engine</div>
-      <h1>A.B.E. — American Butterfly Effect</h1>
-      <p class="tagline">
-        A constitutional measurement engine that maps authority, measures divergence,
-        quantifies harm, and models recovery through lawful realignment.
-      </p>
+<header>
+  <div class="badge">Local-only · deterministic · audit-ready</div>
+  <h1>American Butterfly Effect</h1>
+  <div class="subtitle">
+    A.B.E. is a deterministic capital recovery and deployment engine.
+    It identifies constrained capital flow, models recoverable value, maps deployment pathways,
+    and verifies post-deployment stability — all locally in the browser.
+  </div>
 
-      <div class="module-nav" style="margin-top:16px;">
-        <a href="/abe---flag/integration/index.html"><button>Open Integration</button></a>
-        <a href="/abe---flag/intake/index.html"><button>Open Intake</button></a>
-        <a href="/abe---flag/doctrine/index.html"><button>Open Doctrine</button></a>
-        <a href="/abe---flag/system/index.html"><button>Open System</button></a>
-      </div>
-    </header>
+  <div class="hero-actions">
+    <a class="btn primary" href="intake/index.html">Start Intake</a>
+    <a class="btn primary" href="system/index.html">Run Full Pipeline</a>
+    <a class="btn" href="learn/index.html">Learn the Engine</a>
+    <a class="btn" href="integration/index.html">Build Audit Receipt</a>
+  </div>
+</header>
 
-    <section class="panel">
-      <h2>Constitutional Engine Spine</h2>
+<main>
+
+  <section class="card">
+    <h2>Plain-Language Overview</h2>
+    <div class="plain small">
       <p>
-        A.B.E. does not treat law as abstract commentary. It treats the Constitution as the
-        top tier of governing authority and measures whether downstream conduct, funding, and enforcement
-        remain aligned with it. The engine follows a deterministic firing order:
+        A.B.E. is built to show where value is being constrained inside complex systems and how much value can be recovered, deployed, and stabilized.
       </p>
-      <pre class="small">Intake → CDA → CDI → CFF → AFFE → CIRI → CIBS → CII → Macro → Integration</pre>
       <p>
-        The purpose is not interpretation for its own sake. The purpose is to identify divergence from
-        constitutional fidelity, quantify the cost of that divergence, and model the path back to lawful alignment.
+        The user starts by uploading files or pasting text. The engine then runs the full module chain automatically and returns a plain-language result plus a full JSON audit report.
       </p>
-    </section>
-
-    <section class="panel">
-      <h2>What A.B.E. Measures</h2>
-      <div class="grid cols-2">
-        <section class="card">
-          <h3>Authority and Jurisdiction</h3>
-          <p>
-            Whether the claimed action is actually authorized under the constitutional hierarchy of law,
-            whether it is ultra vires, and whether it is void ab initio from inception.
-          </p>
-        </section>
-
-        <section class="card">
-          <h3>Funding and Mission Scope</h3>
-          <p>
-            Whether public funding, program conditions, and delegated purpose actually authorize the conduct,
-            or whether the action is off-mission and outside approved scope.
-          </p>
-        </section>
-
-        <section class="card">
-          <h3>Rights and Process</h3>
-          <p>
-            Whether conduct burdens rights, violates due process, ignores lawful limits, or creates measurable
-            societal and economic harm through constitutional divergence.
-          </p>
-        </section>
-
-        <section class="card">
-          <h3>Recovery and Reinvestment</h3>
-          <p>
-            How lawful realignment converts loss into recoverable value, budget allocation,
-            implementation units, and macro-level public gain.
-          </p>
-        </section>
-      </div>
-    </section>
-
-    <section class="panel">
-      <h2>Core Modules</h2>
-      <div class="grid cols-3">
-        <section class="card">
-          <h3>CDA</h3>
-          <p>Authority, doctrine, jurisdiction, rights burden, ultra vires, off-mission, and void ab initio audit.</p>
-          <a href="/abe---flag/cda/index.html"><button>Open CDA</button></a>
-        </section>
-
-        <section class="card">
-          <h3>CDI</h3>
-          <p>Constitution Divergence Index. Weighted domain-level measurement of deviation from constitutional fidelity.</p>
-          <a href="/abe---flag/cdi/index.html"><button>Open CDI</button></a>
-        </section>
-
-        <section class="card">
-          <h3>CFF</h3>
-          <p>Funding fidelity and mission-scope review. Determines whether conduct aligns with approved program authority.</p>
-          <a href="/abe---flag/cff/index.html"><button>Open CFF</button></a>
-        </section>
-
-        <section class="card">
-          <h3>AFFE</h3>
-          <p>Exposure and loss modeling. Converts validated divergence into measurable financial and enforcement exposure.</p>
-          <a href="/abe---flag/affe/index.html"><button>Open AFFE</button></a>
-        </section>
-
-        <section class="card">
-          <h3>CIRI</h3>
-          <p>Constitutional Impact and Recovery Index. Translates divergence and exposure into cases avoided, days avoided, and recoverable value.</p>
-          <a href="/abe---flag/ciri/index.html"><button>Open CIRI</button></a>
-        </section>
-
-        <section class="card">
-          <h3>CIBS</h3>
-          <p>Community Integrity Budget System. Converts recovery into transparent reinvestment and budget allocation.</p>
-          <a href="/abe---flag/cibs/index.html"><button>Open CIBS</button></a>
-        </section>
-
-        <section class="card">
-          <h3>CII</h3>
-          <p>Constitutional Implementation Interface. Converts budgets into visible implementation units and funded action.</p>
-          <a href="/abe---flag/cii/index.html"><button>Open CII</button></a>
-        </section>
-
-        <section class="card">
-          <h3>Macro</h3>
-          <p>System-level uplift modeling. Shows how constitutional realignment scales into public prosperity and economic gain.</p>
-          <a href="/abe---flag/macro/index.html"><button>Open Macro</button></a>
-        </section>
-
-        <section class="card">
-          <h3>Integration</h3>
-          <p>Runs the engine chain, checks readiness, shows artifacts, and produces an auditable view of the full system.</p>
-          <a href="/abe---flag/integration/index.html"><button>Open Integration</button></a>
-        </section>
-      </div>
-    </section>
-
-    <section class="panel">
-      <h2>Doctrine and System Layers</h2>
-      <div class="grid cols-2">
-        <section class="card">
-          <h3>Doctrine</h3>
-          <p>
-            Constitutional fidelity, void ab initio, and related doctrines define the legal rules that keep
-            the engine anchored to lawful hierarchy instead of drift and interpretation.
-          </p>
-          <div class="module-nav">
-            <a href="/abe---flag/doctrine/index.html"><button>Doctrine Hub</button></a>
-            <a href="/abe---flag/doctrine/constitutional-fidelity.html"><button>Constitutional Fidelity</button></a>
-            <a href="/abe---flag/doctrine/void-ab-initio.html"><button>Void ab Initio</button></a>
-          </div>
-        </section>
-
-        <section class="card">
-          <h3>System</h3>
-          <p>
-            The system layer exposes integrity, architecture, and audit structure so the engine can be verified,
-            not merely asserted.
-          </p>
-          <div class="module-nav">
-            <a href="/abe---flag/system/index.html"><button>Open System</button></a>
-            <a href="/abe---flag/learn/index.html"><button>Learn</button></a>
-          </div>
-        </section>
-      </div>
-    </section>
-
-    <section class="panel">
-      <h2>Purpose</h2>
       <p>
-        A.B.E. exists to measure constitutional divergence as real harm, trace that harm through authority,
-        funding, rights, and public cost, and map the route back to constitutional fidelity. The goal is not
-        acceptable drift. The goal is lawful alignment.
+        The goal is not to blame systems. The goal is to identify capital friction, reduce inefficiency, and create measurable economic gain through structured alignment.
       </p>
-    </section>
-  </main>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>How Users Run It</h2>
+    <div class="kpi">
+      <div class="tile">
+        <div class="label">Step 1</div>
+        <div class="value">Upload or Paste</div>
+        <div class="small">Use Intake to provide files, text, notes, or JSON.</div>
+      </div>
+      <div class="tile">
+        <div class="label">Step 2</div>
+        <div class="value">Run Pipeline</div>
+        <div class="small">The CLI executes the full chain automatically.</div>
+      </div>
+      <div class="tile">
+        <div class="label">Step 3</div>
+        <div class="value">Read Results</div>
+        <div class="small">The dashboard shows recovery, deployment, activation, and stability in plain language.</div>
+      </div>
+      <div class="tile">
+        <div class="label">Step 4</div>
+        <div class="value">Verify JSON</div>
+        <div class="small">Download the audit report for engineering or review.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Full Engine Chain</h2>
+    <p class="small">
+      The engine fires in this fixed order. Users do not need to manually hop from module to module.
+    </p>
+
+    <div class="flow" aria-label="ABE module execution chain">
+      <span class="step">INTAKE</span><span class="arrow">→</span>
+      <span class="step">CAE</span><span class="arrow">→</span>
+      <span class="step">CDA</span><span class="arrow">→</span>
+      <span class="step">CDI</span><span class="arrow">→</span>
+      <span class="step">CIRI</span><span class="arrow">→</span>
+      <span class="step">CIBS</span><span class="arrow">→</span>
+      <span class="step">CII</span><span class="arrow">→</span>
+      <span class="step">INTEGRATION</span><span class="arrow">→</span>
+      <span class="step">MACRO</span><span class="arrow">→</span>
+      <span class="step">RT</span><span class="arrow">→</span>
+      <span class="step">CFF</span><span class="arrow">→</span>
+      <span class="step">CCRI</span><span class="arrow">→</span>
+      <span class="step">AFFE</span>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Core Value Path</h2>
+    <div class="grid">
+      <article class="module">
+        <span class="layer">Measure</span>
+        <h3>CDI</h3>
+        <p>Measures divergence as a normalized signal.</p>
+        <a href="cdi/index.html">Open CDI →</a>
+      </article>
+
+      <article class="module">
+        <span class="layer">Quantify</span>
+        <h3>CIRI</h3>
+        <p>Converts measured divergence into recoverable capital and ROI outputs.</p>
+        <a href="ciri/index.html">Open CIRI →</a>
+      </article>
+
+      <article class="module">
+        <span class="layer">Allocate</span>
+        <h3>CIBS</h3>
+        <p>Structures recovery capital into baseline allocation categories.</p>
+        <a href="cibs/index.html">Open CIBS →</a>
+      </article>
+
+      <article class="module">
+        <span class="layer">Propagate</span>
+        <h3>CII</h3>
+        <p>Measures how effectively allocation propagates into system integrity.</p>
+        <a href="cii/index.html">Open CII →</a>
+      </article>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Deployment & Stability</h2>
+    <div class="grid">
+      <article class="module">
+        <span class="layer">Project</span>
+        <h3>MACRO</h3>
+        <p>Projects broader economic cascade and sector-level gain.</p>
+        <a href="macro/index.html">Open MACRO →</a>
+      </article>
+
+      <article class="module">
+        <span class="layer">Deploy</span>
+        <h3>RT</h3>
+        <p>Maps recovery capital into Capital Activation Sectors and estimates activation value.</p>
+        <a href="rt/index.html">Open RT →</a>
+      </article>
+
+      <article class="module">
+        <span class="layer">Verify</span>
+        <h3>AFFE</h3>
+        <p>Measures post-deployment stability using RT, CII, and Integration outputs.</p>
+        <a href="affe/index.html">Open AFFE →</a>
+      </article>
+
+      <article class="module">
+        <span class="layer">Seal</span>
+        <h3>INTEGRATION</h3>
+        <p>Binds module outputs into a local audit receipt with SHA-256 integrity support.</p>
+        <a href="integration/index.html">Open Integration →</a>
+      </article>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Expansion & Reference Layers</h2>
+    <div class="grid">
+      <article class="module">
+        <span class="layer">Intake</span>
+        <h3>INTAKE</h3>
+        <p>Normalizes uploads, pasted text, and structured data into a local artifact.</p>
+        <a href="intake/index.html">Open Intake →</a>
+      </article>
+
+      <article class="module">
+        <span class="layer">Alignment</span>
+        <h3>CAE</h3>
+        <p>Establishes baseline alignment conditions before measurement.</p>
+        <a href="cae/index.html">Open CAE →</a>
+      </article>
+
+      <article class="module">
+        <span class="layer">Analyzer</span>
+        <h3>CDA</h3>
+        <p>Structures divergence signals for downstream scoring.</p>
+        <a href="cda/index.html">Open CDA →</a>
+      </article>
+
+      <article class="module">
+        <span class="layer">Funding</span>
+        <h3>CFF</h3>
+        <p>Analyzes funding flow and allocation patterns for capital efficiency.</p>
+        <a href="cff/index.html">Open CFF →</a>
+      </article>
+
+      <article class="module">
+        <span class="layer">Credit</span>
+        <h3>CCRI</h3>
+        <p>Evaluates consumer credit risk integrity and participation constraints.</p>
+        <a href="ccri/index.html">Open CCRI →</a>
+      </article>
+
+      <article class="module">
+        <span class="layer">Reference</span>
+        <h3>LAW</h3>
+        <p>Stores structured authority and reference datasets.</p>
+        <a href="law/index.html">Open Law →</a>
+      </article>
+
+      <article class="module">
+        <span class="layer">Reference</span>
+        <h3>DOCTRINE</h3>
+        <p>Maps doctrine and framework references used by the engine.</p>
+        <a href="doctrine/index.html">Open Doctrine →</a>
+      </article>
+
+      <article class="module">
+        <span class="layer">Guide</span>
+        <h3>LEARN</h3>
+        <p>Provides a guided explanation of the system and its module chain.</p>
+        <a href="learn/index.html">Open Learn →</a>
+      </article>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Why Local-Only Matters</h2>
+    <div class="plain small">
+      <p>
+        A.B.E. runs locally in the browser. There is no backend, no login, no account, no tracking, and no server-side control point.
+      </p>
+      <p>
+        That means users can review inputs, run calculations, export reports, and preserve audit records without surrendering their data.
+      </p>
+      <p>
+        This keeps the system portable, private, and easier to trust.
+      </p>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  A.B.E. — American Butterfly Effect · CC BY-NC 4.0 · Integrity only — never for sale.
+</footer>
 </body>
 </html>
