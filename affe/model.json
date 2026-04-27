@@ -1,25 +1,19 @@
 {
   "version": "1.0",
   "module": "AFFE",
-  "updated": "2026-04-23T00:00:00Z",
-  "title": "After-Effects and Forward Fidelity Engine",
-  "description": "Measures post-realignment stability, durability, and forward integrity using settled recovery, propagation, and alignment context. AFFE is a downstream expansion module and does not replace the pioneer spine.",
-  "weights": {
-    "recovery_durability": 0.34,
-    "system_stability": 0.33,
-    "forward_integrity": 0.33
-  },
-  "thresholds": {
-    "good": 0.85,
-    "warning": 0.65
+  "updated": "2026-04-26T00:00:00Z",
+  "title": "American Funding & Fidelity Explorer",
+  "description": "Measures post-deployment stability, funding integrity, and system recovery after RT execution.",
+  "formula": {
+    "stability_signal": "S = (RTI * eta) + (A_total / R_T)",
+    "affe_index": "AFFE = 1 - e^(-S / K)"
   },
   "defaults": {
-    "recovery_durability": 0.50,
-    "system_stability": 0.50,
-    "forward_integrity": 0.50
+    "normalization_constant": 1000000000
   },
-  "notes": [
-    "AFFE consumes settled outputs from CII, Integration, and Macro where available.",
-    "AFFE models durability rather than initial validity."
+  "outputs": [
+    "stability_signal",
+    "american_funding_fidelity_index",
+    "overall_risk_class"
   ]
 }
