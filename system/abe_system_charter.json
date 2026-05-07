@@ -34,4 +34,271 @@
       "3. Classification — Engine identifies the domain and relevant authority path.",
       "4. Constitutional / authority analysis — Engine maps the facts against governing authority and flags divergence signals.",
       "5. Economic impact — Engine estimates recoverable value, deployment capacity, and macroeconomic effect.",
-      "6. Results — Engine displays plain-language findings and key
+      "6. Results — Engine displays plain-language findings and key numbers.",
+      "7. Receipt — Engine produces structured JSON and integrity artifacts for audit or review.",
+      "8. Advanced views — Users, lawyers, auditors, researchers, or analysts may inspect individual modules."
+    ],
+    "user_visible_flow": "Upload → Run Full Pipeline → Read Plain-Language Results → Download Audit JSON",
+    "advanced_views": [
+      "CDA",
+      "CDI",
+      "CIRI",
+      "CIBS",
+      "CII",
+      "INTEGRATION",
+      "MACRO",
+      "RT",
+      "CFF",
+      "CCRI",
+      "AFFE"
+    ]
+  },
+  "module_map": {
+    "INTAKE": {
+      "name": "Document Intake + OCR Bridge",
+      "purpose": "Normalize user documents, pasted text, and structured inputs into a local artifact.",
+      "citizen_view": "Upload or paste once. The engine prepares the input for analysis.",
+      "artifact_keys": [
+        "ABE_INTAKE_ARTIFACT_V1",
+        "abe_intake_artifact"
+      ]
+    },
+    "CAE": {
+      "name": "Constitutional Alignment Engine",
+      "purpose": "Establish baseline alignment conditions before divergence is measured.",
+      "citizen_view": "Checks whether the right authority path is being used."
+    },
+    "CDA": {
+      "name": "Constitutional Divergence Analyzer",
+      "purpose": "Transform facts into structured divergence signals.",
+      "citizen_view": "Finds where the situation may not match the governing authority."
+    },
+    "CDI": {
+      "name": "Constitutional Divergence Index",
+      "purpose": "Measure divergence using a normalized score.",
+      "plain_language": "How far did the system drift?"
+    },
+    "CIRI": {
+      "name": "Constitutional Integrity ROI Engine",
+      "purpose": "Convert measured divergence into recoverable capital and return-on-alignment estimates.",
+      "plain_language": "What is the recoverable value?"
+    },
+    "CIBS": {
+      "name": "Constitutional Integrity Baseline Schema",
+      "purpose": "Allocate recovery capital into structured categories.",
+      "plain_language": "Where should recovered value go?"
+    },
+    "CII": {
+      "name": "Constitutional Integrity Index",
+      "purpose": "Measure whether allocation propagates into real system improvement.",
+      "plain_language": "Who benefits and how much?"
+    },
+    "INTEGRATION": {
+      "name": "Audit & SHA-256 Integrity Layer",
+      "purpose": "Bind module outputs into a local audit receipt.",
+      "plain_language": "Did the chain stay consistent and verifiable?"
+    },
+    "MACRO": {
+      "name": "Macroeconomic Cascade Model",
+      "purpose": "Project broader economic effects across sectors or jurisdictions.",
+      "plain_language": "What is the larger economic ripple effect?"
+    },
+    "RT": {
+      "name": "Rebuild Together Engine",
+      "purpose": "Deploy recovery capital into Capital Activation Sectors and estimate activation value.",
+      "plain_language": "How does recovered value become real-world deployment?"
+    },
+    "CFF": {
+      "name": "Constitutional Funding Forensics",
+      "purpose": "Analyze funding flow and allocation patterns against authority and program scope.",
+      "plain_language": "Is funding aligned with the purpose it was provided for?"
+    },
+    "CCRI": {
+      "name": "Consumer Credit Risk Integrity",
+      "purpose": "Evaluate credit participation and financial access constraints.",
+      "plain_language": "How does the system affect access to credit and participation?"
+    },
+    "AFFE": {
+      "name": "American Funding & Fidelity Explorer",
+      "purpose": "Measure post-deployment stability using RT, CII, and Integration outputs.",
+      "plain_language": "Did deployment create stable forward movement?"
+    },
+    "LAW": {
+      "name": "Authority Layer",
+      "purpose": "Store structured constitutional, statutory, regulatory, and funding authority references."
+    },
+    "DOCTRINE": {
+      "name": "Framework Mapping Layer",
+      "purpose": "Store doctrine maps, rule-of-law principles, and framework references."
+    },
+    "LEARN": {
+      "name": "Guided Engine Learning Interface",
+      "purpose": "Explain the engine in plain language and guide users through the correct flow."
+    },
+    "SYSTEM": {
+      "name": "Command Interface & Execution Layer",
+      "purpose": "Run the full pipeline and display plain-language results plus audit JSON."
+    },
+    "ENGINE_CORE": {
+      "name": "Classification & Validity Layer",
+      "purpose": "Provide pre-execution classification, validity checks, law-pack routing, and supporting audit logic."
+    }
+  },
+  "execution_chain": [
+    "INTAKE",
+    "ENGINE_CORE_CLASSIFY",
+    "ENGINE_CORE_VALIDITY",
+    "ENGINE_CORE_LAW_AUDIT",
+    "CAE",
+    "CDA",
+    "CDI",
+    "CIRI",
+    "CIBS",
+    "CII",
+    "INTEGRATION",
+    "MACRO",
+    "RT",
+    "CFF",
+    "CCRI",
+    "AFFE",
+    "ENGINE_CORE_VERIFY",
+    "EXPORT"
+  ],
+  "current_runtime_chain": [
+    "INTAKE",
+    "CAE",
+    "CDA",
+    "CDI",
+    "CIRI",
+    "CIBS",
+    "CII",
+    "INTEGRATION",
+    "MACRO",
+    "RT",
+    "CFF",
+    "CCRI",
+    "AFFE"
+  ],
+  "doctrine_summary": {
+    "constitutional_hierarchy": "Constitution → federal statutes → federal regulations → funding conditions → state law → agency practice.",
+    "plain_language_rule": "Government action should be measured against the authority that permits it, the limits placed on that authority, and the funding conditions tied to the action.",
+    "void_ab_initio_conditions": [
+      "Contradicts explicit constitutional text",
+      "Removes or nullifies a guaranteed remedy",
+      "Transfers power from the people to government without amendment",
+      "Creates penalties for exercising a right",
+      "Invents powers not delegated in the governing framework"
+    ],
+    "review_targets": [
+      "Scope mismatch",
+      "Funding-condition mismatch",
+      "Commercial vs non-commercial classification errors",
+      "Due-process gaps",
+      "Preemption conflicts",
+      "Overbroad application of regulatory authority",
+      "Administrative practice exceeding enabling authority"
+    ]
+  },
+  "transportation_scope_seed": {
+    "purpose": "Support future DOT / FMCSA / MCSAP law-pack analysis.",
+    "core_questions": [
+      "Is the person acting in commerce?",
+      "Is the vehicle commercial or private?",
+      "Does the vehicle meet federal motor carrier scope thresholds?",
+      "Is hazardous material requiring placarding involved?",
+      "Which agency has lawful authority over the action?",
+      "Which funding program supports the enforcement activity?",
+      "Are state practices aligned with federal funding conditions and statutory scope?"
+    ],
+    "plain_language_goal": "A user should understand the difference between private movement and regulated commercial transportation without needing to read the entire USC/CFR stack."
+  },
+  "output_standards": {
+    "plain_language_required": true,
+    "json_required": true,
+    "downloadable_outputs": true,
+    "audit_receipts_preferred": true,
+    "show_source_module_for_each_number": true,
+    "money_values_must_use_currency_symbol": true,
+    "advanced_json_should_not_be_the_only_result": true
+  },
+  "milestones": [
+    {
+      "id": "m0_doctrine_foundation",
+      "title": "A.B.E. Doctrines & CRRA Authored",
+      "status": "complete",
+      "description": "Core doctrine and framework documents establish the rule-of-law hierarchy, constitutional fidelity, void ab initio analysis, and the constitutional-economic theory behind A.B.E."
+    },
+    {
+      "id": "m1_ciri_core",
+      "title": "CIRI Recovery Core",
+      "status": "complete",
+      "description": "Initial recovery and ROI modeling created to convert divergence into measurable recoverable value."
+    },
+    {
+      "id": "m2_cff_funding",
+      "title": "Funding Forensics",
+      "status": "complete",
+      "description": "Funding analysis structure created for ON_MISSION, OFF_MISSION, and UNCLEAR funding alignment review."
+    },
+    {
+      "id": "m3_macro",
+      "title": "Macro Cascade Model",
+      "status": "complete",
+      "description": "Macroeconomic projection layer created for sector and jurisdiction scaling."
+    },
+    {
+      "id": "m4_cibs_cii",
+      "title": "CIBS + CII Chain",
+      "status": "complete",
+      "description": "Recovery-to-allocation and allocation-to-propagation structure created."
+    },
+    {
+      "id": "m5_intake",
+      "title": "Intake + OCR",
+      "status": "complete",
+      "description": "Local intake layer created for document upload, text normalization, and local artifact generation."
+    },
+    {
+      "id": "m6_cda",
+      "title": "Constitutional Divergence Analyzer",
+      "status": "complete",
+      "description": "Divergence analysis module created for structured scoring and law/funding mismatch review."
+    },
+    {
+      "id": "m7_integration",
+      "title": "Integration Audit Layer",
+      "status": "in_progress",
+      "description": "Local audit layer binds module outputs, creates receipts, and supports SHA-256 verification."
+    },
+    {
+      "id": "m8_rt",
+      "title": "Rebuild Together Engine",
+      "status": "complete",
+      "description": "Deployment and activation module added to map recovery capital into Capital Activation Sectors."
+    },
+    {
+      "id": "m9_affe_stability",
+      "title": "AFFE Stability Layer",
+      "status": "complete",
+      "description": "Post-deployment stability layer added to verify whether deployment produces stable forward movement."
+    },
+    {
+      "id": "m10_engine_simplification",
+      "title": "Citizen-First UX Consolidation",
+      "status": "planned",
+      "description": "Simplify the engine into Start Here → Intake → Run Full Pipeline → Plain-Language Results → Audit JSON, while keeping advanced views optional."
+    },
+    {
+      "id": "m11_engine_core_merge",
+      "title": "ABE v2 Engine-Core Merge",
+      "status": "planned",
+      "description": "Merge ABE v2 classification, validity, law-audit, funding-audit, verification, and export logic into engine-core without overwriting working modules."
+    },
+    {
+      "id": "m12_transportation_law_pack",
+      "title": "DOT / FMCSA / MCSAP Transportation Law Pack",
+      "status": "planned",
+      "description": "Create a structured transportation law pack to evaluate commercial scope, private movement, MCSAP funding conditions, FMCSR scope, and state enforcement alignment."
+    }
+  ]
+}
