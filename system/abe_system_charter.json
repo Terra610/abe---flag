@@ -1,0 +1,37 @@
+{
+  "engine": {
+    "name": "A.B.E. — American Butterfly Effect",
+    "version": "2.0",
+    "type": "Constitutional Capital Discovery, Recovery, and Deployment Engine",
+    "author": "Terra Dawn Shouse",
+    "license": "CC BY-NC 4.0",
+    "tagline": "Integrity only — never for sale.",
+    "mission": "Identify constrained capital flow, measure divergence from governing authority, quantify recoverable value, model lawful deployment pathways, and verify post-deployment stability through deterministic, local-only execution."
+  },
+  "core_principles": {
+    "constitutional_first": "Start from the Constitution and governing framework before moving to statutes, regulations, funding conditions, state law, agency policy, and practice.",
+    "hierarchy_of_authority": "Constitution → federal authority → funding conditions → state law → agency practice.",
+    "public_data_preference": "Use public law, regulations, funding tables, public reports, and transparent assumptions whenever possible.",
+    "local_execution": "User documents and artifacts must be processed client-side in the browser unless the user knowingly chooses otherwise.",
+    "non_commercial": "The engine is licensed CC BY-NC 4.0 and must remain a public-good framework, not a privatized SaaS product or paywalled tool.",
+    "human_first": "The engine evaluates systems, laws, policies, funding uses, and institutional practices. It does not score people.",
+    "plain_language": "Every technical output should have a plain-language explanation so citizens are not required to become experts to understand results.",
+    "determinism": "Identical inputs and model settings should produce identical outputs.",
+    "auditability": "All major outputs should be structured, inspectable, and exportable with integrity receipts where possible."
+  },
+  "privacy_model": {
+    "data_flow": "User uploads, pasted text, and structured inputs are processed locally through the Intake layer and written into local artifacts. Downstream modules read those artifacts locally.",
+    "external_transmission": "A.B.E. must not silently send user documents, artifacts, or analysis outputs to external APIs, servers, or third-party tools.",
+    "artifacts": "Major modules produce structured JSON or CSV outputs. Integrity modules may generate SHA-256 hashes to support chain-of-custody and tamper detection.",
+    "ai_boundary": "External AI assistants may help interpret, explain, draft, or summarize only when clearly identified as external to the A.B.E. engine. A.B.E. itself remains local-first.",
+    "user_control": "Users control whether they download, share, or submit artifacts."
+  },
+  "citizen_first_flow": {
+    "goal": "A user should be able to upload once, run the full engine, and receive a plain-language report plus audit-ready artifacts.",
+    "simple_flow": [
+      "1. Start Here — User reads a simple explanation of what A.B.E. does.",
+      "2. Intake — User uploads a file, pastes text, or enters structured facts.",
+      "3. Classification — Engine identifies the domain and relevant authority path.",
+      "4. Constitutional / authority analysis — Engine maps the facts against governing authority and flags divergence signals.",
+      "5. Economic impact — Engine estimates recoverable value, deployment capacity, and macroeconomic effect.",
+      "6. Results — Engine displays plain-language findings and key
