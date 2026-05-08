@@ -134,7 +134,7 @@
     },
     {
       "key": "AFFE",
-      "label": "American Funding & Fidelity Explorer",
+      "label": "Appropriation Fidelity Funding Engine",
       "path": "/affe/index.html",
       "next": [
         "INTEGRATION"
