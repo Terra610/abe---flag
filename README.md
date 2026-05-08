@@ -122,7 +122,7 @@ system/index.html
 | `rt/` | RT — Rebuild Together Engine | Deploys recovery capital into activation sectors |
 | `cff/` | CFF — Constitutional Funding Forensics | Analyzes funding flow and allocation structure |
 | `ccri/` | CCRI — Consumer Credit Risk Integrity | Evaluates participation and credit stability |
-| `affe/` | AFFE — American Funding & Fidelity Explorer | Measures post-deployment stability |
+| `affe/` | AFFE — Appropriation Fidelity Funding Engine | Measures post-deployment stability |
 | `law/` | LAW — Authority Layer | Stores structured authority datasets |
 | `doctrine/` | DOCTRINE — Framework Mapping Layer | Stores doctrine and reference mappings |
 | `learn/` | LEARN — Guided Engine Learning Interface | Explains system behavior and outputs |
