@@ -21,7 +21,7 @@
       "description": "Primary document and text upload entrypoint."
     },
     "system_cli": {
-      "label": "ABE CLI",
+      "label": "A.B.E. System Dashboard",
       "path": "/system/index.html",
       "description": "Execution dashboard and orchestration interface."
     }
@@ -29,218 +29,123 @@
   "pipeline": [
     {
       "key": "INTAKE",
-      "label": "Document Intake",
+      "label": "Document Intake + OCR Bridge",
       "path": "/intake/index.html",
       "artifact": "abe_intake_artifact",
-      "next": [
-        "ENGINE_CORE_CLASSIFY",
-        "CAE"
-      ],
+      "next": ["CAE"],
       "plain_language": "Prepare uploaded documents and structured facts."
-    },
-    {
-      "key": "ENGINE_CORE_CLASSIFY",
-      "label": "Classification Layer",
-      "path": "/engine-core/classify/",
-      "next": [
-        "ENGINE_CORE_VALIDITY"
-      ],
-      "plain_language": "Determine domain, scope, and routing."
-    },
-    {
-      "key": "ENGINE_CORE_VALIDITY",
-      "label": "Validity Layer",
-      "path": "/engine-core/validity/",
-      "next": [
-        "ENGINE_CORE_LAW_AUDIT",
-        "CAE"
-      ],
-      "plain_language": "Check structural validity before execution."
-    },
-    {
-      "key": "ENGINE_CORE_LAW_AUDIT",
-      "label": "Law Audit Layer",
-      "path": "/engine-core/law-audit/",
-      "next": [
-        "CDA"
-      ],
-      "plain_language": "Map authority structure and scope."
     },
     {
       "key": "CAE",
       "label": "Constitutional Alignment Engine",
       "path": "/cae/index.html",
-      "next": [
-        "CDA"
-      ],
+      "next": ["CDA"],
       "plain_language": "Establish governing authority alignment baseline."
     },
     {
       "key": "CDA",
       "label": "Constitutional Divergence Analyzer",
       "path": "/cda/index.html",
-      "next": [
-        "CDI"
-      ],
+      "next": ["CDI"],
       "plain_language": "Identify divergence signals."
     },
     {
       "key": "CDI",
       "label": "Constitutional Divergence Index",
       "path": "/cdi/index.html",
-      "next": [
-        "CIRI"
-      ],
+      "next": ["CIRI"],
       "plain_language": "Measure the level of divergence."
     },
     {
       "key": "CIRI",
-      "label": "Constitutional Integrity ROI",
+      "label": "Constitutional Integrity ROI Engine",
       "path": "/ciri/index.html",
-      "next": [
-        "CIBS",
-        "MACRO"
-      ],
+      "next": ["CIBS"],
       "plain_language": "Calculate recoverable economic value."
     },
     {
       "key": "CIBS",
       "label": "Constitutional Integrity Baseline Schema",
       "path": "/cibs/index.html",
-      "next": [
-        "CII",
-        "RT"
-      ],
+      "next": ["CII"],
       "plain_language": "Allocate recovery value into deployment categories."
     },
     {
       "key": "CII",
       "label": "Constitutional Integrity Index",
       "path": "/cii/index.html",
-      "next": [
-        "INTEGRATION"
-      ],
-      "plain_language": "Measure deployment impact."
+      "next": ["INTEGRATION"],
+      "plain_language": "Measure deployment impact and propagation."
+    },
+    {
+      "key": "INTEGRATION",
+      "label": "Audit & SHA-256 Integrity Layer",
+      "path": "/integration/index.html",
+      "next": ["MACRO"],
+      "plain_language": "Verify execution integrity and bind artifacts."
+    },
+    {
+      "key": "MACRO",
+      "label": "Macroeconomic Cascade Model",
+      "path": "/macro/index.html",
+      "next": ["RT"],
+      "plain_language": "Project broader economic ripple effects."
     },
     {
       "key": "RT",
       "label": "Rebuild Together Engine",
       "path": "/rt/index.html",
-      "next": [
-        "AFFE",
-        "INTEGRATION"
-      ],
+      "next": ["CFF"],
       "plain_language": "Activate recovery deployment across sectors."
-    },
-    {
-      "key": "AFFE",
-      "label": "Appropriation Fidelity Funding Engine",
-      "path": "/affe/index.html",
-      "next": [
-        "INTEGRATION"
-      ],
-      "plain_language": "Measure deployment stability and funding fidelity."
-    },
-    {
-      "key": "MACRO",
-      "label": "Macroeconomic Cascade",
-      "path": "/macro/index.html",
-      "next": [
-        "INTEGRATION"
-      ],
-      "plain_language": "Project broader economic ripple effects."
     },
     {
       "key": "CFF",
       "label": "Constitutional Funding Forensics",
       "path": "/cff/index.html",
-      "next": [
-        "INTEGRATION"
-      ],
+      "next": ["CCRI"],
       "plain_language": "Analyze funding alignment and scope."
     },
     {
       "key": "CCRI",
       "label": "Consumer Credit Risk Integrity",
       "path": "/ccri/index.html",
-      "next": [
-        "INTEGRATION"
-      ],
+      "next": ["AFFE"],
       "plain_language": "Evaluate participation and credit-access effects."
     },
     {
-      "key": "INTEGRATION",
-      "label": "Integration Audit Layer",
-      "path": "/integration/index.html",
-      "next": [
-        "ENGINE_CORE_VERIFY",
-        "EXPORT"
-      ],
-      "plain_language": "Verify execution integrity and bind artifacts."
-    },
-    {
-      "key": "ENGINE_CORE_VERIFY",
-      "label": "Verification Layer",
-      "path": "/engine-core/verify/",
-      "next": [
-        "EXPORT"
-      ],
-      "plain_language": "Perform final consistency and receipt verification."
-    },
-    {
-      "key": "EXPORT",
-      "label": "Export Layer",
-      "path": "/engine-core/export/",
+      "key": "AFFE",
+      "label": "Appropriation Fidelity & Funding Engine",
+      "path": "/affe/index.html",
       "next": [],
-      "plain_language": "Generate downloadable outputs and receipts."
+      "plain_language": "Normalize funding documents, evaluate appropriation fidelity, and measure deployment stability."
     }
   ],
   "advanced_views": [
-    {
-      "label": "CDA",
-      "path": "/cda/index.html"
-    },
-    {
-      "label": "CDI",
-      "path": "/cdi/index.html"
-    },
-    {
-      "label": "CIRI",
-      "path": "/ciri/index.html"
-    },
-    {
-      "label": "CIBS",
-      "path": "/cibs/index.html"
-    },
-    {
-      "label": "CII",
-      "path": "/cii/index.html"
-    },
-    {
-      "label": "RT",
-      "path": "/rt/index.html"
-    },
-    {
-      "label": "AFFE",
-      "path": "/affe/index.html"
-    },
-    {
-      "label": "MACRO",
-      "path": "/macro/index.html"
-    },
-    {
-      "label": "CFF",
-      "path": "/cff/index.html"
-    },
-    {
-      "label": "CCRI",
-      "path": "/ccri/index.html"
-    },
-    {
-      "label": "INTEGRATION",
-      "path": "/integration/index.html"
-    }
+    {"label": "INTAKE", "path": "/intake/index.html"},
+    {"label": "CAE", "path": "/cae/index.html"},
+    {"label": "CDA", "path": "/cda/index.html"},
+    {"label": "CDI", "path": "/cdi/index.html"},
+    {"label": "CIRI", "path": "/ciri/index.html"},
+    {"label": "CIBS", "path": "/cibs/index.html"},
+    {"label": "CII", "path": "/cii/index.html"},
+    {"label": "INTEGRATION", "path": "/integration/index.html"},
+    {"label": "MACRO", "path": "/macro/index.html"},
+    {"label": "RT", "path": "/rt/index.html"},
+    {"label": "CFF", "path": "/cff/index.html"},
+    {"label": "CCRI", "path": "/ccri/index.html"},
+    {"label": "AFFE", "path": "/affe/index.html"}
   ],
+  "plain_language_module_map": {
+    "CDI": "How far did the system drift?",
+    "CIRI": "What is it worth to fix?",
+    "CIBS": "Where does recovered value go?",
+    "CII": "Who benefits and how much?",
+    "MACRO": "What is the broader ripple effect?",
+    "RT": "How does recovery deploy?",
+    "CFF": "Is funding aligned with its purpose?",
+    "CCRI": "How does this affect credit and participation?",
+    "AFFE": "Did funding fidelity and deployment stability hold?"
+  },
   "required_plain_language_outputs": [
     "What happened?",
     "What does the score mean?",
@@ -259,14 +164,10 @@
     "show_pipeline_progress": true,
     "show_currency_symbols": true
   },
-  "future_extensions": [
-    "Transportation law packs",
-    "Healthcare law packs",
-    "AI governance law packs",
-    "Funding-condition visualizers",
-    "Automated constitutional hierarchy graphs",
-    "Interactive macroeconomic ripple maps",
-    "Advanced audit exports",
-    "Local vector indexing for law corpus search"
-  ]
+  "license": {
+    "citation": "Shouse, T. American Butterfly Effect (ABE). Zenodo.",
+    "doi": "10.5281/zenodo.17586107",
+    "license": "CC BY-NC 4.0",
+    "tagline": "Integrity only — never for sale."
+  }
 }
