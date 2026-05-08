@@ -1,391 +1,302 @@
-# 🦋 Start Here — Understanding A.B.E.
+# 🦋 Start Here — A.B.E. Citizen Guide
 
-Welcome to the **American Butterfly Effect (A.B.E.)** framework.
+Welcome to the American Butterfly Effect (A.B.E.) framework.
 
-A.B.E. is a local-first constitutional integrity and economic recovery engine designed to help users understand:
+This guide explains:
+- what the engine does,
+- what the modules mean,
+- how to run the pipeline,
+- and how to read the results in plain language.
 
-- how systems operate,
-- where value becomes constrained,
-- how divergence spreads,
-- what recovery potential exists,
-- and how alignment creates measurable prosperity.
-
-You do **not** need to be:
-- a lawyer,
-- a programmer,
-- an economist,
-- or an engineer
-
-to use A.B.E.
-
-The engine is designed to explain itself in plain language.
+You do **not** need to understand every formula or module before using the engine.
 
 ---
 
-# 🌍 What A.B.E. Actually Does
+# 🌍 What A.B.E. Does
 
-A.B.E. measures:
+A.B.E. helps users:
 
 ```text
-system friction
-→ divergence
-→ constrained value
-→ recoverable value
-→ deployment pathways
-→ measurable outcomes
+identify drift
+→ quantify impact
+→ model recovery
+→ map deployment
+→ verify integrity
 ```
 
-The framework converts complex legal, financial, regulatory, or institutional structures into understandable outputs.
-
-In simple terms:
+Plain language:
 
 ```text
-A.B.E. asks:
-“Is the system aligned with its governing authority?”
-```
-
-Then it asks:
-
-```text
-“What happens economically when alignment improves?”
+What drifted?
+What did it cost?
+What can be recovered?
+Where can recovery go?
+Did deployment remain stable?
 ```
 
 ---
 
-# ⚖️ What A.B.E. Is NOT
+# 🧠 Important Principle
 
-A.B.E. is NOT:
+A.B.E. is built so users do not need to become:
 
-- a court
-- a law firm
-- a government agency
-- a social credit system
-- a person-scoring system
-- a black-box AI tool
-- a surveillance platform
-- a SaaS business
+- lawyers,
+- economists,
+- auditors,
+- engineers,
+- or programmers
 
-A.B.E. evaluates:
-- systems,
-- authority structures,
-- funding pathways,
-- deployment patterns,
-- and measurable economic effects.
+just to understand structural systems.
 
-It does not score human worth.
+The engine converts complex systems into:
+- measurable signals,
+- readable explanations,
+- and audit-ready outputs.
 
 ---
 
-# 🔒 Privacy First
+# 🚀 Recommended User Flow
 
-A.B.E. runs locally in your browser whenever possible.
-
-That means:
-
-- no backend database
-- no required account
-- no hidden uploads
-- no silent cloud processing
-- no centralized control point
-
-Your files and artifacts remain under your control.
-
----
-
-# 🧭 The Simplified Flow
-
-The easiest way to use A.B.E. is:
+Follow this sequence:
 
 ```text
-1. Upload
+1. Upload / Intake
 2. Run Full Pipeline
 3. Read Plain-Language Results
 4. Download Audit JSON
 ```
 
-Advanced modules exist for researchers, analysts, auditors, engineers, and legal professionals, but normal users should not need to understand every subsystem.
+Most users should avoid manually opening every module at first.
+
+The advanced modules exist for deeper inspection later.
 
 ---
 
-# 🧩 Core Engine Modules
+# 📥 Step 1 — Upload / Intake
 
-## INTAKE
-Normalizes uploaded documents or pasted text.
+Open:
+
+```text
+/intake/index.html
+```
+
+This is the front door of the engine.
+
+You can:
+- upload documents,
+- paste text,
+- enter structured facts,
+- or load prior JSON artifacts.
 
 Examples:
-- tickets
-- notices
-- policies
-- contracts
-- reports
-- spreadsheets
-- funding tables
+- court filings,
+- policy documents,
+- funding reports,
+- contracts,
+- letters,
+- notices,
+- transportation records,
+- spreadsheets,
+- or structured notes.
+
+The Intake layer normalizes the information into a local artifact.
 
 ---
 
-## CDA — Constitutional Divergence Analyzer
+# ⚙️ Step 2 — Run Full Pipeline
 
-Identifies where observed practice may diverge from governing authority.
+Open:
+
+```text
+/system/index.html
+```
+
+Then select:
+
+```text
+Run Full Pipeline
+```
+
+The engine will automatically execute:
+
+```text
+INTAKE
+→ CAE
+→ CDA
+→ CDI
+→ CIRI
+→ CIBS
+→ CII
+→ INTEGRATION
+→ MACRO
+→ RT
+→ CFF
+→ CCRI
+→ AFFE
+```
+
+---
+
+# 🧩 What Each Module Means
+
+| Module | Plain Meaning |
+|---|---|
+| **INTAKE** | Prepare uploaded documents and structured facts |
+| **CAE** | Establish governing authority alignment baseline |
+| **CDA** | Identify divergence signals |
+| **CDI** | Measure how far the system drifted |
+| **CIRI** | Calculate recoverable value and ROI |
+| **CIBS** | Allocate recovery capital |
+| **CII** | Measure propagation and effectiveness |
+| **INTEGRATION** | Verify integrity and build audit receipts |
+| **MACRO** | Project broader economic ripple effects |
+| **RT** | Deploy recovery into real-world sectors |
+| **CFF** | Review funding alignment and scope |
+| **CCRI** | Measure participation and credit-access effects |
+| **AFFE** | Verify funding fidelity and deployment stability |
+
+---
+
+# 📊 Understanding the Results
+
+The engine produces:
+- scores,
+- summaries,
+- economic models,
+- deployment outputs,
+- and structured artifacts.
+
+Higher values generally indicate:
+- stronger propagation,
+- stronger activation,
+- stronger recovery,
+- or stronger stability.
+
+Lower values generally indicate:
+- constrained participation,
+- weak propagation,
+- instability,
+- or stronger divergence signals.
+
+---
+
+# 🔒 Privacy Model
+
+A.B.E. is designed as a local-first system.
+
+Core principles:
+- no forced accounts,
+- no hidden uploads,
+- no silent cloud processing,
+- no required backend,
+- no forced API keys.
+
+Users control:
+- uploaded documents,
+- generated artifacts,
+- exported JSON,
+- and audit receipts.
+
+---
+
+# 🛡️ Audit Receipts
+
+The Integration layer generates:
+- SHA-256 hashes,
+- audit receipts,
+- and integrity artifacts.
 
 Plain language:
-```text
-“What does not appear aligned?”
-```
-
----
-
-## CDI — Constitutional Divergence Index
-
-Measures the level of divergence using normalized scoring.
-
-Plain language:
-```text
-“How far did the system drift?”
-```
-
----
-
-## CIRI — Constitutional Integrity ROI
-
-Converts divergence into measurable economic recovery value.
-
-Plain language:
-```text
-“What is the recoverable value?”
-```
-
----
-
-## CIBS — Constitutional Integrity Baseline Schema
-
-Allocates recovery value into structured deployment categories.
-
-Examples:
-- housing
-- infrastructure
-- healthcare
-- legal access
-- agriculture
-- mobility
-- education
-- technology
-
-Plain language:
-```text
-“Where can recovered value go?”
-```
-
----
-
-## CII — Constitutional Integrity Index
-
-Measures whether deployment creates real improvement.
-
-Plain language:
-```text
-“Who benefits and how much?”
-```
-
----
-
-## RT — Rebuild Together Engine
-
-Models deployment activation across sectors and communities.
-
-Plain language:
-```text
-“How does recovery become real-world economic activity?”
-```
-
----
-
-## AFFE — American Funding & Fidelity Explorer
-
-Measures long-term deployment stability and funding alignment.
-
-Plain language:
-```text
-“Did the deployment remain stable?”
-```
-
----
-
-## INTEGRATION
-
-Verifies the integrity of the pipeline.
-
-Can generate:
-- hashes
-- audit artifacts
-- execution summaries
-- receipts
-
-Plain language:
-```text
-“Can the results be verified?”
-```
-
----
-
-# 🏛️ Governing Authority Structure
-
-A.B.E. follows a top-down authority structure:
 
 ```text
-Constitution
-→ Federal statutes
-→ Federal regulations
-→ Funding conditions
-→ State law
-→ Agency practice
+If the verified outputs change,
+the receipt hash changes.
 ```
 
-Lower-level practice cannot create authority that higher governing authority does not permit.
-
-The engine evaluates alignment against that hierarchy.
+This helps preserve:
+- reproducibility,
+- integrity,
+- and chain-of-custody.
 
 ---
 
-# 🚚 Transportation & Regulatory Scope
+# 🌐 Recommended Beginner Path
 
-One major use case inside A.B.E. involves transportation and regulatory scope analysis.
-
-The engine may evaluate:
-- commercial vs non-commercial activity,
-- federal motor carrier scope,
-- funding-condition alignment,
-- enforcement scope,
-- jurisdiction boundaries,
-- and deployment impact.
-
-The goal is not fear or blame.
-
-The goal is:
-```text
-clarity
-→ alignment
-→ measurable prosperity
-```
-
----
-
-# 💰 Constitutional Capital
-
-A.B.E. treats alignment as measurable economic capacity.
-
-The framework measures:
-- constrained capital,
-- blocked participation,
-- deployment inefficiency,
-- friction costs,
-- and recovery pathways.
-
-This is sometimes referred to as:
+If this is your first time:
 
 ```text
-constitutional capital
+1. Read this guide
+2. Open Intake
+3. Upload or paste information
+4. Open System Dashboard
+5. Run Full Pipeline
+6. Read the plain-language summary
+7. Download the audit JSON
 ```
 
-Meaning:
-
-```text
-economic capacity unlocked through improved alignment.
-```
-
----
-
-# 📊 What You Receive
-
-Depending on the module flow, A.B.E. may generate:
-
-- plain-language summaries
-- divergence scores
-- recovery estimates
-- allocation models
-- macroeconomic projections
-- CSV exports
-- JSON artifacts
-- SHA-256 receipts
-- audit chains
-
-Every important number should:
-- identify its source module,
-- explain itself in plain language,
-- and remain inspectable.
+After that, you can explore:
+- RT,
+- AFFE,
+- CFF,
+- MACRO,
+- and the advanced modules individually.
 
 ---
 
-# 🧠 You Do Not Need To Memorize Everything
-
-A.B.E. is modular.
-
-You are not expected to become an expert in:
-- law,
-- economics,
-- funding systems,
-- or engineering.
-
-The engine is supposed to help explain the structure underneath the system.
-
-Start simple.
-
-Upload once.
-
-Read the results.
-
-Then explore deeper only if needed.
-
----
-
-# 🌱 The Goal
-
-The purpose of A.B.E. is not punishment.
-
-The purpose is:
-
-```text
-alignment
-→ recovery
-→ deployment
-→ stability
-→ prosperity
-```
-
-The framework is designed to help citizens, communities, organizations, researchers, institutions, and governments better understand:
-- how systems operate,
-- where constraints exist,
-- and how measurable recovery pathways can emerge through transparent analysis.
-
----
-
-# 🔍 Advanced Views
+# 🧠 Advanced Users
 
 Advanced users may inspect:
-- module JSON,
 - formulas,
-- schemas,
-- audit chains,
-- execution paths,
-- law packs,
-- deployment pathways,
-- and macroeconomic projections.
+- weighting systems,
+- funding models,
+- propagation layers,
+- deployment logic,
+- and audit structures.
 
-But those layers are optional.
-
-The engine should remain understandable to normal people first.
+Advanced modules remain fully accessible.
 
 ---
 
-# 🦋 Final Thought
+# 📚 Additional Areas
 
-A.B.E. is built around a simple idea:
+You can also explore:
 
 ```text
-small alignment changes
-can create massive long-term ripple effects
-across entire systems.
+/law
+/doctrine
+/learn
+/system
 ```
 
-That is the butterfly effect.
+These sections explain:
+- framework references,
+- module structure,
+- doctrine maps,
+- system architecture,
+- and engine logic.
 
-Except measurable.
+---
+
+# 🦋 Final Principle
+
+A.B.E. exists to transform:
+
+```text
+complex structural systems
+→ understandable deterministic analysis
+```
+
+through:
+- measurable signals,
+- transparent logic,
+- structured outputs,
+- and audit-ready workflows.
+
+---
+
+# 📖 Citation
+
+Shouse, T. American Butterfly Effect (ABE). Zenodo.  
+DOI: 10.5281/zenodo.17586107
+
+Licensed CC BY-NC 4.0 · Integrity only — never for sale.
