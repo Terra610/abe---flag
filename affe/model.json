@@ -1,19 +1,110 @@
 {
   "version": "1.0",
   "module": "AFFE",
-  "updated": "2026-04-26T00:00:00Z",
-  "title": "American Funding & Fidelity Explorer",
-  "description": "Measures post-deployment stability, funding integrity, and system recovery after RT execution.",
+  "updated": "2026-05-07T00:00:00Z",
+  "title": "Appropriation Fidelity & Funding Engine",
+  "description": "Normalizes funding documents, evaluates appropriation fidelity, supports funding-alignment review, and provides post-deployment stability inputs for the A.B.E. pipeline.",
   "formula": {
+    "funding_fidelity_signal": "F_s = (A_f * S_a * P_i)",
     "stability_signal": "S = (RTI * eta) + (A_total / R_T)",
     "affe_index": "AFFE = 1 - e^(-S / K)"
   },
   "defaults": {
-    "normalization_constant": 1000000000
+    "normalization_constant": 1000000000,
+    "appropriation_fidelity": 1,
+    "scope_alignment": 1,
+    "program_integrity": 1
+  },
+  "inputs": {
+    "upstream_modules": [
+      "RT",
+      "CII",
+      "INTEGRATION",
+      "CFF"
+    ],
+    "expected_artifacts": [
+      "ABE_RT_ARTIFACT_V1",
+      "ABE_CII_PORTFOLIO_V1",
+      "ABE_INTEGRATION_ARTIFACT_V1",
+      "ABE_CFF_ARTIFACT_V1"
+    ],
+    "funding_document_inputs": [
+      "csv",
+      "xlsx",
+      "xls",
+      "txt",
+      "pdf",
+      "structured_json"
+    ]
   },
   "outputs": [
+    "funding_fidelity_signal",
     "stability_signal",
-    "american_funding_fidelity_index",
-    "overall_risk_class"
-  ]
+    "appropriation_fidelity_index",
+    "overall_risk_class",
+    "normalized_funding_artifact",
+    "funding_alignment_summary"
+  ],
+  "schema_targets": {
+    "normalized_funding_fields": [
+      "program_name",
+      "federal_authority_citation",
+      "fiscal_year",
+      "state_or_jurisdiction",
+      "agency",
+      "line_item_description",
+      "spend_category_code",
+      "amount_usd",
+      "notes"
+    ],
+    "spend_category_codes": [
+      "ON_MISSION",
+      "OFF_MISSION",
+      "UNCLEAR"
+    ]
+  },
+  "plain_language": {
+    "main_question": "Did the funding stay connected to the purpose it was allocated for?",
+    "secondary_questions": [
+      "What funding document was processed?",
+      "What funding fields were normalized?",
+      "What authority or appropriation was connected to the funding?",
+      "Did the funding appear aligned with program scope?",
+      "Did deployment remain stable after recovery capital was modeled?"
+    ],
+    "user_summary": "AFFE helps users turn funding documents into structured artifacts and understand whether funding, appropriation purpose, and deployment remain aligned."
+  },
+  "role_in_pipeline": {
+    "primary_role": "Funding normalization and appropriation fidelity layer",
+    "secondary_role": "Post-deployment stability input layer",
+    "position": "Runs after CCRI in the full pipeline, while also supporting CFF when funding documents are used as source inputs.",
+    "pipeline_chain": [
+      "INTAKE",
+      "CAE",
+      "CDA",
+      "CDI",
+      "CIRI",
+      "CIBS",
+      "CII",
+      "INTEGRATION",
+      "MACRO",
+      "RT",
+      "CFF",
+      "CCRI",
+      "AFFE"
+    ]
+  },
+  "privacy": {
+    "local_only": true,
+    "no_backend": true,
+    "no_login": true,
+    "no_hidden_uploads": true,
+    "user_controls_exports": true
+  },
+  "license": {
+    "citation": "Shouse, T. American Butterfly Effect (ABE). Zenodo.",
+    "doi": "10.5281/zenodo.17586107",
+    "license": "CC BY-NC 4.0",
+    "tagline": "Integrity only — never for sale."
+  }
 }
