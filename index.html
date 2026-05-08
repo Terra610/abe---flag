@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>A.B.E. — American Butterfly Effect</title>
   <base href="/abe---flag/">
+
   <style>
     :root{
       --bg:#0b0d12;
@@ -13,11 +14,9 @@
       --ink:#e6e6e6;
       --muted:#9fb3c8;
       --line:rgba(255,255,255,.08);
+      --accent:#80bfff;
       --ok:#4bd28f;
       --warn:#ffd166;
-      --bad:#ff6b6b;
-      --accent:#80bfff;
-      --glow:rgba(128,191,255,.18);
     }
 
     *{box-sizing:border-box}
@@ -25,103 +24,97 @@
     body{
       margin:0;
       background:
-        radial-gradient(circle at top, rgba(128,191,255,.08), transparent 34rem),
+        radial-gradient(circle at top, rgba(128,191,255,.10), transparent 32rem),
         var(--bg);
       color:var(--ink);
       font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
     }
 
-    a{
-      color:var(--accent);
-      text-decoration:none;
-    }
-
+    a{color:var(--accent);text-decoration:none}
     a:hover{text-decoration:underline}
 
     header{
-      padding:34px 16px 28px;
-      text-align:center;
       background:#11151c;
       border-bottom:1px solid var(--line);
+      padding:36px 16px 28px;
+      text-align:center;
     }
 
     .badge{
       display:inline-block;
-      padding:6px 12px;
       border:1px solid var(--line);
       border-radius:999px;
+      padding:6px 12px;
       background:#0f141b;
       color:var(--muted);
       font-size:.9rem;
-      margin-bottom:12px;
+      margin-bottom:14px;
     }
 
     h1{
       margin:0;
-      font-size:clamp(2rem,5vw,4rem);
-      line-height:1.08;
-      letter-spacing:-.03em;
+      font-size:clamp(2.2rem,6vw,4.4rem);
+      line-height:1.05;
+      letter-spacing:-.04em;
     }
 
     .subtitle{
-      max-width:920px;
-      margin:14px auto 0;
+      max-width:900px;
+      margin:16px auto 0;
       color:var(--muted);
       font-size:1.08rem;
     }
 
-    .hero-actions{
+    .actions{
+      margin-top:24px;
       display:flex;
       justify-content:center;
-      flex-wrap:wrap;
       gap:12px;
-      margin-top:22px;
+      flex-wrap:wrap;
     }
 
     .btn{
       display:inline-block;
-      padding:11px 16px;
       border:1px solid var(--line);
-      border-radius:12px;
+      border-radius:14px;
       background:var(--panel2);
       color:var(--ink);
-      font-weight:700;
-      text-decoration:none;
-    }
-
-    .btn:hover{
-      text-decoration:none;
-      border-color:rgba(128,191,255,.65);
-      box-shadow:0 0 0 4px var(--glow);
+      padding:12px 16px;
+      font-weight:800;
     }
 
     .btn.primary{
       background:#122033;
-      border-color:rgba(128,191,255,.45);
+      border-color:rgba(128,191,255,.5);
+    }
+
+    .btn:hover{
+      text-decoration:none;
+      border-color:rgba(128,191,255,.75);
     }
 
     main{
-      max-width:1240px;
+      max-width:1180px;
       margin:22px auto;
-      padding:0 16px 48px;
+      padding:0 16px 46px;
     }
 
     .card{
       background:var(--panel);
       border:1px solid var(--line);
-      border-radius:16px;
+      border-radius:18px;
       padding:18px;
       margin:14px 0;
     }
 
-    .card h2,
-    .card h3{
-      margin-top:0;
-    }
+    .card h2,.card h3{margin-top:0}
 
-    .small{
+    .plain{
+      background:#0f141b;
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:16px;
       color:var(--muted);
-      font-size:.94rem;
     }
 
     .grid{
@@ -130,39 +123,33 @@
       gap:12px;
     }
 
-    .module{
+    .tile,.module{
       background:var(--panel2);
       border:1px solid var(--line);
       border-radius:14px;
       padding:14px;
-      min-height:150px;
+    }
+
+    .tile .label,.module .layer{
+      color:var(--muted);
+      font-size:.9rem;
+    }
+
+    .tile .value{
+      font-weight:900;
+      font-size:1.25rem;
+      margin-top:4px;
     }
 
     .module h3{
-      margin:.1rem 0 .35rem;
+      margin:.35rem 0;
       font-size:1.05rem;
     }
 
-    .module .layer{
-      display:inline-block;
-      font-size:.78rem;
-      color:var(--muted);
-      border:1px solid var(--line);
-      border-radius:999px;
-      padding:2px 8px;
-      margin-bottom:8px;
-    }
-
     .module p{
-      margin:.35rem 0;
       color:var(--muted);
-      font-size:.92rem;
-    }
-
-    .module a{
-      display:inline-block;
-      margin-top:8px;
-      font-weight:700;
+      margin:.35rem 0;
+      font-size:.94rem;
     }
 
     .flow{
@@ -170,56 +157,23 @@
       flex-wrap:wrap;
       gap:8px;
       align-items:center;
-      margin-top:10px;
+      margin-top:12px;
     }
 
     .step{
       border:1px solid var(--line);
+      border-radius:999px;
       background:#0f141b;
       color:var(--muted);
-      border-radius:999px;
       padding:7px 10px;
       font-size:.86rem;
     }
 
-    .arrow{
+    .arrow{color:var(--muted)}
+
+    .small{
       color:var(--muted);
-      font-size:.9rem;
-    }
-
-    .kpi{
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-      gap:12px;
-    }
-
-    .tile{
-      background:#0f141b;
-      border:1px solid var(--line);
-      border-radius:14px;
-      padding:14px;
-    }
-
-    .tile .label{
-      color:var(--muted);
-      font-size:.9rem;
-      margin-bottom:4px;
-    }
-
-    .tile .value{
-      font-size:1.2rem;
-      font-weight:800;
-    }
-
-    .plain{
-      background:#0f141b;
-      border:1px solid var(--line);
-      border-radius:14px;
-      padding:16px;
-    }
-
-    .plain p{
-      margin:.45rem 0;
+      font-size:.94rem;
     }
 
     footer{
@@ -241,19 +195,20 @@
 </head>
 
 <body>
+
 <header>
   <div class="badge">Local-only · deterministic · audit-ready</div>
   <h1>American Butterfly Effect</h1>
-  <div class="subtitle">
-    A.B.E. is a deterministic capital recovery and deployment engine.
-    It identifies constrained capital flow, models recoverable value, maps deployment pathways,
-    and verifies post-deployment stability — all locally in the browser.
-  </div>
+  <p class="subtitle">
+    A.B.E. helps users identify constrained capital flow, measure divergence,
+    calculate recoverable value, model deployment pathways, and verify stability —
+    all inside a browser, without a backend.
+  </p>
 
-  <div class="hero-actions">
-    <a class="btn primary" href="intake/index.html">Start Intake</a>
+  <div class="actions">
+    <a class="btn primary" href="learn/start_here.md">Start Here</a>
+    <a class="btn primary" href="intake/index.html">Upload / Intake</a>
     <a class="btn primary" href="system/index.html">Run Full Pipeline</a>
-    <a class="btn" href="learn/index.html">Learn the Engine</a>
     <a class="btn" href="integration/index.html">Build Audit Receipt</a>
   </div>
 </header>
@@ -262,41 +217,44 @@
 
   <section class="card">
     <h2>Plain-Language Overview</h2>
-    <div class="plain small">
+    <div class="plain">
       <p>
-        A.B.E. is built to show where value is being constrained inside complex systems and how much value can be recovered, deployed, and stabilized.
+        A.B.E. is built so a user can upload once, run the engine, and receive
+        a readable result plus an audit-ready JSON artifact.
       </p>
       <p>
-        The user starts by uploading files or pasting text. The engine then runs the full module chain automatically and returns a plain-language result plus a full JSON audit report.
+        The user does not need to understand every module. The advanced modules
+        remain available for lawyers, auditors, analysts, engineers, and researchers.
       </p>
       <p>
-        The goal is not to blame systems. The goal is to identify capital friction, reduce inefficiency, and create measurable economic gain through structured alignment.
+        The goal is simple: identify where value is constrained, calculate what can be recovered,
+        model where it can go, and verify whether deployment creates stable results.
       </p>
     </div>
   </section>
 
   <section class="card">
-    <h2>How Users Run It</h2>
-    <div class="kpi">
+    <h2>Recommended User Flow</h2>
+    <div class="grid">
       <div class="tile">
         <div class="label">Step 1</div>
-        <div class="value">Upload or Paste</div>
-        <div class="small">Use Intake to provide files, text, notes, or JSON.</div>
+        <div class="value">Start Here</div>
+        <p class="small">Read the simple walkthrough before touching the engine.</p>
       </div>
       <div class="tile">
         <div class="label">Step 2</div>
-        <div class="value">Run Pipeline</div>
-        <div class="small">The CLI executes the full chain automatically.</div>
+        <div class="value">Upload</div>
+        <p class="small">Use Intake to upload files, paste text, or enter structured facts.</p>
       </div>
       <div class="tile">
         <div class="label">Step 3</div>
-        <div class="value">Read Results</div>
-        <div class="small">The dashboard shows recovery, deployment, activation, and stability in plain language.</div>
+        <div class="value">Run Pipeline</div>
+        <p class="small">Let the system execute the full chain automatically.</p>
       </div>
       <div class="tile">
         <div class="label">Step 4</div>
-        <div class="value">Verify JSON</div>
-        <div class="small">Download the audit report for engineering or review.</div>
+        <div class="value">Review + Export</div>
+        <p class="small">Read plain-language results and download audit JSON.</p>
       </div>
     </div>
   </section>
@@ -304,10 +262,10 @@
   <section class="card">
     <h2>Full Engine Chain</h2>
     <p class="small">
-      The engine fires in this fixed order. Users do not need to manually hop from module to module.
+      This is the full advanced chain. Normal users can run it from the CLI without opening each module manually.
     </p>
 
-    <div class="flow" aria-label="ABE module execution chain">
+    <div class="flow">
       <span class="step">INTAKE</span><span class="arrow">→</span>
       <span class="step">CAE</span><span class="arrow">→</span>
       <span class="step">CDA</span><span class="arrow">→</span>
@@ -325,143 +283,145 @@
   </section>
 
   <section class="card">
-    <h2>Core Value Path</h2>
+    <h2>What the Core Modules Mean</h2>
     <div class="grid">
       <article class="module">
-        <span class="layer">Measure</span>
+        <div class="layer">Measure</div>
         <h3>CDI</h3>
-        <p>Measures divergence as a normalized signal.</p>
+        <p>How far did the system drift?</p>
         <a href="cdi/index.html">Open CDI →</a>
       </article>
 
       <article class="module">
-        <span class="layer">Quantify</span>
+        <div class="layer">Quantify</div>
         <h3>CIRI</h3>
-        <p>Converts measured divergence into recoverable capital and ROI outputs.</p>
+        <p>What is the recoverable value?</p>
         <a href="ciri/index.html">Open CIRI →</a>
       </article>
 
       <article class="module">
-        <span class="layer">Allocate</span>
+        <div class="layer">Allocate</div>
         <h3>CIBS</h3>
-        <p>Structures recovery capital into baseline allocation categories.</p>
+        <p>Where can recovered value go?</p>
         <a href="cibs/index.html">Open CIBS →</a>
       </article>
 
       <article class="module">
-        <span class="layer">Propagate</span>
+        <div class="layer">Propagate</div>
         <h3>CII</h3>
-        <p>Measures how effectively allocation propagates into system integrity.</p>
+        <p>Who benefits and how much?</p>
         <a href="cii/index.html">Open CII →</a>
       </article>
     </div>
   </section>
 
   <section class="card">
-    <h2>Deployment & Stability</h2>
+    <h2>Deployment, Audit, and Stability</h2>
     <div class="grid">
       <article class="module">
-        <span class="layer">Project</span>
+        <div class="layer">Project</div>
         <h3>MACRO</h3>
-        <p>Projects broader economic cascade and sector-level gain.</p>
-        <a href="macro/index.html">Open MACRO →</a>
+        <p>What is the broader economic ripple effect?</p>
+        <a href="macro/index.html">Open Macro →</a>
       </article>
 
       <article class="module">
-        <span class="layer">Deploy</span>
+        <div class="layer">Deploy</div>
         <h3>RT</h3>
-        <p>Maps recovery capital into Capital Activation Sectors and estimates activation value.</p>
+        <p>How does recovery become real-world deployment?</p>
         <a href="rt/index.html">Open RT →</a>
       </article>
 
       <article class="module">
-        <span class="layer">Verify</span>
+        <div class="layer">Verify</div>
         <h3>AFFE</h3>
-        <p>Measures post-deployment stability using RT, CII, and Integration outputs.</p>
+        <p>Did deployment create stable forward movement?</p>
         <a href="affe/index.html">Open AFFE →</a>
       </article>
 
       <article class="module">
-        <span class="layer">Seal</span>
+        <div class="layer">Audit</div>
         <h3>INTEGRATION</h3>
-        <p>Binds module outputs into a local audit receipt with SHA-256 integrity support.</p>
+        <p>Can the result be verified and exported?</p>
         <a href="integration/index.html">Open Integration →</a>
       </article>
     </div>
   </section>
 
   <section class="card">
-    <h2>Expansion & Reference Layers</h2>
+    <h2>Advanced Views</h2>
+    <p class="small">
+      These are optional. They exist for people who want to inspect the engine deeply.
+    </p>
+
     <div class="grid">
       <article class="module">
-        <span class="layer">Intake</span>
+        <div class="layer">Input</div>
         <h3>INTAKE</h3>
-        <p>Normalizes uploads, pasted text, and structured data into a local artifact.</p>
+        <p>Document upload, pasted text, and intake artifacts.</p>
         <a href="intake/index.html">Open Intake →</a>
       </article>
 
       <article class="module">
-        <span class="layer">Alignment</span>
+        <div class="layer">Alignment</div>
         <h3>CAE</h3>
-        <p>Establishes baseline alignment conditions before measurement.</p>
+        <p>Baseline alignment conditions.</p>
         <a href="cae/index.html">Open CAE →</a>
       </article>
 
       <article class="module">
-        <span class="layer">Analyzer</span>
+        <div class="layer">Analyzer</div>
         <h3>CDA</h3>
-        <p>Structures divergence signals for downstream scoring.</p>
+        <p>Structured divergence analysis.</p>
         <a href="cda/index.html">Open CDA →</a>
       </article>
 
       <article class="module">
-        <span class="layer">Funding</span>
+        <div class="layer">Funding</div>
         <h3>CFF</h3>
-        <p>Analyzes funding flow and allocation patterns for capital efficiency.</p>
+        <p>Funding flow and allocation review.</p>
         <a href="cff/index.html">Open CFF →</a>
       </article>
 
       <article class="module">
-        <span class="layer">Credit</span>
+        <div class="layer">Credit</div>
         <h3>CCRI</h3>
-        <p>Evaluates consumer credit risk integrity and participation constraints.</p>
+        <p>Credit participation and risk integrity.</p>
         <a href="ccri/index.html">Open CCRI →</a>
       </article>
 
       <article class="module">
-        <span class="layer">Reference</span>
+        <div class="layer">Reference</div>
         <h3>LAW</h3>
-        <p>Stores structured authority and reference datasets.</p>
+        <p>Structured authority references.</p>
         <a href="law/index.html">Open Law →</a>
       </article>
 
       <article class="module">
-        <span class="layer">Reference</span>
+        <div class="layer">Reference</div>
         <h3>DOCTRINE</h3>
-        <p>Maps doctrine and framework references used by the engine.</p>
+        <p>Doctrine maps and framework references.</p>
         <a href="doctrine/index.html">Open Doctrine →</a>
       </article>
 
       <article class="module">
-        <span class="layer">Guide</span>
+        <div class="layer">Guide</div>
         <h3>LEARN</h3>
-        <p>Provides a guided explanation of the system and its module chain.</p>
+        <p>Guided explanation and tutorials.</p>
         <a href="learn/index.html">Open Learn →</a>
       </article>
     </div>
   </section>
 
   <section class="card">
-    <h2>Why Local-Only Matters</h2>
-    <div class="plain small">
+    <h2>Privacy Model</h2>
+    <div class="plain">
       <p>
-        A.B.E. runs locally in the browser. There is no backend, no login, no account, no tracking, and no server-side control point.
+        A.B.E. is local-first. It does not require a backend, login, account, API key,
+        database, or cloud processing layer.
       </p>
       <p>
-        That means users can review inputs, run calculations, export reports, and preserve audit records without surrendering their data.
-      </p>
-      <p>
-        This keeps the system portable, private, and easier to trust.
+        Users control their own inputs, outputs, JSON artifacts, and audit receipts.
       </p>
     </div>
   </section>
@@ -471,5 +431,6 @@
 <footer>
   A.B.E. — American Butterfly Effect · CC BY-NC 4.0 · Integrity only — never for sale.
 </footer>
+
 </body>
 </html>
