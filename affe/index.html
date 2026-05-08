@@ -3,8 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>AFFE — American Funding & Fidelity Explorer</title>
+  <title>AFFE — Appropriation Fidelity & Funding Engine</title>
   <base href="/abe---flag/">
+
   <style>
     :root{
       --bg:#0b0d12;
@@ -13,185 +14,418 @@
       --ink:#e6e6e6;
       --muted:#9fb3c8;
       --line:rgba(255,255,255,.08);
+      --accent:#80bfff;
       --ok:#4bd28f;
       --warn:#ffd166;
       --bad:#ff6b6b;
-      --accent:#80bfff;
+      --soft:rgba(128,191,255,.12);
     }
+
     *{box-sizing:border-box}
+
     body{
       margin:0;
-      background:var(--bg);
+      background:
+        radial-gradient(circle at top, rgba(128,191,255,.08), transparent 32rem),
+        var(--bg);
       color:var(--ink);
       font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
     }
+
     a{color:var(--accent);text-decoration:none}
     a:hover{text-decoration:underline}
+
     header{
-      padding:22px 16px;
-      text-align:center;
       background:#11151c;
       border-bottom:1px solid var(--line);
+      padding:26px 16px;
+      text-align:center;
     }
-    header h1{margin:0;font-size:2rem}
-    .sub{color:var(--muted);margin-top:8px}
-    .nav{
-      margin-top:12px;
+
+    h1{
+      margin:0;
+      font-size:2.35rem;
+      letter-spacing:-.03em;
+    }
+
+    .sub{
+      color:var(--muted);
+      margin:8px auto 0;
+      max-width:900px;
+    }
+
+    nav{
+      margin-top:14px;
       display:flex;
-      gap:10px;
       justify-content:center;
       flex-wrap:wrap;
+      gap:10px;
     }
-    .nav a{
-      display:inline-block;
-      padding:8px 12px;
+
+    nav a{
       border:1px solid var(--line);
+      background:#0f141b;
       border-radius:999px;
-      background:var(--panel2);
+      padding:8px 12px;
+      font-weight:700;
     }
+
     main{
       max-width:1220px;
-      margin:20px auto;
-      padding:0 16px 44px;
+      margin:22px auto;
+      padding:0 16px 48px;
     }
+
     .card{
       background:var(--panel);
       border:1px solid var(--line);
+      border-radius:18px;
+      padding:18px;
+      margin:14px 0;
+    }
+
+    .card h2,.card h3{margin-top:0}
+
+    .plain{
+      background:#0f141b;
+      border:1px solid var(--line);
       border-radius:14px;
       padding:16px;
-      margin:12px 0;
+      color:var(--muted);
     }
+
+    .notice{
+      border-left:4px solid var(--accent);
+      background:var(--soft);
+      padding:12px 14px;
+      border-radius:12px;
+      color:#dfefff;
+    }
+
     .grid{
       display:grid;
       grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
       gap:12px;
     }
+
     .tile{
       background:var(--panel2);
       border:1px solid var(--line);
-      border-radius:12px;
+      border-radius:14px;
       padding:14px;
     }
-    .label{color:var(--muted);font-size:.9rem;margin-bottom:4px}
-    .value{font-size:1.18rem;font-weight:800;word-break:break-word}
+
+    .label{
+      color:var(--muted);
+      font-size:.9rem;
+      margin-bottom:4px;
+    }
+
+    .value{
+      font-weight:900;
+      font-size:1.22rem;
+      word-break:break-word;
+    }
+
+    .small{
+      color:var(--muted);
+      font-size:.92rem;
+    }
+
     .ok{color:var(--ok)}
     .warn{color:var(--warn)}
     .bad{color:var(--bad)}
-    .small{color:var(--muted);font-size:.92rem}
+
     .row{
       display:flex;
       gap:10px;
       flex-wrap:wrap;
       margin-top:12px;
     }
-    button{
+
+    button,.btn{
       background:#10151d;
       color:var(--ink);
       border:1px solid var(--line);
-      border-radius:10px;
+      border-radius:12px;
       padding:10px 14px;
       cursor:pointer;
       font:inherit;
+      font-weight:800;
+      display:inline-block;
     }
-    button:disabled{opacity:.55;cursor:not-allowed}
-    pre{
-      white-space:pre-wrap;
-      overflow:auto;
-      max-height:620px;
-      background:#0f141b;
-      border:1px solid var(--line);
-      border-radius:12px;
-      padding:12px;
-      font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
-      font-size:.88rem;
+
+    button:hover,.btn:hover{
+      border-color:rgba(128,191,255,.75);
+      text-decoration:none;
     }
+
+    button:disabled{
+      opacity:.55;
+      cursor:not-allowed;
+    }
+
+    .primary{
+      background:#122033;
+      border-color:rgba(128,191,255,.45);
+    }
+
     table{
       width:100%;
       border-collapse:collapse;
-      font-size:.93rem;
+      font-size:.92rem;
     }
+
     th,td{
       border:1px solid var(--line);
       padding:9px 8px;
       text-align:left;
       vertical-align:top;
     }
-    th{background:#0f141b;color:#dfefff}
+
+    th{
+      background:#0f141b;
+      color:#dfefff;
+    }
+
     .table-wrap{
       overflow:auto;
       border:1px solid var(--line);
+      border-radius:14px;
+    }
+
+    details{
+      background:#0f141b;
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:12px 14px;
+      margin:12px 0;
+    }
+
+    summary{
+      cursor:pointer;
+      font-weight:800;
+      color:#dfefff;
+    }
+
+    pre{
+      white-space:pre-wrap;
+      overflow:auto;
+      max-height:620px;
+      background:#070a10;
+      border:1px solid var(--line);
       border-radius:12px;
+      padding:12px;
+      font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+      font-size:.86rem;
+    }
+
+    input[type="file"]{
+      width:100%;
+      padding:14px;
+      border:1px dashed rgba(128,191,255,.45);
+      border-radius:14px;
+      background:#0f141b;
+      color:var(--ink);
+    }
+
+    textarea{
+      width:100%;
+      min-height:160px;
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:#0f141b;
+      color:var(--ink);
+      padding:12px;
+      font:14px/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    }
+
+    footer{
+      border-top:1px solid var(--line);
+      background:#11151c;
+      text-align:center;
+      color:var(--muted);
+      padding:18px 12px;
+      font-size:.9rem;
     }
   </style>
 </head>
 
 <body>
+
 <header>
   <h1>AFFE</h1>
-  <div class="sub">American Funding & Fidelity Explorer</div>
-  <div class="nav">
-    <a href="index.html">Home</a>
-    <a href="system/index.html">CLI</a>
-    <a href="integration/index.html">Integration</a>
-    <a href="macro/index.html">Macro</a>
-    <a href="rt/index.html">RT</a>
-    <a href="learn/index.html">Learn</a>
+  <div class="sub">
+    Appropriation Fidelity & Funding Engine — normalize funding documents, review appropriation fidelity,
+    and support post-deployment stability analysis inside A.B.E.
   </div>
+
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="learn/start_here.md">Start Here</a>
+    <a href="system/index.html">Run Full Pipeline</a>
+    <a href="cff/index.html">CFF</a>
+    <a href="rt/index.html">RT</a>
+    <a href="integration/index.html">Integration</a>
+    <a href="learn/index.html">Learn</a>
+  </nav>
 </header>
 
 <main>
+
   <section class="card">
-    <h2>Post-Deployment Stability Check</h2>
-    <p class="small">
-      AFFE reads RT, Integration, and CII outputs to measure whether deployed recovery capital is producing stable, forward-moving system results.
-    </p>
+    <h2>What AFFE Does</h2>
+    <div class="plain">
+      <p>
+        AFFE is the funding normalization and appropriation fidelity layer of A.B.E.
+      </p>
+      <p>
+        It helps turn messy funding documents into structured artifacts, then evaluates whether funding,
+        appropriation purpose, scope conditions, and deployment remain aligned.
+      </p>
+      <p>
+        Plain language:
+        <strong>Did the funding stay connected to the purpose it was allocated for?</strong>
+      </p>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Two Jobs, One Module</h2>
+    <div class="grid">
+      <div class="tile">
+        <div class="label">Job 1</div>
+        <div class="value">Normalize Funding Documents</div>
+        <p class="small">
+          AFFE can support CSV, spreadsheet, PDF, text, or structured funding inputs and convert them into analysis-ready artifacts.
+        </p>
+      </div>
+
+      <div class="tile">
+        <div class="label">Job 2</div>
+        <div class="value">Measure Fidelity + Stability</div>
+        <p class="small">
+          AFFE reads RT, CII, Integration, and CFF outputs to evaluate funding fidelity and post-deployment stability.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Run AFFE Stability / Fidelity Check</h2>
+    <div class="notice">
+      Use this when upstream outputs already exist from the full pipeline.
+      For most users, the easiest path is still <strong>System → Run Full Pipeline</strong>.
+    </div>
+
     <div class="row">
-      <button id="btn-run">Run AFFE</button>
+      <button id="btn-run" class="primary">Run AFFE</button>
       <button id="btn-download" disabled>Download AFFE JSON</button>
     </div>
+
     <p id="status" class="small">Waiting.</p>
   </section>
 
   <section class="card">
     <h2>Plain-Language Result</h2>
-    <div id="explain" class="small">
-      Run AFFE to generate a readable stability summary.
+    <div id="explain" class="plain">
+      Run AFFE to generate a readable funding fidelity and stability summary.
     </div>
   </section>
 
   <section class="card">
-    <h2>Key Stability Values</h2>
+    <h2>Key AFFE Values</h2>
     <div class="grid">
       <div class="tile">
-        <div class="label">AFFE Index</div>
-        <div id="k-index" class="value">—</div>
-        <div class="small">American Funding & Fidelity Index</div>
+        <div class="label">Funding Fidelity Signal</div>
+        <div id="k-fidelity" class="value">—</div>
+        <div class="small">Appropriation + scope + program integrity signal</div>
       </div>
+
       <div class="tile">
         <div class="label">Stability Signal</div>
         <div id="k-signal" class="value">—</div>
-        <div class="small">Combined RT + CII + recovery signal</div>
+        <div class="small">RT + CII + recovery stability signal</div>
       </div>
+
+      <div class="tile">
+        <div class="label">AFFE Index</div>
+        <div id="k-index" class="value">—</div>
+        <div class="small">Post-deployment fidelity index</div>
+      </div>
+
       <div class="tile">
         <div class="label">Stability Class</div>
         <div id="k-class" class="value">—</div>
-        <div class="small">Post-deployment stability reading</div>
+        <div class="small">Overall reading</div>
       </div>
-      <div class="tile">
-        <div class="label">RT Execution Index</div>
-        <div id="k-rti" class="value">—</div>
-        <div class="small">Source: RT</div>
-      </div>
+
       <div class="tile">
         <div class="label">Total Activation</div>
         <div id="k-activation" class="value">—</div>
         <div class="small">Source: RT</div>
       </div>
+
       <div class="tile">
         <div class="label">Recovery Base</div>
         <div id="k-recovery" class="value">—</div>
         <div class="small">Source: Integration</div>
       </div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Funding Document Normalization</h2>
+    <p class="small">
+      This section is the front door for AFFE’s original role: turning funding documents into structured artifacts.
+      Full parser wiring can be expanded later; this page preserves the interface and local-only intent.
+    </p>
+
+    <div class="grid">
+      <div class="tile">
+        <div class="label">Upload Funding File</div>
+        <input id="funding-file" type="file" accept=".csv,.txt,.json,.pdf,.xlsx,.xls">
+        <p class="small">
+          Supported targets: CSV, TXT, JSON, PDF, XLSX/XLS.
+        </p>
+      </div>
+
+      <div class="tile">
+        <div class="label">Paste Funding Text</div>
+        <textarea id="funding-text" placeholder="Paste funding table, appropriation text, or line-item notes here..."></textarea>
+      </div>
+    </div>
+
+    <div class="row">
+      <button id="btn-build-artifact">Build Local Funding Artifact</button>
+      <button id="btn-download-funding" disabled>Download Funding Artifact</button>
+    </div>
+
+    <p id="funding-status" class="small">No funding artifact built yet.</p>
+  </section>
+
+  <section class="card">
+    <h2>Required Funding Fields</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Field</th>
+            <th>Plain Meaning</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><code>program_name</code></td><td>Name of the program or funding stream.</td></tr>
+          <tr><td><code>federal_authority_citation</code></td><td>USC, CFR, grant, or authority connected to the funding.</td></tr>
+          <tr><td><code>fiscal_year</code></td><td>Year the funding applies to.</td></tr>
+          <tr><td><code>state_or_jurisdiction</code></td><td>State, county, agency area, or jurisdiction.</td></tr>
+          <tr><td><code>agency</code></td><td>Agency receiving or administering the funds.</td></tr>
+          <tr><td><code>line_item_description</code></td><td>Description of the spending line.</td></tr>
+          <tr><td><code>spend_category_code</code></td><td>ON_MISSION, OFF_MISSION, or UNCLEAR.</td></tr>
+          <tr><td><code>amount_usd</code></td><td>Dollar amount.</td></tr>
+          <tr><td><code>notes</code></td><td>Optional context.</td></tr>
+        </tbody>
+      </table>
     </div>
   </section>
 
@@ -212,11 +446,23 @@
     </div>
   </section>
 
-  <section class="card">
-    <h2>AFFE Artifact JSON</h2>
+  <details>
+    <summary>Advanced AFFE JSON</summary>
     <pre id="json">—</pre>
-  </section>
+  </details>
+
+  <details>
+    <summary>Local Funding Artifact JSON</summary>
+    <pre id="funding-json">—</pre>
+  </details>
+
 </main>
+
+<footer>
+  Citation: Shouse, T. American Butterfly Effect (ABE). Zenodo.
+  DOI: 10.5281/zenodo.17586107
+  · Licensed CC BY-NC 4.0 · Integrity only — never for sale.
+</footer>
 
 <script type="module">
   import { run } from "/abe---flag/affe/runner.js";
@@ -228,7 +474,15 @@
   const jsonEl = document.getElementById("json");
   const traceBody = document.getElementById("trace-body");
 
+  const fundingFileEl = document.getElementById("funding-file");
+  const fundingTextEl = document.getElementById("funding-text");
+  const btnBuildArtifact = document.getElementById("btn-build-artifact");
+  const btnDownloadFunding = document.getElementById("btn-download-funding");
+  const fundingStatusEl = document.getElementById("funding-status");
+  const fundingJsonEl = document.getElementById("funding-json");
+
   let lastArtifact = null;
+  let lastFundingArtifact = null;
 
   function safeParse(raw){
     try { return JSON.parse(raw); } catch { return null; }
@@ -247,7 +501,7 @@
   }
 
   async function fetchJSON(path){
-    const res = await fetch(path, { cache: "no-store" });
+    const res = await fetch(path, { cache:"no-store" });
     if(!res.ok) throw new Error(`${path}: HTTP ${res.status}`);
     return res.json();
   }
@@ -274,16 +528,18 @@
 
   function setClassByStatus(el, value){
     el.className = "value";
-    if(String(value).includes("HIGH")) el.classList.add("ok");
-    else if(String(value).includes("MODERATE")) el.classList.add("warn");
-    else if(String(value).includes("LOW")) el.classList.add("bad");
+    const s = String(value || "");
+    if(s.includes("HIGH") || s.includes("OK")) el.classList.add("ok");
+    else if(s.includes("MODERATE") || s.includes("WARN")) el.classList.add("warn");
+    else if(s.includes("LOW") || s.includes("BAD")) el.classList.add("bad");
   }
 
   function paintTrace(trace){
     const rows = [
       ["RT output", trace?.rt_seen],
       ["Integration output", trace?.integration_seen],
-      ["CII output", trace?.cii_seen]
+      ["CII output", trace?.cii_seen],
+      ["CFF output", trace?.cff_seen]
     ];
 
     traceBody.innerHTML = rows.map(([label, seen]) => `
@@ -298,46 +554,124 @@
     lastArtifact = artifact;
     btnDownload.disabled = false;
 
-    const index = artifact?.scores?.american_funding_fidelity_index;
-    const signal = artifact?.scores?.stability_signal;
-    const cls = artifact?.scores?.overall_risk_class;
-    const rti = artifact?.inputs?.RT_execution_index;
-    const activation = artifact?.inputs?.total_activation_usd;
-    const recovery = artifact?.inputs?.recovery_base_usd;
+    const scores = artifact?.scores || {};
+    const inputs = artifact?.inputs || {};
 
-    document.getElementById("k-index").textContent = fmt(index, 6);
+    const fidelity =
+      scores.funding_fidelity_signal ??
+      scores.appropriation_fidelity_index ??
+      "—";
+
+    const signal =
+      scores.stability_signal ??
+      "—";
+
+    const index =
+      scores.affe_index ??
+      scores.american_funding_fidelity_index ??
+      "—";
+
+    const cls =
+      scores.overall_risk_class ??
+      scores.stability_class ??
+      "—";
+
+    document.getElementById("k-fidelity").textContent = fmt(fidelity, 6);
     document.getElementById("k-signal").textContent = fmt(signal, 6);
+    document.getElementById("k-index").textContent = fmt(index, 6);
     document.getElementById("k-class").textContent = cls || "—";
-    document.getElementById("k-rti").textContent = fmt(rti, 6);
-    document.getElementById("k-activation").textContent = money(activation);
-    document.getElementById("k-recovery").textContent = money(recovery);
+    document.getElementById("k-activation").textContent = money(inputs.total_activation_usd);
+    document.getElementById("k-recovery").textContent = money(inputs.recovery_base_usd);
 
     setClassByStatus(document.getElementById("k-class"), cls);
 
     explainEl.innerHTML = `
-      <p><strong>AFFE completed the post-deployment stability check.</strong></p>
+      <p><strong>AFFE completed the appropriation fidelity and stability review.</strong></p>
       <p>
-        The module compared RT deployment output, total activation value, recovery capital, and CII effectiveness to estimate whether the system is moving toward stable recovery.
+        The module checked available RT, Integration, CII, and CFF artifacts to estimate whether funding,
+        deployment, and recovery outputs remain aligned and stable.
       </p>
       <p>
-        <strong>AFFE Index:</strong> ${fmt(index, 6)}.
-        This is the final stability reading produced from the current RT and Integration artifacts.
+        <strong>Funding Fidelity Signal:</strong> ${fmt(fidelity, 6)}.
+        This reflects appropriation alignment, scope alignment, and program integrity when available.
       </p>
       <p>
-        <strong>Total Activation:</strong> ${money(activation)}.
-        This is the modeled economic activity RT generated from deployed recovery capital.
+        <strong>Stability Signal:</strong> ${fmt(signal, 6)}.
+        This reflects deployment stability using RT activation, recovery capital, and CII effectiveness.
       </p>
       <p>
-        <strong>Stability Class:</strong> ${cls || "—"}.
+        <strong>Total Activation:</strong> ${money(inputs.total_activation_usd)}.
       </p>
       <p>
-        The JSON below remains available for audit and engineering review.
+        <strong>Recovery Base:</strong> ${money(inputs.recovery_base_usd)}.
+      </p>
+      <p>
+        The JSON below remains available for audit, engineering review, or funding analysis.
       </p>
     `;
 
     paintTrace(artifact?.trace || {});
     jsonEl.textContent = JSON.stringify(artifact, null, 2);
   }
+
+  async function readFileAsText(file){
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(String(reader.result || ""));
+      reader.onerror = () => reject(reader.error);
+      reader.readAsText(file);
+    });
+  }
+
+  btnBuildArtifact.onclick = async () => {
+    try{
+      const file = fundingFileEl.files?.[0] || null;
+      const pasted = fundingTextEl.value || "";
+      let fileText = "";
+
+      if(file){
+        fileText = await readFileAsText(file).catch(() => "");
+      }
+
+      const artifact = {
+        module: "AFFE",
+        artifact_type: "normalized_funding_artifact",
+        generated_at: new Date().toISOString(),
+        source: {
+          file_name: file?.name || null,
+          file_type: file?.type || null,
+          file_size_bytes: file?.size || null,
+          pasted_text_present: pasted.trim().length > 0
+        },
+        schema_targets: [
+          "program_name",
+          "federal_authority_citation",
+          "fiscal_year",
+          "state_or_jurisdiction",
+          "agency",
+          "line_item_description",
+          "spend_category_code",
+          "amount_usd",
+          "notes"
+        ],
+        raw_preview: {
+          file_text_preview: fileText.slice(0, 3000),
+          pasted_text_preview: pasted.slice(0, 3000)
+        },
+        notes: "This artifact preserves local funding input context for downstream AFFE/CFF analysis. Full parser expansion can map columns and line items into strict schema rows."
+      };
+
+      lastFundingArtifact = artifact;
+      localStorage.setItem("ABE_AFFE_FUNDING_ARTIFACT_V1", JSON.stringify(artifact));
+      localStorage.setItem("abe_affe_funding_artifact", JSON.stringify(artifact));
+
+      fundingJsonEl.textContent = JSON.stringify(artifact, null, 2);
+      fundingStatusEl.innerHTML = '<span class="ok">Local funding artifact built.</span>';
+      btnDownloadFunding.disabled = false;
+    }catch(e){
+      fundingStatusEl.innerHTML = '<span class="bad">' + (e.message || String(e)) + '</span>';
+    }
+  };
 
   btnRun.onclick = async () => {
     try{
@@ -362,6 +696,16 @@
         "abe_rt_artifact"
       ]);
 
+      const cff = readFirst([
+        "ABE_CFF_ARTIFACT_V1",
+        "abe_cff_artifact"
+      ]);
+
+      const fundingArtifact = readFirst([
+        "ABE_AFFE_FUNDING_ARTIFACT_V1",
+        "abe_affe_funding_artifact"
+      ]);
+
       const artifact = await run({}, {
         model,
         priorCore: {
@@ -369,7 +713,9 @@
         },
         expansions: {
           INTEGRATION: integration,
-          RT: rt
+          RT: rt,
+          CFF: cff,
+          AFFE_FUNDING: fundingArtifact
         }
       });
 
@@ -392,6 +738,11 @@
     downloadJSON("ABE_AFFE_ARTIFACT_V1.json", lastArtifact);
   };
 
+  btnDownloadFunding.onclick = () => {
+    if(!lastFundingArtifact) return;
+    downloadJSON("ABE_AFFE_FUNDING_ARTIFACT_V1.json", lastFundingArtifact);
+  };
+
   const stored = localStorage.getItem("ABE_AFFE_ARTIFACT_V1") || localStorage.getItem("abe_affe_artifact");
   if(stored){
     const parsed = safeParse(stored);
@@ -400,6 +751,18 @@
       statusEl.innerHTML = '<span class="ok">Loaded stored AFFE artifact.</span>';
     }
   }
+
+  const storedFunding = localStorage.getItem("ABE_AFFE_FUNDING_ARTIFACT_V1") || localStorage.getItem("abe_affe_funding_artifact");
+  if(storedFunding){
+    const parsed = safeParse(storedFunding);
+    if(parsed){
+      lastFundingArtifact = parsed;
+      fundingJsonEl.textContent = JSON.stringify(parsed, null, 2);
+      fundingStatusEl.innerHTML = '<span class="ok">Loaded stored local funding artifact.</span>';
+      btnDownloadFunding.disabled = false;
+    }
+  }
 </script>
+
 </body>
 </html>
