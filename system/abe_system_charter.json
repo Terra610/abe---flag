@@ -119,7 +119,7 @@
       "plain_language": "How does the system affect access to credit and participation?"
     },
     "AFFE": {
-      "name": "American Funding & Fidelity Explorer",
+      "name": "Appropriation Fidelity Funding Engine",
       "purpose": "Measure post-deployment stability using RT, CII, and Integration outputs.",
       "plain_language": "Did deployment create stable forward movement?"
     },
