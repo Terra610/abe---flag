@@ -16,7 +16,7 @@
       --line:rgba(255,255,255,.08);
       --accent:#80bfff;
       --ok:#4bd28f;
-      --warn:#ffd166;
+      --soft:rgba(128,191,255,.12);
     }
 
     *{box-sizing:border-box}
@@ -24,7 +24,7 @@
     body{
       margin:0;
       background:
-        radial-gradient(circle at top, rgba(128,191,255,.10), transparent 32rem),
+        radial-gradient(circle at top, rgba(128,191,255,.10), transparent 34rem),
         var(--bg);
       color:var(--ink);
       font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
@@ -36,7 +36,7 @@
     header{
       background:#11151c;
       border-bottom:1px solid var(--line);
-      padding:36px 16px 28px;
+      padding:38px 16px 30px;
       text-align:center;
     }
 
@@ -59,7 +59,7 @@
     }
 
     .subtitle{
-      max-width:900px;
+      max-width:940px;
       margin:16px auto 0;
       color:var(--muted);
       font-size:1.08rem;
@@ -107,14 +107,20 @@
       margin:14px 0;
     }
 
-    .card h2,.card h3{margin-top:0}
-
     .plain{
       background:#0f141b;
       border:1px solid var(--line);
       border-radius:14px;
       padding:16px;
       color:var(--muted);
+    }
+
+    .notice{
+      border-left:4px solid var(--accent);
+      background:var(--soft);
+      padding:12px 14px;
+      border-radius:12px;
+      color:#dfefff;
     }
 
     .grid{
@@ -176,6 +182,30 @@
       font-size:.94rem;
     }
 
+    table{
+      width:100%;
+      border-collapse:collapse;
+      font-size:.92rem;
+    }
+
+    th,td{
+      border:1px solid var(--line);
+      padding:9px 8px;
+      text-align:left;
+      vertical-align:top;
+    }
+
+    th{
+      background:#0f141b;
+      color:#dfefff;
+    }
+
+    .table-wrap{
+      overflow:auto;
+      border:1px solid var(--line);
+      border-radius:14px;
+    }
+
     footer{
       text-align:center;
       color:var(--muted);
@@ -184,25 +214,20 @@
       padding:18px 12px;
       font-size:.9rem;
     }
-
-    code{
-      background:#0f141b;
-      border:1px solid var(--line);
-      border-radius:6px;
-      padding:1px 5px;
-    }
   </style>
 </head>
 
 <body>
 
 <header>
-  <div class="badge">Local-only · deterministic · audit-ready</div>
+  <div class="badge">Local-first · deterministic · audit-ready · citizen-first</div>
+
   <h1>American Butterfly Effect</h1>
+
   <p class="subtitle">
-    A.B.E. helps users identify constrained capital flow, measure divergence,
-    calculate recoverable value, model deployment pathways, and verify stability —
-    all inside a browser, without a backend.
+    A.B.E. is a constitutional integrity, recovery, and deployment framework that helps users
+    measure divergence, quantify recoverable value, model deployment pathways,
+    and verify funding fidelity and stability.
   </p>
 
   <div class="actions">
@@ -217,52 +242,65 @@
 
   <section class="card">
     <h2>Plain-Language Overview</h2>
+
     <div class="plain">
       <p>
         A.B.E. is built so a user can upload once, run the engine, and receive
         a readable result plus an audit-ready JSON artifact.
       </p>
+
       <p>
-        The user does not need to understand every module. The advanced modules
-        remain available for lawyers, auditors, analysts, engineers, and researchers.
+        The user does not need to understand every module first.
+        The advanced modules remain available for people who want to inspect the math,
+        law maps, funding logic, deployment model, and audit chain.
       </p>
+
       <p>
-        The goal is simple: identify where value is constrained, calculate what can be recovered,
-        model where it can go, and verify whether deployment creates stable results.
+        The goal is simple:
+        identify what drifted, calculate what it cost, model what can be recovered,
+        show where recovery can go, and verify whether deployment remains stable.
       </p>
     </div>
   </section>
 
   <section class="card">
     <h2>Recommended User Flow</h2>
+
     <div class="grid">
+
       <div class="tile">
         <div class="label">Step 1</div>
         <div class="value">Start Here</div>
         <p class="small">Read the simple walkthrough before touching the engine.</p>
       </div>
+
       <div class="tile">
         <div class="label">Step 2</div>
         <div class="value">Upload</div>
         <p class="small">Use Intake to upload files, paste text, or enter structured facts.</p>
       </div>
+
       <div class="tile">
         <div class="label">Step 3</div>
         <div class="value">Run Pipeline</div>
-        <p class="small">Let the system execute the full chain automatically.</p>
+        <p class="small">Let the System Dashboard execute the full chain automatically.</p>
       </div>
+
       <div class="tile">
         <div class="label">Step 4</div>
         <div class="value">Review + Export</div>
         <p class="small">Read plain-language results and download audit JSON.</p>
       </div>
+
     </div>
   </section>
 
   <section class="card">
     <h2>Full Engine Chain</h2>
+
     <p class="small">
-      This is the full advanced chain. Normal users can run it from the CLI without opening each module manually.
+      This is the full advanced chain. Normal users can run it from the System Dashboard
+      without opening each module manually.
     </p>
 
     <div class="flow">
@@ -283,89 +321,128 @@
   </section>
 
   <section class="card">
-    <h2>What the Core Modules Mean</h2>
+    <h2>The Engine in Human Terms</h2>
+
     <div class="grid">
+
       <article class="module">
-        <div class="layer">Measure</div>
-        <h3>CDI</h3>
-        <p>How far did the system drift?</p>
+        <div class="layer">CDI</div>
+        <h3>How far did the system drift?</h3>
+        <p>Measures divergence using the Shouse Divergence Curve.</p>
         <a href="cdi/index.html">Open CDI →</a>
       </article>
 
       <article class="module">
-        <div class="layer">Quantify</div>
-        <h3>CIRI</h3>
-        <p>What is the recoverable value?</p>
+        <div class="layer">CIRI</div>
+        <h3>What is it worth to fix?</h3>
+        <p>Converts divergence into recoverable capital and ROI estimates.</p>
         <a href="ciri/index.html">Open CIRI →</a>
       </article>
 
       <article class="module">
-        <div class="layer">Allocate</div>
-        <h3>CIBS</h3>
-        <p>Where can recovered value go?</p>
+        <div class="layer">CIBS</div>
+        <h3>Where does recovery go?</h3>
+        <p>Allocates recoverable value into structured deployment categories.</p>
         <a href="cibs/index.html">Open CIBS →</a>
       </article>
 
       <article class="module">
-        <div class="layer">Propagate</div>
-        <h3>CII</h3>
-        <p>Who benefits and how much?</p>
+        <div class="layer">CII</div>
+        <h3>Who benefits and how much?</h3>
+        <p>Measures propagation, effectiveness, and modeled downstream impact.</p>
         <a href="cii/index.html">Open CII →</a>
       </article>
+
     </div>
   </section>
 
   <section class="card">
-    <h2>Deployment, Audit, and Stability</h2>
+    <h2>Deployment, Funding, and Verification</h2>
+
     <div class="grid">
+
       <article class="module">
-        <div class="layer">Project</div>
-        <h3>MACRO</h3>
-        <p>What is the broader economic ripple effect?</p>
+        <div class="layer">MACRO</div>
+        <h3>What is the broader ripple effect?</h3>
+        <p>Projects broader sector and market-level economic activation.</p>
         <a href="macro/index.html">Open Macro →</a>
       </article>
 
       <article class="module">
-        <div class="layer">Deploy</div>
-        <h3>RT</h3>
-        <p>How does recovery become real-world deployment?</p>
+        <div class="layer">RT</div>
+        <h3>How does recovery deploy?</h3>
+        <p>Maps recovery into Capital Activation Sectors and deployment pathways.</p>
         <a href="rt/index.html">Open RT →</a>
       </article>
 
       <article class="module">
-        <div class="layer">Verify</div>
-        <h3>AFFE</h3>
-        <p>Did deployment create stable forward movement?</p>
+        <div class="layer">AFFE</div>
+        <h3>Did funding fidelity and stability hold?</h3>
+        <p>Normalizes funding documents, evaluates appropriation fidelity, and measures deployment stability.</p>
         <a href="affe/index.html">Open AFFE →</a>
       </article>
 
       <article class="module">
-        <div class="layer">Audit</div>
-        <h3>INTEGRATION</h3>
-        <p>Can the result be verified and exported?</p>
+        <div class="layer">INTEGRATION</div>
+        <h3>Can the result be verified?</h3>
+        <p>Builds audit receipts, SHA-256 hashes, and chain-of-custody artifacts.</p>
         <a href="integration/index.html">Open Integration →</a>
       </article>
+
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Module Names</h2>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Acronym</th>
+            <th>Module Name</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr><td>INTAKE</td><td>Document Intake + OCR Bridge</td></tr>
+          <tr><td>CAE</td><td>Constitutional Alignment Engine</td></tr>
+          <tr><td>CDA</td><td>Constitutional Divergence Analyzer</td></tr>
+          <tr><td>CDI</td><td>Constitutional Divergence Index</td></tr>
+          <tr><td>CIRI</td><td>Constitutional Integrity ROI Engine</td></tr>
+          <tr><td>CIBS</td><td>Constitutional Integrity Baseline Schema</td></tr>
+          <tr><td>CII</td><td>Constitutional Integrity Index</td></tr>
+          <tr><td>INTEGRATION</td><td>Audit & SHA-256 Integrity Layer</td></tr>
+          <tr><td>MACRO</td><td>Macroeconomic Cascade Model</td></tr>
+          <tr><td>RT</td><td>Rebuild Together Engine</td></tr>
+          <tr><td>CFF</td><td>Constitutional Funding Forensics</td></tr>
+          <tr><td>CCRI</td><td>Consumer Credit Risk Integrity</td></tr>
+          <tr><td>AFFE</td><td>Appropriation Fidelity & Funding Engine</td></tr>
+        </tbody>
+      </table>
     </div>
   </section>
 
   <section class="card">
     <h2>Advanced Views</h2>
+
     <p class="small">
-      These are optional. They exist for people who want to inspect the engine deeply.
+      These are optional instrumentation panels for users who want to inspect the system deeply.
     </p>
 
     <div class="grid">
+
       <article class="module">
         <div class="layer">Input</div>
         <h3>INTAKE</h3>
-        <p>Document upload, pasted text, and intake artifacts.</p>
+        <p>Document upload, pasted text, OCR, and intake artifacts.</p>
         <a href="intake/index.html">Open Intake →</a>
       </article>
 
       <article class="module">
         <div class="layer">Alignment</div>
         <h3>CAE</h3>
-        <p>Baseline alignment conditions.</p>
+        <p>Baseline authority and alignment conditions.</p>
         <a href="cae/index.html">Open CAE →</a>
       </article>
 
@@ -379,7 +456,7 @@
       <article class="module">
         <div class="layer">Funding</div>
         <h3>CFF</h3>
-        <p>Funding flow and allocation review.</p>
+        <p>Funding flow, program scope, and allocation review.</p>
         <a href="cff/index.html">Open CFF →</a>
       </article>
 
@@ -410,16 +487,19 @@
         <p>Guided explanation and tutorials.</p>
         <a href="learn/index.html">Open Learn →</a>
       </article>
+
     </div>
   </section>
 
   <section class="card">
     <h2>Privacy Model</h2>
+
     <div class="plain">
       <p>
-        A.B.E. is local-first. It does not require a backend, login, account, API key,
-        database, or cloud processing layer.
+        A.B.E. is local-first. It does not require a backend, login, account,
+        API key, database, or cloud processing layer.
       </p>
+
       <p>
         Users control their own inputs, outputs, JSON artifacts, and audit receipts.
       </p>
@@ -429,7 +509,9 @@
 </main>
 
 <footer>
-  A.B.E. — American Butterfly Effect · CC BY-NC 4.0 · Integrity only — never for sale.
+  Citation: Shouse, T. American Butterfly Effect (ABE). Zenodo.
+  DOI: 10.5281/zenodo.17586107
+  · Licensed CC BY-NC 4.0 · Integrity only — never for sale.
 </footer>
 
 </body>
