@@ -1,342 +1,659 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>CDA — Constitutional Definition Audit</title>
-  <base href="/abe---flag/">
-  <style>
-    :root{
-      --bg:#0b0d12;
-      --panel:#141820;
-      --panel2:#10151d;
-      --ink:#e6e6e6;
-      --muted:#9fb3c8;
-      --line:rgba(255,255,255,.08);
-      --ok:#4bd28f;
-      --warn:#ffd166;
-      --bad:#ff6b6b;
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      background:var(--bg);
-      color:var(--ink);
-      font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-    }
-    a{color:#80bfff;text-decoration:none}
-    a:hover{text-decoration:underline}
-    header{
-      padding:20px;
-      text-align:center;
-      background:#11151c;
-      border-bottom:1px solid var(--line);
-    }
-    .nav{
-      margin-top:12px;
-      display:flex;
-      justify-content:center;
-      gap:10px;
-      flex-wrap:wrap;
-    }
-    .nav a{
-      display:inline-block;
-      padding:8px 12px;
-      border:1px solid var(--line);
-      border-radius:999px;
-      background:var(--panel2);
-    }
-    main{
-      max-width:1280px;
-      margin:20px auto;
-      padding:0 16px 40px;
-    }
-    .card{
-      background:var(--panel);
-      border:1px solid var(--line);
-      border-radius:14px;
-      padding:16px;
-      margin:12px 0;
-    }
-    .kpi{
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-      gap:12px;
-    }
-    .tile{
-      border:1px solid var(--line);
-      border-radius:12px;
-      background:var(--panel2);
-      padding:12px;
-    }
-    .label{color:var(--muted);font-size:.92rem;margin-bottom:4px}
-    .num{font-weight:800;font-size:1.2rem}
-    .ok{color:var(--ok)}
-    .warn{color:var(--warn)}
-    .bad{color:var(--bad)}
-    .small{color:var(--muted);font-size:.9rem}
-    table{
-      width:100%;
-      border-collapse:collapse;
-      margin-top:8px;
-      font-size:.94rem;
-    }
-    th,td{
-      border:1px solid var(--line);
-      padding:10px 8px;
-      text-align:left;
-      vertical-align:top;
-    }
-    th{
-      background:#0f141b;
-      color:#dfefff;
-      position:sticky;
-      top:0;
-    }
-    .table-wrap{
-      overflow:auto;
-      border:1px solid var(--line);
-      border-radius:12px;
-    }
-    pre{
-      white-space:pre-wrap;
-      overflow:auto;
-      background:#0f141b;
-      border:1px solid var(--line);
-      border-radius:12px;
-      padding:12px;
-      font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
-    }
-    .row{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      margin-top:10px;
-    }
-    button{
-      background:#10151d;
-      color:var(--ink);
-      border:1px solid var(--line);
-      border-radius:10px;
-      padding:10px 14px;
-      cursor:pointer;
-      font:inherit;
-    }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CDA — A.B.E.</title>
+<base href="/abe---flag/">
+
+<style>
+:root{
+  --bg:#0b0d12;
+  --panel:#141820;
+  --panel2:#10151d;
+  --ink:#e6e6e6;
+  --muted:#9fb3c8;
+  --line:rgba(255,255,255,.08);
+  --accent:#80bfff;
+  --ok:#4bd28f;
+  --warn:#ffd166;
+  --bad:#ff6b6b;
+  --soft:rgba(128,191,255,.12);
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  background:
+    radial-gradient(circle at top, rgba(128,191,255,.10), transparent 34rem),
+    var(--bg);
+  color:var(--ink);
+  font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+}
+
+a{
+  color:var(--accent);
+  text-decoration:none;
+}
+
+a:hover{
+  text-decoration:underline;
+}
+
+header{
+  background:#11151c;
+  border-bottom:1px solid var(--line);
+  padding:30px 16px;
+  text-align:center;
+}
+
+h1{
+  margin:0;
+  font-size:clamp(2rem,5vw,3.8rem);
+  line-height:1.08;
+  letter-spacing:-.04em;
+}
+
+.sub{
+  color:var(--muted);
+  max-width:980px;
+  margin:12px auto 0;
+  font-size:1.05rem;
+}
+
+nav{
+  margin-top:18px;
+  display:flex;
+  justify-content:center;
+  flex-wrap:wrap;
+  gap:10px;
+}
+
+nav a,
+.btn{
+  border:1px solid var(--line);
+  background:#0f141b;
+  border-radius:999px;
+  padding:9px 13px;
+  font-weight:800;
+  color:var(--ink);
+  display:inline-block;
+}
+
+nav a:hover,
+.btn:hover{
+  text-decoration:none;
+  border-color:rgba(128,191,255,.75);
+}
+
+.primary{
+  background:#122033;
+  border-color:rgba(128,191,255,.5);
+}
+
+main{
+  max-width:1240px;
+  margin:22px auto;
+  padding:0 16px 48px;
+}
+
+.card{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:18px;
+  margin:14px 0;
+}
+
+.notice{
+  border-left:4px solid var(--accent);
+  background:var(--soft);
+  padding:12px 14px;
+  border-radius:12px;
+  color:#dfefff;
+}
+
+.plain{
+  background:#0f141b;
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:16px;
+  color:var(--muted);
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  gap:12px;
+}
+
+.tile{
+  background:var(--panel2);
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:14px;
+}
+
+.label{
+  color:var(--muted);
+  font-size:.9rem;
+  margin-bottom:4px;
+}
+
+.value{
+  font-weight:900;
+  font-size:1.15rem;
+}
+
+.small{
+  color:var(--muted);
+  font-size:.92rem;
+}
+
+.ok{color:var(--ok)}
+.warn{color:var(--warn)}
+.bad{color:var(--bad)}
+
+.row{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top:12px;
+}
+
+button{
+  background:#10151d;
+  color:var(--ink);
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:10px 14px;
+  cursor:pointer;
+  font:inherit;
+  font-weight:800;
+}
+
+button:hover{
+  border-color:rgba(128,191,255,.75);
+}
+
+button:disabled{
+  opacity:.55;
+  cursor:not-allowed;
+}
+
+.table-wrap{
+  overflow:auto;
+  border:1px solid var(--line);
+  border-radius:14px;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:.92rem;
+}
+
+th,td{
+  border:1px solid var(--line);
+  padding:9px 8px;
+  text-align:left;
+  vertical-align:top;
+}
+
+th{
+  background:#0f141b;
+  color:#dfefff;
+}
+
+details{
+  background:#0f141b;
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:12px 14px;
+  margin:12px 0;
+}
+
+summary{
+  cursor:pointer;
+  font-weight:800;
+  color:#dfefff;
+}
+
+pre{
+  white-space:pre-wrap;
+  overflow:auto;
+  max-height:620px;
+  background:#070a10;
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:12px;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  font-size:.86rem;
+}
+
+footer{
+  border-top:1px solid var(--line);
+  background:#11151c;
+  text-align:center;
+  color:var(--muted);
+  padding:18px 12px;
+  font-size:.9rem;
+}
+</style>
 </head>
+
 <body>
+
 <header>
-  <h1>CDA — Constitutional Definition Audit</h1>
-  <div class="small">
-    Expansion conditioning module. CDA measures definition integrity, scope drift, and delegation fidelity for later module use.
-  </div>
-  <div class="nav">
-    <a href="index.html">Home</a>
-    <a href="doctrine/index.html">Doctrines</a>
-    <a href="cae/index.html">CAE</a>
-    <a href="integration/index.html">Integration</a>
-    <a href="system/index.html">CLI</a>
-  </div>
+
+<h1>CDA</h1>
+
+<div class="sub">
+Constitutional Definition Audit — measures when legal definitions drift beyond their original constitutional or statutory scope.
+</div>
+
+<nav>
+  <a href="index.html">Home</a>
+  <a href="learn/start_here.html">Start Here</a>
+  <a href="intake/index.html">Intake</a>
+  <a href="system/index.html">System</a>
+  <a href="integration/index.html">Integration</a>
+  <a href="macro/index.html">Macro</a>
+</nav>
+
 </header>
 
 <main>
-  <section class="card">
-    <h3>Status</h3>
-    <div class="kpi">
-      <div class="tile">
-        <div class="label">model.json</div>
-        <div id="k-model" class="num">checking…</div>
-      </div>
-      <div class="tile">
-        <div class="label">schema.json</div>
-        <div id="k-schema" class="num">checking…</div>
-      </div>
-      <div class="tile">
-        <div class="label">runner.js</div>
-        <div id="k-runner" class="num">checking…</div>
-      </div>
-      <div class="tile">
-        <div class="label">Definition Integrity</div>
-        <div id="k-integrity" class="num">—</div>
-      </div>
-      <div class="tile">
-        <div class="label">Average Δ_def</div>
-        <div id="k-delta" class="num">—</div>
-      </div>
-      <div class="tile">
-        <div class="label">Flagged Definitions</div>
-        <div id="k-flagged" class="num">—</div>
-      </div>
-    </div>
-  </section>
 
-  <section class="card">
-    <h3>Definitions</h3>
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>Term</th>
-            <th>Source Authority</th>
-            <th>Integrity</th>
-            <th>Δ_def</th>
-            <th>Scope Domain</th>
-          </tr>
-        </thead>
-        <tbody id="defs-body">
-          <tr><td colspan="5">Loading…</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </section>
+<section class="card">
 
-  <section class="card">
-    <h3>Artifact Preview</h3>
-    <pre id="artifact-preview">—</pre>
-    <div class="row">
-      <button id="btn-run">Run CDA</button>
-      <button id="btn-json" disabled>Export CDA JSON</button>
-    </div>
-  </section>
+<h2>What CDA Does</h2>
 
-  <section class="card">
-    <h3>Diagnostics</h3>
-    <div id="diag" class="small">No issues yet.</div>
-  </section>
+<div class="plain">
+
+<p>
+CDA examines whether legal or regulatory definitions are being expanded outside their governing authority.
+</p>
+
+<p>
+Plain language:
+</p>
+
+<pre>
+What the law actually says
+vs
+how the definition is being applied
+</pre>
+
+<p>
+The farther definitions drift away from their controlling scope,
+the higher the constitutional divergence.
+</p>
+
+</div>
+
+</section>
+
+<section class="card">
+
+<h2>Run CDA</h2>
+
+<div class="notice">
+CDA reads the INTAKE artifact and evaluates definition integrity against constitutional and statutory scope boundaries.
+</div>
+
+<div class="row">
+  <button id="btn-run" class="primary">Run CDA</button>
+  <button id="btn-download" disabled>Download CDA JSON</button>
+  <button id="btn-clear">Clear CDA</button>
+</div>
+
+<p id="status" class="small">
+Waiting to run.
+</p>
+
+</section>
+
+<section class="card">
+
+<h2>Plain-Language Result</h2>
+
+<div id="plain-result" class="plain">
+Run CDA to generate a readable explanation.
+</div>
+
+</section>
+
+<section class="card">
+
+<h2>Definition Integrity Metrics</h2>
+
+<div class="grid">
+
+<div class="tile">
+  <div class="label">Definition Integrity</div>
+  <div id="k-integrity" class="value">—</div>
+</div>
+
+<div class="tile">
+  <div class="label">Average Scope Drift</div>
+  <div id="k-drift" class="value">—</div>
+</div>
+
+<div class="tile">
+  <div class="label">Flagged Definitions</div>
+  <div id="k-flagged" class="value">—</div>
+</div>
+
+<div class="tile">
+  <div class="label">Risk Classification</div>
+  <div id="k-risk" class="value">—</div>
+</div>
+
+</div>
+
+</section>
+
+<section class="card">
+
+<h2>Definition Audit Table</h2>
+
+<div class="table-wrap">
+
+<table>
+
+<thead>
+<tr>
+<th>Term</th>
+<th>Source Authority</th>
+<th>Governing Definition</th>
+<th>Applied Definition</th>
+<th>Integrity</th>
+<th>Drift</th>
+</tr>
+</thead>
+
+<tbody id="definition-table">
+<tr>
+<td colspan="6">No CDA output loaded.</td>
+</tr>
+</tbody>
+
+</table>
+
+</div>
+
+</section>
+
+<details>
+<summary>Advanced CDA JSON</summary>
+<pre id="json-preview">—</pre>
+</details>
+
 </main>
 
+<footer>
+Citation: Shouse, T. American Butterfly Effect (ABE). Zenodo.
+DOI: 10.5281/zenodo.17586107
+· Licensed CC BY-NC 4.0 · Integrity only — never for sale.
+</footer>
+
 <script type="module">
-  import { run } from "/abe---flag/cda/runner.js";
 
-  const artifactPreviewEl = document.getElementById("artifact-preview");
-  const defsBodyEl = document.getElementById("defs-body");
-  const diagEl = document.getElementById("diag");
-  const btnRun = document.getElementById("btn-run");
-  const btnJson = document.getElementById("btn-json");
+import { runCDA } from "/abe---flag/cda/cda.js";
 
-  let lastArtifact = null;
+const btnRun = document.getElementById("btn-run");
+const btnDownload = document.getElementById("btn-download");
+const btnClear = document.getElementById("btn-clear");
 
-  function set(id, txt, cls){
-    const el = document.getElementById(id);
-    el.textContent = txt;
-    el.className = cls ? ("num " + cls) : "num";
-  }
+const statusEl = document.getElementById("status");
+const plainEl = document.getElementById("plain-result");
+const tableEl = document.getElementById("definition-table");
+const jsonEl = document.getElementById("json-preview");
 
-  async function fetchJSON(path){
-    const r = await fetch(path, { cache: "no-store" });
-    if(!r.ok) throw new Error(path + ": HTTP " + r.status);
-    return r.json();
-  }
+let lastArtifact = null;
 
-  function safeParse(raw){
-    try { return JSON.parse(raw); } catch { return null; }
-  }
+function number(v,d=6){
+  const n = Number(v);
+  return Number.isFinite(n)
+    ? n.toFixed(d)
+    : "—";
+}
 
-  function fmt(v, digits = 6){
-    const n = Number(v);
-    return Number.isFinite(n) ? n.toFixed(digits) : "—";
-  }
+function downloadJSON(filename,data){
+  const blob = new Blob(
+    [JSON.stringify(data,null,2)],
+    {type:"application/json"}
+  );
 
-  function createDownload(filename, mime, content){
-    const blob = new Blob([content], { type: mime });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = filename;
-    a.click();
-    URL.revokeObjectURL(url);
-  }
+  const url = URL.createObjectURL(blob);
 
-  function renderDefinitions(defs){
-    const rows = (defs || []).map(d => `
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  a.click();
+
+  URL.revokeObjectURL(url);
+}
+
+function paintDefinitions(defs=[]){
+
+  if(!defs.length){
+    tableEl.innerHTML = `
       <tr>
-        <td>${d.term || "—"}</td>
-        <td>${d.source_authority || "—"}</td>
-        <td>${fmt(d.integrity_score, 6)}</td>
-        <td>${fmt(d.delta_def, 6)}</td>
-        <td>${d.scope_domain || "—"}</td>
+        <td colspan="6">No definitions available.</td>
       </tr>
-    `).join("");
-
-    defsBodyEl.innerHTML = rows || '<tr><td colspan="5">No definitions found.</td></tr>';
+    `;
+    return;
   }
 
-  function paintArtifact(artifact){
-    lastArtifact = artifact;
+  tableEl.innerHTML = defs.map(d=>`
 
-    set("k-integrity", fmt(artifact?.scores?.definition_integrity, 6), Number(artifact?.scores?.definition_integrity) >= 0.85 ? "ok" : Number(artifact?.scores?.definition_integrity) >= 0.65 ? "warn" : "bad");
-    set("k-delta", fmt(artifact?.scores?.delta_def, 6), Number(artifact?.scores?.delta_def) <= 0.15 ? "ok" : Number(artifact?.scores?.delta_def) <= 0.35 ? "warn" : "bad");
-    set("k-flagged", String(artifact?.aggregate?.flagged_definition_count ?? "—"), Number(artifact?.aggregate?.flagged_definition_count) > 0 ? "warn" : "ok");
+    <tr>
 
-    renderDefinitions(artifact?.definitions || []);
-    artifactPreviewEl.textContent = JSON.stringify(artifact, null, 2);
-    btnJson.disabled = false;
+      <td>
+        <strong>${d.term || "—"}</strong>
+      </td>
+
+      <td>
+        ${d.source_authority || "—"}
+      </td>
+
+      <td>
+        ${d.governing_definition || "—"}
+      </td>
+
+      <td>
+        ${d.applied_definition || "—"}
+      </td>
+
+      <td>
+        ${number(d.integrity_score,4)}
+      </td>
+
+      <td>
+        ${number(d.delta_def,4)}
+      </td>
+
+    </tr>
+
+  `).join("");
+}
+
+function paintArtifact(a){
+
+  lastArtifact = a;
+
+  localStorage.setItem(
+    "abe_cda_artifact",
+    JSON.stringify(a)
+  );
+
+  const scores = a?.scores || {};
+  const aggregate = a?.aggregate || {};
+
+  document.getElementById("k-integrity").textContent =
+    number(scores.definition_integrity,4);
+
+  document.getElementById("k-drift").textContent =
+    number(scores.delta_def,4);
+
+  document.getElementById("k-flagged").textContent =
+    aggregate.flagged_definition_count ?? "—";
+
+  document.getElementById("k-risk").textContent =
+    scores.overall_risk_class || "—";
+
+  const integrity = Number(scores.definition_integrity || 0);
+
+  let explanation = "";
+
+  if(integrity >= 0.85){
+
+    explanation = `
+      <p><strong>Definitions remain closely aligned to controlling authority.</strong></p>
+
+      <p>
+      The audit found minimal expansion beyond constitutional or statutory scope.
+      </p>
+    `;
+
+  }else if(integrity >= 0.65){
+
+    explanation = `
+      <p><strong>Moderate definition drift detected.</strong></p>
+
+      <p>
+      Some legal terms appear to be operating outside their original governing scope.
+      </p>
+    `;
+
+  }else{
+
+    explanation = `
+      <p><strong>High definition divergence detected.</strong></p>
+
+      <p>
+      The audit found substantial expansion of legal definitions beyond their original constitutional or statutory boundaries.
+      </p>
+
+      <p>
+      Plain language:
+      </p>
+
+      <pre>
+Original meaning
+↓
+expanded interpretation
+↓
+expanded enforcement scope
+↓
+constitutional drift
+</pre>
+    `;
   }
 
-  async function boot(){
-    try{
-      await fetchJSON("cda/model.json");
-      set("k-model", "OK", "ok");
+  plainEl.innerHTML = explanation;
 
-      await fetchJSON("cda/schema.json");
-      set("k-schema", "OK", "ok");
+  paintDefinitions(a.definitions || []);
 
-      set("k-runner", "OK", "ok");
+  jsonEl.textContent =
+    JSON.stringify(a,null,2);
 
-      const raw = localStorage.getItem("ABE_CDA_SCENARIO_V1") || localStorage.getItem("abe_cda_artifact");
-      if(raw){
-        const parsed = safeParse(raw);
-        if(parsed){
-          paintArtifact(parsed);
-          diagEl.textContent = "Existing CDA artifact loaded from localStorage.";
-          return;
-        }
-      }
+  btnDownload.disabled = false;
+}
 
-      diagEl.textContent = "No stored CDA artifact yet. Press Run CDA.";
-      defsBodyEl.innerHTML = '<tr><td colspan="5">No artifact executed yet.</td></tr>';
-    }catch(e){
-      console.error(e);
-      set("k-model", "ERR", "bad");
-      set("k-schema", "ERR", "bad");
-      set("k-runner", "ERR", "bad");
-      diagEl.textContent = e.message || String(e);
-      artifactPreviewEl.textContent = "CDA boot failed.";
-    }
+btnRun.onclick = async ()=>{
+
+  try{
+
+    btnRun.disabled = true;
+
+    statusEl.textContent =
+      "Running CDA…";
+
+    const artifact = await runCDA();
+
+    paintArtifact(artifact);
+
+    statusEl.innerHTML =
+      '<span class="ok">CDA completed.</span>';
+
+  }catch(e){
+
+    statusEl.innerHTML =
+      '<span class="bad">CDA failed.</span>';
+
+    plainEl.innerHTML = `
+      <p><strong>Execution failed.</strong></p>
+      <p>${e?.message || String(e)}</p>
+    `;
+
+  }finally{
+    btnRun.disabled = false;
   }
 
-  btnRun.onclick = async () => {
-    try{
-      diagEl.textContent = "Running CDA...";
-      const [model, schema] = await Promise.all([
-        fetchJSON("cda/model.json"),
-        fetchJSON("cda/schema.json")
-      ]);
+};
 
-      const artifact = await run({}, { model, schema });
+btnDownload.onclick = ()=>{
 
-      localStorage.setItem("ABE_CDA_SCENARIO_V1", JSON.stringify(artifact));
-      localStorage.setItem("abe_cda_artifact", JSON.stringify(artifact));
+  if(!lastArtifact) return;
 
-      paintArtifact(artifact);
-      diagEl.textContent = "CDA executed successfully and artifact saved.";
-    }catch(e){
-      console.error(e);
-      diagEl.textContent = e.message || String(e);
-      artifactPreviewEl.textContent = "CDA execution failed.";
-    }
-  };
+  downloadJSON(
+    "ABE_CDA_ARTIFACT.json",
+    lastArtifact
+  );
+};
 
-  btnJson.onclick = () => {
-    if(!lastArtifact) return;
-    createDownload(
-      "ABE_CDA_SCENARIO_V1.json",
-      "application/json",
-      JSON.stringify(lastArtifact, null, 2)
-    );
-  };
+btnClear.onclick = ()=>{
 
-  boot();
+  localStorage.removeItem("abe_cda_artifact");
+
+  lastArtifact = null;
+
+  tableEl.innerHTML = `
+    <tr>
+      <td colspan="6">No CDA output loaded.</td>
+    </tr>
+  `;
+
+  jsonEl.textContent = "—";
+
+  plainEl.textContent =
+    "Stored CDA results cleared.";
+
+  [
+    "k-integrity",
+    "k-drift",
+    "k-flagged",
+    "k-risk"
+  ].forEach(id=>{
+    document.getElementById(id).textContent = "—";
+  });
+
+  btnDownload.disabled = true;
+
+  statusEl.textContent =
+    "Stored CDA results cleared.";
+};
+
+const stored =
+  localStorage.getItem("abe_cda_artifact");
+
+if(stored){
+
+  try{
+
+    paintArtifact(JSON.parse(stored));
+
+    statusEl.innerHTML =
+      '<span class="ok">Loaded stored CDA artifact.</span>';
+
+  }catch{}
+}
+
 </script>
+
 </body>
 </html>
