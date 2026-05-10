@@ -3,459 +3,607 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Macro — ABE Macro Cascade Model</title>
+  <title>MACRO — A.B.E.</title>
+
   <base href="/abe---flag/">
-  <link rel="stylesheet" href="abe-patch/abe-patch.css">
+
   <style>
     :root{
       --bg:#0b0d12;
       --panel:#141820;
+      --panel2:#10151d;
       --ink:#e6e6e6;
       --muted:#9fb3c8;
       --line:rgba(255,255,255,.08);
+      --accent:#80bfff;
       --ok:#4bd28f;
       --warn:#ffd166;
       --bad:#ff6b6b;
-      --chip:#10151d;
+      --soft:rgba(128,191,255,.12);
     }
+
     *{box-sizing:border-box}
+
     body{
       margin:0;
-      background:var(--bg);
       color:var(--ink);
+      background:
+        radial-gradient(circle at top, rgba(128,191,255,.10), transparent 34rem),
+        var(--bg);
       font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
     }
-    a{color:#80bfff;text-decoration:none}
+
+    a{color:var(--accent);text-decoration:none}
     a:hover{text-decoration:underline}
+
     header{
-      padding:20px;
       background:#11151c;
       border-bottom:1px solid var(--line);
+      padding:30px 16px;
       text-align:center;
     }
-    .sub{
-      color:var(--muted);
-      margin-top:6px;
-      max-width:980px;
-      margin-left:auto;
-      margin-right:auto;
+
+    h1{
+      margin:0;
+      font-size:clamp(2rem,5vw,3.8rem);
+      line-height:1.08;
+      letter-spacing:-.04em;
     }
-    .nav{
-      margin-top:12px;
+
+    .sub{
+      max-width:980px;
+      margin:12px auto 0;
+      color:var(--muted);
+      font-size:1.05rem;
+    }
+
+    nav{
+      margin-top:18px;
       display:flex;
-      gap:10px;
       justify-content:center;
       flex-wrap:wrap;
+      gap:10px;
     }
-    .nav a{
-      display:inline-block;
-      padding:8px 12px;
+
+    nav a,.btn{
       border:1px solid var(--line);
+      background:#0f141b;
       border-radius:999px;
-      background:var(--chip);
+      padding:9px 13px;
+      color:var(--ink);
+      font-weight:800;
+      display:inline-block;
     }
+
+    nav a:hover,.btn:hover{
+      text-decoration:none;
+      border-color:rgba(128,191,255,.75);
+    }
+
     main{
-      max-width:1260px;
-      margin:20px auto;
-      padding:0 16px 40px;
+      max-width:1220px;
+      margin:22px auto;
+      padding:0 16px 48px;
     }
+
     .card{
       background:var(--panel);
       border:1px solid var(--line);
-      border-radius:12px;
-      padding:14px;
-      margin:12px 0;
+      border-radius:18px;
+      padding:18px;
+      margin:14px 0;
     }
-    .kpi{
+
+    .plain{
+      background:#0f141b;
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:16px;
+      color:var(--muted);
+    }
+
+    .notice{
+      border-left:4px solid var(--accent);
+      background:var(--soft);
+      padding:12px 14px;
+      border-radius:12px;
+      color:#dfefff;
+    }
+
+    .grid{
       display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+      grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
       gap:12px;
     }
+
     .tile{
+      background:var(--panel2);
       border:1px solid var(--line);
-      border-radius:10px;
-      padding:12px;
-      background:#10151d;
+      border-radius:14px;
+      padding:14px;
     }
+
     .label{
       color:var(--muted);
-      font-size:.92rem;
+      font-size:.9rem;
       margin-bottom:4px;
     }
-    .num{
-      font-weight:800;
-      font-size:1.2rem;
+
+    .value{
+      font-weight:900;
+      font-size:1.16rem;
+      word-break:break-word;
     }
+
+    .small{
+      color:var(--muted);
+      font-size:.92rem;
+    }
+
     .ok{color:var(--ok)}
     .warn{color:var(--warn)}
     .bad{color:var(--bad)}
-    .small{
-      color:var(--muted);
-      font-size:.9rem;
-    }
-    .btnrow{
+
+    .row{
       display:flex;
-      gap:10px;
       flex-wrap:wrap;
-      margin-top:10px;
+      gap:10px;
+      margin-top:14px;
     }
+
     button{
       background:#10151d;
       color:var(--ink);
       border:1px solid var(--line);
-      border-radius:10px;
+      border-radius:12px;
       padding:10px 14px;
       cursor:pointer;
       font:inherit;
+      font-weight:800;
     }
-    button:hover{border-color:rgba(255,255,255,.18)}
-    button:disabled{opacity:.55;cursor:not-allowed}
-    table{
-      width:100%;
-      border-collapse:collapse;
-      margin-top:8px;
-      font-size:.95rem;
+
+    button:hover{
+      border-color:rgba(128,191,255,.75);
     }
-    th,td{
-      border:1px solid var(--line);
-      padding:10px 8px;
-      vertical-align:top;
-      text-align:left;
+
+    button:disabled{
+      opacity:.55;
+      cursor:not-allowed;
     }
-    th{
-      background:#10151d;
-      color:#dfefff;
-      position:sticky;
-      top:0;
-    }
-    .table-wrap{
-      overflow:auto;
-      border-radius:10px;
-      border:1px solid var(--line);
-    }
+
     pre{
       white-space:pre-wrap;
       overflow:auto;
-      background:#10151d;
+      max-height:650px;
+      background:#070a10;
       border:1px solid var(--line);
-      border-radius:10px;
+      border-radius:12px;
       padding:12px;
+      font-size:.86rem;
       font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+      color:#dfefff;
+    }
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+      font-size:.92rem;
+    }
+
+    th,td{
+      border:1px solid var(--line);
+      padding:9px 8px;
+      text-align:left;
+      vertical-align:top;
+    }
+
+    th{
+      background:#0f141b;
+      color:#dfefff;
+    }
+
+    .table-wrap{
+      overflow:auto;
+      border:1px solid var(--line);
+      border-radius:14px;
+    }
+
+    details{
+      background:#0f141b;
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:12px 14px;
+      margin-top:14px;
+    }
+
+    summary{
+      cursor:pointer;
+      font-weight:800;
+      color:#dfefff;
+    }
+
+    footer{
+      border-top:1px solid var(--line);
+      background:#11151c;
+      text-align:center;
+      color:var(--muted);
+      padding:18px 12px;
+      font-size:.9rem;
     }
   </style>
 </head>
+
 <body>
+
 <header>
-  <h1>Macro — ABE Macro Cascade Model</h1>
+  <h1>MACRO</h1>
+
   <div class="sub">
-    Cascade layer. Macro consumes settled ABE recovery outputs and propagates them into sector gains,
-    jobs supported, and a bounded macro cascade index.
+    Macroeconomic Cascade Model — converts recovery capital into sector-level gains,
+    jobs supported, and broader economic ripple effects.
   </div>
-  <div class="nav">
+
+  <nav>
     <a href="index.html">Home</a>
-    <a href="integration/index.html">Integration</a>
-    <a href="cdi/index.html">CDI</a>
-    <a href="ciri/index.html">CIRI</a>
-    <a href="cibs/index.html">CIBS</a>
-    <a href="cii/index.html">CII</a>
-  </div>
+    <a href="learn/start_here.html">Start Here</a>
+    <a href="intake/index.html">Intake</a>
+    <a href="system/index.html">Run Full Pipeline</a>
+    <a href="integration/index.html">Audit Receipt</a>
+    <a href="learn/index.html">Learn</a>
+  </nav>
 </header>
 
 <main>
-  <div class="card">
-    <h3>Macro Formula Stack</h3>
-    <div class="small">
-      <code>G_s = B_s · m_s</code><br>
-      <code>G_total = Σ G_s</code><br>
-      <code>J_s = G_s / j_s</code><br>
-      <code>M = 1 - e^(-G_total / K_m)</code>
-    </div>
-  </div>
 
-  <div class="card">
-    <h3>Status</h3>
-    <div class="kpi">
+  <section class="card">
+    <h2>What MACRO Does</h2>
+
+    <div class="plain">
+      <p>
+        MACRO takes recovery capital from the A.B.E. pipeline and models how that value can ripple through
+        major sectors such as transportation, housing, workforce, community rebuild, small business,
+        health support, and innovation.
+      </p>
+
+      <p>
+        Plain language:
+      </p>
+
+      <pre>Recovered value
+→ sector allocation
+→ economic multiplier
+→ modeled gain
+→ jobs supported
+→ broader cascade effect</pre>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Load MACRO Output</h2>
+
+    <div class="notice">
+      MACRO reads the latest full pipeline report from local storage. Run SYSTEM first for the cleanest result.
+    </div>
+
+    <div class="row">
+      <button id="btn-load">Load MACRO From Pipeline</button>
+      <button id="btn-download" disabled>Download MACRO JSON</button>
+    </div>
+
+    <p id="status" class="small">Waiting to load.</p>
+  </section>
+
+  <section class="card">
+    <h2>Plain-Language Explainer</h2>
+
+    <div id="plain-summary" class="plain">
+      No MACRO output loaded yet.
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Key MACRO Results</h2>
+
+    <div class="grid">
       <div class="tile">
-        <div class="label">model.json</div>
-        <div id="k-model" class="num">checking…</div>
+        <div class="label">Recovery Base</div>
+        <div id="k-recovery" class="value">—</div>
       </div>
+
       <div class="tile">
-        <div class="label">inputs.json</div>
-        <div id="k-inputs" class="num">checking…</div>
+        <div class="label">Total Modeled Gain</div>
+        <div id="k-gain" class="value">—</div>
       </div>
-      <div class="tile">
-        <div class="label">Integration upstream</div>
-        <div id="k-int" class="num">checking…</div>
-      </div>
-      <div class="tile">
-        <div class="label">Recovery Total</div>
-        <div id="k-rec" class="num">—</div>
-      </div>
-      <div class="tile">
-        <div class="label">Total Gain</div>
-        <div id="k-gain" class="num">—</div>
-      </div>
+
       <div class="tile">
         <div class="label">Jobs Supported</div>
-        <div id="k-jobs" class="num">—</div>
+        <div id="k-jobs" class="value">—</div>
       </div>
+
       <div class="tile">
-        <div class="label">Macro Index</div>
-        <div id="k-macro" class="num">—</div>
+        <div class="label">Macro Cascade Index</div>
+        <div id="k-index" class="value">—</div>
+      </div>
+
+      <div class="tile">
+        <div class="label">Sector Count</div>
+        <div id="k-sectors" class="value">—</div>
+      </div>
+
+      <div class="tile">
+        <div class="label">Source Module</div>
+        <div id="k-source" class="value">—</div>
       </div>
     </div>
-  </div>
+  </section>
 
-  <div class="card">
-    <h3>Sector Cascade</h3>
+  <section class="card">
+    <h2>Sector Cascade Table</h2>
+
     <div class="table-wrap">
       <table>
         <thead>
           <tr>
             <th>Sector</th>
-            <th>Share</th>
-            <th>Allocated USD</th>
+            <th>Allocated</th>
             <th>Multiplier</th>
-            <th>Gain USD</th>
+            <th>Gain</th>
             <th>Jobs Supported</th>
           </tr>
         </thead>
-        <tbody id="sector-body">
-          <tr><td colspan="6">Loading…</td></tr>
+
+        <tbody id="sector-table">
+          <tr>
+            <td colspan="5">No sector output loaded.</td>
+          </tr>
         </tbody>
       </table>
     </div>
-  </div>
+  </section>
 
-  <div class="card">
-    <h3>Artifact Preview</h3>
-    <pre id="artifact-preview">—</pre>
-    <div class="btnrow">
-      <button id="btn-run">Run Macro</button>
-      <button id="btn-json" disabled>Export Macro JSON</button>
-      <button id="btn-csv" disabled>Export Macro CSV</button>
+  <section class="card">
+    <h2>Where MACRO Sits In The Closed Loop</h2>
+
+    <div class="plain">
+      <pre>INTAKE
+→ CAE
+→ CDA
+→ CDI
+→ CIRI
+→ CIBS
+→ CII
+→ INTEGRATION
+→ MACRO
+→ RT
+→ CFF
+→ CCRI
+→ AFFE</pre>
+
+      <p>
+        MACRO runs after Integration because it needs a settled recovery base.
+        It runs before RT because RT uses the macro cascade to help model capital activation.
+      </p>
     </div>
-  </div>
+  </section>
 
-  <div class="card">
-    <h3>Diagnostics</h3>
-    <div id="diag" class="small">No issues yet.</div>
-  </div>
+  <details>
+    <summary>Advanced MACRO JSON</summary>
+    <pre id="json-view">—</pre>
+  </details>
+
 </main>
 
-<script type="module">
-  import { run } from "/abe---flag/macro/runner.js";
+<footer>
+  Citation: Shouse, T. American Butterfly Effect (ABE). Zenodo.
+  DOI: 10.5281/zenodo.17586107
+  · Licensed CC BY-NC 4.0 · Integrity only — never for sale.
+</footer>
 
-  const artifactPreviewEl = document.getElementById("artifact-preview");
-  const sectorBodyEl = document.getElementById("sector-body");
-  const diagEl = document.getElementById("diag");
-  const btnRun = document.getElementById("btn-run");
-  const btnJson = document.getElementById("btn-json");
-  const btnCsv = document.getElementById("btn-csv");
+<script>
+  const STORAGE_KEY = "ABE_FULL_PIPELINE_REPORT";
 
-  let lastArtifact = null;
+  const btnLoad = document.getElementById("btn-load");
+  const btnDownload = document.getElementById("btn-download");
 
-  function set(id, txt, cls){
-    const el = document.getElementById(id);
-    el.textContent = txt;
-    el.className = cls ? ("num " + cls) : "num";
-  }
+  const statusEl = document.getElementById("status");
+  const plainSummary = document.getElementById("plain-summary");
+  const jsonView = document.getElementById("json-view");
+  const sectorTable = document.getElementById("sector-table");
 
-  async function fetchJSON(path){
-    const r = await fetch(path, { cache: "no-store" });
-    if(!r.ok) throw new Error(path + ": HTTP " + r.status);
-    return r.json();
-  }
-
-  function safeParse(raw){
-    try { return JSON.parse(raw); } catch { return null; }
-  }
-
-  function readFirst(keys){
-    for(const key of keys){
-      const raw = localStorage.getItem(key);
-      if(!raw) continue;
-      const parsed = safeParse(raw);
-      if(parsed) return { key, value: parsed };
-    }
-    return null;
-  }
-
-  function fmt(v, digits = 4){
-    const n = Number(v);
-    return Number.isFinite(n) ? n.toFixed(digits) : "—";
-  }
+  let currentMacro = null;
 
   function money(v){
     const n = Number(v);
     return Number.isFinite(n)
-      ? "$" + n.toLocaleString(undefined, { maximumFractionDigits: 0 })
+      ? "$" + n.toLocaleString(undefined,{maximumFractionDigits:0})
       : "—";
   }
 
-  function createDownload(filename, mime, content){
-    const blob = new Blob([content], { type: mime });
+  function num(v,d=6){
+    const n = Number(v);
+    return Number.isFinite(n)
+      ? n.toFixed(d)
+      : "—";
+  }
+
+  function int(v){
+    const n = Number(v);
+    return Number.isFinite(n)
+      ? n.toLocaleString(undefined,{maximumFractionDigits:0})
+      : "—";
+  }
+
+  function setText(id,value){
+    document.getElementById(id).textContent = value;
+  }
+
+  function downloadJSON(filename,data){
+    const blob = new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
+
     a.href = url;
     a.download = filename;
     a.click();
+
     URL.revokeObjectURL(url);
   }
 
+  function buildExplainer(macro){
+    const gain =
+      macro?.aggregate?.total_gain_usd ??
+      macro?.scores?.total_gain_usd ??
+      0;
+
+    const recovery =
+      macro?.aggregate?.recovery_total_usd ??
+      macro?.inputs?.recovery_total_usd ??
+      0;
+
+    const jobs =
+      macro?.aggregate?.total_jobs_supported ??
+      macro?.scores?.total_jobs_supported ??
+      0;
+
+    const index =
+      macro?.scores?.macro_cascade_index ??
+      null;
+
+    return `
+      <p>
+        <strong>MACRO translated recovery capital into a broader economic cascade model.</strong>
+      </p>
+
+      <p>
+        The engine started with a recovery base of
+        <strong>${money(recovery)}</strong>
+        and modeled a broader economic gain of
+        <strong>${money(gain)}</strong>.
+      </p>
+
+      <p>
+        The estimated jobs supported are
+        <strong>${int(jobs)}</strong>.
+        This is a model output, not a hiring guarantee.
+      </p>
+
+      <p>
+        The Macro Cascade Index is
+        <strong>${index === null ? "not available" : num(index,6)}</strong>.
+        Higher values indicate stronger modeled propagation through the selected sectors.
+      </p>
+
+      <p>
+        Plain language: MACRO shows how restoring blocked capital can ripple outward through real industries.
+      </p>
+    `;
+  }
+
   function renderSectors(sectors){
-    const rows = (sectors || []).map(s => `
+    if(!Array.isArray(sectors) || !sectors.length){
+      sectorTable.innerHTML = `
+        <tr>
+          <td colspan="5">No sector output available.</td>
+        </tr>
+      `;
+      return;
+    }
+
+    sectorTable.innerHTML = sectors.map(s=>`
       <tr>
-        <td>${s.label || s.key || "—"}</td>
-        <td>${fmt(s.share, 6)}</td>
+        <td>
+          <strong>${s.label || s.name || s.key || "—"}</strong>
+          <div class="small">${s.key || ""}</div>
+        </td>
         <td>${money(s.allocated_usd)}</td>
-        <td>${fmt(s.multiplier, 6)}</td>
+        <td>${num(s.multiplier,3)}</td>
         <td>${money(s.gain_usd)}</td>
-        <td>${fmt(s.jobs_supported, 2)}</td>
+        <td>${int(s.jobs_supported)}</td>
       </tr>
     `).join("");
-
-    sectorBodyEl.innerHTML = rows || '<tr><td colspan="6">No sector data available.</td></tr>';
   }
 
-  function paintArtifact(artifact){
-    lastArtifact = artifact;
+  function renderMacro(macro){
+    currentMacro = macro;
 
-    const rec = artifact?.aggregate?.recovery_total_usd;
-    const gain = artifact?.scores?.total_gain_usd;
-    const jobs = artifact?.scores?.total_jobs_supported;
-    const macro = artifact?.scores?.macro_cascade_index;
+    const recovery =
+      macro?.aggregate?.recovery_total_usd ??
+      macro?.inputs?.recovery_total_usd ??
+      0;
 
-    set("k-rec", money(rec), rec > 0 ? "ok" : "warn");
-    set("k-gain", money(gain), gain > 0 ? "ok" : "warn");
-    set("k-jobs", fmt(jobs, 2), jobs > 0 ? "ok" : "warn");
-    set("k-macro", fmt(macro, 6), macro >= 0.8 ? "ok" : macro >= 0.45 ? "warn" : "bad");
+    const gain =
+      macro?.aggregate?.total_gain_usd ??
+      macro?.scores?.total_gain_usd ??
+      0;
 
-    renderSectors(artifact?.sectors || []);
-    artifactPreviewEl.textContent = JSON.stringify(artifact, null, 2);
-    btnJson.disabled = false;
-    btnCsv.disabled = false;
+    const jobs =
+      macro?.aggregate?.total_jobs_supported ??
+      macro?.scores?.total_jobs_supported ??
+      0;
+
+    const index =
+      macro?.scores?.macro_cascade_index ??
+      null;
+
+    const sectors =
+      macro?.sectors ||
+      macro?.capital_activation_sectors ||
+      [];
+
+    setText("k-recovery", money(recovery));
+    setText("k-gain", money(gain));
+    setText("k-jobs", int(jobs));
+    setText("k-index", index === null ? "—" : num(index,6));
+    setText("k-sectors", String(sectors.length || macro?.aggregate?.sector_count || "—"));
+    setText("k-source", macro?.module || "MACRO");
+
+    plainSummary.innerHTML = buildExplainer(macro);
+    renderSectors(sectors);
+
+    jsonView.textContent = JSON.stringify(macro,null,2);
+    btnDownload.disabled = false;
+
+    statusEl.innerHTML =
+      '<span class="ok">MACRO output loaded successfully.</span>';
   }
 
-  async function boot(){
+  function loadFromPipeline(){
+    const raw = localStorage.getItem(STORAGE_KEY);
+
+    if(!raw){
+      statusEl.innerHTML =
+        '<span class="warn">No full pipeline report found. Run SYSTEM first.</span>';
+      return;
+    }
+
     try{
-      await fetchJSON("macro/model.json");
-      set("k-model", "OK", "ok");
+      const report = JSON.parse(raw);
+      const macro = report?.results?.MACRO;
 
-      await fetchJSON("macro/inputs.json");
-      set("k-inputs", "OK", "ok");
-
-      const integrationRef = readFirst([
-        "ABE_INTEGRATION_ARTIFACT_V1",
-        "abe_integration_artifact",
-        "ABE_AUDIT_RECEIPT_V1"
-      ]);
-
-      if(integrationRef){
-        set("k-int", "READY", "ok");
-      }else{
-        set("k-int", "NONE", "warn");
+      if(!macro){
+        statusEl.innerHTML =
+          '<span class="warn">Pipeline report found, but MACRO output is missing.</span>';
+        return;
       }
 
-      const existing = readFirst([
-        "ABE_MACRO_ARTIFACT_V1",
-        "abe_macro_artifact"
-      ]);
-
-      if(existing){
-        paintArtifact(existing.value);
-        diagEl.textContent = "Existing macro artifact loaded from localStorage.";
-      }else{
-        diagEl.textContent = "No stored macro artifact yet. Press Run Macro.";
-      }
+      renderMacro(macro);
 
     }catch(e){
       console.error(e);
-      set("k-model", "ERR", "bad");
-      set("k-inputs", "ERR", "bad");
-      set("k-int", "ERR", "bad");
-      diagEl.textContent = e.message || String(e);
-      artifactPreviewEl.textContent = "Macro module boot failed.";
-      sectorBodyEl.innerHTML = `<tr><td colspan="6">${e.message || String(e)}</td></tr>`;
+      statusEl.innerHTML =
+        '<span class="bad">Could not parse stored pipeline report.</span>';
     }
   }
 
-  btnRun.onclick = async () => {
-    try{
-      diagEl.textContent = "Running macro cascade...";
-      const [model, inputs] = await Promise.all([
-        fetchJSON("macro/model.json"),
-        fetchJSON("macro/inputs.json")
-      ]);
+  btnLoad.onclick = loadFromPipeline;
 
-      const integrationRef = readFirst([
-        "ABE_INTEGRATION_ARTIFACT_V1",
-        "abe_integration_artifact",
-        "ABE_AUDIT_RECEIPT_V1"
-      ]);
-
-      const ctx = {
-        model,
-        inputs,
-        integration: integrationRef ? integrationRef.value : null
-      };
-
-      const scenario = inputs?.scenario || inputs || {};
-      const artifact = await run(scenario, ctx);
-
-      localStorage.setItem("ABE_MACRO_ARTIFACT_V1", JSON.stringify(artifact));
-      localStorage.setItem("abe_macro_artifact", JSON.stringify(artifact));
-
-      paintArtifact(artifact);
-      diagEl.textContent = "Macro cascade executed successfully.";
-
-    }catch(e){
-      console.error(e);
-      diagEl.textContent = e.message || String(e);
-      artifactPreviewEl.textContent = "Macro execution failed.";
-    }
+  btnDownload.onclick = () => {
+    if(!currentMacro) return;
+    downloadJSON("ABE_MACRO_ARTIFACT_V1.json", currentMacro);
   };
 
-  btnJson.onclick = () => {
-    if(!lastArtifact) return;
-    createDownload(
-      "ABE_MACRO_ARTIFACT_V1.json",
-      "application/json",
-      JSON.stringify(lastArtifact, null, 2)
-    );
-  };
-
-  btnCsv.onclick = () => {
-    if(!lastArtifact) return;
-
-    const header = [
-      "key",
-      "label",
-      "share",
-      "allocated_usd",
-      "multiplier",
-      "gain_usd",
-      "jobs_supported"
-    ];
-
-    const rows = (lastArtifact.sectors || []).map(s => [
-      s.key || "",
-      `"${String(s.label || "").replace(/"/g, '""')}"`,
-      s.share ?? "",
-      s.allocated_usd ?? "",
-      s.multiplier ?? "",
-      s.gain_usd ?? "",
-      s.jobs_supported ?? ""
-    ].join(","));
-
-    createDownload(
-      "ABE_macro_sectors.csv",
-      "text/csv",
-      [header.join(",")].concat(rows).join("\n")
-    );
-  };
-
-  boot();
+  loadFromPipeline();
 </script>
+
 </body>
 </html>
