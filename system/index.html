@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>A.B.E. System Dashboard</title>
+  <title>SYSTEM — A.B.E.</title>
   <base href="/abe---flag/">
 
   <style>
@@ -26,7 +26,7 @@
     body{
       margin:0;
       background:
-        radial-gradient(circle at top, rgba(128,191,255,.08), transparent 32rem),
+        radial-gradient(circle at top, rgba(128,191,255,.10), transparent 34rem),
         var(--bg);
       color:var(--ink);
       font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
@@ -38,40 +38,54 @@
     header{
       background:#11151c;
       border-bottom:1px solid var(--line);
-      padding:26px 16px;
+      padding:30px 16px;
       text-align:center;
     }
 
     h1{
       margin:0;
-      font-size:2.35rem;
-      letter-spacing:-.03em;
+      font-size:clamp(2rem,5vw,3.8rem);
+      line-height:1.08;
+      letter-spacing:-.04em;
     }
 
     .sub{
       color:var(--muted);
-      margin:8px auto 0;
-      max-width:880px;
+      max-width:950px;
+      margin:12px auto 0;
+      font-size:1.05rem;
     }
 
     nav{
-      margin-top:14px;
+      margin-top:18px;
       display:flex;
       justify-content:center;
       flex-wrap:wrap;
       gap:10px;
     }
 
-    nav a{
+    nav a,.btn{
       border:1px solid var(--line);
       background:#0f141b;
       border-radius:999px;
-      padding:8px 12px;
-      font-weight:700;
+      padding:9px 13px;
+      font-weight:800;
+      color:var(--ink);
+      display:inline-block;
+    }
+
+    nav a:hover,.btn:hover{
+      text-decoration:none;
+      border-color:rgba(128,191,255,.75);
+    }
+
+    .primary{
+      background:#122033;
+      border-color:rgba(128,191,255,.5);
     }
 
     main{
-      max-width:1240px;
+      max-width:1220px;
       margin:22px auto;
       padding:0 16px 48px;
     }
@@ -84,14 +98,25 @@
       margin:14px 0;
     }
 
-    .card h2,.card h3{margin-top:0}
-
     .plain{
       background:#0f141b;
       border:1px solid var(--line);
       border-radius:14px;
       padding:16px;
       color:var(--muted);
+    }
+
+    .plain h3{
+      color:var(--ink);
+      margin:1rem 0 .35rem;
+    }
+
+    .notice{
+      border-left:4px solid var(--accent);
+      background:var(--soft);
+      padding:12px 14px;
+      border-radius:12px;
+      color:#dfefff;
     }
 
     .grid{
@@ -115,7 +140,7 @@
 
     .value{
       font-weight:900;
-      font-size:1.22rem;
+      font-size:1.18rem;
       word-break:break-word;
     }
 
@@ -135,7 +160,7 @@
       margin-top:12px;
     }
 
-    button,.btn{
+    button{
       background:#10151d;
       color:var(--ink);
       border:1px solid var(--line);
@@ -144,48 +169,15 @@
       cursor:pointer;
       font:inherit;
       font-weight:800;
-      display:inline-block;
     }
 
-    button:hover,.btn:hover{
+    button:hover{
       border-color:rgba(128,191,255,.75);
-      text-decoration:none;
     }
 
     button:disabled{
       opacity:.55;
       cursor:not-allowed;
-    }
-
-    .primary{
-      background:#122033;
-      border-color:rgba(128,191,255,.45);
-    }
-
-    .steps{
-      display:flex;
-      flex-wrap:wrap;
-      gap:8px;
-      margin-top:12px;
-    }
-
-    .step{
-      border:1px solid var(--line);
-      border-radius:999px;
-      padding:7px 10px;
-      background:#0f141b;
-      color:var(--muted);
-      font-size:.86rem;
-    }
-
-    .step.done{
-      color:var(--ok);
-      border-color:rgba(75,210,143,.45);
-    }
-
-    .step.fail{
-      color:var(--bad);
-      border-color:rgba(255,107,107,.45);
     }
 
     table{
@@ -236,13 +228,6 @@
       padding:12px;
       font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
       font-size:.86rem;
-    }
-
-    .notice{
-      border-left:4px solid var(--accent);
-      background:var(--soft);
-      padding:12px 14px;
-      border-radius:12px;
       color:#dfefff;
     }
 
@@ -260,19 +245,18 @@
 <body>
 
 <header>
-  <h1>A.B.E. System Dashboard</h1>
+  <h1>SYSTEM</h1>
+
   <div class="sub">
-    Run the full local engine chain, read plain-language findings, inspect module status,
-    and export audit-ready JSON artifacts.
+    Command Interface & Execution Layer — the closed-loop dashboard that runs the full A.B.E. pipeline.
   </div>
 
   <nav>
     <a href="index.html">Home</a>
-    <a href="learn/start_here/index.html">Start Here</a>
+    <a href="learn/start_here.html">Start Here</a>
     <a href="intake/index.html">Intake</a>
-    <a href="integration/index.html">Integration</a>
-    <a href="rt/index.html">RT</a>
-    <a href="affe/index.html">AFFE</a>
+    <a href="system/index.html">Run Full Pipeline</a>
+    <a href="integration/index.html">Audit Receipt</a>
     <a href="learn/index.html">Learn</a>
   </nav>
 </header>
@@ -280,17 +264,28 @@
 <main>
 
   <section class="card">
-    <h2>Run Full Pipeline</h2>
-    <div class="notice">
-      Recommended flow: <strong>Start Here → Intake → Run Full Pipeline → Read Results → Download Audit JSON</strong>
+    <h2>What SYSTEM Does</h2>
+
+    <div class="plain">
+      <p>
+        SYSTEM is the orchestration layer of A.B.E. It runs the full deterministic chain,
+        reads module artifacts, displays plain-language results, and prepares exportable JSON.
+      </p>
+
+      <pre>Upload once
+→ run the engine
+→ read the human explanation
+→ inspect JSON only if needed
+→ export the audit artifact</pre>
     </div>
+  </section>
 
-    <p class="small">
-      The dashboard runs the complete A.B.E. chain automatically. Advanced module pages remain available,
-      but users do not need to open every module manually.
-    </p>
+  <section class="card">
+    <h2>Run Full Pipeline</h2>
 
-    <div class="steps" id="steps"></div>
+    <div class="notice">
+      Recommended path: Start Here → Intake → Run Full Pipeline → Audit Receipt.
+    </div>
 
     <div class="row">
       <button id="btn-run" class="primary">Run Full Pipeline</button>
@@ -302,19 +297,21 @@
   </section>
 
   <section class="card">
-    <h2>Plain-Language Result</h2>
+    <h2>Plain-Language Explainer</h2>
+
     <div id="plain-explainer" class="plain">
-      Run the pipeline to generate a readable summary.
+      Run the pipeline to generate a human-readable explanation of the JSON artifact.
     </div>
   </section>
 
   <section class="card">
     <h2>Key Results</h2>
+
     <div class="grid">
       <div class="tile">
         <div class="label">Total Recovery Capital</div>
         <div id="k-recovery" class="value">—</div>
-        <div class="small">Source: Integration / CIBS</div>
+        <div class="small">Source: CIRI / CIBS / Integration</div>
       </div>
 
       <div class="tile">
@@ -336,20 +333,26 @@
       </div>
 
       <div class="tile">
-        <div class="label">RT Execution Readiness</div>
+        <div class="label">CDI Divergence</div>
+        <div id="k-cdi" class="value">—</div>
+        <div class="small">Source: CDI</div>
+      </div>
+
+      <div class="tile">
+        <div class="label">CDA Definition Integrity</div>
+        <div id="k-cda" class="value">—</div>
+        <div class="small">Source: CDA</div>
+      </div>
+
+      <div class="tile">
+        <div class="label">RT Readiness</div>
         <div id="k-rt" class="value">—</div>
         <div class="small">Source: RT</div>
       </div>
 
       <div class="tile">
-        <div class="label">AFFE Stability Signal</div>
-        <div id="k-affe-signal" class="value">—</div>
-        <div class="small">Source: AFFE</div>
-      </div>
-
-      <div class="tile">
-        <div class="label">AFFE Stability Class</div>
-        <div id="k-affe-class" class="value">—</div>
+        <div class="label">AFFE Stability</div>
+        <div id="k-affe" class="value">—</div>
         <div class="small">Source: AFFE</div>
       </div>
 
@@ -362,48 +365,28 @@
   </section>
 
   <section class="card">
-    <h2>What the Engine Did</h2>
-    <div class="grid">
-      <div class="tile">
-        <div class="label">CDI</div>
-        <div class="value">Measured Drift</div>
-        <p class="small">How far did the system diverge from its governing framework?</p>
-      </div>
+    <h2>Closed-Loop Chain</h2>
 
-      <div class="tile">
-        <div class="label">CIRI</div>
-        <div class="value">Calculated Recovery</div>
-        <p class="small">What recoverable value did the engine calculate?</p>
-      </div>
-
-      <div class="tile">
-        <div class="label">CIBS</div>
-        <div class="value">Structured Allocation</div>
-        <p class="small">Where can recovered value be directed?</p>
-      </div>
-
-      <div class="tile">
-        <div class="label">CII</div>
-        <div class="value">Measured Propagation</div>
-        <p class="small">Who benefits and how much value moves through the system?</p>
-      </div>
-
-      <div class="tile">
-        <div class="label">RT</div>
-        <div class="value">Modeled Deployment</div>
-        <p class="small">How does recovery become real-world activation?</p>
-      </div>
-
-      <div class="tile">
-        <div class="label">AFFE</div>
-        <div class="value">Checked Fidelity</div>
-        <p class="small">Did appropriation, funding, and deployment remain stable?</p>
-      </div>
+    <div class="plain">
+      <pre>INTAKE
+→ CAE
+→ CDA
+→ CDI
+→ CIRI
+→ CIBS
+→ CII
+→ INTEGRATION
+→ MACRO
+→ RT
+→ CFF
+→ CCRI
+→ AFFE</pre>
     </div>
   </section>
 
   <section class="card">
     <h2>Module Status</h2>
+
     <div class="table-wrap">
       <table>
         <thead>
@@ -423,9 +406,7 @@
 
   <section class="card">
     <h2>RT Capital Activation Sectors</h2>
-    <p class="small">
-      RT shows how recovery capital maps into deployment sectors and modeled economic activation.
-    </p>
+
     <div class="table-wrap">
       <table>
         <thead>
@@ -445,9 +426,6 @@
 
   <details>
     <summary>Advanced JSON Report</summary>
-    <p class="small">
-      This is the full audit object for engineers, auditors, researchers, legal teams, or advanced users.
-    </p>
     <pre id="json-preview">—</pre>
   </details>
 
@@ -462,7 +440,7 @@
 <script type="module">
   import { runABEFullPipelineWithReport } from "/abe---flag/system/cli.js";
 
-  const ORDER = [
+  const MODULES = [
     ["INTAKE", "Document Intake + OCR Bridge"],
     ["CAE", "Constitutional Alignment Engine"],
     ["CDA", "Constitutional Divergence Analyzer"],
@@ -497,7 +475,6 @@
     "abe_cii_artifact",
     "ABE_INTEGRATION_ARTIFACT_V1",
     "abe_integration_artifact",
-    "ABE_AUDIT_RECEIPT_V1",
     "ABE_MACRO_ARTIFACT_V1",
     "abe_macro_artifact",
     "ABE_RT_ARTIFACT_V1",
@@ -514,7 +491,6 @@
   const btnDownload = document.getElementById("btn-download");
   const btnClear = document.getElementById("btn-clear");
   const statusEl = document.getElementById("status");
-  const stepsEl = document.getElementById("steps");
   const plainEl = document.getElementById("plain-explainer");
   const jsonEl = document.getElementById("json-preview");
   const moduleStatusEl = document.getElementById("module-status");
@@ -525,17 +501,28 @@
   function money(v){
     const n = Number(v);
     return Number.isFinite(n)
-      ? "$" + n.toLocaleString(undefined, { maximumFractionDigits: 0 })
+      ? "$" + n.toLocaleString(undefined,{maximumFractionDigits:0})
       : "—";
   }
 
-  function number(v, digits = 6){
+  function number(v,digits=6){
     const n = Number(v);
     return Number.isFinite(n) ? n.toFixed(digits) : "—";
   }
 
-  function downloadJSON(filename, data){
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type:"application/json" });
+  function pct(v){
+    const n = Number(v);
+    return Number.isFinite(n)
+      ? (n * 100).toFixed(1) + "%"
+      : "—";
+  }
+
+  function cleanStatus(v){
+    return String(v || "Unknown").replaceAll("_"," ");
+  }
+
+  function downloadJSON(filename,data){
+    const blob = new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
@@ -544,55 +531,14 @@
     URL.revokeObjectURL(url);
   }
 
-  function paintSteps(report){
-    const results = report?.results || {};
-    stepsEl.innerHTML = "";
-
-    ORDER.forEach(([key]) => {
-      const span = document.createElement("span");
-      span.className = "step";
-      span.textContent = key;
-
-      if(report?.ok && (key === "INTAKE" ? true : !!results[key])){
-        span.classList.add("done");
-      }
-
-      if(report && !report.ok){
-        span.classList.add("fail");
-      }
-
-      stepsEl.appendChild(span);
-    });
-  }
-
-  function paintModuleStatus(report){
-    const results = report?.results || {};
-
-    moduleStatusEl.innerHTML = ORDER.map(([key, name], idx) => {
-      const exists = key === "INTAKE" ? true : !!results[key];
-
-      const status = report?.ok
-        ? (exists ? '<span class="ok">Complete</span>' : '<span class="warn">No artifact</span>')
-        : '<span class="bad">Not complete</span>';
-
-      return `
-        <tr>
-          <td>${idx + 1}</td>
-          <td>${key}</td>
-          <td>${name}</td>
-          <td>${status}</td>
-        </tr>
-      `;
-    }).join("");
-  }
-
   function extractNumbers(report){
     const r = report?.results || {};
 
     const recovery =
       r?.INTEGRATION?.aggregate?.total_constitutional_capital_recovery_usd ??
       r?.CIBS?.aggregate?.total_budget_allocated ??
-      r?.CIBS?.aggregate?.RT ??
+      r?.CIRI?.aggregate?.RT ??
+      r?.CIRI?.aggregate?.R_T ??
       0;
 
     const deployment =
@@ -605,130 +551,251 @@
       r?.RT?.aggregate?.A_total ??
       0;
 
-    const macroGain =
+    const macro =
       r?.MACRO?.aggregate?.total_gain_usd ??
       r?.MACRO?.scores?.total_gain_usd ??
       0;
+
+    const jobs =
+      r?.MACRO?.aggregate?.total_jobs_supported ??
+      r?.MACRO?.scores?.total_jobs_supported ??
+      0;
+
+    const cdi =
+      r?.CDI?.scores?.constitutional_divergence_index ??
+      r?.CDI?.scores?.divergence_score ??
+      null;
+
+    const cda =
+      r?.CDA?.scores?.definition_integrity ??
+      r?.CDA?.aggregate?.definition_integrity ??
+      null;
+
+    const ciri =
+      r?.CIRI?.scores?.ciri ??
+      r?.CIRI?.scores?.constitutional_risk_index ??
+      null;
 
     const rtStatus =
       r?.RT?.scores?.overall_status ??
       "—";
 
-    const affeSignal =
-      r?.AFFE?.scores?.stability_signal ??
-      r?.AFFE?.scores?.funding_fidelity_signal ??
-      0;
+    const cffStatus =
+      r?.CFF?.scores?.overall_risk_class ??
+      "—";
 
-    const affeClass =
+    const affe =
       r?.AFFE?.scores?.overall_risk_class ??
       r?.AFFE?.scores?.stability_class ??
       "—";
 
+    const affeSignal =
+      r?.AFFE?.scores?.stability_signal ??
+      r?.AFFE?.scores?.funding_fidelity_signal ??
+      null;
+
     const receipt =
       r?.INTEGRATION?.integrity?.receipt_hash ??
-      r?.INTEGRATION?.receipt_hash ??
+      r?.integrity?.report_hash ??
       null;
 
     return {
       recovery,
       deployment,
       activation,
-      macroGain,
+      macro,
+      jobs,
+      cdi,
+      cda,
+      ciri,
       rtStatus,
+      cffStatus,
+      affe,
       affeSignal,
-      affeClass,
       receipt
     };
   }
 
-  function setClass(id, value){
-    const el = document.getElementById(id);
-    el.className = "value";
-    const s = String(value || "");
-
-    if(s.includes("HIGH") || s.includes("OK") || s.includes("Complete")) el.classList.add("ok");
-    else if(s.includes("MODERATE") || s.includes("WARN")) el.classList.add("warn");
-    else if(s.includes("LOW") || s.includes("EARLY") || s.includes("BAD")) el.classList.add("bad");
-  }
-
-  function paintKeyResults(report){
-    const n = extractNumbers(report);
-
-    document.getElementById("k-recovery").textContent = money(n.recovery);
-    document.getElementById("k-deployment").textContent = money(n.deployment);
-    document.getElementById("k-activation").textContent = money(n.activation);
-    document.getElementById("k-macro").textContent = money(n.macroGain);
-    document.getElementById("k-rt").textContent = n.rtStatus;
-    document.getElementById("k-affe-signal").textContent = number(n.affeSignal, 6);
-    document.getElementById("k-affe-class").textContent = n.affeClass;
-    document.getElementById("k-audit").textContent = n.receipt ? "Receipt Generated" : "No Receipt Hash";
-
-    ["k-recovery","k-deployment","k-activation","k-macro"].forEach(id=>{
-      document.getElementById(id).className = "value ok";
-    });
-
-    setClass("k-rt", n.rtStatus);
-    setClass("k-affe-class", n.affeClass);
-    setClass("k-audit", n.receipt ? "Complete" : "WARN");
-  }
-
-  function paintExplainer(report){
+  function buildHumanExplainer(report){
     if(!report?.ok){
-      plainEl.innerHTML = `
+      return `
         <p><strong>The pipeline did not complete.</strong></p>
-        <p>${report?.error?.message || "An unknown error occurred."}</p>
-        <p>The advanced JSON section contains the technical failure record.</p>
+        <p>${report?.error?.message || "Unknown error."}</p>
       `;
-      return;
     }
 
+    const r = report?.results || {};
     const n = extractNumbers(report);
 
-    plainEl.innerHTML = `
-      <p><strong>A.B.E. completed the full engine chain.</strong></p>
+    const cdaLevel =
+      Number(n.cda) < 0.4 ? "high definition drift" :
+      Number(n.cda) < 0.7 ? "moderate definition drift" :
+      "low definition drift";
+
+    const cdiLevel =
+      Number(n.cdi) >= 0.75 ? "high divergence" :
+      Number(n.cdi) >= 0.45 ? "moderate divergence" :
+      "low divergence";
+
+    const recoveryText = money(n.recovery);
+    const activationText = money(n.activation);
+    const macroText = money(n.macro);
+    const jobsText = Number(n.jobs || 0).toLocaleString(undefined,{maximumFractionDigits:0});
+
+    return `
+      <h3>What A.B.E. Detected</h3>
+
       <p>
-        The system processed the available intake data, checked alignment and divergence,
-        calculated recoverable capital, modeled deployment, projected economic activation,
-        and generated stability / fidelity outputs.
+        A.B.E. completed the full pipeline and detected
+        <strong>${cdiLevel}</strong> with
+        <strong>${cdaLevel}</strong>.
       </p>
+
       <p>
-        <strong>Total Recovery Capital:</strong> ${money(n.recovery)}.
-        This is the modeled recoverable value produced by the current input and module settings.
+        That means the engine found a measurable gap between the governing authority structure
+        and how the enforcement or system activity appears to have been applied.
       </p>
+
+      <h3>What That Means In Human Terms</h3>
+
+      <p>
+        The engine checked whether the action stayed aligned across the closed loop:
+      </p>
+
+      <pre>authority
+→ jurisdiction
+→ definitions
+→ enforcement
+→ funding
+→ economic impact
+→ recovery deployment
+→ stability</pre>
+
+      <p>
+        The JSON artifact preserves the technical record. This section translates that record
+        into readable findings for citizens, auditors, advocates, legal teams, and reviewers.
+      </p>
+
+      <h3>Key Findings</h3>
+
+      <p>
+        <strong>Definition Integrity:</strong> ${pct(n.cda)}.
+        Lower definition integrity means the engine detected stronger mismatch between the controlling definition
+        and the applied definition.
+      </p>
+
+      <p>
+        <strong>Constitutional Divergence:</strong> ${pct(n.cdi)}.
+        Higher divergence means the system appears further away from its governing baseline.
+      </p>
+
+      <p>
+        <strong>CIRI Recovery / Risk Signal:</strong> ${pct(n.ciri)}.
+        This reflects the modeled pressure created by the divergence and its recoverable value.
+      </p>
+
+      <h3>Economic Translation</h3>
+
+      <p>
+        <strong>Total Recovery Capital:</strong> ${recoveryText}.
+        This is the modeled value A.B.E. identified as recoverable or constrained by the system conditions.
+      </p>
+
       <p>
         <strong>Deployment Capital:</strong> ${money(n.deployment)}.
-        This is the amount RT mapped into deployment pathways and Capital Activation Sectors.
+        This is the amount RT mapped into public-facing deployment pathways.
       </p>
+
       <p>
-        <strong>Economic Activation:</strong> ${money(n.activation)}.
-        This is the modeled activity generated after sector multipliers and effectiveness factors are applied.
+        <strong>Economic Activation:</strong> ${activationText}.
+        This is the modeled activity generated after RT sector activation and effectiveness factors.
       </p>
+
       <p>
-        <strong>Macro Gain:</strong> ${money(n.macroGain)}.
-        This is the broader modeled economic cascade from the MACRO module.
+        <strong>Macro Gain:</strong> ${macroText}.
+        This is the broader modeled ripple effect from the MACRO module.
       </p>
+
       <p>
-        <strong>AFFE Stability / Fidelity Signal:</strong> ${number(n.affeSignal, 6)}.
-        This reflects post-deployment stability and funding fidelity conditions from the AFFE layer.
+        <strong>Jobs Supported:</strong> ${jobsText}.
+        This is a modeled support estimate, not a hiring guarantee.
       </p>
+
+      <h3>Funding & Stability Review</h3>
+
       <p>
-        <strong>Audit Status:</strong> ${n.receipt ? "A receipt hash was generated." : "No receipt hash was found in the current report."}
+        <strong>RT Readiness:</strong> ${cleanStatus(n.rtStatus)}.
       </p>
+
       <p>
-        Advanced JSON remains available below for audit, engineering review, legal review, or system troubleshooting.
+        <strong>CFF Funding Review:</strong> ${cleanStatus(n.cffStatus)}.
+      </p>
+
+      <p>
+        <strong>AFFE Stability:</strong> ${cleanStatus(n.affe)}.
+        ${n.affeSignal !== null ? "Signal: " + number(n.affeSignal,6) + "." : ""}
+      </p>
+
+      <h3>Important Limits</h3>
+
+      <p>
+        A.B.E. does not decide guilt, innocence, liability, or court outcomes.
+        It produces an analysis artifact.
+      </p>
+
+      <p>
+        The purpose is to show:
+      </p>
+
+      <pre>what was measured
+what drifted
+what it may cost
+where recovery could go
+what should be verified next</pre>
+
+      <h3>What To Verify Next</h3>
+
+      <p>
+        Review the underlying source documents, the governing statute or regulation,
+        the funding authority, the enforcement scope, and the audit receipt.
+      </p>
+
+      <p>
+        The Advanced JSON below is the machine-readable evidence trail.
       </p>
     `;
   }
 
-  function paintRTSectors(report){
+  function paintStatus(report){
+    const r = report?.results || {};
+
+    moduleStatusEl.innerHTML = MODULES.map(([key,name],i)=>{
+      const exists = !!r[key];
+
+      const status = exists
+        ? '<span class="ok">Complete</span>'
+        : '<span class="warn">Missing</span>';
+
+      return `
+        <tr>
+          <td>${i + 1}</td>
+          <td>${key}</td>
+          <td>${name}</td>
+          <td>${status}</td>
+        </tr>
+      `;
+    }).join("");
+  }
+
+  function paintRT(report){
     const sectors = report?.results?.RT?.capital_activation_sectors || [];
 
     if(!sectors.length){
-      rtSectorsEl.innerHTML = '<tr><td colspan="4">No RT sector output available.</td></tr>';
+      rtSectorsEl.innerHTML = '<tr><td colspan="4">No RT output available.</td></tr>';
       return;
     }
 
-    rtSectorsEl.innerHTML = sectors.map(s => `
+    rtSectorsEl.innerHTML = sectors.map(s=>`
       <tr>
         <td>
           <strong>${s.name || s.key || "—"}</strong>
@@ -736,58 +803,57 @@
         </td>
         <td>${money(s.D_i)}</td>
         <td>${money(s.A_i)}</td>
-        <td>${number(s.eta_i, 4)}</td>
+        <td>${number(s.eta_i,4)}</td>
       </tr>
     `).join("");
   }
 
   function paintReport(report){
     lastReport = report;
-    localStorage.setItem("ABE_FULL_PIPELINE_REPORT", JSON.stringify(report));
 
-    paintSteps(report);
-    paintModuleStatus(report);
-    paintKeyResults(report);
-    paintExplainer(report);
-    paintRTSectors(report);
+    localStorage.setItem(
+      "ABE_FULL_PIPELINE_REPORT",
+      JSON.stringify(report)
+    );
 
-    jsonEl.textContent = JSON.stringify(report, null, 2);
-    btnDownload.disabled = !report;
-  }
+    const n = extractNumbers(report);
 
-  function loadStored(){
-    const raw = localStorage.getItem("ABE_FULL_PIPELINE_REPORT");
-    if(!raw) return;
+    document.getElementById("k-recovery").textContent = money(n.recovery);
+    document.getElementById("k-deployment").textContent = money(n.deployment);
+    document.getElementById("k-activation").textContent = money(n.activation);
+    document.getElementById("k-macro").textContent = money(n.macro);
+    document.getElementById("k-cdi").textContent = n.cdi === null ? "—" : pct(n.cdi);
+    document.getElementById("k-cda").textContent = n.cda === null ? "—" : pct(n.cda);
+    document.getElementById("k-rt").textContent = cleanStatus(n.rtStatus);
+    document.getElementById("k-affe").textContent = cleanStatus(n.affe);
+    document.getElementById("k-audit").textContent = n.receipt ? "Receipt Generated" : "No Receipt";
 
-    try{
-      const parsed = JSON.parse(raw);
-      if(parsed){
-        paintReport(parsed);
-        statusEl.innerHTML = parsed.ok
-          ? '<span class="ok">Loaded stored full pipeline report.</span>'
-          : '<span class="warn">Loaded stored failed report.</span>';
-      }
-    }catch{}
+    plainEl.innerHTML = buildHumanExplainer(report);
+
+    paintStatus(report);
+    paintRT(report);
+
+    jsonEl.textContent = JSON.stringify(report,null,2);
+    btnDownload.disabled = false;
   }
 
   btnRun.onclick = async () => {
     try{
       btnRun.disabled = true;
-      btnDownload.disabled = true;
       statusEl.textContent = "Running full A.B.E. pipeline…";
 
       const report = await runABEFullPipelineWithReport();
+
       paintReport(report);
 
       statusEl.innerHTML = report.ok
-        ? '<span class="ok">Full pipeline completed successfully.</span>'
-        : '<span class="bad">Pipeline failed. See advanced JSON below.</span>';
+        ? '<span class="ok">Full pipeline completed.</span>'
+        : '<span class="bad">Pipeline failed.</span>';
 
     }catch(e){
       const report = {
         ok:false,
-        started_at:new Date().toISOString(),
-        finished_at:new Date().toISOString(),
+        generated_at:new Date().toISOString(),
         error:{
           message:e?.message || String(e),
           stack:e?.stack || null
@@ -803,40 +869,45 @@
 
   btnDownload.onclick = () => {
     if(!lastReport) return;
-    downloadJSON("ABE_FULL_PIPELINE_REPORT.json", lastReport);
+    downloadJSON("ABE_FULL_PIPELINE_REPORT.json",lastReport);
   };
 
   btnClear.onclick = () => {
-    STORAGE_KEYS.forEach(k => localStorage.removeItem(k));
+    STORAGE_KEYS.forEach(k=>localStorage.removeItem(k));
     lastReport = null;
 
+    plainEl.textContent = "Stored results cleared.";
     jsonEl.textContent = "—";
-    plainEl.textContent = "Stored results cleared. Run the pipeline again.";
-    rtSectorsEl.innerHTML = '<tr><td colspan="4">No RT output yet.</td></tr>';
     moduleStatusEl.innerHTML = '<tr><td colspan="4">No run yet.</td></tr>';
+    rtSectorsEl.innerHTML = '<tr><td colspan="4">No RT output yet.</td></tr>';
 
     [
       "k-recovery",
       "k-deployment",
       "k-activation",
       "k-macro",
+      "k-cdi",
+      "k-cda",
       "k-rt",
-      "k-affe-signal",
-      "k-affe-class",
+      "k-affe",
       "k-audit"
     ].forEach(id=>{
-      const el = document.getElementById(id);
-      el.textContent = "—";
-      el.className = "value";
+      document.getElementById(id).textContent = "—";
     });
 
-    stepsEl.innerHTML = "";
-    statusEl.textContent = "Stored results cleared.";
     btnDownload.disabled = true;
+    statusEl.textContent = "Stored results cleared.";
   };
 
-  loadStored();
+  const stored = localStorage.getItem("ABE_FULL_PIPELINE_REPORT");
+
+  if(stored){
+    try{
+      paintReport(JSON.parse(stored));
+      statusEl.innerHTML = '<span class="ok">Loaded stored pipeline report.</span>';
+    }catch{}
+  }
 </script>
 
 </body>
-  </html>
+</html>
