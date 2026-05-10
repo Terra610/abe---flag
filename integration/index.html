@@ -3,7 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>A.B.E. Integration Layer</title>
+  <title>INTEGRATION — A.B.E.</title>
+
   <base href="/abe---flag/">
 
   <style>
@@ -25,37 +26,45 @@
 
     body{
       margin:0;
-      background:
-        radial-gradient(circle at top, rgba(128,191,255,.08), transparent 32rem),
-        var(--bg);
       color:var(--ink);
+      background:
+        radial-gradient(circle at top, rgba(128,191,255,.10), transparent 34rem),
+        var(--bg);
       font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
     }
 
-    a{color:var(--accent);text-decoration:none}
-    a:hover{text-decoration:underline}
+    a{
+      color:var(--accent);
+      text-decoration:none;
+    }
+
+    a:hover{
+      text-decoration:underline;
+    }
 
     header{
       background:#11151c;
       border-bottom:1px solid var(--line);
-      padding:26px 16px;
+      padding:30px 16px;
       text-align:center;
     }
 
     h1{
       margin:0;
-      font-size:2.35rem;
-      letter-spacing:-.03em;
+      font-size:clamp(2rem,5vw,3.8rem);
+      line-height:1.08;
+      letter-spacing:-.04em;
     }
 
     .sub{
+      max-width:980px;
+      margin:12px auto 0;
       color:var(--muted);
-      margin:8px auto 0;
-      max-width:920px;
+      font-size:1.05rem;
     }
 
     nav{
-      margin-top:14px;
+      margin-top:18px;
       display:flex;
       justify-content:center;
       flex-wrap:wrap;
@@ -66,12 +75,19 @@
       border:1px solid var(--line);
       background:#0f141b;
       border-radius:999px;
-      padding:8px 12px;
-      font-weight:700;
+      padding:9px 13px;
+      color:var(--ink);
+      font-weight:800;
+      display:inline-block;
+    }
+
+    nav a:hover{
+      text-decoration:none;
+      border-color:rgba(128,191,255,.75);
     }
 
     main{
-      max-width:1240px;
+      max-width:1220px;
       margin:22px auto;
       padding:0 16px 48px;
     }
@@ -102,7 +118,7 @@
 
     .grid{
       display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+      grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
       gap:12px;
     }
 
@@ -121,7 +137,7 @@
 
     .value{
       font-weight:900;
-      font-size:1.18rem;
+      font-size:1.15rem;
       word-break:break-word;
     }
 
@@ -138,7 +154,7 @@
       display:flex;
       gap:10px;
       flex-wrap:wrap;
-      margin-top:12px;
+      margin-top:14px;
     }
 
     button{
@@ -156,14 +172,16 @@
       border-color:rgba(128,191,255,.75);
     }
 
-    button:disabled{
-      opacity:.55;
-      cursor:not-allowed;
-    }
-
-    .primary{
-      background:#122033;
-      border-color:rgba(128,191,255,.45);
+    pre{
+      white-space:pre-wrap;
+      overflow:auto;
+      max-height:650px;
+      background:#070a10;
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:12px;
+      font-size:.86rem;
+      font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
     }
 
     table{
@@ -195,25 +213,13 @@
       border:1px solid var(--line);
       border-radius:14px;
       padding:12px 14px;
-      margin:12px 0;
+      margin-top:14px;
     }
 
     summary{
       cursor:pointer;
       font-weight:800;
       color:#dfefff;
-    }
-
-    pre{
-      white-space:pre-wrap;
-      overflow:auto;
-      max-height:620px;
-      background:#070a10;
-      border:1px solid var(--line);
-      border-radius:12px;
-      padding:12px;
-      font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
-      font-size:.86rem;
     }
 
     footer{
@@ -230,133 +236,140 @@
 <body>
 
 <header>
-  <h1>Integration Layer</h1>
+  <h1>INTEGRATION</h1>
 
   <div class="sub">
-    Audit, verification, SHA-256 integrity, pipeline provenance,
-    and deterministic artifact validation for the A.B.E. framework.
+    Closed-loop audit, constitutional receipt generation, propagation integrity,
+    and deterministic output verification for the A.B.E. engine.
   </div>
 
   <nav>
     <a href="index.html">Home</a>
+    <a href="learn/start_here.html">Start Here</a>
+    <a href="intake/index.html">Intake</a>
     <a href="system/index.html">System</a>
+    <a href="integration/index.html">Integration</a>
     <a href="learn/index.html">Learn</a>
-    <a href="rt/index.html">RT</a>
-    <a href="affe/index.html">AFFE</a>
   </nav>
 </header>
 
 <main>
 
   <section class="card">
-    <h2>What the Integration Layer Does</h2>
+    <h2>What INTEGRATION Does</h2>
 
     <div class="plain">
       <p>
-        The Integration layer verifies that the pipeline outputs remained consistent,
-        reproducible, and untampered with during execution.
+        INTEGRATION is the constitutional audit layer of A.B.E.
+      </p>
+
+      <p>
+        It validates the chain of execution, confirms propagation between modules,
+        stores recovery metrics, and generates a deterministic integrity receipt.
       </p>
 
       <p>
         Plain language:
       </p>
 
-      <p>
-        <strong>
-          Did the engine outputs stay consistent from beginning to end?
-        </strong>
-      </p>
-
-      <p>
-        The Integration layer recomputes summaries, validates artifacts,
-        generates SHA-256 receipt hashes, and creates audit-ready exports.
-      </p>
+      <pre>
+Upload evidence
+→ Run the engine
+→ Validate the chain
+→ Generate audit receipt
+→ Export integrity report
+      </pre>
     </div>
   </section>
 
   <section class="card">
-    <h2>Run Verification</h2>
+    <h2>Load Stored Integration Artifact</h2>
 
     <div class="notice">
-      The Integration layer works best after the full pipeline has already been executed.
+      INTEGRATION automatically reads the latest completed A.B.E. pipeline report from local storage.
     </div>
 
     <div class="row">
-      <button id="btn-run" class="primary">Run Verification</button>
-      <button id="btn-download" disabled>Download Audit Receipt</button>
+      <button id="btn-load">Load Integration Report</button>
+      <button id="btn-download" disabled>Download Integration JSON</button>
+      <button id="btn-clear">Clear Integration Cache</button>
     </div>
 
-    <p id="status" class="small">Waiting.</p>
+    <p id="status" class="small">Waiting to load.</p>
   </section>
 
   <section class="card">
-    <h2>Plain-Language Result</h2>
+    <h2>Plain-Language Constitutional Summary</h2>
 
-    <div id="explain" class="plain">
-      Run verification to generate a plain-language audit summary.
+    <div id="plain-summary" class="plain">
+      No integration report loaded.
     </div>
   </section>
 
   <section class="card">
-    <h2>Audit Summary</h2>
+    <h2>Integrity Overview</h2>
 
     <div class="grid">
 
       <div class="tile">
-        <div class="label">Audit Status</div>
-        <div id="k-status" class="value">—</div>
-        <div class="small">Overall verification status</div>
-      </div>
-
-      <div class="tile">
-        <div class="label">Receipt Hash</div>
-        <div id="k-hash" class="value">—</div>
-        <div class="small">SHA-256 integrity receipt</div>
-      </div>
-
-      <div class="tile">
-        <div class="label">Artifacts Verified</div>
-        <div id="k-count" class="value">—</div>
-        <div class="small">Detected upstream artifacts</div>
-      </div>
-
-      <div class="tile">
         <div class="label">Recovery Capital</div>
         <div id="k-recovery" class="value">—</div>
-        <div class="small">Recovered value observed</div>
       </div>
 
       <div class="tile">
-        <div class="label">Deployment Capital</div>
-        <div id="k-deployment" class="value">—</div>
-        <div class="small">RT deployment observed</div>
+        <div class="label">Population Impact</div>
+        <div id="k-pop" class="value">—</div>
       </div>
 
       <div class="tile">
-        <div class="label">Activation Capital</div>
-        <div id="k-activation" class="value">—</div>
-        <div class="small">Modeled activation observed</div>
+        <div class="label">Divergence Score</div>
+        <div id="k-cdi" class="value">—</div>
+      </div>
+
+      <div class="tile">
+        <div class="label">Constitutional Risk</div>
+        <div id="k-ciri" class="value">—</div>
+      </div>
+
+      <div class="tile">
+        <div class="label">Definition Integrity</div>
+        <div id="k-cda" class="value">—</div>
+      </div>
+
+      <div class="tile">
+        <div class="label">Propagation Status</div>
+        <div id="k-cii" class="value">—</div>
+      </div>
+
+      <div class="tile">
+        <div class="label">Execution Stability</div>
+        <div id="k-affe" class="value">—</div>
+      </div>
+
+      <div class="tile">
+        <div class="label">Macro Activation</div>
+        <div id="k-macro" class="value">—</div>
       </div>
 
     </div>
   </section>
 
   <section class="card">
-    <h2>Pipeline Provenance</h2>
+    <h2>Execution Chain</h2>
 
     <div class="table-wrap">
       <table>
         <thead>
           <tr>
+            <th>Order</th>
             <th>Module</th>
-            <th>Artifact Found</th>
             <th>Status</th>
           </tr>
         </thead>
 
-        <tbody id="trace-body">
+        <tbody id="chain-table">
           <tr>
-            <td colspan="3">No verification run yet.</td>
+            <td colspan="3">No report loaded.</td>
           </tr>
         </tbody>
       </table>
@@ -364,33 +377,16 @@
   </section>
 
   <section class="card">
-    <h2>What SHA-256 Means</h2>
+    <h2>Plain-Language User Explainer</h2>
 
-    <div class="plain">
-      <p>
-        SHA-256 is a cryptographic hashing system used to verify integrity.
-      </p>
-
-      <p>
-        If even a single character changes inside the verified artifact chain,
-        the resulting hash changes completely.
-      </p>
-
-      <p>
-        Plain language:
-      </p>
-
-      <p>
-        <strong>
-          The receipt hash helps prove whether the pipeline outputs stayed identical after generation.
-        </strong>
-      </p>
+    <div id="user-explainer" class="plain">
+      The engine has not loaded any report yet.
     </div>
   </section>
 
   <details>
-    <summary>Advanced Audit JSON</summary>
-    <pre id="json">—</pre>
+    <summary>Raw Integration JSON</summary>
+    <pre id="json-view">—</pre>
   </details>
 
 </main>
@@ -401,73 +397,43 @@
   · Licensed CC BY-NC 4.0 · Integrity only — never for sale.
 </footer>
 
-<script type="module">
+<script>
+  const STORAGE_KEY = "ABE_FULL_PIPELINE_REPORT";
 
-  const btnRun = document.getElementById("btn-run");
+  const btnLoad = document.getElementById("btn-load");
   const btnDownload = document.getElementById("btn-download");
+  const btnClear = document.getElementById("btn-clear");
 
   const statusEl = document.getElementById("status");
-  const explainEl = document.getElementById("explain");
-  const jsonEl = document.getElementById("json");
-  const traceBody = document.getElementById("trace-body");
+  const jsonView = document.getElementById("json-view");
+  const chainTable = document.getElementById("chain-table");
+  const plainSummary = document.getElementById("plain-summary");
+  const userExplainer = document.getElementById("user-explainer");
 
-  let lastArtifact = null;
-
-  const TRACE_KEYS = [
-    ["INTAKE", ["ABE_INTAKE_ARTIFACT_V1","abe_intake_artifact"]],
-    ["CAE", ["ABE_CAE_ARTIFACT_V1","abe_cae_artifact"]],
-    ["CDA", ["ABE_CDA_SCENARIO_V1","abe_cda_artifact"]],
-    ["CDI", ["ABE_CDI_SCENARIO_V1","abe_cdi_artifact"]],
-    ["CIRI", ["ABE_CIRI_SCENARIO_V2","ABE_CIRI_SCENARIO_V1","abe_ciri_artifact"]],
-    ["CIBS", ["ABE_CIBS_BUDGET_V1","abe_cibs_artifact"]],
-    ["CII", ["ABE_CII_PORTFOLIO_V1","abe_cii_artifact"]],
-    ["INTEGRATION", ["ABE_INTEGRATION_ARTIFACT_V1","abe_integration_artifact"]],
-    ["MACRO", ["ABE_MACRO_ARTIFACT_V1","abe_macro_artifact"]],
-    ["RT", ["ABE_RT_ARTIFACT_V1","abe_rt_artifact"]],
-    ["CFF", ["ABE_CFF_ARTIFACT_V1","abe_cff_artifact"]],
-    ["CCRI", ["ABE_CCRI_SCENARIO_V1","abe_ccri_artifact"]],
-    ["AFFE", ["ABE_AFFE_ARTIFACT_V1","abe_affe_artifact"]]
-  ];
-
-  function safeParse(raw){
-    try { return JSON.parse(raw); }
-    catch { return null; }
-  }
-
-  function readFirst(keys){
-    for(const key of keys){
-      const raw = localStorage.getItem(key);
-      if(!raw) continue;
-
-      const parsed = safeParse(raw);
-      if(parsed) return parsed;
-    }
-
-    return null;
-  }
+  let currentReport = null;
 
   function money(v){
     const n = Number(v);
-
     return Number.isFinite(n)
-      ? "$" + n.toLocaleString(undefined, { maximumFractionDigits:0 })
+      ? "$" + n.toLocaleString(undefined,{maximumFractionDigits:0})
       : "—";
   }
 
-  async function sha256(text){
-    const bytes = new TextEncoder().encode(text);
-    const hashBuffer = await crypto.subtle.digest("SHA-256", bytes);
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-
-    return hashArray
-      .map(b => b.toString(16).padStart(2, "0"))
-      .join("");
+  function num(v,d=3){
+    const n = Number(v);
+    return Number.isFinite(n)
+      ? n.toFixed(d)
+      : "—";
   }
 
-  function downloadJSON(filename, data){
+  function setText(id,value){
+    document.getElementById(id).textContent = value;
+  }
+
+  function downloadJSON(filename,data){
     const blob = new Blob(
-      [JSON.stringify(data, null, 2)],
-      { type:"application/json" }
+      [JSON.stringify(data,null,2)],
+      {type:"application/json"}
     );
 
     const url = URL.createObjectURL(blob);
@@ -480,218 +446,232 @@
     URL.revokeObjectURL(url);
   }
 
-  btnRun.onclick = async () => {
+  function buildChain(order,results){
+    chainTable.innerHTML = order.map((m,i)=>{
+
+      const exists = !!results[m];
+
+      return `
+        <tr>
+          <td>${i + 1}</td>
+          <td>${m}</td>
+          <td class="${exists ? 'ok' : 'warn'}">
+            ${exists ? 'Complete' : 'Missing'}
+          </td>
+        </tr>
+      `;
+    }).join("");
+  }
+
+  function renderReport(report){
+
+    currentReport = report;
+
+    const r = report.results || {};
+
+    const integration = r.INTEGRATION || {};
+    const cda = r.CDA || {};
+    const cdi = r.CDI || {};
+    const ciri = r.CIRI || {};
+    const cii = r.CII || {};
+    const affe = r.AFFE || {};
+    const macro = r.MACRO || {};
+
+    setText(
+      "k-recovery",
+      money(integration.aggregate?.total_constitutional_capital_recovery_usd)
+    );
+
+    setText(
+      "k-pop",
+      (integration.aggregate?.total_impacted_population || "—").toLocaleString?.() || "—"
+    );
+
+    setText(
+      "k-cdi",
+      num(cdi.scores?.constitutional_divergence_index)
+    );
+
+    setText(
+      "k-ciri",
+      ciri.scores?.overall_risk_class || "—"
+    );
+
+    setText(
+      "k-cda",
+      num(cda.scores?.definition_integrity)
+    );
+
+    setText(
+      "k-cii",
+      cii.scores?.overall_risk_class || "—"
+    );
+
+    setText(
+      "k-affe",
+      affe.scores?.overall_risk_class || "—"
+    );
+
+    setText(
+      "k-macro",
+      money(macro.scores?.total_gain_usd)
+    );
+
+    plainSummary.innerHTML = `
+      <p>
+        <strong>A.B.E. successfully completed the constitutional execution chain.</strong>
+      </p>
+
+      <p>
+        The engine detected measurable constitutional divergence,
+        definition drift, enforcement escalation, and elevated recovery pressure.
+      </p>
+
+      <p>
+        Total modeled constitutional capital recovery:
+        <strong>${money(integration.aggregate?.total_constitutional_capital_recovery_usd)}</strong>
+      </p>
+
+      <p>
+        Macro propagation generated an estimated activation effect of
+        <strong>${money(macro.scores?.total_gain_usd)}</strong>.
+      </p>
+    `;
+
+    userExplainer.innerHTML = `
+      <p>
+        <strong>What this means in plain English:</strong>
+      </p>
+
+      <p>
+        The engine examined the uploaded case information and compared it against
+        constitutional structure, jurisdictional scope, definition integrity,
+        funding alignment, and execution behavior.
+      </p>
+
+      <p>
+        The system detected signs of:
+      </p>
+
+      <ul>
+        <li>Definition drift</li>
+        <li>Scope expansion</li>
+        <li>Escalating enforcement pressure</li>
+        <li>Potential constitutional divergence</li>
+        <li>Funding alignment concerns</li>
+      </ul>
+
+      <p>
+        A.B.E. then modeled what restoration and realignment could look like
+        economically if the identified divergence patterns were corrected.
+      </p>
+
+      <p>
+        The recovery numbers shown are not cash balances or bank accounts.
+        They are modeled economic restoration estimates tied to systemic alignment,
+        mobility restoration, housing stability, workforce participation,
+        community rebuild activity, and macroeconomic propagation.
+      </p>
+
+      <p>
+        The engine also generated a deterministic audit chain so the outputs can be
+        reproduced and verified later instead of changing unpredictably.
+      </p>
+    `;
+
+    buildChain(
+      report.execution_order || [],
+      r
+    );
+
+    jsonView.textContent = JSON.stringify(report,null,2);
+
+    btnDownload.disabled = false;
+
+    statusEl.innerHTML =
+      '<span class="ok">Integration report loaded successfully.</span>';
+  }
+
+  btnLoad.onclick = () => {
+
+    const raw = localStorage.getItem(STORAGE_KEY);
+
+    if(!raw){
+      statusEl.innerHTML =
+        '<span class="warn">No stored pipeline report found.</span>';
+      return;
+    }
 
     try{
-
-      btnRun.disabled = true;
-      statusEl.textContent = "Running verification…";
-
-      const found = [];
-
-      for(const [module, keys] of TRACE_KEYS){
-
-        const artifact = readFirst(keys);
-
-        found.push({
-          module,
-          artifact_found: !!artifact,
-          artifact
-        });
-      }
-
-      const verifiedArtifacts = found.filter(f => f.artifact_found);
-
-      const RT =
-        verifiedArtifacts.find(v => v.module === "RT")?.artifact || null;
-
-      const INTEGRATION =
-        verifiedArtifacts.find(v => v.module === "INTEGRATION")?.artifact || null;
-
-      const recovery =
-        Number(
-          INTEGRATION?.aggregate?.total_constitutional_capital_recovery_usd ??
-          INTEGRATION?.aggregate?.recovery_capital_usd ??
-          0
-        );
-
-      const deployment =
-        Number(
-          RT?.scores?.total_deployment_usd ??
-          RT?.aggregate?.D_total ??
-          0
-        );
-
-      const activation =
-        Number(
-          RT?.scores?.total_activation_usd ??
-          RT?.aggregate?.A_total ??
-          0
-        );
-
-      const payload = {
-        generated_at: new Date().toISOString(),
-        verified_modules: verifiedArtifacts.map(v => v.module),
-        totals: {
-          recovery_capital_usd: recovery,
-          deployment_capital_usd: deployment,
-          activation_capital_usd: activation
-        }
-      };
-
-      const receipt_hash =
-        await sha256(JSON.stringify(payload));
-
-      const artifact = {
-        module: "INTEGRATION",
-        module_name: "Audit & SHA-256 Integrity Layer",
-        generated_at: new Date().toISOString(),
-
-        integrity: {
-          receipt_hash,
-          hashing_algorithm: "SHA-256",
-          deterministic_verification: true
-        },
-
-        aggregate: {
-          total_constitutional_capital_recovery_usd: recovery,
-          total_deployment_usd: deployment,
-          total_activation_usd: activation
-        },
-
-        verified_artifacts: verifiedArtifacts.map(v => ({
-          module: v.module,
-          artifact_found: v.artifact_found
-        })),
-
-        plain_language: {
-          summary:
-            "The Integration layer verified detected artifacts and generated a SHA-256 receipt hash for integrity validation.",
-
-          meaning:
-            "If the underlying verified artifact chain changes, the receipt hash changes.",
-
-          caution:
-            "This receipt verifies artifact consistency, not legal conclusions or court outcomes."
-        }
-      };
-
-      localStorage.setItem(
-        "ABE_INTEGRATION_ARTIFACT_V1",
-        JSON.stringify(artifact)
-      );
-
-      localStorage.setItem(
-        "abe_integration_artifact",
-        JSON.stringify(artifact)
-      );
-
-      lastArtifact = artifact;
-
-      document.getElementById("k-status").textContent =
-        verifiedArtifacts.length ? "VERIFIED" : "NO_ARTIFACTS";
-
-      document.getElementById("k-status").className =
-        verifiedArtifacts.length
-          ? "value ok"
-          : "value warn";
-
-      document.getElementById("k-hash").textContent =
-        receipt_hash.slice(0, 18) + "...";
-
-      document.getElementById("k-count").textContent =
-        String(verifiedArtifacts.length);
-
-      document.getElementById("k-recovery").textContent =
-        money(recovery);
-
-      document.getElementById("k-deployment").textContent =
-        money(deployment);
-
-      document.getElementById("k-activation").textContent =
-        money(activation);
-
-      explainEl.innerHTML = `
-        <p><strong>Verification completed.</strong></p>
-
-        <p>
-          The Integration layer scanned local artifacts,
-          recomputed summary values,
-          and generated a SHA-256 receipt hash.
-        </p>
-
-        <p>
-          <strong>Artifacts Verified:</strong>
-          ${verifiedArtifacts.length}
-        </p>
-
-        <p>
-          <strong>Recovery Capital:</strong>
-          ${money(recovery)}
-        </p>
-
-        <p>
-          <strong>Deployment Capital:</strong>
-          ${money(deployment)}
-        </p>
-
-        <p>
-          <strong>Activation Capital:</strong>
-          ${money(activation)}
-        </p>
-
-        <p>
-          The receipt hash can be exported as part of the audit trail.
-        </p>
-      `;
-
-      traceBody.innerHTML =
-        found.map(f => `
-          <tr>
-            <td>${f.module}</td>
-            <td>${f.artifact_found ? "YES" : "NO"}</td>
-            <td>
-              ${
-                f.artifact_found
-                  ? '<span class="ok">Verified</span>'
-                  : '<span class="warn">Missing</span>'
-              }
-            </td>
-          </tr>
-        `).join("");
-
-      jsonEl.textContent =
-        JSON.stringify(artifact, null, 2);
-
-      btnDownload.disabled = false;
+      renderReport(JSON.parse(raw));
+    }catch(e){
 
       statusEl.innerHTML =
-        '<span class="ok">Verification completed.</span>';
+        '<span class="bad">Failed to parse integration report.</span>';
 
-    }catch(err){
-
-      console.error(err);
-
-      statusEl.innerHTML =
-        '<span class="bad">' +
-        (err.message || String(err)) +
-        '</span>';
-
-    }finally{
-      btnRun.disabled = false;
+      console.error(e);
     }
   };
 
   btnDownload.onclick = () => {
 
-    if(!lastArtifact) return;
+    if(!currentReport) return;
 
     downloadJSON(
-      "ABE_INTEGRATION_ARTIFACT_V1.json",
-      lastArtifact
+      "ABE_INTEGRATION_REPORT.json",
+      currentReport
     );
   };
 
+  btnClear.onclick = () => {
+
+    localStorage.removeItem(STORAGE_KEY);
+
+    currentReport = null;
+
+    jsonView.textContent = "—";
+
+    chainTable.innerHTML = `
+      <tr>
+        <td colspan="3">No report loaded.</td>
+      </tr>
+    `;
+
+    plainSummary.textContent =
+      "No integration report loaded.";
+
+    userExplainer.textContent =
+      "The engine has not loaded any report yet.";
+
+    [
+      "k-recovery",
+      "k-pop",
+      "k-cdi",
+      "k-ciri",
+      "k-cda",
+      "k-cii",
+      "k-affe",
+      "k-macro"
+    ].forEach(id=>{
+      setText(id,"—");
+    });
+
+    btnDownload.disabled = true;
+
+    statusEl.innerHTML =
+      '<span class="warn">Integration cache cleared.</span>';
+  };
+
+  (()=>{
+
+    const raw = localStorage.getItem(STORAGE_KEY);
+
+    if(!raw) return;
+
+    try{
+      renderReport(JSON.parse(raw));
+    }catch{}
+  })();
 </script>
 
 </body>
