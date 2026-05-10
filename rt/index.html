@@ -1,0 +1,670 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>RT — A.B.E.</title>
+
+  <base href="/abe---flag/">
+
+  <style>
+    :root{
+      --bg:#0b0d12;
+      --panel:#141820;
+      --panel2:#10151d;
+      --ink:#e6e6e6;
+      --muted:#9fb3c8;
+      --line:rgba(255,255,255,.08);
+      --accent:#80bfff;
+      --ok:#4bd28f;
+      --warn:#ffd166;
+      --bad:#ff6b6b;
+      --soft:rgba(128,191,255,.12);
+    }
+
+    *{box-sizing:border-box}
+
+    body{
+      margin:0;
+      color:var(--ink);
+      background:
+        radial-gradient(circle at top, rgba(128,191,255,.10), transparent 34rem),
+        var(--bg);
+      font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+    }
+
+    a{
+      color:var(--accent);
+      text-decoration:none;
+    }
+
+    a:hover{
+      text-decoration:underline;
+    }
+
+    header{
+      background:#11151c;
+      border-bottom:1px solid var(--line);
+      padding:30px 16px;
+      text-align:center;
+    }
+
+    h1{
+      margin:0;
+      font-size:clamp(2rem,5vw,3.8rem);
+      line-height:1.08;
+      letter-spacing:-.04em;
+    }
+
+    .sub{
+      max-width:980px;
+      margin:12px auto 0;
+      color:var(--muted);
+      font-size:1.05rem;
+    }
+
+    nav{
+      margin-top:18px;
+      display:flex;
+      justify-content:center;
+      flex-wrap:wrap;
+      gap:10px;
+    }
+
+    nav a,.btn{
+      border:1px solid var(--line);
+      background:#0f141b;
+      border-radius:999px;
+      padding:9px 13px;
+      color:var(--ink);
+      font-weight:800;
+      display:inline-block;
+    }
+
+    nav a:hover,.btn:hover{
+      text-decoration:none;
+      border-color:rgba(128,191,255,.75);
+    }
+
+    main{
+      max-width:1260px;
+      margin:22px auto;
+      padding:0 16px 48px;
+    }
+
+    .card{
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:18px;
+      margin:14px 0;
+    }
+
+    .plain{
+      background:#0f141b;
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:16px;
+      color:var(--muted);
+    }
+
+    .notice{
+      border-left:4px solid var(--accent);
+      background:var(--soft);
+      padding:12px 14px;
+      border-radius:12px;
+      color:#dfefff;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+      gap:12px;
+    }
+
+    .tile{
+      background:var(--panel2);
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:14px;
+    }
+
+    .label{
+      color:var(--muted);
+      font-size:.9rem;
+      margin-bottom:4px;
+    }
+
+    .value{
+      font-weight:900;
+      font-size:1.15rem;
+      word-break:break-word;
+    }
+
+    .small{
+      color:var(--muted);
+      font-size:.92rem;
+    }
+
+    .ok{color:var(--ok)}
+    .warn{color:var(--warn)}
+    .bad{color:var(--bad)}
+
+    .row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:14px;
+    }
+
+    button{
+      background:#10151d;
+      color:var(--ink);
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:10px 14px;
+      cursor:pointer;
+      font:inherit;
+      font-weight:800;
+    }
+
+    button:hover{
+      border-color:rgba(128,191,255,.75);
+    }
+
+    button:disabled{
+      opacity:.55;
+      cursor:not-allowed;
+    }
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+      font-size:.92rem;
+    }
+
+    th,td{
+      border:1px solid var(--line);
+      padding:9px 8px;
+      text-align:left;
+      vertical-align:top;
+    }
+
+    th{
+      background:#0f141b;
+      color:#dfefff;
+    }
+
+    .table-wrap{
+      overflow:auto;
+      border:1px solid var(--line);
+      border-radius:14px;
+    }
+
+    pre{
+      white-space:pre-wrap;
+      overflow:auto;
+      max-height:650px;
+      background:#070a10;
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:12px;
+      font-size:.86rem;
+      font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+      color:#dfefff;
+    }
+
+    details{
+      background:#0f141b;
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:12px 14px;
+      margin-top:14px;
+    }
+
+    summary{
+      cursor:pointer;
+      font-weight:800;
+      color:#dfefff;
+    }
+
+    footer{
+      border-top:1px solid var(--line);
+      background:#11151c;
+      text-align:center;
+      color:var(--muted);
+      padding:18px 12px;
+      font-size:.9rem;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h1>RT</h1>
+
+  <div class="sub">
+    Rebuild Together Engine — converts recovery capital into deployment pathways,
+    activation sectors, stabilization systems, and measurable economic propagation.
+  </div>
+
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="learn/start_here.html">Start Here</a>
+    <a href="intake/index.html">Intake</a>
+    <a href="system/index.html">Run Full Pipeline</a>
+    <a href="integration/index.html">Audit Receipt</a>
+    <a href="learn/index.html">Learn</a>
+  </nav>
+</header>
+
+<main>
+
+  <section class="card">
+    <h2>What RT Does</h2>
+
+    <div class="plain">
+      <p>
+        RT stands for Rebuild Together.
+      </p>
+
+      <p>
+        RT transforms recovery capital into real-world deployment systems such as
+        mobility restoration, housing continuity, workforce systems, agriculture,
+        healthcare optimization, legal access, seniors and veterans support,
+        animal welfare stabilization, and community infrastructure.
+      </p>
+
+      <p>
+        Plain language:
+      </p>
+
+      <pre>
+Recovery capital
+→ deployment sectors
+→ activation multipliers
+→ stabilization systems
+→ economic propagation
+→ measurable rebuild pathways
+      </pre>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Load RT Output</h2>
+
+    <div class="notice">
+      RT reads the latest completed SYSTEM pipeline report from local storage.
+    </div>
+
+    <div class="row">
+      <button id="btn-load">Load RT From Pipeline</button>
+      <button id="btn-download" disabled>Download RT JSON</button>
+    </div>
+
+    <p id="status" class="small">Waiting to load.</p>
+  </section>
+
+  <section class="card">
+    <h2>Plain-Language RT Summary</h2>
+
+    <div id="plain-summary" class="plain">
+      No RT output loaded yet.
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>RT Overview</h2>
+
+    <div class="grid">
+
+      <div class="tile">
+        <div class="label">Deployment Capital</div>
+        <div id="k-deployment" class="value">—</div>
+      </div>
+
+      <div class="tile">
+        <div class="label">Activation Capital</div>
+        <div id="k-activation" class="value">—</div>
+      </div>
+
+      <div class="tile">
+        <div class="label">Rebuild Together Index</div>
+        <div id="k-rti" class="value">—</div>
+      </div>
+
+      <div class="tile">
+        <div class="label">Activation Index</div>
+        <div id="k-ai" class="value">—</div>
+      </div>
+
+      <div class="tile">
+        <div class="label">Execution Status</div>
+        <div id="k-status" class="value">—</div>
+      </div>
+
+      <div class="tile">
+        <div class="label">Sector Count</div>
+        <div id="k-sectors" class="value">—</div>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Capital Activation Sectors</h2>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Sector</th>
+            <th>Deployment</th>
+            <th>Activation</th>
+            <th>Multiplier</th>
+            <th>Execution</th>
+          </tr>
+        </thead>
+
+        <tbody id="sector-table">
+          <tr>
+            <td colspan="5">No RT sector output loaded.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Closed-Loop Position</h2>
+
+    <div class="plain">
+      <pre>
+INTAKE
+→ CAE
+→ CDA
+→ CDI
+→ CIRI
+→ CIBS
+→ CII
+→ INTEGRATION
+→ MACRO
+→ RT
+→ CFF
+→ CCRI
+→ AFFE
+      </pre>
+
+      <p>
+        RT sits after MACRO because it uses the settled recovery base and macro cascade
+        to model real-world deployment behavior and sector activation.
+      </p>
+    </div>
+  </section>
+
+  <details>
+    <summary>Advanced RT JSON</summary>
+    <pre id="json-view">—</pre>
+  </details>
+
+</main>
+
+<footer>
+  Citation: Shouse, T. American Butterfly Effect (ABE). Zenodo.
+  DOI: 10.5281/zenodo.17586107
+  · Licensed CC BY-NC 4.0 · Integrity only — never for sale.
+</footer>
+
+<script>
+  const STORAGE_KEY = "ABE_FULL_PIPELINE_REPORT";
+
+  const btnLoad = document.getElementById("btn-load");
+  const btnDownload = document.getElementById("btn-download");
+
+  const statusEl = document.getElementById("status");
+  const plainSummary = document.getElementById("plain-summary");
+  const sectorTable = document.getElementById("sector-table");
+  const jsonView = document.getElementById("json-view");
+
+  let currentRT = null;
+
+  function money(v){
+    const n = Number(v);
+
+    return Number.isFinite(n)
+      ? "$" + n.toLocaleString(undefined,{maximumFractionDigits:0})
+      : "—";
+  }
+
+  function num(v,d=6){
+    const n = Number(v);
+
+    return Number.isFinite(n)
+      ? n.toFixed(d)
+      : "—";
+  }
+
+  function setText(id,value){
+    document.getElementById(id).textContent = value;
+  }
+
+  function downloadJSON(filename,data){
+    const blob = new Blob(
+      [JSON.stringify(data,null,2)],
+      {type:"application/json"}
+    );
+
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    a.click();
+
+    URL.revokeObjectURL(url);
+  }
+
+  function renderSectors(sectors){
+
+    if(!Array.isArray(sectors) || !sectors.length){
+
+      sectorTable.innerHTML = `
+        <tr>
+          <td colspan="5">No RT sector output available.</td>
+        </tr>
+      `;
+
+      return;
+    }
+
+    sectorTable.innerHTML = sectors.map(s=>`
+      <tr>
+        <td>
+          <strong>${s.name || s.label || s.key || "—"}</strong>
+          <div class="small">${s.description || ""}</div>
+        </td>
+
+        <td>${money(s.D_i)}</td>
+
+        <td>${money(s.A_i)}</td>
+
+        <td>${num(s.m_i,3)}</td>
+
+        <td>${num(s.eta_i,3)}</td>
+      </tr>
+    `).join("");
+  }
+
+  function buildSummary(rt){
+
+    const deployment =
+      rt?.aggregate?.D_total ??
+      rt?.scores?.total_deployment_usd ??
+      0;
+
+    const activation =
+      rt?.aggregate?.A_total ??
+      rt?.scores?.total_activation_usd ??
+      0;
+
+    const rti =
+      rt?.scores?.rebuild_together_index ??
+      0;
+
+    const status =
+      rt?.scores?.overall_status ??
+      "UNKNOWN";
+
+    const sectors =
+      rt?.aggregate?.sector_count ??
+      rt?.capital_activation_sectors?.length ??
+      0;
+
+    return `
+      <p>
+        <strong>RT converted recovery capital into deployable stabilization systems.</strong>
+      </p>
+
+      <p>
+        The engine modeled approximately
+        <strong>${money(deployment)}</strong>
+        in deployment pathways and
+        <strong>${money(activation)}</strong>
+        in activation propagation.
+      </p>
+
+      <p>
+        RT identified
+        <strong>${sectors}</strong>
+        major rebuild sectors including mobility, housing, workforce systems,
+        healthcare, agriculture, infrastructure, legal access,
+        seniors and veterans support, and companion animal stability systems.
+      </p>
+
+      <p>
+        The Rebuild Together Index is
+        <strong>${num(rti,6)}</strong>.
+      </p>
+
+      <p>
+        Current execution status:
+        <strong>${status}</strong>.
+      </p>
+
+      <p>
+        Plain language:
+      </p>
+
+      <pre>
+RT asks:
+
+"If recovery capital was restored,
+where could it be deployed to stabilize people,
+communities, infrastructure, and long-term economic participation?"
+      </pre>
+    `;
+  }
+
+  function renderRT(rt){
+
+    currentRT = rt;
+
+    const deployment =
+      rt?.aggregate?.D_total ??
+      rt?.scores?.total_deployment_usd ??
+      0;
+
+    const activation =
+      rt?.aggregate?.A_total ??
+      rt?.scores?.total_activation_usd ??
+      0;
+
+    const rti =
+      rt?.scores?.rebuild_together_index ??
+      0;
+
+    const ai =
+      rt?.scores?.activation_index ??
+      0;
+
+    const status =
+      rt?.scores?.overall_status ??
+      "UNKNOWN";
+
+    const sectors =
+      rt?.capital_activation_sectors || [];
+
+    setText("k-deployment", money(deployment));
+    setText("k-activation", money(activation));
+    setText("k-rti", num(rti,6));
+    setText("k-ai", num(ai,6));
+    setText("k-status", status);
+    setText("k-sectors", String(sectors.length));
+
+    plainSummary.innerHTML = buildSummary(rt);
+
+    renderSectors(sectors);
+
+    jsonView.textContent = JSON.stringify(rt,null,2);
+
+    btnDownload.disabled = false;
+
+    statusEl.innerHTML =
+      '<span class="ok">RT output loaded successfully.</span>';
+  }
+
+  function loadRT(){
+
+    const raw = localStorage.getItem(STORAGE_KEY);
+
+    if(!raw){
+
+      statusEl.innerHTML =
+        '<span class="warn">No pipeline report found. Run SYSTEM first.</span>';
+
+      return;
+    }
+
+    try{
+
+      const report = JSON.parse(raw);
+
+      const rt = report?.results?.RT;
+
+      if(!rt){
+
+        statusEl.innerHTML =
+          '<span class="warn">Pipeline report found but RT output is missing.</span>';
+
+        return;
+      }
+
+      renderRT(rt);
+
+    }catch(e){
+
+      console.error(e);
+
+      statusEl.innerHTML =
+        '<span class="bad">Failed to parse stored RT output.</span>';
+    }
+  }
+
+  btnLoad.onclick = loadRT;
+
+  btnDownload.onclick = () => {
+
+    if(!currentRT) return;
+
+    downloadJSON(
+      "ABE_RT_ARTIFACT_V1.json",
+      currentRT
+    );
+  };
+
+  loadRT();
+</script>
+
+</body>
+</html>
