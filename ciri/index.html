@@ -1,447 +1,860 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>CIRI — Constitutional Integrity Risk Index</title>
-  <base href="/abe---flag/">
-  <link rel="stylesheet" href="abe-patch/abe-patch.css">
-  <style>
-    :root{
-      --bg:#0b0d12;
-      --panel:#141820;
-      --ink:#e6e6e6;
-      --muted:#9fb3c8;
-      --line:rgba(255,255,255,.08);
-      --ok:#4bd28f;
-      --warn:#ffd166;
-      --bad:#ff6b6b;
-      --brand:#5ddfff;
-      --chip:#10151d;
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      background:var(--bg);
-      color:var(--ink);
-      font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-    }
-    a{color:#80bfff;text-decoration:none}
-    a:hover{text-decoration:underline}
-    header{
-      padding:20px;
-      background:#11151c;
-      border-bottom:1px solid var(--line);
-      text-align:center;
-    }
-    .sub{
-      color:var(--muted);
-      margin-top:6px;
-      max-width:980px;
-      margin-left:auto;
-      margin-right:auto;
-    }
-    .nav{
-      margin-top:12px;
-      display:flex;
-      gap:10px;
-      justify-content:center;
-      flex-wrap:wrap;
-    }
-    .nav a{
-      display:inline-block;
-      padding:8px 12px;
-      border:1px solid var(--line);
-      border-radius:999px;
-      background:var(--chip);
-    }
-    main{
-      max-width:1220px;
-      margin:20px auto;
-      padding:0 16px 40px;
-    }
-    .card{
-      background:var(--panel);
-      border:1px solid var(--line);
-      border-radius:12px;
-      padding:14px;
-      margin:12px 0;
-    }
-    .kpi{
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-      gap:12px;
-    }
-    .tile{
-      border:1px solid var(--line);
-      border-radius:10px;
-      padding:12px;
-      background:#10151d;
-    }
-    .label{
-      color:var(--muted);
-      font-size:.92rem;
-      margin-bottom:4px;
-    }
-    .num{
-      font-weight:800;
-      font-size:1.2rem;
-    }
-    .ok{color:var(--ok)}
-    .warn{color:var(--warn)}
-    .bad{color:var(--bad)}
-    .small{
-      color:var(--muted);
-      font-size:.9rem;
-    }
-    .btnrow{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      margin-top:10px;
-    }
-    button{
-      background:#10151d;
-      color:var(--ink);
-      border:1px solid var(--line);
-      border-radius:10px;
-      padding:10px 14px;
-      cursor:pointer;
-      font:inherit;
-    }
-    button:hover{border-color:rgba(255,255,255,.18)}
-    button:disabled{opacity:.55;cursor:not-allowed}
-    table{
-      width:100%;
-      border-collapse:collapse;
-      margin-top:8px;
-      font-size:.95rem;
-    }
-    th,td{
-      border:1px solid var(--line);
-      padding:10px 8px;
-      vertical-align:top;
-      text-align:left;
-    }
-    th{
-      background:#10151d;
-      color:#dfefff;
-      position:sticky;
-      top:0;
-    }
-    .table-wrap{
-      overflow:auto;
-      border-radius:10px;
-      border:1px solid var(--line);
-    }
-    .pill{
-      display:inline-block;
-      border-radius:999px;
-      padding:2px 8px;
-      font-size:.82rem;
-      border:1px solid var(--line);
-      font-weight:700;
-      letter-spacing:.02em;
-    }
-    .pill-high{color:var(--bad);border-color:rgba(255,107,107,.35)}
-    .pill-mod{color:var(--warn);border-color:rgba(255,209,102,.35)}
-    .pill-low{color:var(--ok);border-color:rgba(75,210,143,.35)}
-    code, pre{
-      font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
-    }
-    pre{
-      white-space:pre-wrap;
-      overflow:auto;
-      background:#10151d;
-      border:1px solid var(--line);
-      border-radius:10px;
-      padding:12px;
-    }
-    ul.compact{
-      margin:8px 0 0 18px;
-      padding:0;
-    }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CIRI — A.B.E.</title>
+<base href="/abe---flag/">
+
+<style>
+:root{
+  --bg:#0b0d12;
+  --panel:#141820;
+  --panel2:#10151d;
+  --ink:#e6e6e6;
+  --muted:#9fb3c8;
+  --line:rgba(255,255,255,.08);
+  --accent:#80bfff;
+  --gold:#fff750;
+  --ok:#4bd28f;
+  --warn:#ffd166;
+  --bad:#ff6b6b;
+  --soft:rgba(128,191,255,.12);
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  background:
+    radial-gradient(circle at top, rgba(128,191,255,.10), transparent 34rem),
+    var(--bg);
+  color:var(--ink);
+  font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+}
+
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+
+header{
+  background:#11151c;
+  border-bottom:1px solid var(--line);
+  padding:30px 16px;
+  text-align:center;
+}
+
+h1{
+  margin:0;
+  font-size:clamp(2rem,5vw,3.8rem);
+  line-height:1.08;
+  letter-spacing:-.04em;
+}
+
+.sub{
+  color:var(--muted);
+  max-width:980px;
+  margin:12px auto 0;
+  font-size:1.05rem;
+}
+
+nav{
+  margin-top:18px;
+  display:flex;
+  justify-content:center;
+  flex-wrap:wrap;
+  gap:10px;
+}
+
+nav a,.btn{
+  border:1px solid var(--line);
+  background:#0f141b;
+  border-radius:999px;
+  padding:9px 13px;
+  font-weight:800;
+  color:var(--ink);
+  display:inline-block;
+}
+
+nav a:hover,.btn:hover{
+  text-decoration:none;
+  border-color:rgba(128,191,255,.75);
+}
+
+.primary{
+  background:#122033;
+  border-color:rgba(128,191,255,.5);
+}
+
+main{
+  max-width:1240px;
+  margin:22px auto;
+  padding:0 16px 48px;
+}
+
+.card{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:18px;
+  margin:14px 0;
+}
+
+.plain{
+  background:#0f141b;
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:16px;
+  color:var(--muted);
+}
+
+.notice{
+  border-left:4px solid var(--accent);
+  background:var(--soft);
+  padding:12px 14px;
+  border-radius:12px;
+  color:#dfefff;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+  gap:12px;
+}
+
+.tile{
+  background:var(--panel2);
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:14px;
+}
+
+.label{
+  color:var(--muted);
+  font-size:.9rem;
+  margin-bottom:4px;
+}
+
+.value{
+  font-weight:900;
+  font-size:1.18rem;
+  word-break:break-word;
+}
+
+.small{
+  color:var(--muted);
+  font-size:.92rem;
+}
+
+.ok{color:var(--ok)}
+.warn{color:var(--warn)}
+.bad{color:var(--bad)}
+
+.row{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top:12px;
+}
+
+button{
+  background:#10151d;
+  color:var(--ink);
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:10px 14px;
+  cursor:pointer;
+  font:inherit;
+  font-weight:800;
+}
+
+button:hover{
+  border-color:rgba(128,191,255,.75);
+}
+
+button:disabled{
+  opacity:.55;
+  cursor:not-allowed;
+}
+
+input,textarea{
+  width:100%;
+  background:#0f141b;
+  color:var(--ink);
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:10px;
+  font:inherit;
+}
+
+textarea{
+  min-height:120px;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+
+.table-wrap{
+  overflow:auto;
+  border:1px solid var(--line);
+  border-radius:14px;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:.92rem;
+}
+
+th,td{
+  border:1px solid var(--line);
+  padding:9px 8px;
+  text-align:left;
+  vertical-align:top;
+}
+
+th{
+  background:#0f141b;
+  color:#dfefff;
+}
+
+details{
+  background:#0f141b;
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:12px 14px;
+  margin:12px 0;
+}
+
+summary{
+  cursor:pointer;
+  font-weight:800;
+  color:#dfefff;
+}
+
+pre{
+  white-space:pre-wrap;
+  overflow:auto;
+  max-height:620px;
+  background:#070a10;
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:12px;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  font-size:.86rem;
+  color:#dfefff;
+}
+
+footer{
+  border-top:1px solid var(--line);
+  background:#11151c;
+  text-align:center;
+  color:var(--muted);
+  padding:18px 12px;
+  font-size:.9rem;
+}
+</style>
 </head>
+
 <body>
+
 <header>
-  <h1>CIRI — Constitutional Integrity Risk Index</h1>
+  <h1>CIRI</h1>
+
   <div class="sub">
-    Core pioneer module. CIRI computes the total constitutional risk and recovery term
-    <code>R_T</code>, then normalizes it into a bounded constitutional risk index and case ROI.
+    Constitutional Integrity ROI Engine — calculates total recovery value, CIRI index,
+    ROI per case, and human-readable recovery buckets.
   </div>
-  <div class="nav">
+
+  <nav>
     <a href="index.html">Home</a>
-    <a href="cdi/index.html">CDI</a>
-    <a href="cibs/index.html">CIBS</a>
-    <a href="cii/index.html">CII</a>
-    <a href="system/index.html">CLI</a>
-    <a href="integration/index.html">Integration</a>
-  </div>
+    <a href="learn/start_here.html">Start Here</a>
+    <a href="intake/index.html">Intake</a>
+    <a href="system/index.html">Run Full Pipeline</a>
+    <a href="integration/index.html">Audit Receipt</a>
+    <a href="learn/index.html">Learn</a>
+  </nav>
 </header>
 
 <main>
-  <div class="card">
-    <h3>Canonical Formula Stack</h3>
-    <div class="small">CIRI executes the original pioneer formulas in this order:</div>
-    <ul class="compact">
-      <li><code>R_T = (C_a·C̄) + F_e + (C_a·D_j·J) + (P_e·Ē) + (H_r·M̄·t̄_a) + (C_a·P_e·w̄·t̄_a) + (L_e·P̄·λ) - T_c</code></li>
-      <li><code>CIRI = 1 - e^(-R_T / K)</code></li>
-      <li><code>ROI_case = R_T / C_a</code></li>
-    </ul>
+
+<section class="card">
+  <h2>What CIRI Does</h2>
+
+  <div class="plain">
+    <p>
+      CIRI calculates the modeled economic recovery created when constitutional alignment is restored.
+    </p>
+
+    <pre>divergence detected
+→ recovery inputs
+→ recovery buckets
+→ total recovery value R_T
+→ CIRI index
+→ ROI per case
+→ CIBS allocation</pre>
+
+    <p>
+      Plain language: CIRI answers, <strong>“What is it worth to fix the drift?”</strong>
+    </p>
+  </div>
+</section>
+
+<section class="card">
+  <h2>Run CIRI</h2>
+
+  <div class="notice">
+    CIRI can read <code>ciri/inputs.csv</code>, stored Intake data, or manual values entered below.
   </div>
 
-  <div class="card">
-    <h3>Status</h3>
-    <div class="kpi">
-      <div class="tile">
-        <div class="label">model.json</div>
-        <div id="k-model" class="num">checking…</div>
-      </div>
-      <div class="tile">
-        <div class="label">inputs.json</div>
-        <div id="k-inputs" class="num">checking…</div>
-      </div>
-      <div class="tile">
-        <div class="label">Runner</div>
-        <div id="k-runner" class="num">checking…</div>
-      </div>
-      <div class="tile">
-        <div class="label">CDI upstream</div>
-        <div id="k-cdi" class="num">checking…</div>
-      </div>
-      <div class="tile">
-        <div class="label">R_T</div>
-        <div id="k-rt" class="num">—</div>
-      </div>
-      <div class="tile">
-        <div class="label">CIRI</div>
-        <div id="k-ciri" class="num">—</div>
-      </div>
-      <div class="tile">
-        <div class="label">ROI Case</div>
-        <div id="k-roi" class="num">—</div>
-      </div>
-      <div class="tile">
-        <div class="label">Risk Class</div>
-        <div id="k-risk" class="num">—</div>
-      </div>
+  <div class="row">
+    <button id="btn-load-csv">Load ciri/inputs.csv</button>
+    <button id="btn-run" class="primary">Run CIRI</button>
+    <button id="btn-download" disabled>Download CIRI JSON</button>
+    <button id="btn-clear">Clear CIRI</button>
+  </div>
+
+  <p id="status" class="small">Waiting to run.</p>
+</section>
+
+<section class="card">
+  <h2>Live CIRI KPIs</h2>
+
+  <div class="grid">
+    <div class="tile">
+      <div class="label">Modeled Recovery R_T</div>
+      <div id="k-recovery" class="value">—</div>
+      <div class="small">Total recovery value</div>
+    </div>
+
+    <div class="tile">
+      <div class="label">CIRI Index</div>
+      <div id="k-index" class="value">—</div>
+      <div class="small">1 − e^(-R_T / K)</div>
+    </div>
+
+    <div class="tile">
+      <div class="label">ROI Per Case</div>
+      <div id="k-roi" class="value">—</div>
+      <div class="small">R_T / cases avoided</div>
+    </div>
+
+    <div class="tile">
+      <div class="label">Cases Avoided</div>
+      <div id="k-cases" class="value">—</div>
+      <div class="small">Prevented enforcement actions</div>
+    </div>
+
+    <div class="tile">
+      <div class="label">Jail Days Avoided</div>
+      <div id="k-jail" class="value">—</div>
+      <div class="small">Prevented incarceration days</div>
+    </div>
+
+    <div class="tile">
+      <div class="label">Risk Class</div>
+      <div id="k-risk" class="value">—</div>
+      <div class="small">Recovery pressure classification</div>
     </div>
   </div>
+</section>
 
-  <div class="card">
-    <h3>Inputs Used</h3>
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>Input</th>
-            <th>Value</th>
-          </tr>
-        </thead>
-        <tbody id="inputs-body">
-          <tr><td colspan="2">Loading…</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
+<section class="card">
+  <h2>Plain-Language Result</h2>
 
-  <div class="card">
-    <h3>Artifact Preview</h3>
-    <pre id="artifact-preview">—</pre>
-    <div class="btnrow">
-      <button id="btn-run">Run CIRI</button>
-      <button id="btn-json" disabled>Export CIRI JSON</button>
-    </div>
+  <div id="plain-result" class="plain">
+    Run CIRI to generate a readable recovery explanation.
   </div>
+</section>
 
-  <div class="card">
-    <h3>Diagnostics</h3>
-    <div id="diag" class="small">No issues yet.</div>
+<section class="card">
+  <h2>Recovery Buckets</h2>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Bucket</th>
+          <th>Formula</th>
+          <th>Value</th>
+          <th>Plain Meaning</th>
+        </tr>
+      </thead>
+      <tbody id="bucket-table">
+        <tr><td colspan="4">No CIRI output loaded.</td></tr>
+      </tbody>
+    </table>
   </div>
+</section>
+
+<section class="card">
+  <h2>Manual Inputs</h2>
+
+  <div class="grid">
+    <div class="tile"><div class="label">cases_avoided</div><input id="cases_avoided" value="0"></div>
+    <div class="tile"><div class="label">avg_cost_per_case</div><input id="avg_cost_per_case" value="0"></div>
+    <div class="tile"><div class="label">jail_days_avoided</div><input id="jail_days_avoided" value="0"></div>
+    <div class="tile"><div class="label">cost_per_jail_day</div><input id="cost_per_jail_day" value="0"></div>
+    <div class="tile"><div class="label">fees_canceled_total</div><input id="fees_canceled_total" value="0"></div>
+    <div class="tile"><div class="label">policy_corrections</div><input id="policy_corrections" value="0"></div>
+    <div class="tile"><div class="label">avg_enforcement_cost_savings</div><input id="avg_enforcement_cost_savings" value="0"></div>
+    <div class="tile"><div class="label">households_restored</div><input id="households_restored" value="0"></div>
+    <div class="tile"><div class="label">avg_monthly_market_spend</div><input id="avg_monthly_market_spend" value="0"></div>
+    <div class="tile"><div class="label">months_effective</div><input id="months_effective" value="12"></div>
+    <div class="tile"><div class="label">employment_probability</div><input id="employment_probability" value="0"></div>
+    <div class="tile"><div class="label">avg_monthly_wage</div><input id="avg_monthly_wage" value="0"></div>
+    <div class="tile"><div class="label">expected_lawsuits</div><input id="expected_lawsuits" value="0"></div>
+    <div class="tile"><div class="label">avg_payout</div><input id="avg_payout" value="0"></div>
+    <div class="tile"><div class="label">litigation_multiplier</div><input id="litigation_multiplier" value="1"></div>
+    <div class="tile"><div class="label">transition_costs_one_time</div><input id="transition_costs_one_time" value="0"></div>
+    <div class="tile"><div class="label">K normalization constant</div><input id="K" value="2000000000"></div>
+  </div>
+</section>
+
+<section class="card">
+  <h2>CIRI Variable Glossary</h2>
+
+  <div class="plain">
+    <p>
+      <strong>R_T</strong> is the total recovery value. It flows from CIRI into CIBS, CII, Integration, Macro, RT, and AFFE.
+    </p>
+
+    <pre>R_T =
+direct_case
++ detention
++ fees
++ enforcement
++ market_access
++ employment
++ litigation
+− transition_costs</pre>
+
+    <p>
+      This keeps the math understandable: every recovery number comes from a bucket that can be inspected.
+    </p>
+  </div>
+</section>
+
+<section class="card">
+  <h2>Where CIRI Sits In The Closed Loop</h2>
+
+  <div class="plain">
+    <pre>INTAKE
+→ CAE
+→ CDA
+→ CDI
+→ CIRI
+→ CIBS
+→ CII
+→ INTEGRATION
+→ MACRO
+→ RT
+→ CFF
+→ CCRI
+→ AFFE</pre>
+
+    <p>
+      CIRI runs after CDI because divergence must be measured before recovery value can be calculated.
+    </p>
+  </div>
+</section>
+
+<details>
+  <summary>Advanced CIRI JSON</summary>
+  <pre id="json-preview">—</pre>
+</details>
+
 </main>
 
-<script type="module">
-  import { run } from "/abe---flag/ciri/runner.js";
+<footer>
+Citation: Shouse, T. American Butterfly Effect (ABE). Zenodo.
+DOI: 10.5281/zenodo.17586107
+· Licensed CC BY-NC 4.0 · Integrity only — never for sale.
+</footer>
 
-  const artifactPreviewEl = document.getElementById("artifact-preview");
-  const diagEl = document.getElementById("diag");
-  const inputsBodyEl = document.getElementById("inputs-body");
-  const btnRun = document.getElementById("btn-run");
-  const btnJson = document.getElementById("btn-json");
+<script>
+const INPUT_IDS = [
+  "cases_avoided",
+  "avg_cost_per_case",
+  "jail_days_avoided",
+  "cost_per_jail_day",
+  "fees_canceled_total",
+  "policy_corrections",
+  "avg_enforcement_cost_savings",
+  "households_restored",
+  "avg_monthly_market_spend",
+  "months_effective",
+  "employment_probability",
+  "avg_monthly_wage",
+  "expected_lawsuits",
+  "avg_payout",
+  "litigation_multiplier",
+  "transition_costs_one_time",
+  "K"
+];
 
-  let lastArtifact = null;
+const btnLoadCsv = document.getElementById("btn-load-csv");
+const btnRun = document.getElementById("btn-run");
+const btnDownload = document.getElementById("btn-download");
+const btnClear = document.getElementById("btn-clear");
 
-  function set(id, txt, cls){
+const statusEl = document.getElementById("status");
+const plainEl = document.getElementById("plain-result");
+const bucketTable = document.getElementById("bucket-table");
+const jsonEl = document.getElementById("json-preview");
+
+let lastArtifact = null;
+
+function num(x){
+  const n = Number(String(x || "").replace(/[^0-9.\-]/g,""));
+  return Number.isFinite(n) ? n : 0;
+}
+
+function money(v){
+  const n = Number(v);
+  return Number.isFinite(n)
+    ? "$" + n.toLocaleString(undefined,{maximumFractionDigits:0})
+    : "—";
+}
+
+function number(v,d=6){
+  const n = Number(v);
+  return Number.isFinite(n) ? n.toFixed(d) : "—";
+}
+
+function pct(v){
+  const n = Number(v);
+  return Number.isFinite(n) ? (n * 100).toFixed(2) + "%" : "—";
+}
+
+function safeParse(raw){
+  try{return JSON.parse(raw)}
+  catch{return null}
+}
+
+function getInputs(){
+  const d = {};
+  INPUT_IDS.forEach(id=>{
     const el = document.getElementById(id);
-    el.textContent = txt;
-    el.className = cls ? ("num " + cls) : "num";
-  }
+    d[id] = el ? el.value : "0";
+  });
+  return d;
+}
 
-  async function fetchJSON(path){
-    const r = await fetch(path, { cache: "no-store" });
-    if(!r.ok) throw new Error(path + ": HTTP " + r.status);
-    return r.json();
-  }
-
-  function safeParse(raw){
-    try { return JSON.parse(raw); } catch { return null; }
-  }
-
-  function readFirst(keys){
-    for(const key of keys){
-      const raw = localStorage.getItem(key);
-      if(!raw) continue;
-      const parsed = safeParse(raw);
-      if(parsed) return { key, value: parsed };
+function setInputs(d){
+  if(!d) return;
+  INPUT_IDS.forEach(id=>{
+    if(d[id] !== undefined && document.getElementById(id)){
+      document.getElementById(id).value = d[id];
     }
-    return null;
-  }
+  });
+}
 
-  function fmt(v, digits = 4){
-    const n = Number(v);
-    return Number.isFinite(n) ? n.toFixed(digits) : "—";
-  }
+function downloadJSON(filename,data){
+  const blob = new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
+}
 
-  function money(v){
-    const n = Number(v);
-    return Number.isFinite(n)
-      ? "$" + n.toLocaleString(undefined, { maximumFractionDigits: 0 })
-      : "—";
-  }
+function computeCiriMetrics(d){
+  const cases_avoided = num(d.cases_avoided);
+  const avg_cost_per_case = num(d.avg_cost_per_case);
+  const jail_days_avoided = num(d.jail_days_avoided);
+  const cost_per_jail_day = num(d.cost_per_jail_day);
+  const fees_canceled_total = num(d.fees_canceled_total);
+  const policy_corrections = num(d.policy_corrections);
+  const avg_enforcement_cost_savings = num(d.avg_enforcement_cost_savings);
+  const households_restored = num(d.households_restored);
+  const avg_monthly_market_spend = num(d.avg_monthly_market_spend);
+  const months_effective = num(d.months_effective);
+  const employment_probability = num(d.employment_probability);
+  const avg_monthly_wage = num(d.avg_monthly_wage);
+  const expected_lawsuits = num(d.expected_lawsuits);
+  const avg_payout = num(d.avg_payout);
+  const litigation_multiplier = num(d.litigation_multiplier || d.multiplier || 1);
+  const transition_costs = num(d.transition_costs_one_time);
+  const K = num(d.K || 2000000000) || 2000000000;
 
-  function createDownload(filename, mime, content){
-    const blob = new Blob([content], { type: mime });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = filename;
-    a.click();
-    URL.revokeObjectURL(url);
-  }
+  const direct_case = cases_avoided * avg_cost_per_case;
+  const detention = jail_days_avoided * cost_per_jail_day;
+  const fees = fees_canceled_total;
+  const enforcement = policy_corrections * avg_enforcement_cost_savings;
+  const market_access = households_restored * avg_monthly_market_spend * months_effective;
+  const employment = cases_avoided * employment_probability * avg_monthly_wage * (months_effective / 12);
+  const litigation = expected_lawsuits * avg_payout * litigation_multiplier;
 
-  function renderInputs(inputs){
-    const rows = Object.entries(inputs || {}).map(([k,v]) => `
-      <tr>
-        <td>${k}</td>
-        <td>${typeof v === "number" ? fmt(v, 6) : String(v)}</td>
-      </tr>
-    `).join("");
+  let total = direct_case + detention + fees + enforcement + market_access + employment + litigation - transition_costs;
+  total = Math.max(0,total);
 
-    inputsBodyEl.innerHTML = rows || '<tr><td colspan="2">No inputs available.</td></tr>';
-  }
+  const ciri_index = 1 - Math.exp(-total / Math.max(1,K));
+  const roi_per_case = cases_avoided > 0 ? total / cases_avoided : 0;
 
-  function paintArtifact(artifact){
-    lastArtifact = artifact;
-    const RT = artifact?.aggregate?.RT;
-    const ciri = artifact?.scores?.ciri ?? artifact?.scores?.constitutional_risk_index;
-    const roi = artifact?.scores?.roi_case;
-    const risk = artifact?.scores?.overall_risk_class || "—";
-
-    set("k-rt", money(RT), RT > 0 ? "ok" : "warn");
-    set("k-ciri", fmt(ciri, 6), ciri >= 0.8 ? "bad" : ciri >= 0.45 ? "warn" : "ok");
-    set("k-roi", fmt(roi, 6), roi > 0 ? "ok" : "warn");
-    set("k-risk", risk, risk === "HIGH" ? "bad" : risk === "MODERATE" ? "warn" : "ok");
-
-    renderInputs(artifact?.inputs || {});
-    artifactPreviewEl.textContent = JSON.stringify(artifact, null, 2);
-    btnJson.disabled = false;
-  }
-
-  async function boot(){
-    try{
-      await fetchJSON("ciri/model.json");
-      set("k-model", "OK", "ok");
-
-      await fetchJSON("ciri/inputs.json");
-      set("k-inputs", "OK", "ok");
-
-      set("k-runner", "OK", "ok");
-
-      const cdiRef = readFirst([
-        "ABE_CDI_SCENARIO_V1",
-        "abe_cdi_artifact"
-      ]);
-
-      if(cdiRef){
-        set("k-cdi", "READY", "ok");
-      }else{
-        set("k-cdi", "NONE", "warn");
-      }
-
-      const existing = readFirst([
-        "ABE_CIRI_SCENARIO_V2",
-        "ABE_CIRI_SCENARIO_V1",
-        "abe_ciri_artifact"
-      ]);
-
-      if(existing){
-        paintArtifact(existing.value);
-        diagEl.textContent = "Existing CIRI artifact loaded from localStorage.";
-      }else{
-        diagEl.textContent = "No stored CIRI artifact yet. Press Run CIRI.";
-        inputsBodyEl.innerHTML = '<tr><td colspan="2">No artifact executed yet.</td></tr>';
-      }
-
-    }catch(e){
-      console.error(e);
-      set("k-model", "ERR", "bad");
-      set("k-inputs", "ERR", "bad");
-      set("k-runner", "ERR", "bad");
-      set("k-cdi", "ERR", "bad");
-      diagEl.textContent = e.message || String(e);
-      artifactPreviewEl.textContent = "Module boot failed.";
-      inputsBodyEl.innerHTML = `<tr><td colspan="2">${e.message || String(e)}</td></tr>`;
-    }
-  }
-
-  btnRun.onclick = async () => {
-    try{
-      diagEl.textContent = "Running CIRI...";
-      const [model, inputs] = await Promise.all([
-        fetchJSON("ciri/model.json"),
-        fetchJSON("ciri/inputs.json")
-      ]);
-
-      const cdiRef = readFirst([
-        "ABE_CDI_SCENARIO_V1",
-        "abe_cdi_artifact"
-      ]);
-
-      const ctx = {
-        model,
-        inputs,
-        priorCore: cdiRef ? { CDI: { artifact: cdiRef.value } } : {},
-        expansions: {}
-      };
-
-      const scenario = inputs?.scenario || inputs?.scenarios?.[0] || inputs || {};
-      const artifact = await run(scenario, ctx);
-
-      localStorage.setItem("ABE_CIRI_SCENARIO_V2", JSON.stringify(artifact));
-      localStorage.setItem("ABE_CIRI_SCENARIO_V1", JSON.stringify(artifact));
-      localStorage.setItem("abe_ciri_artifact", JSON.stringify(artifact));
-
-      paintArtifact(artifact);
-      diagEl.textContent = "CIRI executed successfully and artifact saved.";
-
-    }catch(e){
-      console.error(e);
-      diagEl.textContent = e.message || String(e);
-      artifactPreviewEl.textContent = "CIRI execution failed.";
+  return {
+    total_recovery: total,
+    ciri_index,
+    roi_per_case,
+    cases_avoided,
+    jail_days_avoided,
+    K,
+    components:{
+      direct_case,
+      detention,
+      fees,
+      enforcement,
+      market_access,
+      employment,
+      litigation,
+      transition_costs
     }
   };
+}
 
-  btnJson.onclick = () => {
-    if(!lastArtifact) return;
-    createDownload(
-      "ABE_CIRI_SCENARIO_V2.json",
-      "application/json",
-      JSON.stringify(lastArtifact, null, 2)
-    );
+function classify(out){
+  if(out.ciri_index >= .75) return "HIGH_RECOVERY_PRESSURE";
+  if(out.ciri_index >= .5) return "SIGNIFICANT_RECOVERY";
+  if(out.ciri_index >= .25) return "MODERATE_RECOVERY";
+  return "LOW_MEASURABLE_RECOVERY";
+}
+
+function buildArtifact(inputs,out){
+  const risk = classify(out);
+
+  return {
+    module:"CIRI",
+    title:"Constitutional Integrity ROI Engine",
+    module_version:"2.0",
+    generated_at:new Date().toISOString(),
+
+    formulas:{
+      RT:"R_T = direct_case + detention + fees + enforcement + market_access + employment + litigation - transition_costs",
+      CIRI:"CIRI = 1 - e^(-R_T / K)",
+      ROI_case:"ROI_case = R_T / cases_avoided"
+    },
+
+    inputs,
+
+    components:out.components,
+
+    scores:{
+      total_recovery:out.total_recovery,
+      constitutional_integrity_roi_index:out.ciri_index,
+      ciri:out.ciri_index,
+      roi_case:out.roi_per_case,
+      overall_risk_class:risk
+    },
+
+    aggregate:{
+      RT:out.total_recovery,
+      total_recovery:out.total_recovery,
+      normalization_constant:out.K,
+      case_count:out.cases_avoided,
+      jail_days_avoided:out.jail_days_avoided
+    },
+
+    plain_language:{
+      summary:"CIRI calculated the modeled recovery value created by restoring constitutional alignment.",
+      meaning:"Each recovery bucket is separately calculated so users can inspect where the total value came from.",
+      caution:"This is a deterministic model output, not a court ruling, legal guarantee, or cash balance."
+    },
+
+    narrative:
+      "CIRI calculated total recovery value using detailed recovery buckets and produced ROI per case plus normalized recovery index."
   };
+}
 
-  boot();
+function paintBuckets(components){
+  const rows = [
+    ["Direct Case Costs", "cases_avoided × avg_cost_per_case", components.direct_case, "Costs avoided from prosecutions, citations, arrests, and court processing."],
+    ["Detention", "jail_days_avoided × cost_per_jail_day", components.detention, "Jail and incarceration costs avoided."],
+    ["Fees", "fees_canceled_total", components.fees, "Fines, fees, penalties, and forfeitures canceled."],
+    ["Enforcement Savings", "policy_corrections × avg_enforcement_cost_savings", components.enforcement, "Reduced enforcement and administrative costs."],
+    ["Market Access", "households_restored × avg_monthly_market_spend × months_effective", components.market_access, "Restored household and consumer participation."],
+    ["Employment Recovery", "cases_avoided × employment_probability × avg_monthly_wage × months_effective/12", components.employment, "Restored wage and workforce participation."],
+    ["Litigation Reduction", "expected_lawsuits × avg_payout × litigation_multiplier", components.litigation, "Lawsuit, settlement, and liability exposure avoided."],
+    ["Transition Costs", "transition_costs_one_time", -components.transition_costs, "One-time reform and implementation cost deducted from recovery."]
+  ];
+
+  bucketTable.innerHTML = rows.map(r=>`
+    <tr>
+      <td><strong>${r[0]}</strong></td>
+      <td><code>${r[1]}</code></td>
+      <td>${money(r[2])}</td>
+      <td>${r[3]}</td>
+    </tr>
+  `).join("");
+}
+
+function buildExplainer(artifact){
+  const c = artifact.components || {};
+  const s = artifact.scores || {};
+  const a = artifact.aggregate || {};
+
+  return `
+    <p><strong>CIRI completed the constitutional recovery calculation.</strong></p>
+
+    <p>
+      The model calculated a total recovery value of
+      <strong>${money(s.total_recovery)}</strong>.
+    </p>
+
+    <p>
+      The normalized CIRI index is
+      <strong>${pct(s.ciri)}</strong>.
+      This shows how strong the modeled recovery pressure is after normalization.
+    </p>
+
+    <p>
+      ROI per case is
+      <strong>${money(s.roi_case)}</strong>.
+      This means each prevented enforcement event carries that average modeled recovery value.
+    </p>
+
+    <p>
+      The largest recovery buckets in this run are:
+    </p>
+
+    <pre>Direct case: ${money(c.direct_case)}
+Detention: ${money(c.detention)}
+Fees: ${money(c.fees)}
+Enforcement savings: ${money(c.enforcement)}
+Market access: ${money(c.market_access)}
+Employment recovery: ${money(c.employment)}
+Litigation reduction: ${money(c.litigation)}
+Transition costs deducted: ${money(c.transition_costs)}</pre>
+
+    <p>
+      Risk classification:
+      <strong>${s.overall_risk_class}</strong>.
+    </p>
+
+    <p>
+      This output flows forward into CIBS, CII, Integration, Macro, RT, CFF, CCRI, and AFFE.
+    </p>
+  `;
+}
+
+function paintArtifact(artifact){
+  lastArtifact = artifact;
+
+  localStorage.setItem("ABE_CIRI_SCENARIO_V2", JSON.stringify(artifact));
+  localStorage.setItem("ABE_CIRI_SCENARIO_V1", JSON.stringify(artifact));
+  localStorage.setItem("abe_ciri_artifact", JSON.stringify(artifact));
+
+  const s = artifact.scores || {};
+  const a = artifact.aggregate || {};
+
+  document.getElementById("k-recovery").textContent = money(s.total_recovery);
+  document.getElementById("k-index").textContent = pct(s.ciri);
+  document.getElementById("k-roi").textContent = money(s.roi_case);
+  document.getElementById("k-cases").textContent = (a.case_count || 0).toLocaleString();
+  document.getElementById("k-jail").textContent = (a.jail_days_avoided || 0).toLocaleString();
+  document.getElementById("k-risk").textContent = s.overall_risk_class || "—";
+
+  paintBuckets(artifact.components || {});
+  plainEl.innerHTML = buildExplainer(artifact);
+  jsonEl.textContent = JSON.stringify(artifact,null,2);
+
+  btnDownload.disabled = false;
+}
+
+async function fetchText(path){
+  const r = await fetch(path,{cache:"no-store"});
+  if(!r.ok) throw new Error(path + " HTTP " + r.status);
+  return r.text();
+}
+
+function parseCSV(text){
+  const lines = text.trim().split(/\r?\n/);
+  if(lines.length < 2) return null;
+
+  const headers = lines[0].split(",").map(s=>s.trim());
+  const row = lines[1].split(",").map(s=>s.trim());
+
+  const out = {};
+  headers.forEach((h,i)=>out[h]=row[i]);
+  return out;
+}
+
+btnLoadCsv.onclick = async()=>{
+  try{
+    statusEl.textContent = "Loading ciri/inputs.csv…";
+    const txt = await fetchText("ciri/inputs.csv");
+    const data = parseCSV(txt);
+
+    if(!data) throw new Error("inputs.csv does not contain a header row and data row.");
+
+    setInputs(data);
+    statusEl.innerHTML = '<span class="ok">Loaded ciri/inputs.csv.</span>';
+  }catch(e){
+    statusEl.innerHTML = '<span class="bad">' + (e.message || String(e)) + '</span>';
+  }
+};
+
+btnRun.onclick = ()=>{
+  try{
+    statusEl.textContent = "Running CIRI…";
+
+    const inputs = getInputs();
+    const out = computeCiriMetrics(inputs);
+    const artifact = buildArtifact(inputs,out);
+
+    paintArtifact(artifact);
+
+    statusEl.innerHTML = '<span class="ok">CIRI completed.</span>';
+  }catch(e){
+    statusEl.innerHTML = '<span class="bad">' + (e.message || String(e)) + '</span>';
+  }
+};
+
+btnDownload.onclick = ()=>{
+  if(!lastArtifact) return;
+  downloadJSON("ABE_CIRI_SCENARIO_V2.json", lastArtifact);
+};
+
+btnClear.onclick = ()=>{
+  localStorage.removeItem("ABE_CIRI_SCENARIO_V2");
+  localStorage.removeItem("ABE_CIRI_SCENARIO_V1");
+  localStorage.removeItem("abe_ciri_artifact");
+
+  lastArtifact = null;
+  jsonEl.textContent = "—";
+  plainEl.textContent = "Stored CIRI results cleared.";
+  bucketTable.innerHTML = '<tr><td colspan="4">No CIRI output loaded.</td></tr>';
+
+  [
+    "k-recovery",
+    "k-index",
+    "k-roi",
+    "k-cases",
+    "k-jail",
+    "k-risk"
+  ].forEach(id=>{
+    document.getElementById(id).textContent = "—";
+  });
+
+  btnDownload.disabled = true;
+  statusEl.textContent = "Stored CIRI results cleared.";
+};
+
+const stored =
+  localStorage.getItem("ABE_CIRI_SCENARIO_V2") ||
+  localStorage.getItem("ABE_CIRI_SCENARIO_V1") ||
+  localStorage.getItem("abe_ciri_artifact");
+
+if(stored){
+  const parsed = safeParse(stored);
+  if(parsed){
+    paintArtifact(parsed);
+
+    if(parsed.inputs){
+      setInputs(parsed.inputs);
+    }
+
+    statusEl.innerHTML = '<span class="ok">Loaded stored CIRI artifact.</span>';
+  }
+}
 </script>
+
 </body>
-</html>
+  </html>
