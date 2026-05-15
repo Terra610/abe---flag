@@ -4,443 +4,62 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>INTAKE — A.B.E.</title>
-
   <base href="/abe---flag/">
 
   <style>
     :root{
-      --bg:#0b0d12;
-      --panel:#141820;
-      --panel2:#10151d;
-      --ink:#e6e6e6;
-      --muted:#9fb3c8;
-      --line:rgba(255,255,255,.08);
-      --accent:#80bfff;
-      --ok:#4bd28f;
-      --warn:#ffd166;
-      --bad:#ff6b6b;
-      --soft:rgba(128,191,255,.12);
+      --bg:#0b0d12; --panel:#141820; --panel2:#10151d; --ink:#e6e6e6; --muted:#9fb3c8;
+      --line:rgba(255,255,255,.08); --accent:#80bfff; --ok:#4bd28f; --warn:#ffd166;
     }
-
     *{box-sizing:border-box}
-
-    body{
-      margin:0;
-      background:
-        radial-gradient(circle at top, rgba(128,191,255,.10), transparent 34rem),
-        var(--bg);
-      color:var(--ink);
-      font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-    }
-
-    a{
-      color:var(--accent);
-      text-decoration:none;
-    }
-
-    a:hover{
-      text-decoration:underline;
-    }
-
-    header{
-      background:#11151c;
-      border-bottom:1px solid var(--line);
-      padding:30px 16px;
-      text-align:center;
-    }
-
-    h1{
-      margin:0;
-      font-size:clamp(2rem,5vw,3.8rem);
-      line-height:1.08;
-      letter-spacing:-.04em;
-    }
-
-    .sub{
-      color:var(--muted);
-      max-width:900px;
-      margin:12px auto 0;
-      font-size:1.05rem;
-    }
-
-    nav{
-      margin-top:18px;
-      display:flex;
-      justify-content:center;
-      flex-wrap:wrap;
-      gap:10px;
-    }
-
-    nav a,.btn{
-      border:1px solid var(--line);
-      background:#0f141b;
-      border-radius:999px;
-      padding:9px 13px;
-      font-weight:800;
-      color:var(--ink);
-      display:inline-block;
-    }
-
-    nav a:hover,.btn:hover{
-      text-decoration:none;
-      border-color:rgba(128,191,255,.75);
-    }
-
-    .primary{
-      background:#122033;
-      border-color:rgba(128,191,255,.5);
-    }
-
-    main{
-      max-width:1100px;
-      margin:22px auto;
-      padding:0 16px 48px;
-    }
-
-    .card{
-      background:var(--panel);
-      border:1px solid var(--line);
-      border-radius:18px;
-      padding:18px;
-      margin:14px 0;
-    }
-
-    .plain{
-      background:#0f141b;
-      border:1px solid var(--line);
-      border-radius:14px;
-      padding:16px;
-      color:var(--muted);
-    }
-
-    .notice{
-      border-left:4px solid var(--accent);
-      background:var(--soft);
-      padding:12px 14px;
-      border-radius:12px;
-      color:#dfefff;
-    }
-
-    .grid{
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
-      gap:12px;
-    }
-
-    .tile{
-      background:var(--panel2);
-      border:1px solid var(--line);
-      border-radius:14px;
-      padding:14px;
-    }
-
-    .tile h3{
-      margin:.1rem 0 .35rem;
-    }
-
-    .tile p{
-      color:var(--muted);
-      margin:.35rem 0;
-    }
-
-    input[type="file"], textarea{
-      width:100%;
-      background:#0f141b;
-      color:var(--ink);
-      border:1px solid var(--line);
-      border-radius:14px;
-      padding:12px;
-      margin-top:10px;
-    }
-
-    textarea{
-      min-height:180px;
-      resize:vertical;
-      font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
-    }
-
-    .row{
-      display:flex;
-      flex-wrap:wrap;
-      gap:10px;
-      margin-top:14px;
-    }
-
-    button{
-      background:#10151d;
-      color:var(--ink);
-      border:1px solid var(--line);
-      border-radius:12px;
-      padding:10px 14px;
-      cursor:pointer;
-      font:inherit;
-      font-weight:800;
-    }
-
-    button:hover{
-      border-color:rgba(128,191,255,.75);
-    }
-
-    pre{
-      background:#070a10;
-      border:1px solid var(--line);
-      border-radius:12px;
-      padding:14px;
-      overflow:auto;
-      white-space:pre-wrap;
-      color:#dfefff;
-    }
-
-    footer{
-      border-top:1px solid var(--line);
-      background:#11151c;
-      text-align:center;
-      color:var(--muted);
-      padding:18px 12px;
-      font-size:.9rem;
-    }
+    body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+    a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
+    header{background:#11151c;border-bottom:1px solid var(--line);padding:30px 16px;text-align:center}
+    h1{margin:0;font-size:clamp(2rem,5vw,3.8rem);line-height:1.08;letter-spacing:-.04em}
+    .sub{max-width:980px;margin:12px auto 0;color:var(--muted);font-size:1.05rem}
+    main{max-width:1220px;margin:22px auto;padding:0 16px 48px}
+    .card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:18px;margin:14px 0}
+    .plain{background:#0f141b;border:1px solid var(--line);border-radius:14px;padding:16px;color:var(--muted)}
   </style>
 </head>
-
 <body>
 
 <header>
-
   <h1>INTAKE</h1>
-
-  <div class="sub">
-    Document Intake + OCR Bridge for the American Butterfly Effect framework.
-  </div>
-
-  <nav>
-    <a href="index.html">Home</a>
-    <a href="learn/start_here.html">Start Here</a>
-    <a href="intake/index.html">Intake</a>
-    <a href="system/index.html">Run Full Pipeline</a>
-    <a href="integration/index.html">Audit Receipt</a>
-    <a href="learn/index.html">Learn</a>
-  </nav>
-
+  <div class="sub">Document + OCR Bridge — Local-first intake for A.B.E.</div>
 </header>
 
 <main>
 
   <section class="card">
-    <h2>What Intake Does</h2>
-
+    <h2>Main Intake</h2>
     <div class="plain">
-      <p>
-        Intake is the front door of the A.B.E. engine.
-      </p>
-
-      <p>
-        It converts uploaded documents, pasted text,
-        structured facts, or OCR results into deterministic artifacts
-        that the rest of the pipeline can process.
-      </p>
-
-      <p>
-        Plain language:
-      </p>
-
-      <pre>
-What entered the system?
-Was it normalized correctly?
-Can downstream modules read it?
-      </pre>
+      <p>Paste text, upload documents, or use OCR below.</p>
+      <textarea id="intake-text" rows="12" style="width:100%;font-family:monospace"></textarea>
     </div>
   </section>
 
+  <!-- OCR Section -->
   <section class="card">
-
-    <h2>Upload Files</h2>
-
-    <div class="notice">
-      Supported formats:
-      PDF, TXT, JSON, CSV, XLSX, XLS, and OCR-derived text.
+    <h2>📸 OCR — Extract Text from Images / Scans</h2>
+    <div class="plain">
+      <p>Upload a photo of a court order, statute, funding report, or any document. Text is extracted 100% locally.</p>
+      <input type="file" id="ocr-upload" accept="image/*,.pdf" style="margin:12px 0" />
+      <p id="ocr-status" class="small">Ready — select an image to begin OCR.</p>
     </div>
-
-    <input id="file-input" type="file" multiple>
-
-    <div class="row">
-      <button id="btn-build" class="primary">
-        Build Intake Artifact
-      </button>
-
-      <button id="btn-download" disabled>
-        Download Artifact
-      </button>
-    </div>
-
-  </section>
-
-  <section class="card">
-
-    <h2>Paste Structured Text</h2>
-
-    <textarea id="text-input" placeholder="Paste notes, legal text, reports, statutes, or structured facts here..."></textarea>
-
-  </section>
-
-  <section class="card">
-
-    <h2>Plain-Language Result</h2>
-
-    <div id="explain" class="plain">
-      No intake artifact generated yet.
-    </div>
-
-  </section>
-
-  <section class="card">
-
-    <h2>Artifact Preview</h2>
-
-    <pre id="json">—</pre>
-
   </section>
 
 </main>
 
 <footer>
-  Citation: Shouse, T. American Butterfly Effect (ABE). Zenodo.
-  DOI: 10.5281/zenodo.17586107
-  · Licensed CC BY-NC 4.0 · Integrity only — never for sale.
+  CC BY-NC 4.0 · Local-first · Integrity only
 </footer>
 
-<script>
+<script src="intake.js"></script>
+<script src="intake_ui.js"></script>
 
-const fileInput = document.getElementById("file-input");
-const textInput = document.getElementById("text-input");
-
-const btnBuild = document.getElementById("btn-build");
-const btnDownload = document.getElementById("btn-download");
-
-const explain = document.getElementById("explain");
-const jsonEl = document.getElementById("json");
-
-let lastArtifact = null;
-
-function downloadJSON(filename,data){
-
-  const blob = new Blob(
-    [JSON.stringify(data,null,2)],
-    {type:"application/json"}
-  );
-
-  const url = URL.createObjectURL(blob);
-
-  const a = document.createElement("a");
-
-  a.href = url;
-  a.download = filename;
-  a.click();
-
-  URL.revokeObjectURL(url);
-}
-
-btnBuild.onclick = async () => {
-
-  const files = [...fileInput.files];
-
-  const artifact = {
-
-    module:"INTAKE",
-
-    module_name:"Document Intake + OCR Bridge",
-
-    generated_at:new Date().toISOString(),
-
-    source_summary:{
-      total_files:files.length,
-      pasted_text_present:textInput.value.trim().length > 0
-    },
-
-    files:files.map(file => ({
-      name:file.name,
-      size_bytes:file.size,
-      type:file.type || "unknown"
-    })),
-
-    pasted_text_preview:
-      textInput.value.slice(0,3000),
-
-    notes:
-      "The Intake layer converts uploaded or pasted material into deterministic pipeline-ready artifacts."
-  };
-
-  localStorage.setItem(
-    "ABE_INTAKE_ARTIFACT_V1",
-    JSON.stringify(artifact)
-  );
-
-  localStorage.setItem(
-    "abe_intake_artifact",
-    JSON.stringify(artifact)
-  );
-
-  lastArtifact = artifact;
-
-  explain.innerHTML = `
-    <p><strong>Intake artifact generated.</strong></p>
-
-    <p>
-      The uploaded material was normalized into a deterministic intake structure
-      that downstream modules can process.
-    </p>
-
-    <p>
-      Files detected:
-      <strong>${files.length}</strong>
-    </p>
-
-    <p>
-      Pasted text present:
-      <strong>${textInput.value.trim().length ? "YES" : "NO"}</strong>
-    </p>
-  `;
-
-  jsonEl.textContent =
-    JSON.stringify(artifact,null,2);
-
-  btnDownload.disabled = false;
-};
-
-btnDownload.onclick = () => {
-
-  if(!lastArtifact) return;
-
-  downloadJSON(
-    "ABE_INTAKE_ARTIFACT_V1.json",
-    lastArtifact
-  );
-};
-
-const stored =
-  localStorage.getItem("ABE_INTAKE_ARTIFACT_V1") ||
-  localStorage.getItem("abe_intake_artifact");
-
-if(stored){
-
-  try{
-
-    const parsed = JSON.parse(stored);
-
-    lastArtifact = parsed;
-
-    jsonEl.textContent =
-      JSON.stringify(parsed,null,2);
-
-    explain.innerHTML = `
-      <p><strong>Stored intake artifact loaded.</strong></p>
-    `;
-
-    btnDownload.disabled = false;
-
-  }catch{}
-}
-
-</script>
+<!-- OCR Engine -->
+<script src="ocr.js"></script>
 
 </body>
 </html>
