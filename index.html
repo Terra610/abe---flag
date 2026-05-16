@@ -105,13 +105,9 @@ main{
   margin:14px 0;
 }
 
-.card h2{
-  margin-top:0;
-}
+.card h2{margin-top:0}
 
-.accent{
-  color:var(--accent);
-}
+.accent{color:var(--accent)}
 
 .plain{
   background:#0f141b;
@@ -174,20 +170,9 @@ main{
   font-weight:800;
 }
 
-.ok{
-  color:var(--ok);
-  border-color:rgba(75,210,143,.35);
-}
-
-.warn{
-  color:var(--warn);
-  border-color:rgba(255,209,102,.35);
-}
-
-.bad{
-  color:var(--bad);
-  border-color:rgba(255,107,107,.35);
-}
+.ok{color:var(--ok);border-color:rgba(75,210,143,.35)}
+.warn{color:var(--warn);border-color:rgba(255,209,102,.35)}
+.bad{color:var(--bad);border-color:rgba(255,107,107,.35)}
 
 .flow{
   display:flex;
@@ -206,43 +191,7 @@ main{
   font-weight:800;
 }
 
-.arrow{
-  color:var(--muted);
-}
-
-table{
-  width:100%;
-  border-collapse:collapse;
-  font-size:.92rem;
-}
-
-th,td{
-  border:1px solid var(--line);
-  padding:9px 8px;
-  text-align:left;
-  vertical-align:top;
-}
-
-th{
-  background:#0f141b;
-  color:#dfefff;
-}
-
-.table-wrap{
-  overflow:auto;
-  border:1px solid var(--line);
-  border-radius:14px;
-}
-
-pre{
-  white-space:pre-wrap;
-  overflow:auto;
-  background:#070a10;
-  border:1px solid var(--line);
-  border-radius:12px;
-  padding:12px;
-  color:#dfefff;
-}
+.arrow{color:var(--muted)}
 
 footer{
   border-top:1px solid var(--line);
@@ -260,362 +209,168 @@ footer{
 <header>
   <div class="wrap">
     <h1>🦋 American Butterfly Effect</h1>
-
-    <div class="sub" id="version-line">
-      Constitutional integrity, recovery, deployment, funding fidelity, and macroeconomic restoration engine.
-    </div>
-
+    <div class="sub" id="version-line">Constitutional integrity, recovery, deployment, funding fidelity, and macroeconomic restoration engine.</div>
     <div class="badges">
-      <a class="chip" href="https://doi.org/10.5281/zenodo.17586107">
-        DOI: 10.5281/zenodo.17586107
-      </a>
+      <a class="chip" href="https://doi.org/10.5281/zenodo.17586107">DOI: 10.5281/zenodo.17586107</a>
       <span class="chip">CC BY-NC 4.0</span>
       <span class="chip">Local-first</span>
       <span class="chip">Audit-ready</span>
       <span class="chip">Integrity only — never for sale</span>
     </div>
-
     <div class="actions">
-      <a class="btn primary" href="learn/start_here.html">Start Here</a>
-      <a class="btn primary" href="intake/index.html">Intake</a>
-      <a class="btn primary" href="system/index.html">Run Full Pipeline</a>
-      <a class="btn" href="integration/index.html">Audit Receipt</a>
-      <a class="btn" href="learn/index.html">Learn</a>
-      <a class="btn" href="doctrine/index.html">Doctrine Map</a>
+      <a class="btn primary" href="intake/index.html">📤 Intake + OCR</a>
+      <a class="btn primary" href="cff/index.html">CFF Funding Forensics</a>
+      <a class="btn primary" href="integration/index.html">🔐 Audit Receipt</a>
+      <a class="btn" href="learn/start_here.html">Start Here</a>
+      <a class="btn" href="system/index.html">Full Pipeline</a>
     </div>
   </div>
 </header>
 
 <main>
 
-<section class="card">
-  <h2 class="accent">Mission Control</h2>
-
-  <div class="plain">
-    <p>
-      A.B.E. converts constitutional alignment into measurable, auditable economic recovery.
-    </p>
-
-    <pre>authority
-→ jurisdiction
-→ definitions
-→ divergence
-→ recovery value
-→ allocation
-→ propagation
-→ macro cascade
-→ deployment
-→ funding fidelity
-→ audit receipt</pre>
-
-    <p>
-      The root hub shows live system health, module status, KPIs, schema checks, and the closed-loop engine chain.
-    </p>
-  </div>
-</section>
-
-<section class="card">
-  <h2>Live KPIs</h2>
-
-  <div class="kpi">
-    <div class="tile">
-      <div class="label">Modeled Recovery</div>
-      <div id="k-recovery" class="num">—</div>
-      <small>CIRI / Integration</small>
+  <section class="card">
+    <h2 class="accent">Mission Control</h2>
+    <div class="plain">
+      <p>A.B.E. converts constitutional alignment into measurable, auditable economic recovery.</p>
+      <pre>authority → jurisdiction → definitions → divergence → recovery value → allocation → propagation → macro cascade → deployment → funding fidelity → audit receipt</pre>
     </div>
+  </section>
 
-    <div class="tile">
-      <div class="label">CIRI Index</div>
-      <div id="k-ciri" class="num">—</div>
-      <small>Normalized recovery signal</small>
+  <section class="card">
+    <h2>Live KPIs</h2>
+    <div class="kpi" id="kpi-grid">
+      <!-- Populated by script -->
     </div>
+  </section>
 
-    <div class="tile">
-      <div class="label">ROI Per Case</div>
-      <div id="k-roi" class="num">—</div>
-      <small>Recovery divided by cases avoided</small>
+  <section class="card">
+    <h2>Closed-Loop Engine Chain</h2>
+    <div class="flow">
+      <span class="step">INTAKE</span><span class="arrow">→</span>
+      <span class="step">CAE</span><span class="arrow">→</span>
+      <span class="step">CDA</span><span class="arrow">→</span>
+      <span class="step">CDI</span><span class="arrow">→</span>
+      <span class="step">CIRI</span><span class="arrow">→</span>
+      <span class="step">CIBS</span><span class="arrow">→</span>
+      <span class="step">CII</span><span class="arrow">→</span>
+      <span class="step">INTEGRATION</span><span class="arrow">→</span>
+      <span class="step">MACRO</span><span class="arrow">→</span>
+      <span class="step">RT</span><span class="arrow">→</span>
+      <span class="step">CFF</span><span class="arrow">→</span>
+      <span class="step">CCRI</span><span class="arrow">→</span>
+      <span class="step">AFFE</span>
     </div>
+  </section>
 
-    <div class="tile">
-      <div class="label">Public Allocation</div>
-      <div id="k-cibs" class="num">—</div>
-      <small>CIBS recovery allocation</small>
+  <section class="card">
+    <h2>Core Engine</h2>
+    <div class="grid">
+      <article class="module"><div class="layer">Intake</div><h3>INTAKE</h3><p>Document &amp; OCR bridge</p><a href="intake/index.html">Open Intake →</a></article>
+      <article class="module"><div class="layer">Analysis</div><h3>CAE</h3><p>Constitutional Authority Engine</p><a href="cae/index.html">Open CAE →</a></article>
+      <article class="module"><div class="layer">Analysis</div><h3>CDA</h3><p>Constitutional Definition Alignment</p><a href="cda/index.html">Open CDA →</a></article>
+      <article class="module"><div class="layer">Analysis</div><h3>CDI</h3><p>Constitutional Divergence Index</p><a href="cdi/index.html">Open CDI →</a></article>
+      <article class="module"><div class="layer">Recovery</div><h3>CIRI</h3><p>Constitutional Integrity Risk Index</p><a href="ciri/index.html">Open CIRI →</a></article>
+      <article class="module"><div class="layer">Recovery</div><h3>CIBS</h3><p>Constitutional Integrity Budget System</p><a href="cibs/index.html">Open CIBS →</a></article>
+      <article class="module"><div class="layer">Forensics</div><h3>CFF</h3><p>Constitutional Funding Forensics</p><a href="cff/index.html">Open CFF →</a></article>
+      <article class="module"><div class="layer">Audit</div><h3>INTEGRATION</h3><p>Merkle audit receipt &amp; pipeline lock</p><a href="integration/index.html">Open Integration →</a></article>
     </div>
+  </section>
 
-    <div class="tile">
-      <div class="label">Macro Gain</div>
-      <div id="k-macro" class="num">—</div>
-      <small>MACRO cascade output</small>
+  <section class="card">
+    <h2>Expansion Modules</h2>
+    <div class="grid">
+      <article class="module"><div class="layer">Macro</div><h3>MACRO</h3><p>Macroeconomic cascade model</p><a href="macro/index.html">Open MACRO →</a></article>
+      <article class="module"><div class="layer">Recovery</div><h3>RT</h3><p>Recovery Threshold</p><a href="rt/index.html">Open RT →</a></article>
+      <article class="module"><div class="layer">Credit</div><h3>CCRI</h3><p>Credit participation and risk integrity</p><a href="ccri/index.html">Open CCRI →</a></article>
+      <article class="module"><div class="layer">Reference</div><h3>LAW</h3><p>Structured authority references</p><a href="law/index.html">Open Law →</a></article>
+      <article class="module"><div class="layer">Reference</div><h3>DOCTRINE</h3><p>Doctrine maps and framework references</p><a href="doctrine/index.html">Open Doctrine →</a></article>
+      <article class="module"><div class="layer">Guide</div><h3>LEARN</h3><p>Guided explanation and tutorials</p><a href="learn/index.html">Open Learn →</a></article>
     </div>
+  </section>
 
-    <div class="tile">
-      <div class="label">RT Activation</div>
-      <div id="k-rt" class="num">—</div>
-      <small>Rebuild Together activation</small>
+  <section class="card">
+    <h2>Schema Status Summary</h2>
+    <div class="grid" id="schema-grid"></div>
+    <p class="small">Green = file found and non-empty • Orange = missing/empty/unreachable</p>
+  </section>
+
+  <section class="card">
+    <h2>Plain-Language System Reading</h2>
+    <div class="plain">
+      <p>A.B.E. is 100% local-first. Nothing you upload or calculate is stored on any server. Every module runs in your browser. All outputs are yours to keep or delete.</p>
     </div>
-
-    <div class="tile">
-      <div class="label">Audit Receipt</div>
-      <div id="k-audit" class="num">—</div>
-      <small>Local report / receipt status</small>
-    </div>
-
-    <div class="tile">
-      <div class="label">System Health</div>
-      <div id="k-health" class="num">Checking…</div>
-      <small>Schema and module status</small>
-    </div>
-  </div>
-</section>
-
-<section class="card">
-  <h2>Closed-Loop Engine Chain</h2>
-
-  <div class="flow">
-    <span class="step">INTAKE</span><span class="arrow">→</span>
-    <span class="step">CAE</span><span class="arrow">→</span>
-    <span class="step">CDA</span><span class="arrow">→</span>
-    <span class="step">CDI</span><span class="arrow">→</span>
-    <span class="step">CIRI</span><span class="arrow">→</span>
-    <span class="step">CIBS</span><span class="arrow">→</span>
-    <span class="step">CII</span><span class="arrow">→</span>
-    <span class="step">INTEGRATION</span><span class="arrow">→</span>
-    <span class="step">MACRO</span><span class="arrow">→</span>
-    <span class="step">RT</span><span class="arrow">→</span>
-    <span class="step">CFF</span><span class="arrow">→</span>
-    <span class="step">CCRI</span><span class="arrow">→</span>
-    <span class="step">AFFE</span>
-  </div>
-</section>
-
-<section class="card">
-  <h2>Core Engine</h2>
-
-  <div class="grid">
-
-    <div class="module">
-      <h3>INTAKE</h3>
-      <p class="small">Document Intake + OCR Bridge. Prepares uploaded or pasted material for the pipeline.</p>
-      <table><tbody>
-        <tr><th>UI</th><td><a href="intake/index.html">intake/index.html</a></td></tr>
-        <tr><th>Status</th><td id="s-intake" class="status warn">Checking…</td></tr>
-      </tbody></table>
-    </div>
-
-    <div class="module">
-      <h3>CAE — Constitutional Alignment Engine</h3>
-      <p class="small">Establishes the governing authority baseline.</p>
-      <table><tbody>
-        <tr><th>UI</th><td><a href="cae/index.html">cae/index.html</a></td></tr>
-        <tr><th>Schema</th><td id="s-cae" class="status warn">Checking…</td></tr>
-      </tbody></table>
-    </div>
-
-    <div class="module">
-      <h3>CDA — Constitutional Definition Audit</h3>
-      <p class="small">Measures definition expansion and scope drift.</p>
-      <table><tbody>
-        <tr><th>UI</th><td><a href="cda/index.html">cda/index.html</a></td></tr>
-        <tr><th>Schema</th><td id="s-cda" class="status warn">Checking…</td></tr>
-      </tbody></table>
-    </div>
-
-    <div class="module">
-      <h3>CDI — Constitutional Divergence Index</h3>
-      <p class="small">Measures how far current practice diverges from constitutional fidelity.</p>
-      <table><tbody>
-        <tr><th>UI</th><td><a href="cdi/index.html">cdi/index.html</a></td></tr>
-        <tr><th>Schema</th><td id="s-cdi" class="status warn">Checking…</td></tr>
-      </tbody></table>
-    </div>
-
-    <div class="module">
-      <h3>CIRI — Constitutional Integrity ROI Engine</h3>
-      <p class="small">Calculates total recovery value, CIRI index, and ROI per case.</p>
-      <table><tbody>
-        <tr><th>UI</th><td><a href="ciri/index.html">ciri/index.html</a></td></tr>
-        <tr><th>Schema</th><td id="s-ciri" class="status warn">Checking…</td></tr>
-        <tr><th>Glossary</th><td><a href="ciri/variables.md">ciri/variables.md</a></td></tr>
-      </tbody></table>
-    </div>
-
-    <div class="module">
-      <h3>CIBS — Constitutional Integrity Baseline Schema</h3>
-      <p class="small">Allocates recovery capital into public reinvestment channels.</p>
-      <table><tbody>
-        <tr><th>UI</th><td><a href="cibs/index.html">cibs/index.html</a></td></tr>
-        <tr><th>Schema</th><td id="s-cibs" class="status warn">Checking…</td></tr>
-      </tbody></table>
-    </div>
-
-    <div class="module">
-      <h3>CII — Constitutional Integrity Index</h3>
-      <p class="small">Measures propagation, effectiveness, and downstream deployment impact.</p>
-      <table><tbody>
-        <tr><th>UI</th><td><a href="cii/index.html">cii/index.html</a></td></tr>
-        <tr><th>Schema</th><td id="s-cii" class="status warn">Checking…</td></tr>
-      </tbody></table>
-    </div>
-
-    <div class="module">
-      <h3>INTEGRATION</h3>
-      <p class="small">Builds audit receipts, verifies chain integrity, and preserves outputs.</p>
-      <table><tbody>
-        <tr><th>UI</th><td><a href="integration/index.html">integration/index.html</a></td></tr>
-        <tr><th>Schema</th><td id="s-integration" class="status warn">Checking…</td></tr>
-      </tbody></table>
-    </div>
-
-  </div>
-</section>
-
-<section class="card">
-  <h2>Expansion Modules</h2>
-
-  <div class="grid">
-
-    <div class="module">
-      <h3>MACRO — Macroeconomic Cascade Model</h3>
-      <p class="small">Projects sector-level gains, jobs supported, and broader economic ripple effects.</p>
-      <table><tbody>
-        <tr><th>UI</th><td><a href="macro/index.html">macro/index.html</a></td></tr>
-        <tr><th>Status</th><td id="s-macro" class="status warn">Checking…</td></tr>
-      </tbody></table>
-    </div>
-
-    <div class="module">
-      <h3>RT — Rebuild Together Engine</h3>
-      <p class="small">Deploys recovery into capital activation sectors and community stabilization pathways.</p>
-      <table><tbody>
-        <tr><th>UI</th><td><a href="rt/index.html">rt/index.html</a></td></tr>
-        <tr><th>Status</th><td id="s-rt" class="status warn">Checking…</td></tr>
-      </tbody></table>
-    </div>
-
-    <div class="module">
-      <h3>CFF — Constitutional Funding Forensics</h3>
-      <p class="small">Reviews funding alignment, mission scope, flagged funds, and appropriation fidelity.</p>
-      <table><tbody>
-        <tr><th>UI</th><td><a href="cff/index.html">cff/index.html</a></td></tr>
-        <tr><th>Schema</th><td id="s-cff" class="status warn">Checking…</td></tr>
-      </tbody></table>
-    </div>
-
-    <div class="module">
-      <h3>CCRI — Constitutional Capital Recovery Index</h3>
-      <p class="small">Measures constitutional capital recovery, access, participation, and gatekeeping effects.</p>
-      <table><tbody>
-        <tr><th>UI</th><td><a href="ccri/index.html">ccri/index.html</a></td></tr>
-        <tr><th>Schema</th><td id="s-ccri" class="status warn">Checking…</td></tr>
-      </tbody></table>
-    </div>
-
-    <div class="module">
-      <h3>AFFE — Appropriation Fidelity & Funding Engine</h3>
-      <p class="small">Checks funding fidelity, post-deployment stability, and appropriation alignment.</p>
-      <table><tbody>
-        <tr><th>UI</th><td><a href="affe/index.html">affe/index.html</a></td></tr>
-        <tr><th>Model</th><td id="s-affe" class="status warn">Checking…</td></tr>
-      </tbody></table>
-    </div>
-
-    <div class="module">
-      <h3>Doctrine Map</h3>
-      <p class="small">Legal and constitutional doctrine framework that supports the engine.</p>
-      <table><tbody>
-        <tr><th>UI</th><td><a href="doctrine/index.html">doctrine/index.html</a></td></tr>
-        <tr><th>Status</th><td id="s-doctrine" class="status warn">Checking…</td></tr>
-      </tbody></table>
-    </div>
-
-  </div>
-</section>
-
-<section class="card">
-  <h2>Schema Status Summary</h2>
-
-  <div class="grid" id="schema-grid"></div>
-
-  <p class="small">
-    Green = file found and non-empty. Orange = missing, empty, or unreachable.
-  </p>
-</section>
-
-<section class="card">
-  <h2>Plain-Language System Reading</h2>
-
-  <div id="system-reading" class="plain">
-    Checking local artifacts and module health.
-  </div>
-</section>
+  </section>
 
 </main>
 
 <footer>
-  Citation: Shouse, T. American Butterfly Effect (ABE). Zenodo.
-  DOI: 10.5281/zenodo.17586107
-  · Licensed CC BY-NC 4.0 · Integrity only — never for sale.
+  Citation: Shouse, T. American Butterfly Effect (ABE). Zenodo.<br>
+  DOI: 10.5281/zenodo.17586107 · Licensed CC BY-NC 4.0 · Integrity only — never for sale.
 </footer>
 
 <script>
-const money = n => {
-  const v = Number(n);
-  if(!Number.isFinite(v)) return "—";
-  try{
-    return new Intl.NumberFormat(undefined,{
-      style:"currency",
-      currency:"USD",
-      maximumFractionDigits:0
-    }).format(v);
-  }catch{
-    return "$" + Math.round(v).toLocaleString();
-  }
-};
+/* ==================== HELPERS ==================== */
+function money(n){
+  if(n===null||n===undefined||isNaN(n)) return '$—';
+  return '$' + Number(n).toLocaleString('en-US', {minimumFractionDigits:0, maximumFractionDigits:0});
+}
+function number(v, decimals=2){
+  if(v===null||v===undefined||isNaN(v)) return '—';
+  return Number(v).toFixed(decimals);
+}
 
-const number = (v,d=6) => {
-  const n = Number(v);
-  return Number.isFinite(n) ? n.toFixed(d) : "—";
-};
-
+/* ==================== STATUS HELPERS ==================== */
 function setStatus(id, ok, labelOk="Present", labelBad="Missing"){
   const el = document.getElementById(id);
   if(!el) return;
   el.textContent = ok ? labelOk : labelBad;
-  el.classList.remove("ok","warn","bad");
-  el.classList.add(ok ? "ok" : "warn");
+  el.classList.remove('ok','warn','bad');
+  el.classList.add(ok ? 'ok' : 'warn');
 }
 
+/* ==================== FETCH HELPERS ==================== */
 async function fetchText(path){
-  const res = await fetch(path,{cache:"no-store"});
-  if(!res.ok) throw new Error(path + " HTTP " + res.status);
-  return res.text();
-}
-
-async function checkPath(path){
   try{
-    const txt = await fetchText(path);
-    return txt.trim().length > 0;
-  }catch{
-    return false;
-  }
+    const r = await fetch(path, {cache:'no-store'});
+    return r.ok ? await r.text() : '';
+  }catch(e){ return ''; }
+}
+async function checkPath(path){
+  const text = await fetchText(path);
+  return text.trim().length > 0;
 }
 
+/* ==================== KPI LOADER ==================== */
+async function loadKpis(){
+  const grid = document.getElementById('kpi-grid');
+  if(!grid) return;
+
+  // Default placeholders (will be updated by real data if available)
+  grid.innerHTML = `
+    <div class="tile"><div class="label">Modeled Recovery</div><div id="k-recovery" class="num">$—</div><small>CIRI / Integration</small></div>
+    <div class="tile"><div class="label">CIRI Index</div><div id="k-ciri" class="num">—</div><small>Normalized recovery signal</small></div>
+    <div class="tile"><div class="label">CFF Overreach</div><div id="k-cff" class="num">—</div><small>% OFF_MISSION</small></div>
+    <div class="tile"><div class="label">Merkle Root</div><div id="k-merkle" class="num">—</div><small>Latest audit receipt</small></div>
+  `;
+}
+
+/* ==================== HEALTH CHECKS ==================== */
 async function runHealthChecks(){
   const targets = [
-    {key:"INTAKE", id:"s-intake", path:"intake/index.html"},
-    {key:"CAE", id:"s-cae", path:"cae/schema.json"},
-    {key:"CDA", id:"s-cda", path:"cda/schema.json"},
-    {key:"CDI", id:"s-cdi", path:"cdi/schema.json"},
-    {key:"CIRI", id:"s-ciri", path:"ciri/schema.json"},
-    {key:"CIBS", id:"s-cibs", path:"cibs/schema.json"},
-    {key:"CII", id:"s-cii", path:"cii/schema.json"},
-    {key:"INTEGRATION", id:"s-integration", path:"integration/schema.json"},
-    {key:"MACRO", id:"s-macro", path:"macro/index.html"},
-    {key:"RT", id:"s-rt", path:"rt/index.html"},
-    {key:"CFF", id:"s-cff", path:"cff/schema.json"},
-    {key:"CCRI", id:"s-ccri", path:"ccri/schema.json"},
-    {key:"AFFE", id:"s-affe", path:"affe/model.json"},
-    {key:"DOCTRINE", id:"s-doctrine", path:"doctrine/index.html"}
+    {key:'INTAKE', id:'s-intake', path:'intake/schema.json'},
+    {key:'CAE', id:'s-cae', path:'cae/schema.json'},
+    {key:'CDA', id:'s-cda', path:'cda/schema.json'},
+    {key:'CDI', id:'s-cdi', path:'cdi/schema.json'},
+    {key:'CIRI', id:'s-ciri', path:'ciri/schema.json'},
+    {key:'CIBS', id:'s-cibs', path:'cibs/schema.json'},
+    {key:'CFF', id:'s-cff', path:'cff/schema.json'},
+    {key:'CII', id:'s-cii', path:'cii/schema.json'},
+    {key:'INTEGRATION', id:'s-integration', path:'integration/schema.json'},
+    {key:'MACRO', id:'s-macro', path:'macro/schema.json'},
+    {key:'RT', id:'s-rt', path:'rt/schema.json'},
+    {key:'CCRI', id:'s-ccri', path:'ccri/schema.json'},
+    {key:'AFFE', id:'s-affe', path:'affe/schema.json'}
   ];
 
   let okCount = 0;
@@ -623,37 +378,45 @@ async function runHealthChecks(){
   for(const t of targets){
     const ok = await checkPath(t.path);
     if(ok) okCount++;
-    setStatus(t.id,ok,"Present","Missing");
+    setStatus(t.id, ok, "Present", "Missing");
   }
 
-  const grid = document.getElementById("schema-grid");
-
-  grid.innerHTML = targets.map(t=>{
-    const src = document.getElementById(t.id);
-    const ok = src?.classList.contains("ok");
-
-    return `
+  // Populate summary grid
+  const grid = document.getElementById('schema-grid');
+  if(grid){
+    grid.innerHTML = targets.map(t => {
+      const tagId = `sum-${t.id}`;
+      return `
       <div class="tile">
-        <div style="display:flex;justify-content:space-between;gap:10px;align-items:center">
+        <div style="display:flex;justify-content:space-between;align-items:center">
           <strong>${t.key}</strong>
-          <span class="status \( {ok ? "ok" : "warn"}"> \){ok ? "Present" : "Missing"}</span>
+          <span id="${tagId}" class="status warn">Checking…</span>
         </div>
         <small><code>${t.path}</code></small>
-      </div>
-    `;
-  }).join("");
+      </div>`;
+    }).join('');
 
-  document.getElementById("k-health").textContent =
-    okCount + " / " + targets.length;
+    // Fill summary statuses
+    for(const t of targets){
+      const el = document.getElementById(`sum-${t.id}`);
+      const src = document.getElementById(t.id);
+      if(el && src){
+        el.textContent = src.textContent;
+        el.classList.remove('ok','warn');
+        el.classList.add(src.classList.contains('ok') ? 'ok' : 'warn');
+      }
+    }
+  }
 
-  document.getElementById("k-health").className =
-    okCount === targets.length ? "num ok" : "num warn";
+  document.getElementById('version-line').textContent = 
+    `A.B.E. system map · \( {okCount}/ \){targets.length} schemas present · local-first constitutional recovery engine.`;
 }
 
+/* ==================== BOOT ==================== */
 (async()=>{
+  await loadKpis();
   await runHealthChecks();
 })();
 </script>
-
 </body>
 </html>
