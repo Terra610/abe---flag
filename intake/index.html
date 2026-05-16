@@ -1,40 +1,32 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>INTAKE — A.B.E.</title>
-  <base href="/abe---flag/">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>INTAKE — A.B.E.</title>
+<base href="/abe---flag/">
 
-  <style>
-    :root{
-      --bg:#0b0d12; --panel:#141820; --panel2:#10151d; --ink:#e6e6e6; --muted:#9fb3c8;
-      --line:rgba(255,255,255,.08); --accent:#80bfff; --ok:#4bd28f; --warn:#ffd166;
-    }
-    *{box-sizing:border-box}
-    body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
-    a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
-    header{background:#11151c;border-bottom:1px solid var(--line);padding:30px 16px;text-align:center}
-    h1{margin:0;font-size:clamp(2rem,5vw,3.8rem);line-height:1.08;letter-spacing:-.04em}
-    .sub{max-width:980px;margin:12px auto 0;color:var(--muted);font-size:1.05rem}
-    main{max-width:1220px;margin:22px auto;padding:0 16px 48px}
-    .card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:18px;margin:14px 0}
-    .plain{background:#0f141b;border:1px solid var(--line);border-radius:14px;padding:16px;color:var(--muted)}
-  </style>
+<style>
+:root{--bg:#0b0d12;--panel:#141820;--panel2:#10151d;--ink:#e6e6e6;--muted:#9fb3c8;--line:rgba(255,255,255,.08);--accent:#80bfff;--ok:#4bd28f}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:18px;margin:14px 0}
+.plain{background:#0f141b;border:1px solid var(--line);border-radius:14px;padding:16px;color:var(--muted)}
+</style>
 </head>
 <body>
 
-<header>
+<header style="background:#11151c;padding:30px 16px;text-align:center">
   <h1>INTAKE</h1>
-  <div class="sub">Document + OCR Bridge — Local-first intake for A.B.E.</div>
+  <div style="color:var(--muted);max-width:980px;margin:12px auto 0">Document + OCR Bridge — 100% local-first</div>
 </header>
 
-<main>
+<main style="max-width:1220px;margin:22px auto;padding:0 16px 48px">
 
   <section class="card">
-    <h2>Main Intake</h2>
+    <h2>Main Document Intake</h2>
     <div class="plain">
-      <p>Paste text, upload documents, or use OCR below.</p>
+      <p>Paste text or upload documents below. OCR is available for scanned images.</p>
       <textarea id="intake-text" rows="12" style="width:100%;font-family:monospace"></textarea>
     </div>
   </section>
@@ -43,22 +35,20 @@
   <section class="card">
     <h2>📸 OCR — Extract Text from Images / Scans</h2>
     <div class="plain">
-      <p>Upload a photo of a court order, statute, funding report, or any document. Text is extracted 100% locally.</p>
+      <p>Upload a photo of any document, statute, court order, or funding report. Text is extracted entirely in your browser.</p>
       <input type="file" id="ocr-upload" accept="image/*,.pdf" style="margin:12px 0" />
-      <p id="ocr-status" class="small">Ready — select an image to begin OCR.</p>
+      <p id="ocr-status" class="small">Ready — select an image to begin.</p>
     </div>
   </section>
 
 </main>
 
-<footer>
+<footer style="text-align:center;color:var(--muted);padding:18px 12px;font-size:.9rem">
   CC BY-NC 4.0 · Local-first · Integrity only
 </footer>
 
 <script src="intake.js"></script>
 <script src="intake_ui.js"></script>
-
-<!-- OCR Engine -->
 <script src="ocr.js"></script>
 
 </body>
