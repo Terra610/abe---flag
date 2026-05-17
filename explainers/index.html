@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>A.B.E. Explainers — A.B.E.</title>
+<base href="/abe---flag/">
+<style>
+:root{--bg:#0b0d12;--panel:#141820;--panel2:#10151d;--ink:#e6e6e6;--muted:#9fb3c8;--line:rgba(255,255,255,.08);--accent:#80bfff;--gold:#fff750;--ok:#4bd28f;--warn:#ffd166;--bad:#ff6b6b;--soft:rgba(128,191,255,.12)}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top,rgba(128,191,255,.10),transparent 34rem),var(--bg);color:var(--ink);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}header{background:#11151c;border-bottom:1px solid var(--line);padding:30px 16px;text-align:center}.wrap,main{max-width:1120px;margin:0 auto;padding:0 16px}main{margin-top:22px;padding-bottom:48px}h1{margin:0;font-size:clamp(2rem,5vw,3.7rem);line-height:1.08;letter-spacing:-.04em}h2,h3{line-height:1.2}.sub{color:var(--muted);max-width:920px;margin:12px auto 0;font-size:1.05rem}nav{margin-top:18px;display:flex;justify-content:center;flex-wrap:wrap;gap:10px}.btn,.chip{border:1px solid var(--line);background:#0f141b;border-radius:999px;padding:9px 13px;font-weight:800;color:var(--ink);display:inline-block}.btn.primary{background:#122033;border-color:rgba(128,191,255,.55)}.btn:hover,.chip:hover{text-decoration:none;border-color:rgba(128,191,255,.75)}.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:18px;margin:14px 0}.plain{background:#0f141b;border:1px solid var(--line);border-radius:14px;padding:16px;color:var(--muted)}.notice{border-left:4px solid var(--accent);background:var(--soft);padding:12px 14px;border-radius:12px;color:#dfefff}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}.tile{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:14px}.label{color:var(--muted);font-size:.9rem}.value{font-weight:900;font-size:1.15rem;margin-top:4px}.gold{color:var(--gold)}.ok{color:var(--ok)}.warn{color:var(--warn)}.bad{color:var(--bad)}code,pre{background:#070a10;border:1px solid var(--line);border-radius:10px;color:#dfefff}code{padding:2px 6px}pre{white-space:pre-wrap;overflow:auto;padding:12px}.callout{border:1px solid rgba(255,247,80,.25);background:rgba(255,247,80,.06);border-radius:14px;padding:14px}.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:14px}ul{padding-left:1.2rem}.small{color:var(--muted);font-size:.92rem}footer{border-top:1px solid var(--line);background:#11151c;text-align:center;color:var(--muted);padding:20px 12px;font-size:.9rem}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+<h1>A.B.E. Explainers</h1>
+<div class="sub">Plain-language constitutional divergence explanations for users who do not speak statute, jurisdiction, or funding-code goblin.</div>
+<nav>
+<a class="btn" href="index.html">Home</a>
+<a class="btn primary" href="explainers/index.html">Explainers</a>
+<a class="btn" href="intake/index.html">Intake</a>
+<a class="btn" href="system/index.html">Run Full Pipeline</a>
+<a class="btn" href="integration/index.html">Audit Receipt</a>
+</nav>
+</div></header>
+<main>
+<section class="card"><h2 class="gold">Plain-Language Output Layer</h2><div class="plain"><p>This section translates A.B.E. technical outputs into language a person can actually use. Scores alone do not protect people. A user needs to understand what happened, what authority was claimed, what authority actually existed, where the divergence began, and what evidence gaps remain.</p><p>A.B.E. does not decide guilt, innocence, or court outcomes. It measures authority alignment, definition integrity, jurisdictional scope, procedural fidelity, funding traceability, and constitutional divergence.</p></div></section>
+<section class="card"><h2>Explainer Pages</h2><div class="grid">
+<a class="tile" href="explainers/output-reading-explainer.html"><div class="label">Start Here</div><div class="value">How to Read an A.B.E. Output</div><p class="small">Turns pipeline scores into ordinary-language findings.</p></a>
+<a class="tile" href="explainers/divergence-explainer.html"><div class="label">Core Concept</div><div class="value">Divergence</div><p class="small">Explains drift between claimed authority and governing authority.</p></a>
+<a class="tile" href="explainers/ultra-vires-explainer.html"><div class="label">Authority Scope</div><div class="value">Ultra Vires Conduct</div><p class="small">Explains conduct beyond delegated statutory authority.</p></a>
+<a class="tile" href="explainers/definition-divergence-explainer.html"><div class="label">Definitions</div><div class="value">Definition Divergence</div><p class="small">Explains when legal terms are stretched outside scope.</p></a>
+<a class="tile" href="explainers/funding-misuse-explainer.html"><div class="label">Funding</div><div class="value">Funding Misuse Indicators</div><p class="small">Explains MCSAP, NHTSA, and grant-scope drift concerns.</p></a>
+<a class="tile" href="explainers/due-process-explainer.html"><div class="label">Procedure</div><div class="value">Due Process and Warrantless Arrest</div><p class="small">Explains prompt magistrate review and liberty safeguards.</p></a>
+<a class="tile" href="explainers/constitutional-rights-explainer.html"><div class="label">Rights</div><div class="value">Constitutional Rights Flags</div><p class="small">Explains movement, due process, equal protection, and procedural risk.</p></a>
+</div></section>
+<section class="card"><h2>The Translation Rule</h2><div class="callout"><strong>Technical output:</strong> “CDA definition integrity = low; CIRI risk = high.”<br><br><strong>Plain-language output:</strong> “The uploaded facts suggest the government may have treated private non-commercial movement as regulated commercial activity, creating definition drift, jurisdictional overreach, and due process risk.”</div></section>
+</main>
+<footer>American Butterfly Effect · CC BY-NC 4.0 · Integrity only — never for sale.</footer>
+</body></html>
