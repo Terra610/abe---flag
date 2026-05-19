@@ -1,39 +1,949 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>A.B.E. Explainers — A.B.E.</title>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>A.B.E. — American Butterfly Effect</title>
 <base href="/abe---flag/">
+
 <style>
-:root{--bg:#0b0d12;--panel:#141820;--panel2:#10151d;--ink:#e6e6e6;--muted:#9fb3c8;--line:rgba(255,255,255,.08);--accent:#80bfff;--gold:#fff750;--ok:#4bd28f;--warn:#ffd166;--bad:#ff6b6b;--soft:rgba(128,191,255,.12)}
-*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top,rgba(128,191,255,.10),transparent 34rem),var(--bg);color:var(--ink);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}header{background:#11151c;border-bottom:1px solid var(--line);padding:30px 16px;text-align:center}.wrap,main{max-width:1120px;margin:0 auto;padding:0 16px}main{margin-top:22px;padding-bottom:48px}h1{margin:0;font-size:clamp(2rem,5vw,3.7rem);line-height:1.08;letter-spacing:-.04em}h2,h3{line-height:1.2}.sub{color:var(--muted);max-width:920px;margin:12px auto 0;font-size:1.05rem}nav{margin-top:18px;display:flex;justify-content:center;flex-wrap:wrap;gap:10px}.btn,.chip{border:1px solid var(--line);background:#0f141b;border-radius:999px;padding:9px 13px;font-weight:800;color:var(--ink);display:inline-block}.btn.primary{background:#122033;border-color:rgba(128,191,255,.55)}.btn:hover,.chip:hover{text-decoration:none;border-color:rgba(128,191,255,.75)}.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:18px;margin:14px 0}.plain{background:#0f141b;border:1px solid var(--line);border-radius:14px;padding:16px;color:var(--muted)}.notice{border-left:4px solid var(--accent);background:var(--soft);padding:12px 14px;border-radius:12px;color:#dfefff}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}.tile{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:14px}.label{color:var(--muted);font-size:.9rem}.value{font-weight:900;font-size:1.15rem;margin-top:4px}.gold{color:var(--gold)}.ok{color:var(--ok)}.warn{color:var(--warn)}.bad{color:var(--bad)}code,pre{background:#070a10;border:1px solid var(--line);border-radius:10px;color:#dfefff}code{padding:2px 6px}pre{white-space:pre-wrap;overflow:auto;padding:12px}.callout{border:1px solid rgba(255,247,80,.25);background:rgba(255,247,80,.06);border-radius:14px;padding:14px}.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:14px}ul{padding-left:1.2rem}.small{color:var(--muted);font-size:.92rem}footer{border-top:1px solid var(--line);background:#11151c;text-align:center;color:var(--muted);padding:20px 12px;font-size:.9rem}
+:root{
+  --bg:#0b0d12;
+  --panel:#141820;
+  --panel2:#0f131a;
+  --ink:#e6e6e6;
+  --muted:#9fb3c8;
+  --line:rgba(255,255,255,.08);
+  --accent:#80bfff;
+  --accent2:#fff750;
+  --ok:#4bd28f;
+  --warn:#ffa559;
+  --bad:#ff6b6b;
+  --soft:rgba(128,191,255,.12);
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  background:
+    radial-gradient(circle at top, rgba(128,191,255,.10), transparent 34rem),
+    var(--bg);
+  color:var(--ink);
+  font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+}
+
+a{
+  color:var(--accent);
+  text-decoration:none;
+}
+
+a:hover{
+  text-decoration:underline;
+}
+
+header{
+  background:linear-gradient(90deg,#11151c,#1b1e25);
+  border-bottom:1px solid var(--line);
+  padding:28px 18px;
+}
+
+.wrap{
+  max-width:1250px;
+  margin:0 auto;
+  padding:0 16px;
+}
+
+h1{
+  margin:0;
+  font-size:clamp(2rem,5vw,3.6rem);
+  line-height:1.05;
+  letter-spacing:-.04em;
+}
+
+.sub{
+  color:var(--muted);
+  margin-top:10px;
+  max-width:980px;
+}
+
+.badges{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  margin-top:16px;
+}
+
+.badges a,
+.chip{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:8px 12px;
+  border:1px solid var(--line);
+  border-radius:999px;
+  background:#10151d;
+  color:var(--ink);
+  font-size:.92rem;
+}
+
+.badges a:hover{
+  text-decoration:none;
+  border-color:rgba(128,191,255,.65);
+}
+
+main{
+  max-width:1250px;
+  margin:24px auto 48px;
+  padding:0 16px;
+}
+
+.card{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:18px;
+  margin:16px 0;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:16px;
+}
+
+.tile{
+  background:var(--panel2);
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:14px;
+}
+
+.kpi{
+  display:flex;
+  flex-wrap:wrap;
+  gap:14px;
+}
+
+.kpi .tile{
+  flex:1 1 220px;
+}
+
+.num{
+  font-size:1.35rem;
+  font-weight:900;
+  margin-top:6px;
+}
+
+.small{
+  color:var(--muted);
+  font-size:.9rem;
+}
+
+.table{
+  width:100%;
+  border-collapse:collapse;
+  margin-top:10px;
+}
+
+.table th,
+.table td{
+  border:1px solid var(--line);
+  padding:10px 12px;
+  text-align:left;
+  vertical-align:top;
+}
+
+.table th{
+  background:#0f141b;
+}
+
+.status{
+  display:inline-block;
+  padding:4px 10px;
+  border-radius:999px;
+  border:1px solid var(--line);
+  font-size:.85rem;
+}
+
+.ok{
+  color:var(--ok);
+  border-color:rgba(75,210,143,.35);
+}
+
+.warn{
+  color:var(--warn);
+  border-color:rgba(255,165,89,.35);
+}
+
+.bad{
+  color:var(--bad);
+  border-color:rgba(255,107,107,.35);
+}
+
+.btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  padding:10px 14px;
+  border-radius:12px;
+  border:1px solid var(--line);
+  background:#10151d;
+  color:var(--ink);
+  font-weight:800;
+}
+
+.btn:hover{
+  text-decoration:none;
+  border-color:rgba(128,191,255,.75);
+}
+
+.hero{
+  border-left:4px solid var(--accent);
+  background:var(--soft);
+  border-radius:14px;
+  padding:14px 16px;
+}
+
+.chain{
+  background:#0b0f16;
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:16px;
+  overflow:auto;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+
+footer{
+  border-top:1px solid var(--line);
+  background:#11151c;
+  text-align:center;
+  color:var(--muted);
+  padding:20px 14px;
+  font-size:.92rem;
+  margin-top:40px;
+}
+
+@media (max-width:720px){
+  .kpi .tile{
+    flex:1 1 100%;
+  }
+}
 </style>
 </head>
+
 <body>
-<header><div class="wrap">
-<h1>A.B.E. Explainers</h1>
-<div class="sub">Plain-language constitutional divergence explanations for users who do not speak statute, jurisdiction, or funding-code goblin.</div>
-<nav>
-<a class="btn" href="index.html">Home</a>
-<a class="btn primary" href="explainers/index.html">Explainers</a>
-<a class="btn" href="intake/index.html">Intake</a>
-<a class="btn" href="system/index.html">Run Full Pipeline</a>
-<a class="btn" href="integration/index.html">Audit Receipt</a>
-</nav>
-</div></header>
+
+<header>
+  <div class="wrap">
+
+    <h1>🦋 A.B.E. — American Butterfly Effect</h1>
+
+    <div class="sub" id="version-line">
+      Constitutional systems engineering framework for lawful alignment, audit integrity,
+      economic recovery modeling, and deterministic governance architecture.
+    </div>
+
+    <div class="badges">
+
+      <a href="https://doi.org/10.5281/zenodo.17586107">
+        DOI: 10.5281/zenodo.17586107
+      </a>
+
+      <span class="chip">
+        CC BY-NC 4.0
+      </span>
+
+      <a href="system/index.html">
+        SYSTEM
+      </a>
+
+      <a href="integration/index.html">
+        Integration
+      </a>
+
+      <a href="macro/index.html">
+        Macro
+      </a>
+
+      <a href="doctrine/index.html">
+        Doctrine
+      </a>
+
+      <a href="learn/index.html">
+        Learn
+      </a>
+
+      <a href="explainers/index.html">
+        Plain-Language Explainers
+      </a>
+
+    </div>
+
+  </div>
+</header>
+
 <main>
-<section class="card"><h2 class="gold">Plain-Language Output Layer</h2><div class="plain"><p>This section translates A.B.E. technical outputs into language a person can actually use. Scores alone do not protect people. A user needs to understand what happened, what authority was claimed, what authority actually existed, where the divergence began, and what evidence gaps remain.</p><p>A.B.E. does not decide guilt, innocence, or court outcomes. It measures authority alignment, definition integrity, jurisdictional scope, procedural fidelity, funding traceability, and constitutional divergence.</p></div></section>
-<section class="card"><h2>Explainer Pages</h2><div class="grid">
-<a class="tile" href="explainers/output-reading-explainer.html"><div class="label">Start Here</div><div class="value">How to Read an A.B.E. Output</div><p class="small">Turns pipeline scores into ordinary-language findings.</p></a>
-<a class="tile" href="explainers/divergence-explainer.html"><div class="label">Core Concept</div><div class="value">Divergence</div><p class="small">Explains drift between claimed authority and governing authority.</p></a>
-<a class="tile" href="explainers/ultra-vires-explainer.html"><div class="label">Authority Scope</div><div class="value">Ultra Vires Conduct</div><p class="small">Explains conduct beyond delegated statutory authority.</p></a>
-<a class="tile" href="explainers/definition-divergence-explainer.html"><div class="label">Definitions</div><div class="value">Definition Divergence</div><p class="small">Explains when legal terms are stretched outside scope.</p></a>
-<a class="tile" href="explainers/funding-misuse-explainer.html"><div class="label">Funding</div><div class="value">Funding Misuse Indicators</div><p class="small">Explains MCSAP, NHTSA, and grant-scope drift concerns.</p></a>
-<a class="tile" href="explainers/due-process-explainer.html"><div class="label">Procedure</div><div class="value">Due Process and Warrantless Arrest</div><p class="small">Explains prompt magistrate review and liberty safeguards.</p></a>
-<a class="tile" href="explainers/constitutional-rights-explainer.html"><div class="label">Rights</div><div class="value">Constitutional Rights Flags</div><p class="small">Explains movement, due process, equal protection, and procedural risk.</p></a>
-</div></section>
-<section class="card"><h2>The Translation Rule</h2><div class="callout"><strong>Technical output:</strong> “CDA definition integrity = low; CIRI risk = high.”<br><br><strong>Plain-language output:</strong> “The uploaded facts suggest the government may have treated private non-commercial movement as regulated commercial activity, creating definition drift, jurisdictional overreach, and due process risk.”</div></section>
+
+<section class="card">
+
+  <h2 style="margin-top:0;color:var(--accent2)">
+    Mission Control
+  </h2>
+
+  <div class="hero">
+
+    <p>
+      A.B.E. measures whether execution remains aligned with delegated constitutional authority.
+    </p>
+
+    <p>
+      The engine converts constitutional divergence into measurable economic recovery,
+      audit-ready outputs, funding traceability, and deployment modeling.
+    </p>
+
+  </div>
+
+  <div style="margin-top:16px;display:flex;flex-wrap:wrap;gap:10px">
+
+    <a class="btn" href="system/index.html">
+      Run Full Pipeline
+    </a>
+
+    <a class="btn" href="integration/index.html">
+      Audit Receipts
+    </a>
+
+    <a class="btn" href="explainers/output-reading-explainer.html">
+      How To Read Outputs
+    </a>
+
+    <a class="btn" href="learn/start_here.html">
+      Start Here
+    </a>
+
+  </div>
+
+</section>
+
+<section class="card">
+
+  <h2 style="margin-top:0">
+    Live KPIs
+  </h2>
+
+  <div class="kpi">
+
+    <div class="tile">
+      <div>Modeled Recovery</div>
+      <div id="k-ciri" class="num">—</div>
+      <div class="small">
+        Constitutional recovery projection
+      </div>
+    </div>
+
+    <div class="tile">
+      <div>CIRI Index</div>
+      <div id="k-ciri-idx" class="num">—</div>
+      <div class="small">
+        Constitutional Integrity ROI signal
+      </div>
+    </div>
+
+    <div class="tile">
+      <div>Public Allocation</div>
+      <div id="k-cibs" class="num">—</div>
+      <div class="small">
+        Recovery capital allocation
+      </div>
+    </div>
+
+    <div class="tile">
+      <div>ROI Per Case</div>
+      <div id="k-roi" class="num">—</div>
+      <div class="small">
+        Recovery efficiency ratio
+      </div>
+    </div>
+
+  </div>
+
+</section>
+
+<section class="card">
+
+  <h2 style="margin-top:0">
+    Closed-Loop Engine Chain
+  </h2>
+
+  <div class="chain">
+INTAKE
+→ CAE
+→ CDA
+→ CDI
+→ CIRI
+→ CIBS
+→ CFF
+→ CII
+→ MACRO
+→ RT
+→ CCRI
+→ AFFE
+→ INTEGRATION
+→ SYSTEM
+  </div>
+
+</section>
+
+<section class="card">
+
+  <h2 style="margin-top:0">
+    Core Engine
+  </h2>
+
+  <div class="grid">
+
+    <div class="card">
+      <h3>INTAKE — Document Intake + OCR Bridge</h3>
+      <p>Entry point for documents, scans, pasted text, and OCR processing.</p>
+      <table class="table"><tbody>
+        <tr><th>UI</th><td><a href="intake/index.html">intake/index.html</a></td></tr>
+        <tr><th>Status</th><td id="s-intake" class="status warn">Checking…</td></tr>
+      </tbody></table>
+    </div>
+
+    <div class="card">
+      <h3>CAE — Constitutional Authority Engine</h3>
+      <p>Establishes the governing constitutional authority baseline.</p>
+      <table class="table"><tbody>
+        <tr><th>UI</th><td><a href="cae/index.html">cae/index.html</a></td></tr>
+        <tr><th>Schema</th><td id="s-cae" class="status warn">Checking…</td></tr>
+      </tbody></table>
+    </div>
+
+    <div class="card">
+      <h3>CDA — Constitutional Definition Audit</h3>
+      <p>Measures definition expansion, scope drift, and boundary violations.</p>
+      <table class="table"><tbody>
+        <tr><th>UI</th><td><a href="cda/index.html">cda/index.html</a></td></tr>
+        <tr><th>Schema</th><td id="s-cda" class="status warn">Checking…</td></tr>
+      </tbody></table>
+    </div>
+
+    <div class="card">
+      <h3>CDI — Constitutional Divergence Index</h3>
+      <p>Quantifies the gap between authorized practice and constitutional fidelity.</p>
+      <table class="table"><tbody>
+        <tr><th>UI</th><td><a href="cdi/index.html">cdi/index.html</a></td></tr>
+        <tr><th>Schema</th><td id="s-cdi" class="status warn">Checking…</td></tr>
+      </tbody></table>
+    </div>
+
+    <div class="card">
+      <h3>CIRI — Constitutional Integrity ROI Engine</h3>
+      <p>Calculates total recovery value, CIRI index, ROI per case, and recovery thresholds.</p>
+      <table class="table"><tbody>
+        <tr><th>UI</th><td><a href="ciri/index.html">ciri/index.html</a></td></tr>
+        <tr><th>Schema</th><td id="s-ciri" class="status warn">Checking…</td></tr>
+        <tr><th>Glossary</th><td><a href="ciri/glossary.md">ciri/glossary.md</a></td></tr>
+      </tbody></table>
+    </div>
+
+    <div class="card">
+      <h3>CIBS — Constitutional Integrity Budget System</h3>
+      <p>Allocates recovery capital into public reinvestment channels.</p>
+      <table class="table"><tbody>
+        <tr><th>UI</th><td><a href="cibs/index.html">cibs/index.html</a></td></tr>
+        <tr><th>Schema</th><td id="s-cibs" class="status warn">Checking…</td></tr>
+      </tbody></table>
+    </div>
+
+    <div class="card">
+      <h3>CFF — Constitutional Funding Forensics</h3>
+      <p>Reviews federal funding conditions against actual use and flags ON_MISSION / OFF_MISSION drift.</p>
+      <table class="table"><tbody>
+        <tr><th>UI</th><td><a href="cff/index.html">cff/index.html</a></td></tr>
+        <tr><th>Schema</th><td id="s-cff" class="status warn">Checking…</td></tr>
+      </tbody></table>
+    </div>
+
+    <div class="card">
+      <h3>CII — Constitutional Integrity Index</h3>
+      <p>Measures propagation, effectiveness, and downstream deployment impact.</p>
+      <table class="table"><tbody>
+        <tr><th>UI</th><td><a href="cii/index.html">cii/index.html</a></td></tr>
+        <tr><th>Schema</th><td id="s-cii" class="status warn">Checking…</td></tr>
+      </tbody></table>
+    </div>
+
+  </div>
+
+</section>
+
+<section class="card">
+
+  <h2 style="margin-top:0">
+    Expansion + Verification Modules
+  </h2>
+
+  <div class="grid">
+
+    <div class="card">
+      <h3>MACRO — Macroeconomic Cascade Model</h3>
+      <p>Projects sector-level gains, jobs supported, and broader economic ripple effects.</p>
+      <table class="table"><tbody>
+        <tr><th>UI</th><td><a href="macro/index.html">macro/index.html</a></td></tr>
+        <tr><th>Status</th><td id="s-macro" class="status warn">Checking…</td></tr>
+      </tbody></table>
+    </div>
+
+    <div class="card">
+      <h3>RT — Rebuild Together Engine</h3>
+      <p>Deploys recovery into capital activation sectors and community stabilization.</p>
+      <table class="table"><tbody>
+        <tr><th>UI</th><td><a href="rt/index.html">rt/index.html</a></td></tr>
+        <tr><th>Status</th><td id="s-rt" class="status warn">Checking…</td></tr>
+      </tbody></table>
+    </div>
+
+    <div class="card">
+      <h3>CCRI — Constitutional Capital Recovery Index</h3>
+      <p>Measures constitutional capital recovery, access, participation, and gatekeeping effects.</p>
+      <table class="table"><tbody>
+        <tr><th>UI</th><td><a href="ccri/index.html">ccri/index.html</a></td></tr>
+        <tr><th>Schema</th><td id="s-ccri" class="status warn">Checking…</td></tr>
+      </tbody></table>
+    </div>
+
+    <div class="card">
+      <h3>AFFE — Appropriation Fidelity & Funding Engine</h3>
+      <p>Checks funding fidelity, post-deployment stability, and appropriation alignment.</p>
+      <table class="table"><tbody>
+        <tr><th>UI</th><td><a href="affe/index.html">affe/index.html</a></td></tr>
+        <tr><th>Model</th><td id="s-affe" class="status warn">Checking…</td></tr>
+      </tbody></table>
+    </div>
+
+    <div class="card">
+      <h3>INTEGRATION — Audit & Integrity Layer</h3>
+      <p>Builds Merkle audit receipts, verifies chain integrity, and preserves outputs.</p>
+      <table class="table"><tbody>
+        <tr><th>UI</th><td><a href="integration/index.html">integration/index.html</a></td></tr>
+        <tr><th>Schema</th><td id="s-integration" class="status warn">Checking…</td></tr>
+      </tbody></table>
+    </div>
+
+    <div class="card">
+      <h3>SYSTEM — Mission Control</h3>
+      <p>Central execution room, health checks, guardrails, plain-language translation, and pipeline runner.</p>
+      <table class="table"><tbody>
+        <tr><th>UI</th><td><a href="system/index.html">system/index.html</a></td></tr>
+        <tr><th>Guardrails</th><td id="s-guardrails" class="status warn">Checking…</td></tr>
+      </tbody></table>
+    </div>
+
+  </div>
+
+</section>
+
+<section class="card">
+
+  <h2 style="margin-top:0">
+    Plain-Language Explainers
+  </h2>
+
+  <p class="small">
+    These pages translate engine concepts and JSON outputs into readable language for users,
+    auditors, legal teams, policy reviewers, and citizens.
+  </p>
+
+  <div class="grid">
+
+    <a class="btn" href="explainers/index.html">Explainers Hub</a>
+    <a class="btn" href="explainers/output-reading-explainer.html">How To Read Outputs</a>
+    <a class="btn" href="explainers/divergence-explainer.html">Divergence</a>
+    <a class="btn" href="explainers/definition-divergence-explainer.html">Definition Drift</a>
+    <a class="btn" href="explainers/ultra-vires-explainer.html">Ultra Vires</a>
+    <a class="btn" href="explainers/due-process-explainer.html">Due Process</a>
+    <a class="btn" href="explainers/funding-misuse-explainer.html">Funding Misuse</a>
+    <a class="btn" href="explainers/constitutional-rights-explainer.html">Constitutional Rights</a>
+
+  </div>
+
+</section>
+
+<section class="card">
+
+  <h2 style="margin-top:0">
+    Schema Status Summary
+  </h2>
+
+  <div class="grid" id="schema-grid"></div>
+
+  <p class="small">
+    Green = file found and non-empty. Orange = missing, empty, or unreachable.
+  </p>
+
+</section>
+
+<section class="card">
+
+  <h2 style="margin-top:0">
+    Plain-Language System Reading
+  </h2>
+
+  <div id="system-reading" class="hero">
+    Checking local artifacts and module health.
+  </div>
+
+</section>
+
 </main>
-<footer>American Butterfly Effect · CC BY-NC 4.0 · Integrity only — never for sale.</footer>
-</body></html>
+
+<footer>
+  Citation: Shouse, T. American Butterfly Effect (ABE). Zenodo.
+  DOI: 10.5281/zenodo.17586107
+  · Licensed CC BY-NC 4.0 · Integrity only — never for sale.
+</footer>
+
+<script>
+const money = n => {
+  const v = Number(n);
+  if(!Number.isFinite(v)) return "—";
+  try{
+    return new Intl.NumberFormat(undefined,{
+      style:"currency",
+      currency:"USD",
+      maximumFractionDigits:0
+    }).format(v);
+  }catch{
+    return "$" + Math.round(v).toLocaleString();
+  }
+};
+
+function setStatus(id, ok){
+  const el = document.getElementById(id);
+  if(!el) return;
+
+  el.textContent = ok ? "Present" : "Missing";
+  el.classList.remove("warn","ok","bad");
+  el.classList.add(ok ? "ok" : "warn");
+}
+
+function safeParse(raw){
+  try{return JSON.parse(raw)}
+  catch{return null}
+}
+
+function readFirst(keys){
+  for(const key of keys){
+    const raw = localStorage.getItem(key);
+    if(!raw) continue;
+    const parsed = safeParse(raw);
+    if(parsed) return parsed;
+  }
+  return null;
+}
+
+function computeCiriMetrics(d){
+  const num = x => {
+    const n = Number(String(x || "").replace(/[^0-9.\-]/g,""));
+    return Number.isFinite(n) ? n : 0;
+  };
+
+  const cases_avoided = num(d.cases_avoided);
+  const avg_cost_per_case = num(d.avg_cost_per_case);
+  const jail_days_avoided = num(d.jail_days_avoided);
+  const cost_per_jail_day = num(d.cost_per_jail_day);
+  const fees_canceled_total = num(d.fees_canceled_total);
+  const policy_corrections = num(d.policy_corrections);
+  const avg_enforcement_cost_savings = num(d.avg_enforcement_cost_savings);
+  const households_restored = num(d.households_restored);
+  const avg_monthly_market_spend = num(d.avg_monthly_market_spend);
+  const months_effective = num(d.months_effective);
+  const employment_probability = num(d.employment_probability);
+  const avg_monthly_wage = num(d.avg_monthly_wage);
+  const expected_lawsuits = num(d.expected_lawsuits);
+  const avg_payout = num(d.avg_payout);
+  const litigation_multiplier = num(d.litigation_multiplier || d.multiplier || 1);
+  const transition_costs = num(d.transition_costs_one_time);
+
+  const direct_case = cases_avoided * avg_cost_per_case;
+  const detention = jail_days_avoided * cost_per_jail_day;
+  const fees = fees_canceled_total;
+  const enforcement = policy_corrections * avg_enforcement_cost_savings;
+  const market_access = households_restored * avg_monthly_market_spend * months_effective;
+  const employment = cases_avoided * employment_probability * avg_monthly_wage * (months_effective / 12);
+  const litigation = expected_lawsuits * avg_payout * litigation_multiplier;
+
+  let total = direct_case + detention + fees + enforcement + market_access + employment + litigation - transition_costs;
+  total = Math.max(0,total);
+
+  const K = 2_000_000_000;
+  const ciri_index = 1 - Math.exp(-total / Math.max(1,K));
+  const roi_per_case = cases_avoided > 0 ? total / cases_avoided : 0;
+
+  return {
+    total_recovery: total,
+    ciri_index,
+    roi_per_case
+  };
+}
+
+// ------------------------------
+// LIVE KPI RENDERING
+// ------------------------------
+
+(async function(){
+
+  // --------------------------
+  // VERSION / SYSTEM MAP
+  // --------------------------
+
+  try{
+    const r = await fetch("system/map.json",{cache:"no-store"});
+
+    if(r.ok){
+      const map = await r.json();
+
+      const versionLine = document.getElementById("version-line");
+
+      if(versionLine){
+        versionLine.textContent =
+          `v${map.version || "2.0"} · Updated ${map.updated || "Unknown"} · Constitutional Systems Engineering`;
+      }
+    }
+  }catch(err){
+    console.warn("map.json not loaded", err);
+  }
+
+  // --------------------------
+  // CIRI KPI
+  // --------------------------
+
+  try{
+    const r = await fetch("ciri/inputs.csv",{cache:"no-store"});
+
+    if(r.ok){
+
+      const text = await r.text();
+
+      const lines = text.trim().split(/\r?\n/);
+
+      if(lines.length >= 2){
+
+        const headers = lines[0].split(",").map(v => v.trim());
+
+        const values = lines[1].split(",").map(v => v.trim());
+
+        const row = {};
+
+        headers.forEach((h,i)=>{
+          row[h] = values[i];
+        });
+
+        const out = computeCiriMetrics(row);
+
+        const ciriEl = document.getElementById("k-ciri");
+        const idxEl  = document.getElementById("k-ciri-idx");
+        const roiEl  = document.getElementById("k-roi");
+
+        if(ciriEl){
+          ciriEl.textContent = money(out.total_recovery);
+        }
+
+        if(idxEl){
+          idxEl.textContent = out.ciri_index.toFixed(4);
+        }
+
+        if(roiEl){
+          roiEl.textContent = money(out.roi_per_case);
+        }
+      }
+    }
+  }catch(err){
+    console.warn("CIRI KPI load failed", err);
+  }
+
+  // --------------------------
+  // CIBS KPI
+  // --------------------------
+
+  try{
+
+    const r = await fetch("cibs/auto_budget.csv",{cache:"no-store"});
+
+    if(r.ok){
+
+      const text = await r.text();
+
+      const rows = text.trim().split(/\r?\n/).slice(1);
+
+      let total = 0;
+
+      rows.forEach(row=>{
+
+        const cols = row.split(",");
+
+        total += Number(cols[1] || 0);
+
+      });
+
+      const el = document.getElementById("k-cibs");
+
+      if(el){
+        el.textContent = money(total);
+      }
+    }
+
+  }catch(err){
+    console.warn("CIBS KPI failed", err);
+  }
+
+  // --------------------------
+  // SCHEMA HEALTH
+  // --------------------------
+
+  const targets = [
+
+    { key:"INTAKE", id:"s-intake", path:"intake/schema.json" },
+
+    { key:"CAE", id:"s-cae", path:"cae/schema.json" },
+
+    { key:"CDA", id:"s-cda", path:"cda/schema.json" },
+
+    { key:"CDI", id:"s-cdi", path:"cdi/schema.json" },
+
+    { key:"CIRI", id:"s-ciri", path:"ciri/schema.json" },
+
+    { key:"CIBS", id:"s-cibs", path:"cibs/schema.json" },
+
+    { key:"CFF", id:"s-cff", path:"cff/schema.json" },
+
+    { key:"CII", id:"s-cii", path:"cii/schema.json" },
+
+    { key:"MACRO", id:"s-macro", path:"macro/schema.json" },
+
+    { key:"RT", id:"s-rt", path:"rt/schema.json" },
+
+    { key:"CCRI", id:"s-ccri", path:"ccri/schema.json" },
+
+    { key:"AFFE", id:"s-affe", path:"affe/model.json" },
+
+    { key:"INTEGRATION", id:"s-integration", path:"integration/schema.json" },
+
+    { key:"GUARDRAILS", id:"s-guardrails", path:"system/ai_guardrails.json" }
+
+  ];
+
+  for(const t of targets){
+
+    try{
+
+      const r = await fetch(t.path,{cache:"no-store"});
+
+      const ok = r.ok && (await r.text()).trim().length > 0;
+
+      setStatus(t.id, ok);
+
+    }catch(err){
+
+      setStatus(t.id, false);
+
+    }
+  }
+
+  // --------------------------
+  // SCHEMA GRID SUMMARY
+  // --------------------------
+
+  const grid = document.getElementById("schema-grid");
+
+  if(grid){
+
+    grid.innerHTML = targets.map(t => {
+
+      return `
+        <div class="tile">
+
+          <div style="display:flex;justify-content:space-between;align-items:center">
+
+            <strong>${t.key}</strong>
+
+            <span id="sum-${t.id}" class="status warn">
+              Checking…
+            </span>
+
+          </div>
+
+          <small>
+            <code>${t.path}</code>
+          </small>
+
+        </div>
+      `;
+
+    }).join("");
+
+    targets.forEach(t=>{
+
+      const src = document.getElementById(t.id);
+
+      const dst = document.getElementById(`sum-${t.id}`);
+
+      if(src && dst){
+
+        dst.textContent = src.textContent;
+
+        dst.classList.remove("ok","warn","bad");
+
+        if(src.classList.contains("ok")){
+          dst.classList.add("ok");
+        }else{
+          dst.classList.add("warn");
+        }
+      }
+    });
+  }
+
+  // --------------------------
+  // PLAIN LANGUAGE READING
+  // --------------------------
+
+  try{
+
+    const reading = document.getElementById("system-reading");
+
+    if(reading){
+
+      reading.innerHTML = `
+        <strong>System Reading:</strong><br><br>
+
+        The American Butterfly Effect (A.B.E.) engine is operational.
+
+        Constitutional authority is evaluated first through CAE and CDA.
+
+        Divergence levels are then measured through CDI.
+
+        CIRI converts divergence into measurable economic recovery modeling.
+
+        CIBS allocates projected recovery into structured reinvestment sectors.
+
+        RT and MACRO simulate downstream economic activation and stabilization.
+
+        INTEGRATION preserves audit integrity through receipt verification and chain validation.
+
+        This system runs locally in-browser and remains fully auditable.
+      `;
+    }
+
+  }catch(err){
+    console.warn("plain-language render failed", err);
+  }
+
+})();
+
+</script>
+</body>
+</html>
