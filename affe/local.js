@@ -1,5 +1,5 @@
 // affe/local.js
-// AFFE — American Funding & Fidelity Explorer
+// AFFE — Appropriation Fidelity & Funding Engine
 // Reads a CFF artifact (localStorage or uploaded JSON) and visualizes ON/OFF/UNCLEAR funding.
 
 (function(){
