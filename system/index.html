@@ -775,40 +775,64 @@ async function runHealthCheck(){
 async function loadGuardrails(){
   try{
     const r = await fetch("system/ai_guardrails.json",{cache:"no-store"});
-
-    if(!r.ok){
-      throw new Error("Guardrails file missing.");
-    }
+    if(!r.ok) throw new Error("Guardrails file missing.");
 
     const j = await r.json();
 
-    const guards = j.core_guardrails || [];
+    const sections = [
+      "core_rules",
+      "privacy_rules",
+      "explanation_rules",
+      "legal_guidance_boundary",
+      "constitutional_hierarchy_rules",
+      "tone_rules",
+      "engine_identity_rules",
+      "user_flow_rules",
+      "output_integrity_rules",
+      "funding_and_appropriation_rules",
+      "transportation_scope_rules",
+      "failure_modes",
+      "display_requirements",
+      "license_rules"
+    ];
+
+    let total = 0;
+    const blocks = [];
+
+    for(const key of sections){
+      const section = j[key];
+      if(!section || typeof section !== "object") continue;
+
+      const entries = Array.isArray(section)
+        ? section
+        : Object.entries(section);
+
+      total += entries.length;
+
+      const lines = Array.isArray(section)
+        ? section.map(g => `${g.id || ""} — ${g.title || g.rule || JSON.stringify(g)}`)
+        : Object.entries(section).map(([k,v]) =>
+            typeof v === "boolean"
+              ? `${k}: ${v}`
+              : `${k}: ${typeof v === "string" ? v : JSON.stringify(v)}`
+          );
+
+      blocks.push(`<strong>\( {key}</strong>\n \){lines.join("\n")}`);
+    }
 
     document.getElementById("k-guardrails").textContent =
-      `${guards.length} Loaded`;
+      `${total} Loaded`;
 
     guardrailSummaryEl.innerHTML = `
-      <p>
-        <strong>${j.title}</strong>
-      </p>
-
-      <p>
-        ${j.framework_identity?.description || ""}
-      </p>
-
-      <pre>${guards.map(g=>
-`${g.id} — ${g.title}
-${g.rule}`).join("\n\n")}</pre>
+      <p><strong>${j.title || "A.B.E. AI Guardrails"}</strong></p>
+      <p>${j.purpose || ""}</p>
+      <pre style="white-space:pre-wrap;font-size:.85rem">${blocks.join("\n\n")}</pre>
     `;
 
   }catch(e){
     document.getElementById("k-guardrails").textContent = "Missing";
-
-    guardrailSummaryEl.innerHTML = `
-      <span class="bad">
-        ${e.message || String(e)}
-      </span>
-    `;
+    guardrailSummaryEl.innerHTML =
+      `<span class="bad">${e.message || String(e)}</span>`;
   }
 }
 
