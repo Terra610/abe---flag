@@ -7,48 +7,139 @@
 <base href="/abe---flag/">
 
 <style>
-:root{--bg:#0b0d12;--panel:#141820;--panel2:#10151d;--ink:#e6e6e6;--muted:#9fb3c8;--line:rgba(255,255,255,.08);--accent:#80bfff;--ok:#4bd28f}
+:root{
+  --bg:#0b0d12; --panel:#141820; --panel2:#10151d;
+  --ink:#e6e6e6; --muted:#9fb3c8; --line:rgba(255,255,255,.08);
+  --accent:#80bfff; --ok:#4bd28f; --warn:#ffd166; --bad:#ff6b6b;
+}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:18px;margin:14px 0}
-.plain{background:#0f141b;border:1px solid var(--line);border-radius:14px;padding:16px;color:var(--muted)}
+a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
+header{background:#11151c;border-bottom:1px solid var(--line);padding:28px 16px;text-align:center}
+h1{margin:0;font-size:clamp(1.8rem,4vw,2.6rem)}
+.sub{color:var(--muted);max-width:860px;margin:10px auto 0}
+nav{margin-top:16px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+nav a{border:1px solid var(--line);background:#0f141b;border-radius:999px;padding:8px 14px;color:var(--ink);font-weight:700}
+main{max-width:1100px;margin:22px auto;padding:0 16px 60px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:20px;margin:16px 0}
+.plain{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:16px;color:var(--muted)}
+label{display:block;margin:10px 0 4px;font-weight:700;color:var(--ink)}
+input[type=file],select,textarea{width:100%;padding:10px;border-radius:10px;border:1px solid var(--line);background:#0c1017;color:var(--ink);font:15px/1.5 system-ui}
+textarea{min-height:160px;resize:vertical}
+.btn-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+button,.btn{
+  display:inline-flex;align-items:center;gap:6px;
+  border:1px solid var(--line);background:#122033;color:var(--ink);
+  border-radius:999px;padding:11px 18px;font-weight:800;cursor:pointer;
+}
+button.primary{background:#1a3a5c;border-color:#2a5a8a}
+button:disabled{opacity:.45;cursor:not-allowed}
+.status-line{margin-top:12px;padding:10px 14px;border-radius:10px;background:#0c1017;border:1px solid var(--line)}
+.status-ok{border-color:var(--ok);color:var(--ok)}
+.status-warn{border-color:var(--warn);color:var(--warn)}
+.status-err{border-color:var(--bad);color:var(--bad)}
+.targets{display:flex;flex-wrap:wrap;gap:14px;margin-top:8px}
+.targets label{font-weight:500;display:flex;align-items:center;gap:6px}
+pre{background:#0c1017;border:1px solid var(--line);border-radius:10px;padding:12px;overflow:auto;max-height:280px;font-size:.85rem;color:#c8d6e5}
+.small{font-size:.9rem;color:var(--muted)}
+footer{text-align:center;color:var(--muted);padding:20px;font-size:.9rem;border-top:1px solid var(--line)}
 </style>
 </head>
 <body>
 
-<header style="background:#11151c;padding:30px 16px;text-align:center">
+<header>
   <h1>INTAKE</h1>
-  <div style="color:var(--muted);max-width:980px;margin:12px auto 0">Document + OCR Bridge — 100% local-first</div>
+  <div class="sub">Document + OCR Bridge — 100% local-first. Upload once, then run the engine.</div>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="system/index.html">System Dashboard</a>
+    <a href="learn/index.html">Learn</a>
+    <a href="integration/index.html">Integration</a>
+  </nav>
 </header>
 
-<main style="max-width:1220px;margin:22px auto;padding:0 16px 48px">
+<main>
 
   <section class="card">
-    <h2>Main Document Intake</h2>
+    <h2 style="margin-top:0">1. Add Your Materials</h2>
     <div class="plain">
-      <p>Paste text or upload documents below. OCR is available for scanned images.</p>
-      <textarea id="intake-text" rows="12" style="width:100%;font-family:monospace"></textarea>
+      <p>Everything stays in your browser. No accounts. No cloud upload of your documents.</p>
+
+      <label for="file-input">Upload files (PDF, images, text, CSV, JSON)</label>
+      <input type="file" id="file-input" multiple accept=".pdf,.png,.jpg,.jpeg,.txt,.csv,.json,.md,image/*">
+
+      <label for="text-input">Or paste text</label>
+      <textarea id="text-input" placeholder="Paste statutes, citations, budget lines, narrative, or any text here…"></textarea>
+
+      <label for="doc-type">Document type (helps the engine)</label>
+      <select id="doc-type">
+        <option value="generic_case_text">Generic / mixed</option>
+        <option value="traffic_ticket">Traffic ticket / citation</option>
+        <option value="funding_or_budget">Funding / budget / grant</option>
+        <option value="loan_contract">Loan / credit / contract</option>
+        <option value="vehicle_title_registration">Vehicle title / registration</option>
+        <option value="policy_memo">Policy / SOP / training</option>
+      </select>
     </div>
   </section>
 
-  <!-- OCR Section -->
   <section class="card">
-    <h2>📸 OCR — Extract Text from Images / Scans</h2>
+    <h2 style="margin-top:0">2. Which modules should this feed?</h2>
     <div class="plain">
-      <p>Upload a photo of any document, statute, court order, or funding report. Text is extracted entirely in your browser.</p>
-      <input type="file" id="ocr-upload" accept="image/*,.pdf" style="margin:12px 0" />
-      <p id="ocr-status" class="small">Ready — select an image to begin.</p>
+      <div class="targets">
+        <label><input type="checkbox" id="target-ciri" checked> CIRI (ROI / recovery)</label>
+        <label><input type="checkbox" id="target-cda" checked> CDA (divergence)</label>
+        <label><input type="checkbox" id="target-cff"> CFF (funding forensics)</label>
+        <label><input type="checkbox" id="target-ccri"> CCRI (credit / participation)</label>
+      </div>
+      <p class="small" style="margin-top:10px">These are just routing hints. The full pipeline still runs in its fixed order when you use the System Dashboard.</p>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2 style="margin-top:0">3. Run Intake</h2>
+    <div class="plain">
+      <div class="btn-row">
+        <button type="button" class="primary" id="run-intake">▶ Run Intake Engine</button>
+        <button type="button" id="download-artifact" disabled>Download Intake JSON</button>
+        <a class="btn" href="system/index.html">Open System Dashboard →</a>
+      </div>
+      <div id="status" class="status-line">Status: Ready — add a file or paste text, then click Run Intake Engine.</div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2 style="margin-top:0">Results (local only)</h2>
+    <div class="plain">
+      <label>Normalized text extracted</label>
+      <pre id="norm-text">—</pre>
+
+      <label style="margin-top:14px">Extracted fields (heuristic)</label>
+      <pre id="fields-json">{}</pre>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2 style="margin-top:0">What happens next?</h2>
+    <div class="plain">
+      <ol style="margin:0;padding-left:1.2rem;color:var(--muted)">
+        <li>Intake builds a local artifact and stores it in your browser.</li>
+        <li>Go to <strong>System Dashboard</strong> and run the full pipeline (order is fixed and never changed).</li>
+        <li>Or open individual modules (CDA, CIRI, CFF, etc.) — they can pick up the intake artifact automatically.</li>
+      </ol>
+      <p class="small" style="margin-top:12px">Pipeline order is protected: INTAKE → CAE → CDA → CDI → CIRI → CIBS → CII → INTEGRATION → MACRO → RT → CFF → CCRI → AFFE.</p>
     </div>
   </section>
 
 </main>
 
-<footer style="text-align:center;color:var(--muted);padding:18px 12px;font-size:.9rem">
-  CC BY-NC 4.0 · Local-first · Integrity only
+<footer>
+  Citation: Shouse, T. American Butterfly Effect (ABE). Zenodo.
+  DOI: 10.5281/zenodo.17586107 · CC BY-NC 4.0 · Integrity only — never for sale.
 </footer>
 
 <script src="intake.js"></script>
-<script src="intake_ui.js"></script>
+<!-- Optional: keep OCR helper if you still want the separate OCR path -->
 <script src="ocr.js"></script>
 
 </body>
