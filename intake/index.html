@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>INTAKE — A.B.E.</title>
+<title>Run a Case — A.B.E.</title>
 <base href="/abe---flag/">
 
 <style>
@@ -13,121 +13,184 @@
   --accent:#80bfff; --ok:#4bd28f; --warn:#ffd166; --bad:#ff6b6b;
 }
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
-a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
-header{background:#11151c;border-bottom:1px solid var(--line);padding:28px 16px;text-align:center}
+body{
+  margin:0;
+  background:radial-gradient(circle at top,rgba(128,191,255,.08),transparent 32rem),var(--bg);
+  color:var(--ink);
+  font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+header{
+  background:#11151c;
+  border-bottom:1px solid var(--line);
+  padding:28px 16px;
+  text-align:center;
+}
 h1{margin:0;font-size:clamp(1.8rem,4vw,2.6rem)}
-.sub{color:var(--muted);max-width:860px;margin:10px auto 0}
+.sub{color:var(--muted);max-width:720px;margin:10px auto 0}
 nav{margin-top:16px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
-nav a{border:1px solid var(--line);background:#0f141b;border-radius:999px;padding:8px 14px;color:var(--ink);font-weight:700}
-main{max-width:1100px;margin:22px auto;padding:0 16px 60px}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:20px;margin:16px 0}
-.plain{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:16px;color:var(--muted)}
+nav a{
+  border:1px solid var(--line);background:#0f141b;border-radius:999px;
+  padding:8px 14px;color:var(--ink);font-weight:700;
+}
+nav a.primary{background:#122033;border-color:rgba(128,191,255,.45)}
+main{max-width:820px;margin:22px auto;padding:0 16px 60px}
+.card{
+  background:var(--panel);border:1px solid var(--line);
+  border-radius:16px;padding:20px;margin:16px 0;
+}
+.plain{
+  background:var(--panel2);border:1px solid var(--line);
+  border-radius:12px;padding:16px;color:var(--muted);
+}
 label{display:block;margin:10px 0 4px;font-weight:700;color:var(--ink)}
-input[type=file],select,textarea{width:100%;padding:10px;border-radius:10px;border:1px solid var(--line);background:#0c1017;color:var(--ink);font:15px/1.5 system-ui}
-textarea{min-height:160px;resize:vertical}
+input[type=file],textarea{
+  width:100%;padding:10px;border-radius:10px;
+  border:1px solid var(--line);background:#0c1017;color:var(--ink);
+  font:15px/1.5 system-ui;
+}
+textarea{min-height:140px;resize:vertical}
 .btn-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
-button,.btn{
+button{
   display:inline-flex;align-items:center;gap:6px;
   border:1px solid var(--line);background:#122033;color:var(--ink);
-  border-radius:999px;padding:11px 18px;font-weight:800;cursor:pointer;
+  border-radius:999px;padding:12px 18px;font-weight:800;cursor:pointer;
+  font:inherit;
 }
 button.primary{background:#1a3a5c;border-color:#2a5a8a}
+button.danger{background:#2a1515;border-color:rgba(255,107,107,.45)}
 button:disabled{opacity:.45;cursor:not-allowed}
-.status-line{margin-top:12px;padding:10px 14px;border-radius:10px;background:#0c1017;border:1px solid var(--line)}
+button:hover:not(:disabled){border-color:rgba(128,191,255,.75)}
+.status-line{
+  margin-top:14px;padding:12px 14px;border-radius:10px;
+  background:#0c1017;border:1px solid var(--line);color:var(--muted);
+}
 .status-ok{border-color:var(--ok);color:var(--ok)}
 .status-warn{border-color:var(--warn);color:var(--warn)}
 .status-err{border-color:var(--bad);color:var(--bad)}
-.targets{display:flex;flex-wrap:wrap;gap:14px;margin-top:8px}
-.targets label{font-weight:500;display:flex;align-items:center;gap:6px}
-pre{background:#0c1017;border:1px solid var(--line);border-radius:10px;padding:12px;overflow:auto;max-height:280px;font-size:.85rem;color:#c8d6e5}
+.kpi{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+  gap:10px;margin-top:12px;
+}
+.tile{
+  background:#0c1017;border:1px solid var(--line);
+  border-radius:12px;padding:12px;
+}
+.tile .label{font-size:.85rem;color:var(--muted)}
+.tile .num{font-weight:800;font-size:1.15rem;margin-top:4px;word-break:break-word}
+pre{
+  background:#0c1017;border:1px solid var(--line);border-radius:10px;
+  padding:12px;overflow:auto;max-height:320px;font-size:.85rem;color:#c8d6e5;
+  white-space:pre-wrap;
+}
 .small{font-size:.9rem;color:var(--muted)}
-footer{text-align:center;color:var(--muted);padding:20px;font-size:.9rem;border-top:1px solid var(--line)}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 8px}
+.tabs button{padding:8px 14px;font-size:.9rem}
+.tabs button.active{background:#1a3a5c;border-color:#2a5a8a}
+.panel{display:none}
+.panel.active{display:block}
+footer{
+  text-align:center;color:var(--muted);padding:20px;font-size:.9rem;
+  border-top:1px solid var(--line);
+}
 </style>
 </head>
 <body>
 
 <header>
-  <h1>INTAKE</h1>
-  <div class="sub">Document + OCR Bridge — 100% local-first. Upload once, then run the engine.</div>
+  <h1>Run a Case</h1>
+  <div class="sub">
+    Upload or paste → run the full engine → read the plain-language result → download the audit artifact.
+    Everything stays on this device.
+  </div>
   <nav>
     <a href="index.html">Home</a>
-    <a href="system/index.html">System Dashboard</a>
+    <a class="primary" href="intake/index.html">Run a Case</a>
+    <a href="index.html#advanced">Advanced Engine</a>
     <a href="learn/index.html">Learn</a>
-    <a href="integration/index.html">Integration</a>
   </nav>
 </header>
 
 <main>
 
   <section class="card">
-    <h2 style="margin-top:0">1. Add Your Materials</h2>
+    <h2 style="margin-top:0">1. Your materials</h2>
     <div class="plain">
-      <p>Everything stays in your browser. No accounts. No cloud upload of your documents.</p>
+      <p class="small" style="margin-top:0">
+        No account. No cloud upload. Files and text stay in your browser only.
+      </p>
 
-      <label for="file-input">Upload files (PDF, images, text, CSV, JSON)</label>
-      <input type="file" id="file-input" multiple accept=".pdf,.png,.jpg,.jpeg,.txt,.csv,.json,.md,image/*">
+      <label for="file-input">Upload file (PDF, image, text, CSV, JSON)</label>
+      <input type="file" id="file-input" accept=".pdf,.png,.jpg,.jpeg,.txt,.csv,.json,.md,image/*">
 
       <label for="text-input">Or paste text</label>
-      <textarea id="text-input" placeholder="Paste statutes, citations, budget lines, narrative, or any text here…"></textarea>
-
-      <label for="doc-type">Document type (helps the engine)</label>
-      <select id="doc-type">
-        <option value="generic_case_text">Generic / mixed</option>
-        <option value="traffic_ticket">Traffic ticket / citation</option>
-        <option value="funding_or_budget">Funding / budget / grant</option>
-        <option value="loan_contract">Loan / credit / contract</option>
-        <option value="vehicle_title_registration">Vehicle title / registration</option>
-        <option value="policy_memo">Policy / SOP / training</option>
-      </select>
+      <textarea id="text-input" placeholder="Paste a citation, narrative, budget line, policy excerpt, or case facts…"></textarea>
     </div>
   </section>
 
   <section class="card">
-    <h2 style="margin-top:0">2. Which modules should this feed?</h2>
-    <div class="plain">
-      <div class="targets">
-        <label><input type="checkbox" id="target-ciri" checked> CIRI (ROI / recovery)</label>
-        <label><input type="checkbox" id="target-cda" checked> CDA (divergence)</label>
-        <label><input type="checkbox" id="target-cff"> CFF (funding forensics)</label>
-        <label><input type="checkbox" id="target-ccri"> CCRI (credit / participation)</label>
-      </div>
-      <p class="small" style="margin-top:10px">These are just routing hints. The full pipeline still runs in its fixed order when you use the System Dashboard.</p>
-    </div>
-  </section>
-
-  <section class="card">
-    <h2 style="margin-top:0">3. Run Intake</h2>
+    <h2 style="margin-top:0">2. Run</h2>
     <div class="plain">
       <div class="btn-row">
-        <button type="button" class="primary" id="run-intake">▶ Run Intake Engine</button>
-        <button type="button" id="download-artifact" disabled>Download Intake JSON</button>
-        <a class="btn" href="system/index.html">Open System Dashboard →</a>
+        <button type="button" class="primary" id="btn-run">Run Full Pipeline</button>
+        <button type="button" id="btn-download" disabled>Download Artifact</button>
+        <button type="button" class="danger" id="btn-clear">Clear</button>
       </div>
-      <div id="status" class="status-line">Status: Ready — add a file or paste text, then click Run Intake Engine.</div>
+      <div id="status" class="status-line">Ready. Add a file or paste text, then press Run Full Pipeline.</div>
+    </div>
+  </section>
+
+  <section class="card" id="results-card">
+    <h2 style="margin-top:0">3. Results</h2>
+    <div class="plain">
+      <div class="kpi">
+        <div class="tile">
+          <div class="label">Status</div>
+          <div class="num" id="k-status">—</div>
+        </div>
+        <div class="tile">
+          <div class="label">Report hash</div>
+          <div class="num" id="k-hash" style="font-size:.8rem">—</div>
+        </div>
+        <div class="tile">
+          <div class="label">Recovery (if computed)</div>
+          <div class="num" id="k-recovery">—</div>
+        </div>
+        <div class="tile">
+          <div class="label">CIRI (if computed)</div>
+          <div class="num" id="k-ciri">—</div>
+        </div>
+      </div>
+
+      <div class="tabs">
+        <button type="button" class="active" data-tab="plain">Plain language</button>
+        <button type="button" data-tab="json">JSON artifact</button>
+      </div>
+
+      <div id="panel-plain" class="panel active">
+        <div id="plain-out">Run the pipeline to see a plain-language summary here.</div>
+      </div>
+      <div id="panel-json" class="panel">
+        <pre id="json-out">—</pre>
+      </div>
     </div>
   </section>
 
   <section class="card">
-    <h2 style="margin-top:0">Results (local only)</h2>
+    <h2 style="margin-top:0">How this works</h2>
     <div class="plain">
-      <label>Normalized text extracted</label>
-      <pre id="norm-text">—</pre>
-
-      <label style="margin-top:14px">Extracted fields (heuristic)</label>
-      <pre id="fields-json">{}</pre>
-    </div>
-  </section>
-
-  <section class="card">
-    <h2 style="margin-top:0">What happens next?</h2>
-    <div class="plain">
-      <ol style="margin:0;padding-left:1.2rem;color:var(--muted)">
-        <li>Intake builds a local artifact and stores it in your browser.</li>
-        <li>Go to <strong>System Dashboard</strong> and run the full pipeline (order is fixed and never changed).</li>
-        <li>Or open individual modules (CDA, CIRI, CFF, etc.) — they can pick up the intake artifact automatically.</li>
+      <ol style="margin:0;padding-left:1.2rem">
+        <li>Your file or text is processed <strong>only on this device</strong>.</li>
+        <li><strong>Run Full Pipeline</strong> runs the fixed engine chain and builds an audit report.</li>
+        <li>Read the <strong>plain-language</strong> summary, or open the <strong>JSON</strong> tab for the full artifact.</li>
+        <li><strong>Download Artifact</strong> saves the report (includes SHA-256 hash when available).</li>
+        <li><strong>Clear</strong> wipes local case data so you can start a different case — like clearing a calculator.</li>
       </ol>
-      <p class="small" style="margin-top:12px">Pipeline order is protected: INTAKE → CAE → CDA → CDI → CIRI → CIBS → CII → INTEGRATION → MACRO → RT → CFF → CCRI → AFFE.</p>
+      <p class="small" style="margin-bottom:0">
+        Advanced modules (CIRI, CFF, doctrine, etc.) stay available from Home → Advanced Engine.
+        This page is the simple path for one case.
+      </p>
     </div>
   </section>
 
@@ -138,9 +201,243 @@ footer{text-align:center;color:var(--muted);padding:20px;font-size:.9rem;border-
   DOI: 10.5281/zenodo.17586107 · CC BY-NC 4.0 · Integrity only — never for sale.
 </footer>
 
-<script src="intake.js"></script>
-<!-- Optional: keep OCR helper if you still want the separate OCR path -->
-<script src="ocr.js"></script>
+<script type="module">
+import { runABEFullPipelineWithReport } from "/abe---flag/system/cli.js";
+
+const ALL_KEYS = [
+  "abe_intake_artifact",
+  "ABE_INTAKE_ARTIFACT_V1",
+  "ABE_FLAG:intake_artifact",
+  "ABE_FULL_PIPELINE_REPORT",
+  "ABE_INTEGRATION_ARTIFACT_V1",
+  "abe_integration_artifact",
+  "ABE_AUDIT_RECEIPT_V1",
+  "ABE_CIRI_SCENARIO_V2",
+  "ABE_RT_ARTIFACT_V1",
+  "ABE_AFFE_ARTIFACT_V1"
+];
+
+const fileInput = document.getElementById("file-input");
+const textInput = document.getElementById("text-input");
+const btnRun = document.getElementById("btn-run");
+const btnDownload = document.getElementById("btn-download");
+const btnClear = document.getElementById("btn-clear");
+const statusEl = document.getElementById("status");
+const plainOut = document.getElementById("plain-out");
+const jsonOut = document.getElementById("json-out");
+
+let lastReport = null;
+
+function setStatus(msg, kind){
+  statusEl.textContent = msg;
+  statusEl.className = "status-line" + (kind ? " status-" + kind : "");
+}
+
+function money(v){
+  const n = Number(v);
+  if(!Number.isFinite(n)) return "—";
+  try{
+    return new Intl.NumberFormat(undefined,{style:"currency",currency:"USD",maximumFractionDigits:0}).format(n);
+  }catch{
+    return "$" + Math.round(n).toLocaleString();
+  }
+}
+
+function pct(v){
+  const n = Number(v);
+  if(!Number.isFinite(n)) return "—";
+  const x = n > 1 ? n : n * 100;
+  return x.toFixed(2) + "%";
+}
+
+async function sha256(text){
+  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,"0")).join("");
+}
+
+async function readFileAsText(file){
+  if(!file) return "";
+  const name = (file.name || "").toLowerCase();
+  if(/\.(txt|csv|json|md|html|htm)$/i.test(name) || (file.type || "").startsWith("text/")){
+    return await file.text();
+  }
+  if((file.type || "").startsWith("image/") || name.endsWith(".pdf")){
+    return "[Uploaded file: " + file.name + " (" + (file.type || "unknown") + ", " + file.size + " bytes). Text extraction/OCR can be refined in Advanced Engine if needed.]\n";
+  }
+  try { return await file.text(); }
+  catch { return "[Binary file: " + file.name + "]"; }
+}
+
+async function buildIntakeArtifact(){
+  const file = fileInput.files && fileInput.files[0];
+  const pasted = (textInput.value || "").trim();
+  let fileText = "";
+  if(file) fileText = await readFileAsText(file);
+
+  const combined = [fileText, pasted].filter(Boolean).join("\n\n").trim();
+  if(!combined){
+    throw new Error("Add a file or paste some text first.");
+  }
+
+  const artifact = {
+    module: "INTAKE",
+    version: "1.0",
+    created_at: new Date().toISOString(),
+    original_file_name: file ? file.name : null,
+    text_raw: combined,
+    text_normalized: combined,
+    normalized_text: combined,
+    text: combined,
+    summary: combined.slice(0, 400),
+    source: file ? "file" : "paste",
+    notes: "Built on Run a Case page (local only)."
+  };
+
+  const payload = JSON.stringify(artifact);
+  localStorage.setItem("abe_intake_artifact", payload);
+  localStorage.setItem("ABE_INTAKE_ARTIFACT_V1", payload);
+  return artifact;
+}
+
+function extractKPIs(report){
+  const r = report && report.results ? report.results : {};
+  const recovery =
+    (r.INTEGRATION && r.INTEGRATION.aggregate && r.INTEGRATION.aggregate.total_constitutional_capital_recovery_usd) ??
+    (r.CIRI && r.CIRI.aggregate && r.CIRI.aggregate.RT) ??
+    (r.CIRI && r.CIRI.scores && r.CIRI.scores.total_recovery_usd) ??
+    null;
+  const ciri =
+    (r.CIRI && r.CIRI.scores && r.CIRI.scores.ciri) ??
+    (r.CIRI && r.CIRI.scores && r.CIRI.scores.constitutional_integrity_roi_index) ??
+    null;
+  const hash = report && report.integrity ? report.integrity.report_hash : null;
+  return { recovery, ciri, hash };
+}
+
+function buildPlainLanguage(report){
+  if(!report) return "No report yet.";
+
+  const k = extractKPIs(report);
+  const pl = report.plain_language || {};
+  const lines = [];
+
+  lines.push(pl.summary || (report.ok ? "Pipeline completed." : "Pipeline did not complete."));
+  if(pl.flow) lines.push("Flow: " + pl.flow);
+  if(pl.caution) lines.push("Note: " + pl.caution);
+
+  lines.push("");
+  lines.push("Key numbers:");
+  lines.push("• Recovery: " + money(k.recovery));
+  lines.push("• CIRI index: " + pct(k.ciri));
+  lines.push("• Report hash: " + (k.hash || "—"));
+
+  if(report.error && report.error.message){
+    lines.push("");
+    lines.push("Error: " + report.error.message);
+  }
+
+  lines.push("");
+  lines.push("This artifact was generated locally in your browser. It is an analysis receipt, not a court ruling.");
+
+  return lines.join("\n");
+}
+
+function paintReport(report){
+  lastReport = report;
+  const k = extractKPIs(report);
+
+  document.getElementById("k-status").textContent = report && report.ok ? "Complete" : "Failed";
+  document.getElementById("k-hash").textContent = k.hash || "—";
+  document.getElementById("k-recovery").textContent = money(k.recovery);
+  document.getElementById("k-ciri").textContent = pct(k.ciri);
+
+  plainOut.textContent = buildPlainLanguage(report);
+  jsonOut.textContent = JSON.stringify(report, null, 2);
+  btnDownload.disabled = !report;
+}
+
+btnRun.addEventListener("click", async () => {
+  btnRun.disabled = true;
+  btnDownload.disabled = true;
+  setStatus("Working… building intake and running full pipeline (local only).", "warn");
+
+  try{
+    await buildIntakeArtifact();
+    setStatus("Intake stored. Running full pipeline…", "warn");
+
+    const report = await runABEFullPipelineWithReport();
+    paintReport(report);
+
+    if(report && !(report.integrity && report.integrity.report_hash)){
+      const h = await sha256(JSON.stringify(report));
+      report.integrity = { report_hash: "sha256:" + h, hashing_algorithm: "SHA-256" };
+      paintReport(report);
+    }
+
+    localStorage.setItem("ABE_FULL_PIPELINE_REPORT", JSON.stringify(report));
+    setStatus(report.ok ? "Done. Review plain language or download the artifact." : "Finished with errors — see results.", report.ok ? "ok" : "err");
+  }catch(err){
+    console.error(err);
+    setStatus("Failed: " + (err && err.message ? err.message : String(err)), "err");
+    plainOut.textContent = "Something went wrong:\n" + (err && err.message ? err.message : String(err));
+    jsonOut.textContent = "—";
+    document.getElementById("k-status").textContent = "Error";
+  }finally{
+    btnRun.disabled = false;
+  }
+});
+
+btnDownload.addEventListener("click", () => {
+  if(!lastReport) return;
+  const blob = new Blob([JSON.stringify(lastReport, null, 2)], {type:"application/json"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "ABE_CASE_ARTIFACT_" + Date.now() + ".json";
+  a.click();
+  URL.revokeObjectURL(url);
+});
+
+btnClear.addEventListener("click", () => {
+  if(!confirm("Clear all local case data on this device?\n\nYou can upload or paste a new case after clearing.")) return;
+
+  ALL_KEYS.forEach(function(k){
+    try { localStorage.removeItem(k); } catch(e) {}
+  });
+
+  lastReport = null;
+  fileInput.value = "";
+  textInput.value = "";
+  btnDownload.disabled = true;
+  document.getElementById("k-status").textContent = "—";
+  document.getElementById("k-hash").textContent = "—";
+  document.getElementById("k-recovery").textContent = "—";
+  document.getElementById("k-ciri").textContent = "—";
+  plainOut.textContent = "Cleared. Ready for a new case.";
+  jsonOut.textContent = "—";
+  setStatus("Cleared. Ready for a new case.", "ok");
+});
+
+document.querySelectorAll(".tabs button").forEach(function(btn){
+  btn.addEventListener("click", function(){
+    document.querySelectorAll(".tabs button").forEach(function(b){ b.classList.remove("active"); });
+    document.querySelectorAll(".panel").forEach(function(p){ p.classList.remove("active"); });
+    btn.classList.add("active");
+    const id = "panel-" + btn.getAttribute("data-tab");
+    const panel = document.getElementById(id);
+    if(panel) panel.classList.add("active");
+  });
+});
+
+try{
+  const raw = localStorage.getItem("ABE_FULL_PIPELINE_REPORT");
+  if(raw){
+    const parsed = JSON.parse(raw);
+    paintReport(parsed);
+    setStatus("Loaded previous local report. Clear to start a new case, or run again.", "ok");
+  }
+}catch(e){}
+</script>
 
 </body>
 </html>
