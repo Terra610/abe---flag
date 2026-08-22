@@ -1,5 +1,5 @@
 // cda/runner.js
-// CDA -> Constitutional Definition Audit
+// CDA -> Constitutional Divergence Analyzer
 // Measures integrity of applied definitions against controlling authority.
 
 function num(v, fallback = 0) {
@@ -72,7 +72,7 @@ export async function run(_scenario = {}, ctx = {}) {
 
   return {
     module: "CDA",
-    title: "Constitutional Definition Audit",
+    title: "Constitutional Divergence Analyzer",
     module_version: "1.0",
     generated_at: new Date().toISOString(),
     weights: {
