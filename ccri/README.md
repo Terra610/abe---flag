@@ -1,6 +1,6 @@
-# CCRI — Consumer Credit Risk Integrity
+# CCRI — Constitutional Capital Risk Index
 
-**CCRI (Consumer Credit Risk Integrity)** is an A.B.E. engine module that measures how consumer credit, auto lending, and banking practices diverge from the constitutional and federal legal framework.
+**CCRI (Constitutional Capital Risk Index)** is an A.B.E. engine module that measures how consumer credit, auto lending, and banking practices diverge from the constitutional and federal legal framework.
 
 CCRI does **not** score people.  
 It scores **institutions and policies** based on how lawfully they use (or misuse) identity and transportation data when deciding who gets access to credit, vehicles, and basic economic mobility.
