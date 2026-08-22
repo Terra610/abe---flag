@@ -1,4 +1,4 @@
-# CII — Community Investment Interface  
+# CII — Constitutional Integrity Index 
 **Turning recovery dollars into real projects.**
 
 CII is the bridge between recovered value and boots-on-the-ground improvements.  
