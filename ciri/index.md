@@ -1,7 +1,7 @@
-# ⚙️ CIRI — Constitutional Integrity ROI Engine
+# ⚙️ CIRI — Constitutional Integrity Risk Index
 
 **What this is:**  
-CIRI (Constitutional Integrity ROI Engine) is the accounting core of A.B.E.  
+CIRI (Constitutional Integrity Risk Index) is the accounting core of A.B.E.  
 It calculates the *documented, lawful, provable* dollar impact of:
 - Avoided wrongful prosecutions and incarcerations  
 - Restored licenses / employability  
@@ -47,7 +47,7 @@ This is traceable. This is auditable. This is not for sale.
 
 ## Next Step in the Pipeline
 
-CIRI feeds into **CIBS** (Community Integrity Budget System), which takes that recovery value and
+CIRI feeds into **CIBS** (Constitutional Integrity Baseline Schema), which takes that recovery value and
 turns it into **tracked reinvestment pools**: housing stability, mental health access,
 legal defense & review, re-entry support, etc.
 
