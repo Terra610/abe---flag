@@ -2,7 +2,7 @@
   "version": "1.0",
   "module": "CDA",
   "updated": "2026-04-23T00:00:00Z",
-  "title": "Constitutional Definition Audit",
+  "title": "Constitutional Divergence Analyzer",
   "description": "Measures definition integrity, scope fidelity, and delegation drift across applied legal or administrative terms. CDA conditions later modules but does not replace the pioneer spine.",
   "weights": {
     "textual_fidelity": 0.34,
