@@ -1,6 +1,6 @@
 # CIBS Budget Model — The Integrity Reinvestment Formula
 
-The **Community Integrity Budget System (CIBS)** converts verified savings from the **CIRI** engine into a reinvestment plan that strengthens local economies and restores social balance.
+The **Constitutional Integrity Baseline Schema (CIBS)** converts verified savings from the **CIRI** engine into a reinvestment plan that strengthens local economies and restores social balance.
 
 ---
 
