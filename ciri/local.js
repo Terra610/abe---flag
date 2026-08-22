@@ -1,5 +1,5 @@
 // ciri/local.js
-// CIRI — Constitutional Integrity ROI Engine (client-side)
+// CIRI — Constitutional Integrity Risk Index (client-side)
 // - Auto-bridges from Intake (abe_intake_artifact), CDA, and CCRI when present.
 // - Computes economic recovery categories and CIRI index.
 // - Stores ABE_CIRI_SCENARIO_V2 in localStorage, with SHA-256 hash.
