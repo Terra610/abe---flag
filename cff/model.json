@@ -2,7 +2,7 @@
   "version": "1.0",
   "module": "CFF",
   "updated": "2026-04-23T00:00:00Z",
-  "title": "Cash Flow Forensics",
+  "title": "Constitutional Funding Forensics",
   "description": "Measures funding alignment, flagged use, and authorized-versus-actual divergence across monitored funding streams. CFF conditions later recovery and integration layers without replacing the pioneer spine.",
   "weights": {
     "appropriation_fidelity": 0.34,
