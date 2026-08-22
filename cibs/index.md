@@ -1,4 +1,4 @@
-# CIBS — Community Integrity Budget System
+# CIBS — Constitutional Integrity Baseline Schema
 
 This document shows how to turn the savings / impact number from CIRI into tracked reinvestment dollars on a schedule.
 
