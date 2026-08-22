@@ -1,4 +1,4 @@
-# CIRI — Constitutional Integrity ROI Engine
+# CIRI — Constitutional Integrity Risk Index
 
 CIRI is the financial heart of the A.B.E. system.  
 It turns constitutional overreach — wrongful detention, misapplied statutes, unlawful enforcement — into **measurable economic recovery** for any jurisdiction.
