@@ -1,5 +1,5 @@
 // cff/runner.js
-// CFF -> Cash Flow Forensics
+// CFF -> Constitutional Funding Forensics
 // Measures funding alignment, flagged use, and average fidelity across monitored streams.
 
 function num(v, fallback = 0) {
