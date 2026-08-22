@@ -1,4 +1,4 @@
-# CIBS — Constitutional Investment & Budget System  
+# CIBS — Constitutional Integrity Baseline Schema  
 **Where recovery value becomes reinvestment.**
 
 CIBS takes the total recovery from CIRI and allocates it into public-good categories using a transparent, auditable budget schema.  
